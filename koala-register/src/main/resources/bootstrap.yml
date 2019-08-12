@@ -1,0 +1,24 @@
+nacos:
+  cmdb:
+    dumpTaskInterval: 3600
+    eventTaskInterval: 10
+    labelTaskInterval: 300
+    loadDataAtStart: false
+
+# 数据源相关配置
+db:
+  num: 1
+  user: root
+  password: 123456
+  url:
+    0: jdbc:mysql://pigx-mysql:3306/pigxx_config?characterEncoding=utf8&connectTimeout=1000&socketTimeout=3000&autoReconnect=true
+
+spring:
+  datasource:
+    platform: mysql
+  security:
+    enabled: false
+
+server:
+  tomcat:
+    basedir: logs
