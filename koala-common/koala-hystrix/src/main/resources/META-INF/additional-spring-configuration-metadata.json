@@ -1,0 +1,24 @@
+{
+	"groups": [
+	],
+	"properties": [
+		{
+			"name": "koala.http.enable",
+			"type": "java.lang.Boolean",
+			"description": "是否开启 lbWebClient、OkHttpClient bean.",
+			"defaultValue": "true"
+		},
+		{
+			"name": "koala.http.rest-template.enable",
+			"type": "java.lang.Boolean",
+			"description": "是否开启 restTemplate bean.",
+			"defaultValue": "false"
+		},
+		{
+			"name": "koala.http.lb-rest-template.enable",
+			"type": "java.lang.Boolean",
+			"description": "是否开启 lb restTemplate bean.",
+			"defaultValue": "false"
+		}
+	]
+}
