@@ -19,4 +19,18 @@
         <java.version>1.8</java.version>
     </properties>
 
+    <modules>
+        <module>koala-utils</module>
+        <module>koala-hystrix</module>
+        <module>koala-dynamic-route</module>
+    </modules>
+
+    <dependencies>
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-all</artifactId>
+            <version>${hutool.version}</version>
+        </dependency>
+    </dependencies>
+
 </project>
