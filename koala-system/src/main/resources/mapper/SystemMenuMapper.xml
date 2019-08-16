@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.igetwell.system.mapper.SystemMenuMapper">
+  <resultMap id="baseMap" type="org.igetwell.system.entity.SystemMenu">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="parent_id" jdbcType="BIGINT" property="parentId" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="alias" jdbcType="VARCHAR" property="alias" />
+    <result column="path" jdbcType="VARCHAR" property="path" />
+    <result column="source" jdbcType="VARCHAR" property="source" />
+    <result column="sort" jdbcType="INTEGER" property="sort" />
+    <result column="category" jdbcType="INTEGER" property="category" />
+    <result column="action" jdbcType="INTEGER" property="action" />
+    <result column="keep_alive" jdbcType="INTEGER" property="keepAlive" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="is_deleted" jdbcType="INTEGER" property="isDeleted" />
+  </resultMap>
+
+  <sql id="baseSql">
+    ID, PARENT_ID, CODE, NAME, ALIAS, PATH, SOURCE, SORT, CATEGORY, ACTION, KEEP_ALIVE,
+    REMARK, IS_DELETED
+  </sql>
+
+</mapper>

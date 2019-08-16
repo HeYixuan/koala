@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.igetwell.system.mapper.SystemRoleMapper">
+  <resultMap id="baseMap" type="org.igetwell.system.entity.SystemRole">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="tenant_id" jdbcType="VARCHAR" property="tenantId" />
+    <result column="parent_id" jdbcType="BIGINT" property="parentId" />
+    <result column="role_name" jdbcType="VARCHAR" property="roleName" />
+    <result column="sort" jdbcType="INTEGER" property="sort" />
+    <result column="role_alias" jdbcType="VARCHAR" property="roleAlias" />
+    <result column="is_deleted" jdbcType="INTEGER" property="isDeleted" />
+  </resultMap>
+
+  <sql id="baseSql">
+    ID, TENANT_ID, PARENT_ID, ROLE_NAME, SORT, ROLE_ALIAS, IS_DELETED
+  </sql>
+
+</mapper>
