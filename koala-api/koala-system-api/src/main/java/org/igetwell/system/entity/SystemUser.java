@@ -83,8 +83,8 @@ public class SystemUser /*implements CredentialsContainer*/ {
     /**
      * 账户启用状态：0停用 1启用
      */
-    @Column(name = "is_enable")
-    private boolean isEnable;
+    @Column(name = "is_enabled")
+    private boolean isEnabled;
 
     /**
      * 账户是否过期：0过期 1未过期
@@ -368,16 +368,16 @@ public class SystemUser /*implements CredentialsContainer*/ {
      * @return is_enable - 账户启用状态：0停用 1启用
      */
     public boolean isEnabled() {
-        return isEnable;
+        return isEnabled;
     }
 
     /**
      * 设置账户启用状态：0停用 1启用
      *
-     * @param isEnable 账户启用状态：0停用 1启用
+     * @param isEnabled 账户启用状态：0停用 1启用
      */
-    public void setIsEnable(boolean isEnable) {
-        this.isEnable = isEnable;
+    public void setIsEnabled(boolean isEnabled) {
+        this.isEnabled = isEnabled;
     }
 
     /**
@@ -565,14 +565,14 @@ public class SystemUser /*implements CredentialsContainer*/ {
 
     }*/
 
-    public SystemUser(Long id, String username, String password, boolean isEnable, boolean accountNonExpired, boolean accountNonLocked, boolean credentialsNonExpired) {
+    public SystemUser(Long id, String username, String password, boolean isEnabled, boolean accountNonExpired, boolean accountNonLocked, boolean credentialsNonExpired) {
         if (((username == null) || "".equals(username)) || (password == null)) {
             throw new IllegalArgumentException("Cannot pass null or empty values to constructor");
         }
         this.id = id;
         this.username = username;
         this.password = password;
-        this.isEnable = isEnable;
+        this.isEnabled = isEnabled;
         this.accountNonExpired = accountNonExpired;
         this.accountNonLocked = accountNonLocked;
         this.credentialsNonExpired = credentialsNonExpired;

@@ -17,7 +17,7 @@
     <result column="SEX" jdbcType="SMALLINT" property="sex" />
     <result column="ROLE_ID" jdbcType="VARCHAR" property="roleId" />
     <result column="DEPT_ID" jdbcType="VARCHAR" property="deptId" />
-    <result column="IS_ENABLE" jdbcType="INTEGER" property="isEnable" />
+    <result column="IS_ENABLED" jdbcType="INTEGER" property="isEnabled" />
     <result column="ACCOUNT_NON_EXPIRED" jdbcType="INTEGER" property="accountNonExpired" />
     <result column="ACCOUNT_NON_LOCKED" jdbcType="INTEGER" property="accountNonLocked" />
     <result column="CREDENTIALS_NON_EXPIRED" jdbcType="INTEGER" property="credentialsNonExpired" />
@@ -32,7 +32,7 @@
 
   <sql id="baseSql">
     ID, TENANT_ID, USERNAME, PASSWORD, NAME, REAL_NAME, EMAIL, PHONE, BIRTHDAY, SEX,
-    ROLE_ID, DEPT_ID, IS_ENABLE, ACCOUNT_NON_EXPIRED, ACCOUNT_NON_LOCKED, CREDENTIALS_NON_EXPIRED,
+    ROLE_ID, DEPT_ID, IS_ENABLED, ACCOUNT_NON_EXPIRED, ACCOUNT_NON_LOCKED, CREDENTIALS_NON_EXPIRED,
     LAST_LOGIN_TIME, CREATE_USER, CREATE_DEPT, CREATE_TIME, UPDATE_USER, UPDATE_TIME,
     IS_DELETED
   </sql>
@@ -82,8 +82,8 @@
       <if test="deptId != null">
         DEPT_ID = #{deptId,jdbcType=VARCHAR},
       </if>
-      <if test="isEnable != null">
-        IS_ENABLE = #{isEnable,jdbcType=INTEGER},
+      <if test="isEnabled != null">
+        IS_ENABLED = #{isEnabled,jdbcType=INTEGER},
       </if>
       <if test="accountNonExpired != null">
         ACCOUNT_NON_EXPIRED = #{accountNonExpired,jdbcType=INTEGER},

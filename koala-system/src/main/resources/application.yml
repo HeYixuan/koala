@@ -12,6 +12,9 @@ spring:
       connection-timeout: 30000
 
 
+jack
+
+
 mybatis:
   mapper-locations: classpath:/mapper/*Mapper.xml
 
