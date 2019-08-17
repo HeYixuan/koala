@@ -1,11 +1,11 @@
-package org.igetwell.system.mapper;
+package org.igetwell.system.service;
 
 import org.igetwell.system.entity.SystemRole;
 import org.igetwell.system.vo.SystemRoleVo;
 
 import java.util.List;
 
-public interface SystemRoleMapper {
+public interface ISystemRoleService {
 
     /**
      * 获取所有角色

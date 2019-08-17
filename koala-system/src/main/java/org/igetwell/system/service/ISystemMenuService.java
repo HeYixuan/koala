@@ -1,10 +1,10 @@
-package org.igetwell.system.mapper;
+package org.igetwell.system.service;
 
 import org.igetwell.system.entity.SystemMenu;
 
 import java.util.List;
 
-public interface SystemMenuMapper {
+public interface ISystemMenuService {
 
     /**
      * 根据角色ID查询所有菜单

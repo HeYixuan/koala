@@ -36,6 +36,22 @@
     LAST_LOGIN_TIME, CREATE_USER, CREATE_DEPT, CREATE_TIME, UPDATE_USER, UPDATE_TIME,
     IS_DELETED
   </sql>
+
+  <sql id="securityLogin">
+    ID, TENANT_ID, USERNAME, PASSWORD, NAME, REAL_NAME, EMAIL, PHONE, BIRTHDAY, SEX,
+    ROLE_ID, DEPT_ID, IS_ENABLED, ACCOUNT_NON_EXPIRED, ACCOUNT_NON_LOCKED, CREDENTIALS_NON_EXPIRED,
+    LAST_LOGIN_TIME, CREATE_USER, CREATE_DEPT, CREATE_TIME, UPDATE_USER, UPDATE_TIME,
+    IS_DELETED
+  </sql>
+
+  <select id="loadByUsername" resultMap="baseMap">
+    SELECT
+        <include refid="baseSql"/>
+    FROM SYS_USER
+    WHERE TENANT_ID = #{param1} AND USERNAME = #{param2} AND IS_DELETED = 0
+  </select>
+
+
   <select id="getList" resultMap="baseMap">
     SELECT
     <include refid="baseSql" />

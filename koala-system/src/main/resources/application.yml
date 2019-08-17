@@ -1,4 +1,8 @@
 spring:
+  redis:
+    password:
+    host: ${REDIS-HOST:pigx-redis}
+
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
     url: jdbc:mysql://localhost:3306/koala?autoReconnect=true&useUnicode=true&characterEncoding=UTF-8&allowMultiQueries=true&useSSL=false
@@ -12,10 +16,25 @@ spring:
       connection-timeout: 30000
 
 
-jack
-
-
 mybatis:
   mapper-locations: classpath:/mapper/*Mapper.xml
 
 
+
+#分页设置
+pagehelper:
+  helper-dialect: mysql
+  reasonable: true
+  support-methods-arguments: true
+  params: count=countSql
+
+
+jwt:
+  header: X-API-TOKEN
+  secret: secret
+  issuer: 15517551511@126.com
+  expiration: 120   #Token有效期30分钟
+
+security:
+  basic:
+    enabled: false
