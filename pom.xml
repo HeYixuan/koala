@@ -37,12 +37,15 @@
 		<security.oauth.version>2.3.6.RELEASE</security.oauth.version>
 		<kaptcha.version>0.0.9</kaptcha.version>
         <hutool.version>4.5.16</hutool.version>
+		<ttl.version>2.10.2</ttl.version>
 	</properties>
 
 	<modules>
 		<module>koala-register</module>
 		<module>koala-gateway</module>
 		<module>koala-system</module>
+		<!--<module>koala-api</module>
+		<module>koala-common</module>-->
 	</modules>
 
 	<dependencies>
@@ -63,10 +66,20 @@
 			<artifactId>spring-boot-admin-starter-client</artifactId>
 			<version>${spring-boot-admin.version}</version>
 		</dependency>
+		<!--feign 依赖-->
+		<dependency>
+			<groupId>io.github.openfeign</groupId>
+			<artifactId>feign-okhttp</artifactId>
+		</dependency>
 		<!--断路器依赖-->
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-netflix-hystrix</artifactId>
+		</dependency>
+		<!--缓存-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-redis-reactive</artifactId>
 		</dependency>
 		<!--Lombok-->
 		<dependency>

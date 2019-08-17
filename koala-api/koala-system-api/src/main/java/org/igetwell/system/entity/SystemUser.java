@@ -1,19 +1,17 @@
 package org.igetwell.system.entity;
 
 import lombok.Data;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.User;
 
 import javax.persistence.*;
+import java.util.Collection;
 import java.util.Date;
 
-/*import org.springframework.security.core.CredentialsContainer;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.AuthorityUtils;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;*/
 
 @Data
 @Table(name = "sys_user")
-public class SystemUser /*implements CredentialsContainer*/ {
+public class SystemUser extends User {
     /**
      * 主键
      */
@@ -560,21 +558,11 @@ public class SystemUser /*implements CredentialsContainer*/ {
         this.isDeleted = isDeleted;
     }
 
-    /*@Override
-    public void eraseCredentials() {
-
-    }*/
-
-    public SystemUser(Long id, String username, String password, boolean isEnabled, boolean accountNonExpired, boolean accountNonLocked, boolean credentialsNonExpired) {
-        if (((username == null) || "".equals(username)) || (password == null)) {
-            throw new IllegalArgumentException("Cannot pass null or empty values to constructor");
-        }
+    public SystemUser(Long id, String tenantId, String username, String password, boolean enabled, boolean accountNonExpired, boolean credentialsNonExpired, boolean accountNonLocked, Collection<? extends GrantedAuthority> authorities) {
+        super(username, password, enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, authorities);
         this.id = id;
-        this.username = username;
-        this.password = password;
-        this.isEnabled = isEnabled;
-        this.accountNonExpired = accountNonExpired;
-        this.accountNonLocked = accountNonLocked;
-        this.credentialsNonExpired = credentialsNonExpired;
+        this.tenantId = tenantId;
     }
+
+
 }

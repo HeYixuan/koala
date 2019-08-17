@@ -114,7 +114,7 @@ public interface SecurityConstants {
 	/**
 	 * {bcrypt} 加密的特征码
 	 */
-	String BCRYPT = "{bcrypt}";
+	String BCRYPT = "{blade}";
 	/**
 	 * sys_oauth_client_details 表的字段，不包括client_id、client_secret
 	 */

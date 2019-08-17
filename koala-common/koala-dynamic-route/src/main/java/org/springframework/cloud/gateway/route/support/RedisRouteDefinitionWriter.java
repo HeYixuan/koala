@@ -19,7 +19,7 @@ package org.springframework.cloud.gateway.route.support;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.igetwell.common.constans.CacheConstants;
+import org.igetwell.common.constans.cache.CacheKey;
 import org.springframework.beans.BeanUtils;
 import org.springframework.cloud.gateway.route.RouteDefinition;
 import org.springframework.cloud.gateway.route.RouteDefinitionRepository;
@@ -51,7 +51,7 @@ public class RedisRouteDefinitionWriter implements RouteDefinitionRepository {
 			BeanUtils.copyProperties(r, bean);
 			log.info("保存路由信息{}", bean);
 			redisTemplate.setKeySerializer(new StringRedisSerializer());
-			redisTemplate.opsForHash().put(CacheConstants.ROUTE_KEY, r.getId(), bean);
+			redisTemplate.opsForHash().put(CacheKey.ROUTE_KEY, r.getId(), bean);
 			return Mono.empty();
 		});
 	}
@@ -61,7 +61,7 @@ public class RedisRouteDefinitionWriter implements RouteDefinitionRepository {
 		routeId.subscribe(id -> {
 			log.info("删除路由信息{}", id);
 			redisTemplate.setKeySerializer(new StringRedisSerializer());
-			redisTemplate.opsForHash().delete(CacheConstants.ROUTE_KEY, id);
+			redisTemplate.opsForHash().delete(CacheKey.ROUTE_KEY, id);
 		});
 		return Mono.empty();
 	}
@@ -76,7 +76,7 @@ public class RedisRouteDefinitionWriter implements RouteDefinitionRepository {
 	public Flux<RouteDefinition> getRouteDefinitions() {
 		redisTemplate.setKeySerializer(new StringRedisSerializer());
 		redisTemplate.setHashValueSerializer(new Jackson2JsonRedisSerializer<>(RouteDefinitionBean.class));
-		List<RouteDefinitionBean> values = redisTemplate.opsForHash().values(CacheConstants.ROUTE_KEY);
+		List<RouteDefinitionBean> values = redisTemplate.opsForHash().values(CacheKey.ROUTE_KEY);
 		List<RouteDefinition> definitionList = new ArrayList<>();
 		values.forEach(bean -> {
 			RouteDefinition routeDefinition = new RouteDefinition();
