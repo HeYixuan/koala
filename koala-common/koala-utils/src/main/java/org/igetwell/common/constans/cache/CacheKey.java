@@ -25,7 +25,7 @@ public interface CacheKey {
     /**
      * oauth 客户端信息
      */
-    String CLIENT_DETAILS_KEY = "pigx_oauth:client:details";
+    String CLIENT_DETAILS_KEY = "koala_oauth:client:details";
 
 
     /**

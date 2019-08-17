@@ -1,5 +1,6 @@
 package org.igetwell.system.configure;
 
+import lombok.AllArgsConstructor;
 import org.igetwell.system.security.MyFilterSecurityInterceptor;
 import org.igetwell.system.security.SpringSecurityService;
 import org.igetwell.system.security.extractor.JwtTokenExtractor;
@@ -23,6 +24,7 @@ import org.springframework.security.web.access.intercept.FilterSecurityIntercept
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @EnableWebSecurity
+@AllArgsConstructor
 public class SpringSecurityWebAppConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
@@ -50,7 +52,7 @@ public class SpringSecurityWebAppConfig extends WebSecurityConfigurerAdapter {
                 .csrf().disable() // oauth server 不需要 csrf 防护
                 .httpBasic().disable() // 禁止 basic 认证
                 .authorizeRequests()
-                .antMatchers("/login", "/oauth/token/**").permitAll()
+                .antMatchers("/oauth/token", "/oauth/token/**").permitAll()
                 .and()
                 .authorizeRequests()
                 .antMatchers("/**").authenticated() //其他请求都需要登录后访问
@@ -69,6 +71,17 @@ public class SpringSecurityWebAppConfig extends WebSecurityConfigurerAdapter {
                 .addFilterBefore(myFilterSecurityInterceptor, FilterSecurityInterceptor.class)
                 .addFilterBefore(jwtTokenExtractor, UsernamePasswordAuthenticationFilter.class);
     }
+    /*@Override
+    public void configure(HttpSecurity http) throws Exception {
+        http.csrf().disable();
+        http.requestMatchers().antMatchers("/oauth/**","/login/**","/logout/**")
+                .and()
+                .authorizeRequests()
+                .antMatchers("/oauth/**").authenticated()
+                .and()
+                .formLogin().permitAll();
+    }*/
+
 
     @Autowired
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {

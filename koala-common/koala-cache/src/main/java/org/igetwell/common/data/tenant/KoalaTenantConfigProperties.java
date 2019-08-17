@@ -1,4 +1,4 @@
-package org.igetwll.common.data.tenant;
+package org.igetwell.common.data.tenant;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;

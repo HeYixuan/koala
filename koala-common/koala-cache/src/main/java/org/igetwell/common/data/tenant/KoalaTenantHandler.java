@@ -15,7 +15,7 @@
  * Author: lengleng (wangiegie@gmail.com)
  */
 
-package org.igetwll.common.data.tenant;
+package org.igetwell.common.data.tenant;
 
 import com.baomidou.mybatisplus.extension.plugins.tenant.TenantHandler;
 import lombok.extern.slf4j.Slf4j;

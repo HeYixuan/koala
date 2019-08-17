@@ -1,5 +1,6 @@
 package org.igetwell.system.security.extractor;
 
+import lombok.AllArgsConstructor;
 import org.igetwell.system.security.JwtTokenUtils;
 import org.igetwell.system.security.SpringSecurityService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,7 @@ import java.io.IOException;
 /**
  * TOKEN 认证过滤器
  */
-@Component
+@AllArgsConstructor
 public class JwtTokenExtractor extends OncePerRequestFilter {
 
     @Autowired

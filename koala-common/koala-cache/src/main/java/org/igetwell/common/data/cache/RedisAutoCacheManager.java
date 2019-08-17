@@ -15,11 +15,11 @@
  * Author: lengleng (wangiegie@gmail.com)
  */
 
-package org.igetwll.common.data.cache;
+package org.igetwell.common.data.cache;
 
 import cn.hutool.core.util.StrUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.igetwll.common.data.tenant.TenantContextHolder;
+import org.igetwell.common.data.tenant.TenantContextHolder;
 import org.springframework.cache.Cache;
 import org.springframework.data.redis.cache.RedisCache;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;

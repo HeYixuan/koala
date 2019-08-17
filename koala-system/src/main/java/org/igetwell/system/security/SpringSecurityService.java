@@ -1,6 +1,5 @@
 package org.igetwell.system.security;
 
-import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import org.igetwell.common.constans.SecurityConstants;
 import org.igetwell.common.constans.cache.CacheKey;
@@ -8,7 +7,7 @@ import org.igetwell.system.entity.SystemUser;
 import org.igetwell.system.service.ISystemRoleService;
 import org.igetwell.system.service.ISystemUserService;
 import org.igetwell.system.vo.SystemRoleVo;
-import org.igetwll.common.data.tenant.TenantContextHolder;
+import org.igetwell.common.data.tenant.TenantContextHolder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;

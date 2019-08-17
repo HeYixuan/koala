@@ -7,7 +7,7 @@
         <artifactId>koala-common</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
-    <groupId>org.igetwll.cache</groupId>
+    <groupId>org.igetwell.cache</groupId>
     <artifactId>koala-cache</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>

@@ -43,7 +43,7 @@ public interface SecurityConstants {
 	/**
 	 * 前缀
 	 */
-	String PIGX_PREFIX = "pigx_";
+	String KOALA_PREFIX = "koala_";
 
 	/**
 	 * oauth 相关前缀
