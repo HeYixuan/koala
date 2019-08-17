@@ -28,6 +28,7 @@
   <select id="loadByRole" resultMap="baseMap">
     SELECT
         <include refid="baseSql" />
+    FROM SYS_MENU M
     INNER JOIN SYS_ROLE_MENU RM ON RM.MENU_ID = M.ID
     WHERE RM.ROLE_ID = #{id}
     AND IS_DELETED = 0

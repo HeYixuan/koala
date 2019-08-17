@@ -25,13 +25,13 @@
   <select id="getList" resultMap="baseMap">
     SELECT
         <include refid="baseSql" />
-    FROM SYSTEM_ROLE
+    FROM SYS_ROLE
   </select>
 
   <select id="getRoleNames" resultType="org.igetwell.system.vo.SystemRoleVo">
     SELECT
         <include refid="roleSql"></include>
-    FROM SYSTEM_ROLE ROLE
+    FROM SYS_ROLE ROLE
     WHERE
         ID IN
         <foreach collection="list" item="idList" index="index" open="(" close=")" separator=",">
@@ -43,7 +43,7 @@
   <select id="loadByUser" resultType="org.igetwell.system.vo.SystemRoleVo">
     SELECT
         <include refid="roleSql"></include>
-    FROM SYSTEM_ROLE AS ROLE
+    FROM SYS_ROLE AS ROLE
     INNER JOIN SYS_USER SU ON ROLE.ID = SU.ROLE_ID
     WHERE ROLE.TENANT_ID = SU.TENANT_ID
     AND SU.ID = #{id}
@@ -52,7 +52,7 @@
   <select id="loadByTenant" resultType="org.igetwell.system.vo.SystemRoleVo">
     SELECT
         <include refid="roleSql"></include>
-    FROM SYSTEM_ROLE AS ROLE
+    FROM SYS_ROLE AS ROLE
     INNER JOIN SYS_USER SU ON ROLE.ID = SU.ROLE_ID
     WHERE ROLE.TENANT_ID = SU.TENANT_ID
     AND SU.TENANT_ID = #{param1} AND SU.ID = #{param2}

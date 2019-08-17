@@ -1,5 +1,6 @@
 package org.igetwell.system.security;
 
+import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import org.igetwell.common.constans.SecurityConstants;
 import org.igetwell.common.constans.cache.CacheKey;

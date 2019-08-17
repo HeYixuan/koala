@@ -1,6 +1,5 @@
 package org.igetwell.system.configure;
 
-import lombok.AllArgsConstructor;
 import org.igetwell.system.security.MyFilterSecurityInterceptor;
 import org.igetwell.system.security.SpringSecurityService;
 import org.igetwell.system.security.extractor.JwtTokenExtractor;
@@ -24,7 +23,6 @@ import org.springframework.security.web.access.intercept.FilterSecurityIntercept
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @EnableWebSecurity
-@AllArgsConstructor
 public class SpringSecurityWebAppConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
@@ -40,8 +38,8 @@ public class SpringSecurityWebAppConfig extends WebSecurityConfigurerAdapter {
     private AuthenticationAccessDeniedHandler accessDeniedHandler;
     @Autowired
     private CORSFilter corsFilter;
-    @Autowired
-    private JwtTokenExtractor jwtTokenExtractor;
+    /*@Autowired
+    private JwtTokenExtractor jwtTokenExtractor;*/
 
     @Autowired
     private MyFilterSecurityInterceptor myFilterSecurityInterceptor;
@@ -68,8 +66,8 @@ public class SpringSecurityWebAppConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .addFilterBefore(myFilterSecurityInterceptor, FilterSecurityInterceptor.class)
-                .addFilterBefore(jwtTokenExtractor, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(myFilterSecurityInterceptor, FilterSecurityInterceptor.class);
+                //.addFilterBefore(jwtTokenExtractor, UsernamePasswordAuthenticationFilter.class);
     }
     /*@Override
     public void configure(HttpSecurity http) throws Exception {
