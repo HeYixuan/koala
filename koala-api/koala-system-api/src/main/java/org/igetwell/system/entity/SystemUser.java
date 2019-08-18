@@ -1,17 +1,14 @@
 package org.igetwell.system.entity;
 
 import lombok.Data;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 
 import javax.persistence.*;
-import java.util.Collection;
 import java.util.Date;
 
 
 @Data
 @Table(name = "sys_user")
-public class SystemUser extends User {
+public class SystemUser{
     /**
      * 主键
      */
@@ -558,10 +555,21 @@ public class SystemUser extends User {
         this.isDeleted = isDeleted;
     }
 
-    public SystemUser(Long id, String tenantId, String username, String password, boolean enabled, boolean accountNonExpired, boolean credentialsNonExpired, boolean accountNonLocked, Collection<? extends GrantedAuthority> authorities) {
+    /*public SystemUser(Long id, String tenantId, String username, String password, boolean enabled, boolean accountNonExpired, boolean credentialsNonExpired, boolean accountNonLocked, Collection<? extends GrantedAuthority> authorities) {
         super(username, password, enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, authorities);
         this.id = id;
         this.tenantId = tenantId;
+    }*/
+
+    public SystemUser(Long id, String tenantId, String username, String password, boolean isEnabled, boolean accountNonExpired, boolean credentialsNonExpired, boolean accountNonLocked) {
+        this.id = id;
+        this.tenantId = tenantId;
+        this.username = username;
+        this.password = password;
+        this.isEnabled = isEnabled;
+        this.accountNonExpired = accountNonExpired;
+        this.credentialsNonExpired = credentialsNonExpired;
+        this.accountNonLocked = accountNonLocked;
     }
 
 
