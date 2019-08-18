@@ -12,7 +12,6 @@ import org.igetwell.common.data.tenant.TenantContextHolder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
-import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -42,7 +41,7 @@ public class SpringSecurityService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Cache cache = cacheManager.getCache(CacheKey.USER_DETAILS);
         if (cache != null && cache.get(username) != null) {
-            return (SystemUser) cache.get(username).get();
+            return (KoalaUser) cache.get(username).get();
         }
         UserDetails systemUserDetails = getUserDetails(username);
         cache.put(username, systemUserDetails);
@@ -73,7 +72,7 @@ public class SpringSecurityService implements UserDetailsService {
             authorities.add(new SimpleGrantedAuthority(role.getRoleAlias()));
         });
 
-        return new SystemUser(systemUser.getId(), systemUser.getTenantId(), systemUser.getUsername(), SecurityConstants.BCRYPT + systemUser.getPassword(),
+        return new KoalaUser(systemUser.getId(), systemUser.getTenantId(), systemUser.getUsername(), SecurityConstants.BCRYPT + systemUser.getPassword(),
                 systemUser.isEnabled(), systemUser.isAccountNonExpired(), systemUser.isAccountNonLocked(),
                 systemUser.isCredentialsNonExpired(), authorities);
     }

@@ -52,7 +52,7 @@ public interface SecurityConstants {
 	/**
 	 * 项目的license
 	 */
-	String PIGX_LICENSE = "made by pigx";
+	String KOALA_LICENSE = "made by koala";
 
 	/**
 	 * 内部
