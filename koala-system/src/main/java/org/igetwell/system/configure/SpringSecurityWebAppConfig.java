@@ -36,8 +36,6 @@ public class SpringSecurityWebAppConfig extends WebSecurityConfigurerAdapter {
     private AuthenticationFailureHandler failureHandler;
     @Autowired
     private AuthenticationAccessDeniedHandler accessDeniedHandler;
-    @Autowired
-    private CORSFilter corsFilter;
     /*@Autowired
     private JwtTokenExtractor jwtTokenExtractor;*/
 

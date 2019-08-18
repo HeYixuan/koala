@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.igetwell.auth.mapper.SystemUserMapper">
+  <resultMap id="baseMap" type="org.igetwell.system.entity.SystemUser">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="ID" jdbcType="BIGINT" property="id" />
+    <result column="TENANT_ID" jdbcType="VARCHAR" property="tenantId" />
+    <result column="USERNAME" jdbcType="VARCHAR" property="username" />
+    <result column="PASSWORD" jdbcType="VARCHAR" property="password" />
+    <result column="NAME" jdbcType="VARCHAR" property="name" />
+    <result column="REAL_NAME" jdbcType="VARCHAR" property="realName" />
+    <result column="EMAIL" jdbcType="VARCHAR" property="email" />
+    <result column="PHONE" jdbcType="VARCHAR" property="phone" />
+    <result column="BIRTHDAY" jdbcType="TIMESTAMP" property="birthday" />
+    <result column="SEX" jdbcType="SMALLINT" property="sex" />
+    <result column="ROLE_ID" jdbcType="VARCHAR" property="roleId" />
+    <result column="DEPT_ID" jdbcType="VARCHAR" property="deptId" />
+    <result column="IS_ENABLED" jdbcType="INTEGER" property="isEnabled" />
+    <result column="ACCOUNT_NON_EXPIRED" jdbcType="INTEGER" property="accountNonExpired" />
+    <result column="ACCOUNT_NON_LOCKED" jdbcType="INTEGER" property="accountNonLocked" />
+    <result column="CREDENTIALS_NON_EXPIRED" jdbcType="INTEGER" property="credentialsNonExpired" />
+    <result column="LAST_LOGIN_TIME" jdbcType="TIMESTAMP" property="lastLoginTime" />
+    <result column="CREATE_USER" jdbcType="BIGINT" property="createUser" />
+    <result column="CREATE_DEPT" jdbcType="BIGINT" property="createDept" />
+    <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="UPDATE_USER" jdbcType="BIGINT" property="updateUser" />
+    <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="IS_DELETED" jdbcType="INTEGER" property="isDeleted" />
+  </resultMap>
+
+  <sql id="baseSql">
+    ID, TENANT_ID, USERNAME, PASSWORD, NAME, REAL_NAME, EMAIL, PHONE, BIRTHDAY, SEX,
+    ROLE_ID, DEPT_ID, IS_ENABLED, ACCOUNT_NON_EXPIRED, ACCOUNT_NON_LOCKED, CREDENTIALS_NON_EXPIRED,
+    LAST_LOGIN_TIME, CREATE_USER, CREATE_DEPT, CREATE_TIME, UPDATE_USER, UPDATE_TIME,
+    IS_DELETED
+  </sql>
+
+  <sql id="securityLogin">
+    ID, TENANT_ID, USERNAME, PASSWORD, NAME, REAL_NAME, EMAIL, PHONE, BIRTHDAY, SEX,
+    ROLE_ID, DEPT_ID, IS_ENABLED, ACCOUNT_NON_EXPIRED, ACCOUNT_NON_LOCKED, CREDENTIALS_NON_EXPIRED,
+    LAST_LOGIN_TIME, CREATE_USER, CREATE_DEPT, CREATE_TIME, UPDATE_USER, UPDATE_TIME,
+    IS_DELETED
+  </sql>
+
+  <select id="loadByUsername" resultMap="baseMap">
+    SELECT
+        <include refid="baseSql"/>
+    FROM SYS_USER
+    WHERE TENANT_ID = #{param1} AND USERNAME = #{param2} AND IS_DELETED = 0
+  </select>
+
+
+  <select id="getList" resultMap="baseMap">
+    SELECT
+    <include refid="baseSql" />
+    FROM SYS_USER
+  </select>
+
+  <delete id="deleteById" parameterType="java.lang.Long">
+    DELETE FROM SYS_USER WHERE ID= #{id}
+  </delete>
+
+  <update id="update">
+    UPDATE SYS_USER
+    <set>
+      <if test="tenantId != null">
+        TENANT_ID = #{tenantId,jdbcType=VARCHAR},
+      </if>
+      <if test="username != null">
+        USERNAME = #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null">
+        PASSWORD = #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        NAME = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="realName != null">
+        REAL_NAME = #{realName,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null">
+        EMAIL = #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null">
+        PHONE = #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="birthday != null">
+        BIRTHDAY = #{birthday,jdbcType=TIMESTAMP},
+      </if>
+      <if test="sex != null">
+        SEX = #{sex,jdbcType=SMALLINT},
+      </if>
+      <if test="roleId != null">
+        ROLE_ID = #{roleId,jdbcType=VARCHAR},
+      </if>
+      <if test="deptId != null">
+        DEPT_ID = #{deptId,jdbcType=VARCHAR},
+      </if>
+      <if test="isEnabled != null">
+        IS_ENABLED = #{isEnabled,jdbcType=INTEGER},
+      </if>
+      <if test="accountNonExpired != null">
+        ACCOUNT_NON_EXPIRED = #{accountNonExpired,jdbcType=INTEGER},
+      </if>
+      <if test="accountNonLocked != null">
+        ACCOUNT_NON_LOCKED = #{accountNonLocked,jdbcType=INTEGER},
+      </if>
+      <if test="credentialsNonExpired != null">
+        CREDENTIALS_NON_EXPIRED = #{credentialsNonExpired,jdbcType=INTEGER},
+      </if>
+      <if test="lastLoginTime != null">
+        LAST_LOGIN_TIME = #{lastLoginTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUser != null">
+        CREATE_USER = #{createUser,jdbcType=BIGINT},
+      </if>
+      <if test="createDept != null">
+        CREATE_DEPT = #{createDept,jdbcType=BIGINT},
+      </if>
+      <if test="createTime != null">
+        CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null">
+        UPDATE_USER = #{updateUser,jdbcType=BIGINT},
+      </if>
+      <if test="updateTime != null">
+        UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isDeleted != null">
+        IS_DELETED = #{isDeleted,jdbcType=INTEGER},
+      </if>
+    </set>
+  </update>
+</mapper>

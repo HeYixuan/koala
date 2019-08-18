@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.igetwell.auth.mapper.SystemTenantMapper">
+  <resultMap id="baseMap" type="org.igetwell.system.entity.SystemTenant">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="tenant_id" jdbcType="VARCHAR" property="tenantId" />
+    <result column="tenant_name" jdbcType="VARCHAR" property="tenantName" />
+    <result column="linkman" jdbcType="VARCHAR" property="linkman" />
+    <result column="email" jdbcType="VARCHAR" property="email" />
+    <result column="mobile" jdbcType="VARCHAR" property="mobile" />
+    <result column="address" jdbcType="VARCHAR" property="address" />
+    <result column="begin_time" jdbcType="TIMESTAMP" property="beginTime" />
+    <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
+    <result column="status" jdbcType="CHAR" property="status" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="is_deleted" jdbcType="INTEGER" property="isDeleted" />
+  </resultMap>
+
+  <sql id="baseSql">
+    ID, TENANT_ID, TENANT_NAME, LINKMAN, EMAIL, MOBILE, ADDRESS, BEGIN_TIME, END_TIME,
+    STATUS, CREATE_TIME, UPDATE_TIME, IS_DELETED
+  </sql>
+
+</mapper>

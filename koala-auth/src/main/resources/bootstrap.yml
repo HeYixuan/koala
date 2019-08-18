@@ -1,0 +1,29 @@
+server:
+  port: 3000
+
+spring:
+  application:
+    name: koala-system
+  cloud:
+    nacos:
+      discovery:
+        server-addr: ${NACOS-HOST:pigx-register}:${NACOS-PORT:8848}
+      config:
+        server-addr: ${spring.cloud.nacos.discovery.server-addr}
+        file-extension: yml
+        shared-dataids: ${spring.application.name}-${spring.profiles.active}.${spring.cloud.nacos.config.file-extension}
+  profiles:
+    active: dev
+
+
+#  datasource:
+#    type: com.alibaba.druid.pool.DruidDataSource
+#    druid:
+#      driver-class-name: com.mysql.cj.jdbc.Driver
+#      username: ${MYSQL-USER:root}
+#      password: ${MYSQL-PWD:123456}
+#      url: jdbc:mysql://${MYSQL-HOST:pigx-mysql}:${MYSQL-PORT:3306}/${MYSQL-DB:koala}?characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=GMT%2B8&allowMultiQueries=true
+
+
+logging:
+  config: classpath:logback.xml
