@@ -46,7 +46,7 @@ public class KoalaPasswordEncoderFactories {
 	 * @return the {@link PasswordEncoder} to use
 	 */
 	@SuppressWarnings("deprecation")
-	public static PasswordEncoder createDelegatingPasswordEncoder() {
+	/*public static PasswordEncoder createDelegatingPasswordEncoder() {
 		String encodingId = "bcrypt";
 		Map<String, PasswordEncoder> encoders = new HashMap<>(16);
 		//encoders.put(encodingId, new KoalaPasswordEncoder());
@@ -62,7 +62,9 @@ public class KoalaPasswordEncoderFactories {
 		encoders.put("SHA-256", new org.springframework.security.crypto.password.MessageDigestPasswordEncoder("SHA-256"));
 		encoders.put("sha256", new org.springframework.security.crypto.password.StandardPasswordEncoder());
 		return new DelegatingPasswordEncoder(encodingId, encoders);
-	}
+	}*/
+
+
 
 	private KoalaPasswordEncoderFactories() {
 	}

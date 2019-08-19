@@ -129,13 +129,12 @@ public class AuthorizationServer extends AuthorizationServerConfigurerAdapter {
                 return accessToken;
             }
 
-            final Map<String, Object> additionalInfo = new HashMap<>(8);
+            final Map<String, Object> additionalInfo = new HashMap<>(5);
             KoalaUser koalaUser = (KoalaUser) authentication.getUserAuthentication().getPrincipal();
             additionalInfo.put(SecurityConstants.DETAILS_USER_ID, koalaUser.getId());
             additionalInfo.put(SecurityConstants.DETAILS_USERNAME, koalaUser.getUsername());
             additionalInfo.put(SecurityConstants.DETAILS_DEPT_ID, koalaUser.getDeptId());
             additionalInfo.put(SecurityConstants.DETAILS_TENANT_ID, koalaUser.getTenantId());
-           // additionalInfo.put(SecurityConstants.DETAILS_LICENSE, SecurityConstants.PIGX_LICENSE);
             ((DefaultOAuth2AccessToken) accessToken).setAdditionalInformation(additionalInfo);
             return accessToken;
         };

@@ -29,5 +29,5 @@ public interface TenantConstants {
 	/**
 	 * 租户ID
 	 */
-	String SUPER_TENANT_ID = "00000";
+	String SUPER_TENANT_ID = "000000";
 }

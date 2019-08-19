@@ -5,7 +5,6 @@ import org.igetwell.system.security.filter.JwtAuthenticationEntryPoint;
 import org.igetwell.system.security.handler.AuthenticationAccessDeniedHandler;
 import org.igetwell.system.security.handler.AuthenticationFailureHandler;
 import org.igetwell.system.security.handler.AuthenticationSuccessHandler;
-import org.igetwell.system.support.KoalaPasswordEncoderFactories;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,7 +14,9 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 
 @Configuration
 @EnableWebSecurity
@@ -32,6 +33,9 @@ public class SpringSecurityWebAppConfig extends WebSecurityConfigurerAdapter {
     private AuthenticationFailureHandler failureHandler;
     @Autowired
     private AuthenticationAccessDeniedHandler accessDeniedHandler;
+
+    @Autowired
+    private MyFilterSecurityInterceptor filterSecurityInterceptor;
 
 
     @Override
@@ -54,20 +58,13 @@ public class SpringSecurityWebAppConfig extends WebSecurityConfigurerAdapter {
                 .authenticationEntryPoint(unauthorizedHandler)
                 // 基于token，所以不需要session
                 .and()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .addFilterBefore(filterSecurityInterceptor, FilterSecurityInterceptor.class);
                 /*.and()
                 .addFilterBefore(jwtAuthenticationTokenFilter(), UsernamePasswordAuthenticationFilter.class);*/
     }
-    /*@Override
-    public void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable();
-        http.requestMatchers().antMatchers("/oauth/**","/login/**","/logout/**")
-                .and()
-                .authorizeRequests()
-                .antMatchers("/oauth/**").authenticated()
-                .and()
-                .formLogin().permitAll();
-    }*/
+
 
 
     @Autowired
@@ -90,6 +87,6 @@ public class SpringSecurityWebAppConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return KoalaPasswordEncoderFactories.createDelegatingPasswordEncoder();
+        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 }

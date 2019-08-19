@@ -176,7 +176,7 @@ public class WebUtils extends org.springframework.web.util.WebUtils {
 	 * @return {String}
 	 */
 	public String getIP(HttpServletRequest request) {
-		Assert.notNull(request, "HttpServletRequest is null");
+		Assert.notNull(request, "getIPAddress method HttpServletRequest Object is null");
 		String ip = request.getHeader("X-Requested-For");
 		if (StringUtils.isBlank(ip) || UNKNOWN.equalsIgnoreCase(ip)) {
 			ip = request.getHeader("X-Forwarded-For");
