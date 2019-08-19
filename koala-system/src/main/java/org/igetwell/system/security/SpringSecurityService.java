@@ -62,6 +62,7 @@ public class SpringSecurityService implements UserDetailsService {
         if (null == systemUser){
             throw new UsernameNotFoundException("用户账号: " + username + " 不存在");
         }
+
         //这个方法里实现了根据用户查询用户所有的角色
         //List<SystemRoleVo> roles = iSystemRoleService.loadByUser(systemUser.getId());
         List<SystemRoleVo> roles = iSystemRoleService.loadByTenant(tenant, systemUser.getId());

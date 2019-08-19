@@ -47,10 +47,10 @@ public class KoalaPasswordEncoderFactories {
 	 */
 	@SuppressWarnings("deprecation")
 	public static PasswordEncoder createDelegatingPasswordEncoder() {
-		String encodingId = "blade";
+		String encodingId = "bcrypt";
 		Map<String, PasswordEncoder> encoders = new HashMap<>(16);
-		encoders.put(encodingId, new KoalaPasswordEncoder());
-		encoders.put("bcrypt", new BCryptPasswordEncoder());
+		//encoders.put(encodingId, new KoalaPasswordEncoder());
+		encoders.put(encodingId, new BCryptPasswordEncoder());
 		//encoders.put("noop", BladeNoOpPasswordEncoder.getInstance());
 		encoders.put("pbkdf2", new Pbkdf2PasswordEncoder());
 		encoders.put("scrypt", new SCryptPasswordEncoder());

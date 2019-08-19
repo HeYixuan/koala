@@ -27,3 +27,22 @@ spring:
 
 logging:
   config: classpath:logback.xml
+
+
+security:
+  oauth2:
+    client:
+      client-id: koala
+      client-secret: koala
+      user-authorization-uri: http://localhost:9001/oauth/authorize
+      access-token-uri: http://localhost:9001/oauth/token
+      scope: server
+    resource:
+      loadBalanced: true
+      token-info-uri: http://localhost:9001/oauth/check_token
+  basic:
+    enabled: false
+
+management:
+  security:
+    enabled: false
