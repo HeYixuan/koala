@@ -4,8 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import org.igetwell.common.constans.SecurityConstants;
 import org.igetwell.common.data.tenant.TenantContextHolder;
+import org.igetwell.common.security.KoalaUser;
 import org.igetwell.system.security.KoalaClientDetailsService;
-import org.igetwell.system.security.KoalaUser;
 import org.igetwell.system.security.SpringSecurityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -22,7 +22,6 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Aut
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.token.DefaultAuthenticationKeyGenerator;
-import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenEnhancer;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.redis.RedisTokenStore;

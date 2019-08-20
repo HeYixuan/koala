@@ -44,8 +44,8 @@
 		<module>koala-register</module>
 		<module>koala-gateway</module>
 		<module>koala-system</module>
-		<!--<module>koala-api</module>
-		<module>koala-common</module>-->
+		<module>koala-api</module>
+		<module>koala-common</module>
 	</modules>
 
 	<dependencies>
@@ -175,14 +175,39 @@
 		</plugins>
 	</build>
 
+
 	<repositories>
-		<!--阿里云私服-->
+		<repository>
+			<id>release</id>
+			<name>Release Repository</name>
+			<url>http://nexus.gitee.ltd/repository/maven-releases/</url>
+		</repository>
+		<repository>
+			<id>aliyun-repos</id>
+			<url>http://maven.aliyun.com/nexus/content/groups/public/</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+
+	<pluginRepositories>
+		<pluginRepository>
+			<id>aliyun-plugin</id>
+			<url>http://maven.aliyun.com/nexus/content/groups/public/</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</pluginRepository>
+	</pluginRepositories>
+<!--	<repositories>
+		&lt;!&ndash;阿里云私服&ndash;&gt;
 		<repository>
 			<id>aliyun</id>
 			<name>aliyun</name>
 			<url>http://maven.aliyun.com/nexus/content/groups/public</url>
 		</repository>
-		<!--gitee 私服-->
+		&lt;!&ndash;gitee 私服&ndash;&gt;
 		<repository>
 			<id>gitee.wang</id>
 			<name>gitee.wang</name>
@@ -195,5 +220,5 @@
 			<name>gitee.wang</name>
 			<url>http://nexus.gitee.wang/repository/maven-releases/</url>
 		</repository>
-	</distributionManagement>
+	</distributionManagement>-->
 </project>

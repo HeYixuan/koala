@@ -1,4 +1,4 @@
-package org.igetwell.system.security.filter;
+package org.igetwell.common.security.filter;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;

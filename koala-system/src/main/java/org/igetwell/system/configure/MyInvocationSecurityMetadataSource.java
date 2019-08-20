@@ -69,9 +69,9 @@ public class MyInvocationSecurityMetadataSource implements FilterInvocationSecur
                         value.add(ca);
                         resourceMap.put(url, value);
                     } else {//如果不存存在url 加入url和权限
-                        Collection<ConfigAttribute> atts = new ArrayList<ConfigAttribute>();
-                        atts.add(ca);
-                        resourceMap.put(url, atts);
+                        Collection<ConfigAttribute> attrs = new ArrayList<ConfigAttribute>();
+                        attrs.add(ca);
+                        resourceMap.put(url, attrs);
                     }
                 });
             }

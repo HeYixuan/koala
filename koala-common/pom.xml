@@ -24,6 +24,7 @@
         <module>koala-hystrix</module>
         <module>koala-dynamic-route</module>
         <module>koala-cache</module>
+        <module>koala-security</module>
     </modules>
 
     <dependencies>

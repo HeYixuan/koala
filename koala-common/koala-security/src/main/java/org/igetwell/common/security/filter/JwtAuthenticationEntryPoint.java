@@ -1,4 +1,4 @@
-package org.igetwell.system.security.filter;
+package org.igetwell.common.security.filter;
 
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;

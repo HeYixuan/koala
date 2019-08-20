@@ -1,5 +1,8 @@
 package org.igetwell.system.controller;
 
+import org.igetwell.common.security.KoalaUser;
+import org.igetwell.common.security.SpringSecurityUtils;
+import org.igetwell.common.uitls.GsonUtils;
 import org.igetwell.common.uitls.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,6 +14,8 @@ public class SystemMenuController {
 
     @PostMapping("/menu")
     public ResponseEntity menu(){
+        KoalaUser koalaUser = SpringSecurityUtils.getUser();
+        System.err.println(GsonUtils.toJson(koalaUser));
         return new ResponseEntity("menu");
     }
 

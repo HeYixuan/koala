@@ -1,7 +1,7 @@
 package org.igetwell.system.configure;
 
+import org.igetwell.common.security.filter.JwtAuthenticationEntryPoint;
 import org.igetwell.system.security.SpringSecurityService;
-import org.igetwell.system.security.filter.JwtAuthenticationEntryPoint;
 import org.igetwell.system.security.handler.AuthenticationAccessDeniedHandler;
 import org.igetwell.system.security.handler.AuthenticationFailureHandler;
 import org.igetwell.system.security.handler.AuthenticationSuccessHandler;

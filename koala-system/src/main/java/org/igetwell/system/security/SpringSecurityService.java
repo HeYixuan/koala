@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import org.igetwell.common.constans.SecurityConstants;
 import org.igetwell.common.constans.cache.CacheKey;
+import org.igetwell.common.security.KoalaUser;
 import org.igetwell.system.entity.SystemUser;
 import org.igetwell.system.service.ISystemRoleService;
 import org.igetwell.system.service.ISystemUserService;
