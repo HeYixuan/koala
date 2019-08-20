@@ -35,4 +35,19 @@ public interface ISystemRoleService {
      * @return
      */
     List<SystemRoleVo> loadByTenant(String tenant, Long id);
+
+    /**
+     * 根据角色ID查询数据权限类型
+     * @param id
+     * @return
+     */
+    Integer getDsType(Long id);
+
+    /**
+     * 根据租户ID和角色ID查询数据权限类型
+     * @param tenant
+     * @param id
+     * @return
+     */
+    Integer getDataScopeType(String tenant, Long id);
 }

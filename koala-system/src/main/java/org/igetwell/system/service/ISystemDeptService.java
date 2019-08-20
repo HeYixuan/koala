@@ -1,9 +1,8 @@
-package org.igetwell.system.mapper;
+package org.igetwell.system.service;
 
 import java.util.List;
 
-public interface SystemDeptMapper {
-
+public interface ISystemDeptService {
 
     /**
      * 获取部门子级

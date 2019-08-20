@@ -13,11 +13,17 @@
     <result column="dept_name" jdbcType="VARCHAR" property="deptName" />
     <result column="full_name" jdbcType="VARCHAR" property="fullName" />
     <result column="sort" jdbcType="INTEGER" property="sort" />
-    <result column="remark" jdbcType="VARCHAR" property="remark" />
-    <result column="is_deleted" jdbcType="INTEGER" property="isDeleted" />
   </resultMap>
   <sql id="baseSql">
-    ID, TENANT_ID, PARENT_ID, ANCESTORS, DEPT_CATEGORY, DEPT_NAME, FULL_NAME, SORT, REMARK,
-    IS_DELETED
+    ID, TENANT_ID, PARENT_ID, ANCESTORS, DEPT_CATEGORY, DEPT_NAME, FULL_NAME, SORT
   </sql>
+
+  <select id="getDeptAncestors" resultType="java.lang.Long" parameterType="java.lang.Long">
+    SELECT ID FROM SYS_DEPT WHERE ANCESTORS LIKE CONCAT('%', #{deptId}, '%')
+  </select>
+
+  <select id="getAncestors" resultType="java.lang.Long" parameterType="java.lang.Long">
+    SELECT CHILD FROM SYS_DEPT_RELATION WHERE PARENT = #{deptId}
+  </select>
+
 </mapper>

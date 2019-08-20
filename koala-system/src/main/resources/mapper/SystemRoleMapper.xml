@@ -9,13 +9,13 @@
     <result column="tenant_id" jdbcType="VARCHAR" property="tenantId" />
     <result column="parent_id" jdbcType="BIGINT" property="parentId" />
     <result column="role_name" jdbcType="VARCHAR" property="roleName" />
-    <result column="sort" jdbcType="INTEGER" property="sort" />
     <result column="role_alias" jdbcType="VARCHAR" property="roleAlias" />
-    <result column="is_deleted" jdbcType="INTEGER" property="isDeleted" />
+    <result column="ds_type" jdbcType="INTEGER" property="dsType"/>
+    <result column="ds_scope" jdbcType="VARCHAR" property="dsScope"/>
   </resultMap>
 
   <sql id="baseSql">
-    ID, TENANT_ID, PARENT_ID, ROLE_NAME, SORT, ROLE_ALIAS, IS_DELETED
+    ID, TENANT_ID, PARENT_ID, ROLE_NAME, ROLE_ALIAS, DS_TYPE, DS_SCOPE
   </sql>
 
   <sql id="roleSql">
@@ -56,6 +56,14 @@
     INNER JOIN SYS_USER SU ON ROLE.ID = SU.ROLE_ID
     WHERE ROLE.TENANT_ID = SU.TENANT_ID
     AND SU.TENANT_ID = #{param1} AND SU.ID = #{param2}
+  </select>
+
+  <select id="getDsType" resultType="java.lang.Integer">
+    SELECT * FROM SYS_ROLE WHERE ID = #{id}
+  </select>
+
+  <select id="getDataScopeType" resultType="java.lang.Integer">
+    SELECT * FROM SYS_ROLE WHERE TENANT_ID = #{param1} AND ID = #{param2}
   </select>
 
 

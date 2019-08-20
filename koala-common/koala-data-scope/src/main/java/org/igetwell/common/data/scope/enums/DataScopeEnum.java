@@ -23,12 +23,12 @@ public enum  DataScopeEnum {
     /**
      * 所在机构可见
      */
-    OWN_DEPT(3, "所在机构可见"),
+    OWN_DEPT(3, "所在机构本级可见"),
 
     /**
      * 所在机构及子级可见
      */
-    OWN_DEPT_CHILD(4, "所在机构及子级可见"),
+    OWN_DEPT_CHILD(4, "所在机构本级及子级可见"),
 
     /**
      * 自定义

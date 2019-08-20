@@ -30,21 +30,19 @@ public class SystemRole {
     private String roleName;
 
     /**
-     * 排序
-     */
-    private Integer sort;
-
-    /**
      * 角色别名
      */
     @Column(name = "role_alias")
     private String roleAlias;
 
     /**
-     * 是否已删除
+     * 数据权限类型
      */
-    @Column(name = "is_deleted")
-    private Integer isDeleted;
+    private Integer dsType;
+    /**
+     * 数据权限作用范围
+     */
+    private String dsScope;
 
     /**
      * 获取主键
@@ -119,24 +117,6 @@ public class SystemRole {
     }
 
     /**
-     * 获取排序
-     *
-     * @return sort - 排序
-     */
-    public Integer getSort() {
-        return sort;
-    }
-
-    /**
-     * 设置排序
-     *
-     * @param sort 排序
-     */
-    public void setSort(Integer sort) {
-        this.sort = sort;
-    }
-
-    /**
      * 获取角色别名
      *
      * @return role_alias - 角色别名
@@ -154,21 +134,20 @@ public class SystemRole {
         this.roleAlias = roleAlias == null ? null : roleAlias.trim();
     }
 
-    /**
-     * 获取是否已删除
-     *
-     * @return is_deleted - 是否已删除
-     */
-    public Integer getIsDeleted() {
-        return isDeleted;
+
+    public Integer getDsType() {
+        return dsType;
     }
 
-    /**
-     * 设置是否已删除
-     *
-     * @param isDeleted 是否已删除
-     */
-    public void setIsDeleted(Integer isDeleted) {
-        this.isDeleted = isDeleted;
+    public void setDsType(Integer dsType) {
+        this.dsType = dsType;
+    }
+
+    public String getDsScope() {
+        return dsScope;
+    }
+
+    public void setDsScope(String dsScope) {
+        this.dsScope = dsScope == null ? null : dsScope.trim();
     }
 }

@@ -52,17 +52,6 @@ public class SystemDept {
     private Integer sort;
 
     /**
-     * 备注
-     */
-    private String remark;
-
-    /**
-     * 是否已删除
-     */
-    @Column(name = "is_deleted")
-    private Integer isDeleted;
-
-    /**
      * 获取主键
      *
      * @return id - 主键
@@ -206,39 +195,4 @@ public class SystemDept {
         this.sort = sort;
     }
 
-    /**
-     * 获取备注
-     *
-     * @return remark - 备注
-     */
-    public String getRemark() {
-        return remark;
-    }
-
-    /**
-     * 设置备注
-     *
-     * @param remark 备注
-     */
-    public void setRemark(String remark) {
-        this.remark = remark == null ? null : remark.trim();
-    }
-
-    /**
-     * 获取是否已删除
-     *
-     * @return is_deleted - 是否已删除
-     */
-    public Integer getIsDeleted() {
-        return isDeleted;
-    }
-
-    /**
-     * 设置是否已删除
-     *
-     * @param isDeleted 是否已删除
-     */
-    public void setIsDeleted(Integer isDeleted) {
-        this.isDeleted = isDeleted;
-    }
 }

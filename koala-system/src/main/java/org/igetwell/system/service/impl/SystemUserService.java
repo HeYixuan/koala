@@ -1,5 +1,6 @@
 package org.igetwell.system.service.impl;
 
+import org.igetwell.common.data.scope.datascope.DataScope;
 import org.igetwell.system.entity.SystemUser;
 import org.igetwell.system.mapper.SystemUserMapper;
 import org.igetwell.system.service.ISystemUserService;
@@ -31,6 +32,12 @@ public class SystemUserService implements ISystemUserService {
     @Override
     public List<SystemUser> getList() {
         List<SystemUser> systemUserList = systemUserMapper.getList();
+        return systemUserList;
+    }
+
+    @Override
+    public List<SystemUser> getList(DataScope dataScope){
+        List<SystemUser> systemUserList = systemUserMapper.getList(dataScope);
         return systemUserList;
     }
 }

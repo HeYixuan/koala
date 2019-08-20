@@ -33,4 +33,14 @@ public class SystemRoleService implements ISystemRoleService {
     public List<SystemRoleVo> loadByTenant(String tenant, Long id) {
         return systemRoleMapper.loadByTenant(tenant, id);
     }
+
+    @Override
+    public Integer getDsType(Long id) {
+        return systemRoleMapper.getDsType(id);
+    }
+
+    @Override
+    public Integer getDataScopeType(String tenant, Long id) {
+        return systemRoleMapper.getDataScopeType(tenant, id);
+    }
 }
