@@ -25,6 +25,7 @@
         <module>koala-dynamic-route</module>
         <module>koala-cache</module>
         <module>koala-security</module>
+        <module>koala-data-scope</module>
     </modules>
 
     <dependencies>

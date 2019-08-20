@@ -15,25 +15,22 @@
  * Author: lengleng (wangiegie@gmail.com)
  */
 
-package org.igetwell.auth.handler;
+package org.igetwell.common.data.scope.resolver;
 
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
-import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-@Slf4j
-@Component
-public class KoalaAuthenticationSuccessEventHandler extends SimpleUrlAuthenticationSuccessHandler {
+import java.util.List;
 
-	/**
-	 * 处理登录成功方法
-	 * <p>
-	 * 获取到登录的authentication 对象
-	 *
-	 * @param authentication 登录对象
-	 */
-	public void handle(Authentication authentication) {
-		log.info("用户：{} 登录成功", authentication.getPrincipal());
+/**
+ * @author lengleng
+ * @date 2019-06-24
+ */
+@Configuration
+public class WebMvcConfig implements WebMvcConfigurer {
+	@Override
+	public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
+		argumentResolvers.add(new SqlFilterArgumentResolver());
 	}
 }
