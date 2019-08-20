@@ -30,7 +30,6 @@ import org.springframework.security.oauth2.provider.token.store.redis.RedisToken
 import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 /**
  * 认证授权服务端
@@ -52,10 +51,6 @@ public class AuthorizationServer extends AuthorizationServerConfigurerAdapter {
     private final RedisConnectionFactory redisConnectionFactory;
 
 
-    /*@Bean // 声明 ClientDetails实现
-    public ClientDetailsService clientDetails() {
-        return new JdbcClientDetailsService(dataSource);
-    }*/
 
     @Override // 配置框架应用上述实现
     public void configure(AuthorizationServerEndpointsConfigurer endpoints){
@@ -67,7 +62,7 @@ public class AuthorizationServer extends AuthorizationServerConfigurerAdapter {
                 .authenticationManager(authenticationManager)
                 .reuseRefreshTokens(false);
 
-        endpoints.allowedTokenEndpointRequestMethods(HttpMethod.GET, HttpMethod.POST);
+        /*endpoints.allowedTokenEndpointRequestMethods(HttpMethod.GET, HttpMethod.POST);
         endpoints.authenticationManager(authenticationManager);
         endpoints.tokenStore(tokenStore());
 
@@ -78,7 +73,7 @@ public class AuthorizationServer extends AuthorizationServerConfigurerAdapter {
         tokenServices.setClientDetailsService(endpoints.getClientDetailsService());
         tokenServices.setTokenEnhancer(endpoints.getTokenEnhancer());
         tokenServices.setAccessTokenValiditySeconds( (int) TimeUnit.DAYS.toSeconds(30)); // 30天
-        endpoints.tokenServices(tokenServices);
+        endpoints.tokenServices(tokenServices);*/
     }
 
 

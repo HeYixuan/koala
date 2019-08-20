@@ -41,6 +41,7 @@ public class SpringSecurityWebAppConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
+                .addFilterBefore(filterSecurityInterceptor, FilterSecurityInterceptor.class)
                 .csrf().disable() // oauth server 不需要 csrf 防护
                 .httpBasic().disable() // 禁止 basic 认证
                 .authorizeRequests()
@@ -58,8 +59,8 @@ public class SpringSecurityWebAppConfig extends WebSecurityConfigurerAdapter {
                 .authenticationEntryPoint(unauthorizedHandler)
                 // 基于token，所以不需要session
                 .and()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+                /*.and()
                 .addFilterBefore(filterSecurityInterceptor, FilterSecurityInterceptor.class);
                 /*.and()
                 .addFilterBefore(jwtAuthenticationTokenFilter(), UsernamePasswordAuthenticationFilter.class);*/
