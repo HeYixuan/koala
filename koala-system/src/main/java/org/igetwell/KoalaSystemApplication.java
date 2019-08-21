@@ -8,7 +8,7 @@ import org.springframework.context.annotation.ComponentScan;
 //@EnableKoalaFeign
 @SpringCloudApplication
 @MapperScan("org.igetwell.*.mapper")
-@ComponentScan(basePackages = {"org.igetwell.*","org.igetwell.common.data.scope.*"})
+@ComponentScan(basePackages = {"org.igetwell.**"})
 public class KoalaSystemApplication {
 
     public static void main(String[] args) {

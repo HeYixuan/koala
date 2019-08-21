@@ -560,9 +560,10 @@ public class SystemUser implements Serializable {
     public SystemUser(){
 
     }
-    public SystemUser(Long id, String tenantId, String deptId, String username, String password, boolean isEnabled, boolean accountNonExpired, boolean credentialsNonExpired, boolean accountNonLocked) {
+    public SystemUser(Long id, String tenantId, String roleId, String deptId, String username, String password, boolean isEnabled, boolean accountNonExpired, boolean credentialsNonExpired, boolean accountNonLocked) {
         this.id = id;
         this.tenantId = tenantId;
+        this.roleId = roleId;
         this.deptId = deptId;
         this.username = username;
         this.password = password;

@@ -74,7 +74,7 @@ public class SpringSecurityService implements UserDetailsService {
             authorities.add(new SimpleGrantedAuthority(role.getRoleAlias()));
         });
 
-        return new KoalaUser(systemUser.getId(), systemUser.getTenantId(), systemUser.getDeptId(),
+        return new KoalaUser(systemUser.getId(), systemUser.getTenantId(), systemUser.getRoleId(), systemUser.getDeptId(),
                 systemUser.getUsername(), SecurityConstants.BCRYPT + systemUser.getPassword(),
                 systemUser.isEnabled(), systemUser.isAccountNonExpired(), systemUser.isAccountNonLocked(),
                 systemUser.isCredentialsNonExpired(), authorities);
