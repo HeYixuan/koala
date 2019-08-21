@@ -3,7 +3,7 @@ package org.igetwell.system.mapper;
 import java.util.List;
 import java.util.Map;
 
-import org.igetwell.common.data.scope.datascope.DataScope;
+import org.igetwell.common.data.scope.annotation.DataScopeAuth;
 import org.igetwell.system.entity.SystemUser;
 
 public interface SystemUserMapper {
@@ -16,17 +16,10 @@ public interface SystemUserMapper {
      */
     SystemUser loadByUsername(String tenant, String username);
 
+    @DataScopeAuth
     List<SystemUser> getList();
 
     int deleteById(Long id);
 
     int update(Map map);
-
-    /**
-     * 分页查询用户
-     *
-     * @param dataScope
-     * @return list
-     */
-    List<SystemUser> getList(DataScope dataScope);
 }

@@ -1,10 +1,7 @@
 package org.igetwell.common.data.scope.interceptor;
 
-import cn.hutool.db.Db;
-import cn.hutool.db.Entity;
 import com.baomidou.mybatisplus.core.toolkit.PluginUtils;
 import com.baomidou.mybatisplus.extension.handlers.AbstractSqlParserHandler;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -20,14 +17,12 @@ import org.apache.ibatis.reflection.SystemMetaObject;
 import org.igetwell.common.data.scope.annotation.DataScopeAuth;
 import org.igetwell.common.data.scope.datascope.DataScope;
 import org.igetwell.common.data.scope.enums.DataScopeEnum;
-import org.igetwell.common.data.scope.props.DataScopeProperties;
 import org.igetwell.common.security.KoalaUser;
 import org.igetwell.common.security.SpringSecurityUtils;
 import org.igetwell.common.uitls.ClassUtils;
 import org.igetwell.common.uitls.SpringContextHolder;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.util.CollectionUtils;
 
 import java.lang.reflect.Method;
 import java.sql.Connection;
@@ -45,13 +40,18 @@ import java.util.stream.Collectors;
 @Intercepts({@Signature(type = StatementHandler.class, method = "prepare", args = {Connection.class, Integer.class})})
 public class DataScopeInterceptor extends AbstractSqlParserHandler implements Interceptor {
 	private ConcurrentMap<String, DataScopeAuth> dataAuthMap = new ConcurrentHashMap<>(8);
-	//private final DataSource dataSource;
+
 	private final JdbcTemplate jdbcTemplate;
-	private final DataScopeProperties dataScopeProperties;
 
 	@Override
-	@SneakyThrows
+    @SneakyThrows
 	public Object intercept(Invocation invocation) {
+		KoalaUser koalaUser = SpringSecurityUtils.getUser();
+		if (koalaUser == null) {
+			invocation.proceed();
+			//throw new Exception("DataScopeInterceptor auto datascope, set up security details true");
+		}
+
 		StatementHandler statementHandler = PluginUtils.realTarget(invocation.getTarget());
 		MetaObject metaObject = SystemMetaObject.forObject(statementHandler);
 		this.sqlParser(metaObject);
@@ -65,7 +65,7 @@ public class DataScopeInterceptor extends AbstractSqlParserHandler implements In
 		//查找注解中包含DataAuth类型的参数
 		DataScopeAuth dataAuth = findDataAuthAnnotation(mappedStatement);
 
-		//注解为空并且数据权限方法名未匹配到,则放行
+		/*//注解为空并且数据权限方法名未匹配到,则放行
 		String mapperId = mappedStatement.getId();
 		String className = mapperId.substring(0, mapperId.lastIndexOf("."));
 		String mapperName = ClassUtils.getShortName(className);
@@ -74,46 +74,32 @@ public class DataScopeInterceptor extends AbstractSqlParserHandler implements In
 				|| dataScopeProperties.getMapperExclude().stream().anyMatch(mapperName::contains);
 		if (dataAuth == null && mapperSkip) {
 			return invocation.proceed();
+		}*/
+		if (dataAuth == null && koalaUser == null) {
+			return invocation.proceed();
 		}
 
 		BoundSql boundSql = (BoundSql) metaObject.getValue("delegate.boundSql");
 		String originalSql = boundSql.getSql();
-		Object parameterObject = boundSql.getParameterObject();
-
-		//查找参数中包含DataScope类型的参数
-		DataScope dataScope = findDataScopeObject(parameterObject);
-		if (dataScope == null) {
-			return invocation.proceed();
-		}
-
-		String scopeName = dataScope.getScopeName();
-		List<Long> deptIds = dataScope.getDeptIds();
+		String column = dataAuth.column();
+		List<Long> deptIds = new ArrayList<>();
 		// 优先获取赋值数据
-		if (CollectionUtils.isEmpty(deptIds)) {
-			KoalaUser koalaUser = SpringSecurityUtils.getUser();
-			if (koalaUser == null) {
-				throw new Exception("DataScopeInterceptor auto datascope, set up security details true");
-			}
+		if (StringUtils.isNotEmpty(koalaUser.getDeptId())) {
 
 			List<String> roleIdList = koalaUser.getAuthorities()
 					.stream().map(GrantedAuthority::getAuthority)
 					.collect(Collectors.toList());
 
-			/*Entity query = Db.use(dataSource)
-					.query("SELECT * FROM sys_role where role_id IN (" + StringUtils.join(roleIdList, ",") + ")")
-					.stream().min(Comparator.comparingInt(o -> o.getInt("ds_type"))).get();*/
+			System.err.println(roleIdList);
 
 			Integer dsType = jdbcTemplate.queryForObject("SELECT * FROM sys_role where id = ?", new Object[]{koalaUser.getRoleId()}, Integer.class);
-			//Integer dsType = query.getInt("ds_type");
 			// 查询全部
 			if (DataScopeEnum.ALL.getType() == dsType) {
 				return invocation.proceed();
 			}
 			// 自定义
 			if (DataScopeEnum.CUSTOM.getType() == dsType) {
-				/*String dsScope = query.getStr("ds_scope");
-				deptIds.addAll(Arrays.stream(dsScope.split(","))
-						.map(Integer::parseInt).collect(Collectors.toList()));*/
+
 			}
 			if (DataScopeEnum.OWN.getType() == dsType) {
 				deptIds.add(koalaUser.getId());
@@ -124,19 +110,13 @@ public class DataScopeInterceptor extends AbstractSqlParserHandler implements In
 			}
 			// 查询本级及其下级
 			if (DataScopeEnum.OWN_DEPT_CHILD.getType() == dsType) {
-				/*List<Integer> deptIdList = Db.use(dataSource)
-						.findBy("sys_dept_relation", "ancestor", koalaUser.getDeptId())
-						.stream().map(entity -> entity.getInt("descendant"))
-						.collect(Collectors.toList());
-				deptIds.addAll(deptIdList);*/
-
 				List<Long> deptIdList = jdbcTemplate.queryForList("SELECT child FROM sys_dept_relation WHERE parent = ?", Long.class, koalaUser.getDeptId());
 				deptIds.addAll(deptIdList);
 			}
 
 		}
 		String join = StringUtils.join(deptIds, ",");
-		originalSql = "select * from (" + originalSql + ") temp_data_scope where temp_data_scope." + scopeName + " in (" + join + ")";
+		originalSql = "select * from (" + originalSql + ") temp_data_scope where temp_data_scope." + column + " in (" + join + ")";
 		metaObject.setValue("delegate.boundSql.sql", originalSql);
 		return invocation.proceed();
 	}

@@ -6,9 +6,9 @@ import com.baomidou.mybatisplus.extension.injector.LogicSqlInjector;
 import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.tenant.TenantSqlParser;
 import org.igetwell.common.data.scope.interceptor.DataScopeInterceptor;
-import org.igetwell.common.data.scope.props.DataScopeProperties;
 import org.igetwell.common.data.tenant.KoalaTenantHandler;
 import org.mybatis.spring.annotation.MapperScan;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -25,9 +25,12 @@ import java.util.List;
 @Configuration
 @ConditionalOnBean(DataSource.class)
 @AutoConfigureAfter(DataSourceAutoConfiguration.class)
-@MapperScan("org.igetwell.*.**.mapper")
+@MapperScan("org.igetwell.*.mapper")
 public class MybatisPlusConfig {
 
+
+	@Autowired
+	private JdbcTemplate jdbcTemplate;
 	/**
 	 * 创建租户维护处理器对象
 	 *
@@ -61,13 +64,13 @@ public class MybatisPlusConfig {
 	/**
 	 * 数据权限插件
 	 *
-	 * @param dataSource 数据源
+	 * @param jdbcTemplate 数据源
 	 * @return DataScopeInterceptor
 	 */
 	@Bean
 	@ConditionalOnMissingBean
-	public DataScopeInterceptor dataScopeInterceptor(JdbcTemplate dataSource, DataScopeProperties dataScopeProperties) {
-		return new DataScopeInterceptor(dataSource, dataScopeProperties);
+	public DataScopeInterceptor dataScopeInterceptor(JdbcTemplate jdbcTemplate) {
+		return new DataScopeInterceptor(jdbcTemplate);
 	}
 
 	/**

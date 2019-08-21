@@ -1,8 +1,6 @@
 package org.igetwell.system.controller;
 
 import com.github.pagehelper.PageHelper;
-import org.igetwell.common.data.scope.datascope.DataScope;
-import org.igetwell.common.uitls.Page;
 import org.igetwell.common.uitls.Pagination;
 import org.igetwell.common.uitls.ResponseEntity;
 import org.igetwell.system.entity.SystemUser;
@@ -33,21 +31,21 @@ public class SystemUserController {
         return new ResponseEntity<SystemUser>(systemUser);
     }
 
-    /*@PostMapping("/getList")
+    @PostMapping("/getList")
     public ResponseEntity<SystemUser> getList(){
         PageHelper.startPage(1,10);
         List<SystemUser> systemUserList = iSystemUserService.getList();
         Pagination<SystemUser> pagination = new Pagination<>(systemUserList);
         return new ResponseEntity(pagination);
-    }*/
+    }
 
 
-    @PostMapping("/getList")
+    /*@PostMapping("/getList")
     public ResponseEntity<SystemUser> getList(){
         PageHelper.startPage(1,10);
         DataScope dataScope = new DataScope();
         List<SystemUser> systemUserList = iSystemUserService.getList(dataScope);
         Pagination<SystemUser> pagination = new Pagination<>(systemUserList);
         return new ResponseEntity(pagination);
-    }
+    }*/
 }
