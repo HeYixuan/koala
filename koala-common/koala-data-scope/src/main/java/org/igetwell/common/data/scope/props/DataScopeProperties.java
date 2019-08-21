@@ -12,18 +12,18 @@ import java.util.List;
  *
  * @author Chill
  */
-@Data
-@ConfigurationProperties(prefix = "koala.data-scope")
+/*@Data
+@ConfigurationProperties(prefix = "koala.data-scope")*/
 public class DataScopeProperties {
 
-	/**
+/*	*//**
 	 * mapper方法匹配关键字
-	 */
+	 *//*
 	private List<String> mapperKey = Arrays.asList("page", "Page", "list", "List");
 
-	/**
+	*//**
 	 * mapper过滤
-	 */
-	private List<String> mapperExclude = Collections.singletonList("FlowMapper");
+	 *//*
+	private List<String> mapperExclude = Collections.singletonList("FlowMapper");*/
 
 }

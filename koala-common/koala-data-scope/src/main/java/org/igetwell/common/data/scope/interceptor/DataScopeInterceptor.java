@@ -81,7 +81,7 @@ public class DataScopeInterceptor extends AbstractSqlParserHandler implements In
 
 		BoundSql boundSql = (BoundSql) metaObject.getValue("delegate.boundSql");
 		String originalSql = boundSql.getSql();
-		String column = dataAuth.column();
+		String column = "dept_id";
 		List<Long> deptIds = new ArrayList<>();
 		// 优先获取赋值数据
 		if (StringUtils.isNotEmpty(koalaUser.getDeptId())) {
@@ -92,7 +92,7 @@ public class DataScopeInterceptor extends AbstractSqlParserHandler implements In
 
 			System.err.println(roleIdList);
 
-			Integer dsType = jdbcTemplate.queryForObject("SELECT * FROM sys_role where id = ?", new Object[]{koalaUser.getRoleId()}, Integer.class);
+			Integer dsType = jdbcTemplate.queryForObject("SELECT ds_type FROM sys_role where id = ?", new Object[]{koalaUser.getRoleId()}, Integer.class);
 			// 查询全部
 			if (DataScopeEnum.ALL.getType() == dsType) {
 				return invocation.proceed();

@@ -8,9 +8,8 @@ import com.baomidou.mybatisplus.extension.plugins.tenant.TenantSqlParser;
 import org.igetwell.common.data.scope.interceptor.DataScopeInterceptor;
 import org.igetwell.common.data.tenant.KoalaTenantHandler;
 import org.mybatis.spring.annotation.MapperScan;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
@@ -18,19 +17,14 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
 
-import javax.sql.DataSource;
 import java.util.ArrayList;
 import java.util.List;
 
 @Configuration
-@ConditionalOnBean(DataSource.class)
 @AutoConfigureAfter(DataSourceAutoConfiguration.class)
 @MapperScan("org.igetwell.*.mapper")
-public class MybatisPlusConfig {
+public class MybatisPlusConfig implements InitializingBean {
 
-
-	@Autowired
-	private JdbcTemplate jdbcTemplate;
 	/**
 	 * 创建租户维护处理器对象
 	 *
@@ -82,5 +76,10 @@ public class MybatisPlusConfig {
 	@ConditionalOnMissingBean
 	public ISqlInjector sqlInjector() {
 		return new LogicSqlInjector();
+	}
+
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		System.out.println("==========被加载了");
 	}
 }

@@ -19,8 +19,8 @@ public class KoalaUser extends SystemUser implements UserDetails {
         this.authorities = authorities;
     }
 
-    public KoalaUser(Long id, String tenantId, String deptId, String username, String password, boolean isEnabled, boolean accountNonExpired, boolean credentialsNonExpired, boolean accountNonLocked, Collection<? extends GrantedAuthority> authorities) {
-        super(id, tenantId, deptId, username, password, isEnabled, accountNonExpired, credentialsNonExpired, accountNonLocked);
+    public KoalaUser(Long id, String tenantId, String roleId, String deptId, String username, String password, boolean isEnabled, boolean accountNonExpired, boolean credentialsNonExpired, boolean accountNonLocked, Collection<? extends GrantedAuthority> authorities) {
+        super(id, tenantId, roleId, deptId, username, password, isEnabled, accountNonExpired, credentialsNonExpired, accountNonLocked);
         this.authorities = authorities;
 
     }
