@@ -60,19 +60,6 @@ public class AuthorizationServer extends AuthorizationServerConfigurerAdapter {
                 .userDetailsService(springSecurityService)
                 .authenticationManager(authenticationManager)
                 .reuseRefreshTokens(false);
-
-        /*endpoints.allowedTokenEndpointRequestMethods(HttpMethod.GET, HttpMethod.POST);
-        endpoints.authenticationManager(authenticationManager);
-        endpoints.tokenStore(tokenStore());
-
-        // 配置TokenServices参数
-        DefaultTokenServices tokenServices = new DefaultTokenServices();
-        tokenServices.setTokenStore(endpoints.getTokenStore());
-        tokenServices.setSupportRefreshToken(false); //指定是否带 refreshToken
-        tokenServices.setClientDetailsService(endpoints.getClientDetailsService());
-        tokenServices.setTokenEnhancer(endpoints.getTokenEnhancer());
-        tokenServices.setAccessTokenValiditySeconds( (int) TimeUnit.DAYS.toSeconds(30)); // 30天
-        endpoints.tokenServices(tokenServices);*/
     }
 
 
