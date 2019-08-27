@@ -92,14 +92,19 @@ public class DataScopeInterceptor extends AbstractSqlParserHandler implements In
 
 			System.err.println(roleIdList);
 
-			Integer dsType = jdbcTemplate.queryForObject("SELECT ds_type FROM sys_role where id = ?", new Object[]{koalaUser.getRoleId()}, Integer.class);
+			//Integer dsType = jdbcTemplate.queryForObject("SELECT ds_type FROM sys_role where id = ?", new Object[]{koalaUser.getRoleId()}, Integer.class);
+			Map<String,Object> params = jdbcTemplate.queryForMap("SELECT ds_type, ds_scope FROM sys_role where id = ?", new Object[]{koalaUser.getRoleId()});
+			int dsType = (int) params.get("ds_type");
+
 			// 查询全部
 			if (DataScopeEnum.ALL.getType() == dsType) {
 				return invocation.proceed();
 			}
 			// 自定义
 			if (DataScopeEnum.CUSTOM.getType() == dsType) {
-
+			    String dsScope = (String) params.get("ds_scope");
+                deptIds.addAll(Arrays.stream(dsScope.split(","))
+                        .map(Long::parseLong).collect(Collectors.toList()));
 			}
 			if (DataScopeEnum.OWN.getType() == dsType) {
 				deptIds.add(koalaUser.getId());
