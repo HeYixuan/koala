@@ -17,7 +17,6 @@ import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
-import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
@@ -35,7 +34,6 @@ import java.util.Map;
  */
 @Configuration
 @EnableAuthorizationServer
-@EnableResourceServer
 @AllArgsConstructor
 public class AuthorizationServer extends AuthorizationServerConfigurerAdapter {
 
@@ -116,6 +114,7 @@ public class AuthorizationServer extends AuthorizationServerConfigurerAdapter {
             additionalInfo.put(SecurityConstants.DETAILS_USERNAME, koalaUser.getUsername());
             additionalInfo.put(SecurityConstants.DETAILS_DEPT_ID, koalaUser.getDeptId());
             additionalInfo.put(SecurityConstants.DETAILS_TENANT_ID, koalaUser.getTenantId());
+            additionalInfo.put(SecurityConstants.DETAILS_ROLE_ID, koalaUser.getRoleId());
             ((DefaultOAuth2AccessToken) accessToken).setAdditionalInformation(additionalInfo);
             return accessToken;
         };

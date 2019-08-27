@@ -164,6 +164,11 @@ public interface SecurityConstants {
 	String DETAILS_DEPT_ID = "dept_id";
 
 	/**
+	 * 用户角色字段
+	 */
+	String DETAILS_ROLE_ID = "role_id";
+
+	/**
 	 * 租户ID 字段
 	 */
 	String DETAILS_TENANT_ID = "tenant_id";
