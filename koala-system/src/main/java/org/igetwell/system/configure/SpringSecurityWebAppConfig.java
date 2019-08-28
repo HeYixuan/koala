@@ -45,7 +45,7 @@ public class SpringSecurityWebAppConfig extends WebSecurityConfigurerAdapter {
                 .csrf().disable() // oauth server 不需要 csrf 防护
                 .httpBasic().disable() // 禁止 basic 认证
                 .authorizeRequests()
-                .antMatchers("/oauth/**", "/oauth/authorize/**").permitAll()
+                .antMatchers("/login/**", "/oauth/**").permitAll()
                 .and()
                 .authorizeRequests()
                 .antMatchers("/**").authenticated() //其他请求都需要登录后访问
@@ -85,5 +85,12 @@ public class SpringSecurityWebAppConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+    }
+
+
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        //解决静态资源被拦截的问题
+        web.ignoring().antMatchers("/static/**");
     }
 }
