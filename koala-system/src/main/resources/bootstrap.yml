@@ -15,6 +15,13 @@ spring:
   profiles:
     active: dev
 
+  thymeleaf:
+    mode: LEGACYHTML5
+    prefix: classpath:/templates/
+    suffix: .html
+    encoding: UTF-8
+    cache: false
+
 
 #  datasource:
 #    type: com.alibaba.druid.pool.DruidDataSource

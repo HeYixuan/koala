@@ -20,6 +20,8 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
+import org.springframework.security.oauth2.provider.code.AuthorizationCodeServices;
+import org.springframework.security.oauth2.provider.code.JdbcAuthorizationCodeServices;
 import org.springframework.security.oauth2.provider.token.DefaultAuthenticationKeyGenerator;
 import org.springframework.security.oauth2.provider.token.TokenEnhancer;
 import org.springframework.security.oauth2.provider.token.TokenStore;
@@ -58,8 +60,13 @@ public class AuthorizationServer extends AuthorizationServerConfigurerAdapter {
                 .userDetailsService(springSecurityService)
                 .authenticationManager(authenticationManager)
                 .reuseRefreshTokens(false);
+        // 自定义确认授权页面
+        endpoints.pathMapping("/oauth/confirm_access", "/oauth/confirm_access");
+        // 自定义错误页
+        endpoints.pathMapping("/oauth/error", "/oauth/error");
+        // 自定义异常转换类
+        //endpoints.exceptionTranslator(new OpenOAuth2WebResponseExceptionTranslator());
     }
-
 
     /**
      * 配置客户端信息
@@ -73,11 +80,14 @@ public class AuthorizationServer extends AuthorizationServerConfigurerAdapter {
         clients.withClientDetails(clientDetailsService);
     }
 
+
     @Override
     public void configure(AuthorizationServerSecurityConfigurer oauthServer) {
         oauthServer
+                // 开启表单认证
                 .allowFormAuthenticationForClients()
                 .tokenKeyAccess("permitAll()")
+                // 开启/oauth/check_token验证端口认证权限访问
                 .checkTokenAccess("isAuthenticated()");
     }
 
@@ -119,4 +129,5 @@ public class AuthorizationServer extends AuthorizationServerConfigurerAdapter {
             return accessToken;
         };
     }
+
 }

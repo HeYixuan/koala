@@ -15,6 +15,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 @EnableWebSecurity
@@ -35,26 +37,6 @@ public class SpringSecurityWebAppConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private MyFilterSecurityInterceptor filterSecurityInterceptor;
-
-    /*@Override
-    public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/v2/api-docs", "/configuration/ui", "/swagger-resources", "/configuration/security",
-                "/swagger-ui.html", "/webjars/**", "/doc.html", "/login.html");
-        web.ignoring().antMatchers("/js/**");
-        web.ignoring().antMatchers("/css/**");
-        web.ignoring().antMatchers("/health");
-        // 忽略登录界面
-        web.ignoring().antMatchers("/login.html");
-        web.ignoring().antMatchers("/index.html");
-        web.ignoring().antMatchers("/oauth/user/token");
-        web.ignoring().antMatchers("/oauth/client/token");
-        web.ignoring().antMatchers("/validata/code/**");
-        web.ignoring().antMatchers("/admin/**");
-        web.ignoring().antMatchers("/oauth/check_token");
-        web.ignoring().antMatchers("/oauth/authorize");
-        //web.ignoring().antMatchers(permitUrlProperties.getIgnored());
-
-    }*/
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -85,8 +67,8 @@ public class SpringSecurityWebAppConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth
-                .userDetailsService(springSecurityService);
-                //.passwordEncoder(passwordEncoder());
+                .userDetailsService(springSecurityService)
+                .passwordEncoder(passwordEncoder());
     }
 
     @Bean
@@ -100,8 +82,8 @@ public class SpringSecurityWebAppConfig extends WebSecurityConfigurerAdapter {
     }
 */
 
-    /*@Bean
+    @Bean
     public PasswordEncoder passwordEncoder() {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
-    }*/
+    }
 }

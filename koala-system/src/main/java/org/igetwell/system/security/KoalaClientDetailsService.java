@@ -1,7 +1,5 @@
 package org.igetwell.system.security;
 
-import org.igetwell.common.constans.cache.CacheKey;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.oauth2.common.exceptions.InvalidClientException;
 import org.springframework.security.oauth2.provider.ClientDetails;
 import org.springframework.security.oauth2.provider.client.JdbcClientDetailsService;
@@ -23,7 +21,6 @@ public class KoalaClientDetailsService extends JdbcClientDetailsService {
 	 * @throws InvalidClientException
 	 */
 	@Override
-	@Cacheable(value = CacheKey.CLIENT_DETAILS_KEY, key = "#clientId", unless = "#result == null")
 	public ClientDetails loadClientByClientId(String clientId) {
 		return super.loadClientByClientId(clientId);
 	}

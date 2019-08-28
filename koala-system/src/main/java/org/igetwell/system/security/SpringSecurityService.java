@@ -3,7 +3,6 @@ package org.igetwell.system.security;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import org.igetwell.common.constans.SecurityConstants;
-import org.igetwell.common.constans.cache.CacheKey;
 import org.igetwell.common.security.KoalaUser;
 import org.igetwell.system.entity.SystemUser;
 import org.igetwell.system.service.ISystemRoleService;
@@ -11,8 +10,6 @@ import org.igetwell.system.service.ISystemUserService;
 import org.igetwell.system.vo.SystemRoleVo;
 import org.igetwell.common.data.tenant.TenantContextHolder;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.Cache;
-import org.springframework.cache.CacheManager;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -35,17 +32,17 @@ public class SpringSecurityService implements UserDetailsService {
     @Autowired
     private final ISystemRoleService iSystemRoleService;
 
-    private final CacheManager cacheManager;
+    //private final CacheManager cacheManager;
 
     @Override
     @SneakyThrows
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Cache cache = cacheManager.getCache(CacheKey.USER_DETAILS);
+        /*Cache cache = cacheManager.getCache(CacheKey.USER_DETAILS);
         if (cache != null && cache.get(username) != null) {
             return (KoalaUser) cache.get(username).get();
-        }
+        }*/
         UserDetails systemUserDetails = getUserDetails(username);
-        cache.put(username, systemUserDetails);
+        //cache.put(username, systemUserDetails);
         return systemUserDetails;
     }
 
