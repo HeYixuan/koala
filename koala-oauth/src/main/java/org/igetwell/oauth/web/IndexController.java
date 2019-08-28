@@ -29,7 +29,7 @@ public class IndexController {
      * @return
      */
     @GetMapping("/login")
-    public String login(HttpServletRequest request) {
+    public String login() {
         return "login";
     }
 
