@@ -12,6 +12,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -40,28 +41,44 @@ public class SpringSecurityWebAppConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http
-                //.addFilterBefore(filterSecurityInterceptor, FilterSecurityInterceptor.class)
-                .csrf().disable() // oauth server 不需要 csrf 防护
-                .httpBasic().disable() // 禁止 basic 认证
-                .authorizeRequests()
-                .antMatchers("/login/**", "/oauth/**").permitAll()
-                .and()
-                .authorizeRequests()
-                .antMatchers("/**").authenticated() //其他请求都需要登录后访问
+//        http
+//                //.addFilterBefore(filterSecurityInterceptor, FilterSecurityInterceptor.class)
+//                .csrf().disable() // oauth server 不需要 csrf 防护
+//                .httpBasic().disable() // 禁止 basic 认证
+//                .authorizeRequests()
+//                .antMatchers("/login/**", "/oauth/**").permitAll()
+//                .and()
+//                .authorizeRequests()
+//                .antMatchers("/**").authenticated() //其他请求都需要登录后访问
+//                .and()
+//                .formLogin()
+//                .loginProcessingUrl("/login")
+//                .successHandler(successHandler)
+//                .failureHandler(failureHandler)
+//                .and().exceptionHandling()
+//                .accessDeniedHandler(accessDeniedHandler)
+//                .authenticationEntryPoint(unauthorizedHandler)
+//                // 基于token，所以不需要session
+//                .and()
+//                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        //http.httpBasic().and().csrf().disable();
+        http.authorizeRequests()
+                .antMatchers("/**").authenticated()
                 .and()
                 .formLogin()
-                .loginProcessingUrl("/login")
-                .successHandler(successHandler)
-                .failureHandler(failureHandler)
-                .and().exceptionHandling()
-                .accessDeniedHandler(accessDeniedHandler)
-                .authenticationEntryPoint(unauthorizedHandler)
-                // 基于token，所以不需要session
+                .loginPage("/login")
+                .failureForwardUrl("/login?error")
+                .permitAll()
                 .and()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+                .logout().permitAll();
     }
 
+
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        //解决静态资源被拦截的问题
+        web.ignoring().antMatchers("/static/**");
+    }
 
 
     @Autowired
@@ -87,10 +104,4 @@ public class SpringSecurityWebAppConfig extends WebSecurityConfigurerAdapter {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 
-
-    @Override
-    public void configure(WebSecurity web) throws Exception {
-        //解决静态资源被拦截的问题
-        web.ignoring().antMatchers("/static/**");
-    }
 }
