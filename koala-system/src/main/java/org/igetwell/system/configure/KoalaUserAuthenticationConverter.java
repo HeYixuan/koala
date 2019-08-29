@@ -16,6 +16,7 @@ import java.util.Map;
 public class KoalaUserAuthenticationConverter implements UserAuthenticationConverter {
 
     private static final String N_A = "N/A";
+    final String USERNAME = "username";
 
     /**
      * Extract information about the user to be used in an access token (i.e. for resource servers).
