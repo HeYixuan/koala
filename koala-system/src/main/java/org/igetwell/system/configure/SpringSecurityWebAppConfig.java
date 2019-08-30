@@ -1,10 +1,10 @@
 package org.igetwell.system.configure;
 
-import org.igetwell.common.security.filter.JwtAuthenticationEntryPoint;
+import org.igetwell.oauth.security.handler.AuthenticationAccessDeniedHandler;
+import org.igetwell.oauth.security.handler.AuthenticationFailureHandler;
+import org.igetwell.oauth.security.handler.AuthenticationSuccessHandler;
+import org.igetwell.oauth.security.handler.OAuth2AuthenticationEntryPoint;
 import org.igetwell.system.security.SpringSecurityService;
-import org.igetwell.system.security.handler.AuthenticationAccessDeniedHandler;
-import org.igetwell.system.security.handler.AuthenticationFailureHandler;
-import org.igetwell.system.security.handler.AuthenticationSuccessHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,13 +29,13 @@ public class SpringSecurityWebAppConfig extends WebSecurityConfigurerAdapter {
     private SpringSecurityService springSecurityService;
 
     @Autowired
-    private JwtAuthenticationEntryPoint unauthorizedHandler;
+    private OAuth2AuthenticationEntryPoint authenticationEntryPoint;
     @Autowired
-    private AuthenticationSuccessHandler successHandler;
+    private AuthenticationSuccessHandler authenticationSuccessHandler;
     @Autowired
-    private AuthenticationFailureHandler failureHandler;
+    private AuthenticationFailureHandler authenticationFailureHandler;
     @Autowired
-    private AuthenticationAccessDeniedHandler accessDeniedHandler;
+    private AuthenticationAccessDeniedHandler authenticationAccessDeniedHandler;
 
     @Autowired
     private MyFilterSecurityInterceptor filterSecurityInterceptor;

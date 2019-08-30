@@ -1,10 +1,12 @@
-package org.igetwell.auth.service;
+package org.igetwell.system.feign;
 
 import org.igetwell.system.entity.SystemMenu;
+import org.springframework.cloud.openfeign.FeignClient;
 
 import java.util.List;
 
-public interface ISystemMenuService {
+@FeignClient(contextId = "remoteMenuService", value = "system-center")
+public interface SystemMenuClient {
 
     /**
      * 根据角色ID查询所有菜单

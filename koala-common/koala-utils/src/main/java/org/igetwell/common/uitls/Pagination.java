@@ -2,7 +2,6 @@ package org.igetwell.common.uitls;
 
 import java.util.ArrayList;
 import java.util.List;
-import com.github.pagehelper.Page;
 
 public class Pagination<T> {
 
@@ -19,15 +18,15 @@ public class Pagination<T> {
     }
 
     public Pagination(List<T> rows) {
-        if (rows instanceof Page){
-            Page<T> page = (Page<T>) rows;
-            this.setPageNo(page.getPageNum());
-            this.setPageSize(page.getPageSize());
-            this.setTotal(page.getTotal());
-            this.setPages(page.getPages());
-            this.index = getFirstIndex();
-            this.setRows(page);
-        }
+//        if (rows instanceof Page){
+//            Page<T> page = (Page<T>) rows;
+//            this.setPageNo(page.getPageNum());
+//            this.setPageSize(page.getPageSize());
+//            this.setTotal(page.getTotal());
+//            this.setPages(page.getPages());
+//            this.index = getFirstIndex();
+//            this.setRows(page);
+//        }
 
         if (rows instanceof ArrayList){
             System.err.println("rows as arrayList");

@@ -1,11 +1,13 @@
-package org.igetwell.auth.service;
+package org.igetwell.system.feign;
 
 import org.igetwell.system.entity.SystemRole;
 import org.igetwell.system.vo.SystemRoleVo;
+import org.springframework.cloud.openfeign.FeignClient;
 
 import java.util.List;
 
-public interface ISystemRoleService {
+@FeignClient(contextId = "remoteRoleService", value = "system-center")
+public interface SystemRoleClient {
 
     /**
      * 获取所有角色
@@ -35,4 +37,19 @@ public interface ISystemRoleService {
      * @return
      */
     List<SystemRoleVo> loadByTenant(String tenant, Long id);
+
+    /**
+     * 根据角色ID查询数据权限类型
+     * @param id
+     * @return
+     */
+    Integer getDsType(Long id);
+
+    /**
+     * 根据租户ID和角色ID查询数据权限类型
+     * @param tenant
+     * @param id
+     * @return
+     */
+    Integer getDataScopeType(String tenant, Long id);
 }

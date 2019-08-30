@@ -24,20 +24,11 @@ spring:
     encoding: UTF-8
     cache: false
 
-
-#  datasource:
-#    type: com.alibaba.druid.pool.DruidDataSource
-#    druid:
-#      driver-class-name: com.mysql.cj.jdbc.Driver
-#      username: ${MYSQL-USER:root}
-#      password: ${MYSQL-PWD:123456}
-#      url: jdbc:mysql://${MYSQL-HOST:pigx-mysql}:${MYSQL-PORT:3306}/${MYSQL-DB:koala}?characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=GMT%2B8&allowMultiQueries=true
-
-
 logging:
   config: classpath:logback.xml
 
 
+#oauth2授权
 security:
   oauth2:
     client:
@@ -49,9 +40,3 @@ security:
     resource:
       loadBalanced: true
       token-info-uri: http://localhost:9001/oauth/check_token
-  basic:
-    enabled: false
-
-management:
-  security:
-    enabled: false

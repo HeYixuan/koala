@@ -2,9 +2,9 @@ spring:
   redis:
     password:
     host: ${REDIS-HOST:pigx-redis}
-
   datasource:
-    driver-class-name: com.mysql.jdbc.Driver
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.zaxxer.hikari.HikariDataSource
     url: jdbc:mysql://localhost:3306/koala?autoReconnect=true&useUnicode=true&characterEncoding=UTF-8&allowMultiQueries=true&useSSL=false
     username: root
     password: 123456
@@ -15,6 +15,8 @@ spring:
       idle-timeout: 30000
       connection-timeout: 30000
 
+  main:
+    allow-bean-definition-overriding: true
 
 mybatis:
   mapper-locations: classpath:/mapper/*Mapper.xml
@@ -28,15 +30,11 @@ pagehelper:
   support-methods-arguments: true
   params: count=countSql
 
-
-jwt:
-  header: X-API-TOKEN
-  secret: secret
-  issuer: 15517551511@126.com
-  expiration: 120   #Token有效期30分钟
-
 security:
   basic:
+    enabled: false
+management:
+  security:
     enabled: false
 
 

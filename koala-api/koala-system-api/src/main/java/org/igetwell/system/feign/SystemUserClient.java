@@ -1,10 +1,13 @@
-package org.igetwell.auth.service;
+package org.igetwell.system.feign;
+
 
 import org.igetwell.system.entity.SystemUser;
+import org.springframework.cloud.openfeign.FeignClient;
 
 import java.util.List;
 
-public interface ISystemUserService {
+@FeignClient(contextId = "remoteUserService", value = "system-center")
+public interface SystemUserClient {
 
     /**
      * 登录(根据租户ID和用户名查询)
@@ -14,5 +17,9 @@ public interface ISystemUserService {
      */
     SystemUser loadByUsername(String tenant, String username);
 
+    /**
+     * 获取用户列表
+     * @return
+     */
     List<SystemUser> getList();
 }
