@@ -60,15 +60,26 @@ public class SpringSecurityWebAppConfig extends WebSecurityConfigurerAdapter {
 //                // 基于token，所以不需要session
 //                .and()
 //                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        //http.httpBasic().and().csrf().disable();
-        http.authorizeRequests()
-                .antMatchers("/oauth/**").permitAll()
-                .antMatchers("/**").authenticated()
+
+        http.httpBasic()
+                .and()
+                .cors()
+                .and()
+                .csrf()
+                .disable();
+        http
+                .authorizeRequests()
+                .antMatchers("/login", "/oauth/**")
+                .permitAll()
+                .and()
+                .authorizeRequests()
+                .anyRequest()
+                .authenticated()
                 .and()
                 .formLogin()
                 .loginPage("/login")
+                .loginProcessingUrl("/login") // 指定验证登录的 url
                 .failureForwardUrl("/login?error")
-                .permitAll()
                 .and()
                 .logout().permitAll();
     }
