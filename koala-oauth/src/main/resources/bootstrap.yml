@@ -1,15 +1,13 @@
 server:
-    port: 9002
+    port: 9000
 spring:
     application:
-        name: KOALA-OAUTH
+        name: koala-oauth
+
+
     thymeleaf:
         mode: LEGACYHTML5
         prefix: classpath:/templates/
         suffix: .html
         encoding: UTF-8
         cache: false
-#    mvc:
-#        static-path-pattern: /**
-#    resources:
-#        static-locations: classpath:/META-INF/resources/,classpath:/resources/,classpath:/static/,classpath:/public/

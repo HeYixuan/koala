@@ -1,15 +1,14 @@
-package org.igetwell.auth.security;
+package org.igetwell.oauth.security;
 
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
-import org.igetwell.auth.service.ISystemRoleService;
-import org.igetwell.auth.service.ISystemUserService;
 import org.igetwell.common.constans.SecurityConstants;
 import org.igetwell.common.constans.cache.CacheKey;
-import org.igetwell.system.entity.SystemUser;
-import org.igetwell.system.vo.SystemRoleVo;
 import org.igetwell.common.data.tenant.TenantContextHolder;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.igetwell.system.entity.SystemUser;
+import org.igetwell.system.feign.SystemRoleClient;
+import org.igetwell.system.feign.SystemUserClient;
+import org.igetwell.system.vo.SystemRoleVo;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.security.core.GrantedAuthority;
@@ -28,11 +27,9 @@ import java.util.List;
 @AllArgsConstructor
 public class SpringSecurityService implements UserDetailsService {
 
-    @Autowired
-    private final ISystemUserService iSystemUserService;
+    private final SystemUserClient systemUserClient;
 
-    @Autowired
-    private final ISystemRoleService iSystemRoleService;
+    private final SystemRoleClient systemRoleClient;
 
     private final CacheManager cacheManager;
 
@@ -58,13 +55,12 @@ public class SpringSecurityService implements UserDetailsService {
         if (StringUtils.isEmpty(tenant)){
             throw new UsernameNotFoundException("租户ID不能为空");
         }
-        SystemUser systemUser = iSystemUserService.loadByUsername(TenantContextHolder.getTenantId(), username);
+        SystemUser systemUser = systemUserClient.loadByUsername(TenantContextHolder.getTenantId(), username);
         if (null == systemUser){
             throw new UsernameNotFoundException("用户账号: " + username + " 不存在");
         }
         //这个方法里实现了根据用户查询用户所有的角色
-        //List<SystemRoleVo> roles = iSystemRoleService.loadByUser(systemUser.getId());
-        List<SystemRoleVo> roles = iSystemRoleService.loadByTenant(tenant, systemUser.getId());
+        List<SystemRoleVo> roles = systemRoleClient.loadByTenant(tenant, systemUser.getId());
 
         //定义权限集合
         Collection<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
@@ -72,7 +68,8 @@ public class SpringSecurityService implements UserDetailsService {
             authorities.add(new SimpleGrantedAuthority(role.getRoleAlias()));
         });
 
-        return new KoalaUser(systemUser.getId(), systemUser.getTenantId(), systemUser.getUsername(), SecurityConstants.BCRYPT + systemUser.getPassword(),
+        return new KoalaUser(systemUser.getId(), systemUser.getTenantId(), systemUser.getRoleId(), systemUser.getDeptId(),
+                systemUser.getUsername(), SecurityConstants.BCRYPT + systemUser.getPassword(),
                 systemUser.isEnabled(), systemUser.isAccountNonExpired(), systemUser.isAccountNonLocked(),
                 systemUser.isCredentialsNonExpired(), authorities);
     }

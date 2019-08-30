@@ -1,13 +1,11 @@
 package org.igetwell.oauth.web;
 
 
-import com.baomidou.mybatisplus.extension.api.R;
 import lombok.AllArgsConstructor;
 import org.igetwell.common.constans.cache.CacheKey;
 import org.igetwell.common.enums.HttpStatus;
-import org.igetwell.common.security.SpringSecurityUtils;
 import org.igetwell.common.uitls.ResponseEntity;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.igetwell.oauth.security.SpringSecurityUtils;
 import org.springframework.cache.CacheManager;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -19,6 +17,7 @@ import org.springframework.security.oauth2.provider.ClientDetails;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.token.TokenStore;
+import org.springframework.stereotype.Controller;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
@@ -29,7 +28,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-@RestController
+@Controller
 @AllArgsConstructor
 public class LoginController {
 

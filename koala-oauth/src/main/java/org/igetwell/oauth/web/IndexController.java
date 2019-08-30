@@ -1,11 +1,6 @@
 package org.igetwell.oauth.web;
 
 import lombok.AllArgsConstructor;
-import org.igetwell.common.security.SpringSecurityUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.oauth2.provider.AuthorizationRequest;
-import org.springframework.security.oauth2.provider.ClientDetails;
-import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
