@@ -1,35 +1,23 @@
 package org.igetwell.common.data.scope.interceptor;
 
-import com.baomidou.mybatisplus.core.toolkit.PluginUtils;
 import com.baomidou.mybatisplus.extension.handlers.AbstractSqlParserHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
 import org.apache.ibatis.executor.statement.StatementHandler;
-import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
-import org.apache.ibatis.mapping.SqlCommandType;
-import org.apache.ibatis.mapping.StatementType;
 import org.apache.ibatis.plugin.*;
-import org.apache.ibatis.reflection.MetaObject;
-import org.apache.ibatis.reflection.SystemMetaObject;
 import org.igetwell.common.data.scope.annotation.DataScopeAuth;
 import org.igetwell.common.data.scope.datascope.DataScope;
-import org.igetwell.common.data.scope.enums.DataScopeEnum;
-import org.igetwell.common.security.KoalaUser;
-import org.igetwell.common.security.SpringSecurityUtils;
 import org.igetwell.common.uitls.ClassUtils;
 import org.igetwell.common.uitls.SpringContextHolder;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.security.core.GrantedAuthority;
 
 import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-import java.util.stream.Collectors;
 
 
 /**

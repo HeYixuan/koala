@@ -43,6 +43,7 @@
 	<modules>
 		<module>koala-register</module>
 		<module>koala-gateway</module>
+		<module>koala-oauth</module>
 		<module>koala-system</module>
 		<module>koala-api</module>
 		<module>koala-common</module>
@@ -80,6 +81,11 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-redis-reactive</artifactId>
+		</dependency>
+		<!--JDBC-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-jdbc</artifactId>
 		</dependency>
 		<!--Lombok-->
 		<dependency>
