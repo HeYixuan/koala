@@ -2,6 +2,10 @@ package org.igetwell.system.configure;
 
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.igetwell.common.security.filter.JwtAuthenticationEntryPoint;
+import org.igetwell.system.security.handler.AuthenticationAccessDeniedHandler;
+import org.igetwell.system.security.handler.AuthenticationFailureHandler;
+import org.igetwell.system.security.handler.AuthenticationSuccessHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
 import org.springframework.context.annotation.Bean;
@@ -30,6 +34,15 @@ import java.io.IOException;
 @EnableResourceServer
 public class KoalaResourceServerConfigurerAdapter extends ResourceServerConfigurerAdapter {
 
+
+    @Autowired
+    private JwtAuthenticationEntryPoint unauthorizedHandler;
+    @Autowired
+    private AuthenticationSuccessHandler successHandler;
+    @Autowired
+    private AuthenticationFailureHandler failureHandler;
+    @Autowired
+    private AuthenticationAccessDeniedHandler accessDeniedHandler;
 
     @Autowired
     private RedisConnectionFactory redisConnectionFactory;
@@ -61,8 +74,8 @@ public class KoalaResourceServerConfigurerAdapter extends ResourceServerConfigur
                 .and()
                 // 认证鉴权错误处理,为了统一异常处理。每个资源服务器都应该加上。
                 .exceptionHandling()
-                /*.accessDeniedHandler(new OpenAccessDeniedHandler())
-                .authenticationEntryPoint(new OpenAuthenticationEntryPoint())*/
+                .accessDeniedHandler(accessDeniedHandler)
+                .authenticationEntryPoint(unauthorizedHandler)
                 .and()
                 .csrf().disable()
                 // 禁用httpBasic

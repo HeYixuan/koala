@@ -22,6 +22,7 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Aut
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.code.AuthorizationCodeServices;
 import org.springframework.security.oauth2.provider.code.JdbcAuthorizationCodeServices;
+import org.springframework.security.oauth2.provider.token.DefaultAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.DefaultAuthenticationKeyGenerator;
 import org.springframework.security.oauth2.provider.token.TokenEnhancer;
 import org.springframework.security.oauth2.provider.token.TokenStore;
@@ -58,6 +59,7 @@ public class AuthorizationServer extends AuthorizationServerConfigurerAdapter {
                 .tokenStore(tokenStore())
                 .tokenEnhancer(tokenEnhancer())
                 .userDetailsService(springSecurityService)
+                .accessTokenConverter(buildAccessTokenConverter())
                 .authenticationManager(authenticationManager)
                 .reuseRefreshTokens(false);
         // 自定义确认授权页面
@@ -103,6 +105,19 @@ public class AuthorizationServer extends AuthorizationServerConfigurerAdapter {
             }
         });
         return tokenStore;
+    }
+
+    /**
+     * 构建token转换器
+     *
+     * @return
+     */
+    @Bean
+    public DefaultAccessTokenConverter buildAccessTokenConverter() {
+        KoalaUserAuthenticationConverter authenticationConverter = new KoalaUserAuthenticationConverter();
+        DefaultAccessTokenConverter accessTokenConverter = new DefaultAccessTokenConverter();
+        accessTokenConverter.setUserTokenConverter(authenticationConverter);
+        return accessTokenConverter;
     }
 
     /**
