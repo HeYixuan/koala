@@ -1,4 +1,4 @@
-package org.igetwell.common.security;
+package org.igetwell.oauth.security;
 
 import lombok.experimental.UtilityClass;
 import org.springframework.security.core.Authentication;

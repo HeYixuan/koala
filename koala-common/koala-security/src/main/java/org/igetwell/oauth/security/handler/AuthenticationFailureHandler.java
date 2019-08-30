@@ -1,4 +1,4 @@
-package org.igetwell.system.security.handler;
+package org.igetwell.oauth.security.handler;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;

@@ -1,4 +1,4 @@
-package org.igetwell.system.configure;
+package org.igetwell.oauth.security.extractor;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.provider.authentication.TokenExtractor;
@@ -7,7 +7,7 @@ import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 
-public class JwtTokenExtractor implements TokenExtractor {
+public class BearerTokenExtractor implements TokenExtractor {
 	@Override
 	public Authentication extract(HttpServletRequest request) {
 		String tokenValue = this.extractToken(request);

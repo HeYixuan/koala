@@ -1,14 +1,13 @@
-package org.igetwell.system.configure;
+package org.igetwell.oauth.security.converter;
 
 import org.igetwell.common.constans.SecurityConstants;
-import org.igetwell.common.security.KoalaUser;
+import org.igetwell.oauth.security.KoalaUser;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.oauth2.provider.token.UserAuthenticationConverter;
 import org.springframework.util.StringUtils;
-
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;

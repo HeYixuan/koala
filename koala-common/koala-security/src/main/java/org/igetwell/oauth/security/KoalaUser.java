@@ -1,4 +1,4 @@
-package org.igetwell.common.security;
+package org.igetwell.oauth.security;
 
 import org.igetwell.system.entity.SystemUser;
 import org.springframework.security.core.GrantedAuthority;
