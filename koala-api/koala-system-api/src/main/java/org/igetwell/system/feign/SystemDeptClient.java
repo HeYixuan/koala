@@ -4,7 +4,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 
 import java.util.List;
 
-@FeignClient(contextId = "remoteDeptService", value = "system-center")
+@FeignClient(value = "koala-system")
 public interface SystemDeptClient {
 
     /**

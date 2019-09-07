@@ -6,7 +6,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 
 import java.util.List;
 
-@FeignClient(contextId = "remoteRoleService", value = "system-center")
+@FeignClient(value = "koala-system")
 public interface SystemRoleClient {
 
     /**

@@ -3,10 +3,12 @@ package org.igetwell.system.feign;
 
 import org.igetwell.system.entity.SystemUser;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.List;
 
-@FeignClient(contextId = "remoteUserService", value = "system-center")
+@FeignClient(value = "koala-system")
 public interface SystemUserClient {
 
     /**
@@ -15,11 +17,13 @@ public interface SystemUserClient {
      * @param username 用户名
      * @return
      */
-    SystemUser loadByUsername(String tenant, String username);
+    @PostMapping("/loadByUsername/{tenant}/{username}")
+    SystemUser loadByUsername(@PathVariable("tenant") String tenant, @PathVariable("username") String username);
 
     /**
      * 获取用户列表
      * @return
      */
+    @PostMapping("/getList")
     List<SystemUser> getList();
 }

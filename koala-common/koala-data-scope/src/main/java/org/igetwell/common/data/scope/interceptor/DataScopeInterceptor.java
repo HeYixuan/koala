@@ -17,6 +17,7 @@ import org.apache.ibatis.reflection.SystemMetaObject;
 import org.igetwell.common.data.scope.annotation.DataScopeAuth;
 import org.igetwell.common.data.scope.datascope.DataScope;
 import org.igetwell.common.data.scope.enums.DataScopeEnum;
+import org.igetwell.common.data.scope.props.DataScopeProperties;
 import org.igetwell.common.uitls.ClassUtils;
 import org.igetwell.common.uitls.SpringContextHolder;
 import org.igetwell.oauth.security.KoalaUser;
@@ -43,11 +44,13 @@ public class DataScopeInterceptor extends AbstractSqlParserHandler implements In
 
 	private final JdbcTemplate jdbcTemplate;
 
+	private final DataScopeProperties dataScopeProperties;
+
 	@Override
     @SneakyThrows
 	public Object intercept(Invocation invocation) {
 
-		/*StatementHandler statementHandler = PluginUtils.realTarget(invocation.getTarget());
+		StatementHandler statementHandler = PluginUtils.realTarget(invocation.getTarget());
 		MetaObject metaObject = SystemMetaObject.forObject(statementHandler);
 		this.sqlParser(metaObject);
 		// 先判断是不是SELECT操作
@@ -60,7 +63,7 @@ public class DataScopeInterceptor extends AbstractSqlParserHandler implements In
 		//查找注解中包含DataAuth类型的参数
 		DataScopeAuth dataAuth = findDataAuthAnnotation(mappedStatement);
 
-*//*
+
 		//注解为空并且数据权限方法名未匹配到,则放行
 		String mapperId = mappedStatement.getId();
 		String className = mapperId.substring(0, mapperId.lastIndexOf("."));
@@ -68,9 +71,9 @@ public class DataScopeInterceptor extends AbstractSqlParserHandler implements In
 		String methodName = mapperId.substring(mapperId.lastIndexOf(".") + 1);
 		boolean mapperSkip = dataScopeProperties.getMapperKey().stream().noneMatch(methodName::contains)
 				|| dataScopeProperties.getMapperExclude().stream().anyMatch(mapperName::contains);
-		if (dataAuth == null && mapperSkip) {
+		if (mapperSkip) {
 			return invocation.proceed();
-		}*//*
+		}
 		KoalaUser koalaUser = SpringSecurityUtils.getUser();
 		if (dataAuth == null && koalaUser == null) {
 			return invocation.proceed();
@@ -119,7 +122,7 @@ public class DataScopeInterceptor extends AbstractSqlParserHandler implements In
 		}
 		String join = StringUtils.join(deptIds, ",");
 		originalSql = "select * from (" + originalSql + ") temp_data_scope where temp_data_scope." + column + " in (" + join + ")";
-		metaObject.setValue("delegate.boundSql.sql", originalSql);*/
+		metaObject.setValue("delegate.boundSql.sql", originalSql);
 		return invocation.proceed();
 	}
 

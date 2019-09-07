@@ -5,7 +5,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 
 import java.util.List;
 
-@FeignClient(contextId = "remoteMenuService", value = "system-center")
+@FeignClient(value = "koala-system")
 public interface SystemMenuClient {
 
     /**

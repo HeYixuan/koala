@@ -17,6 +17,9 @@ spring:
   messages:
     basename: static/i18n/messages #相对路径 开头请勿添加斜杠
 
+  main:
+    allow-bean-definition-overriding: true
+
   thymeleaf:
     mode: LEGACYHTML5
     prefix: classpath:/templates/

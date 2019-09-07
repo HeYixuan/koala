@@ -11,7 +11,7 @@ import java.lang.annotation.*;
 @Documented
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-@EnableFeignClients("org.igetwell")
+@EnableFeignClients
 public @interface EnableKoalaFeign {
 	/**
 	 * Alias for the {@link #basePackages()} attribute. Allows for more concise annotation
@@ -32,7 +32,7 @@ public @interface EnableKoalaFeign {
 	 *
 	 * @return the array of 'basePackages'.
 	 */
-	String[] basePackages() default {};
+	String[] basePackages() default {"org.igetwell"};
 
 	/**
 	 * Type-safe alternative to {@link #basePackages()} for specifying the packages to

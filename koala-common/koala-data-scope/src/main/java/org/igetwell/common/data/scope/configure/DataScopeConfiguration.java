@@ -13,15 +13,15 @@ import org.springframework.jdbc.core.JdbcTemplate;
  * 数据权限配置类
  *
  */
-/*@Configuration
+@Configuration
 @AllArgsConstructor
-@EnableConfigurationProperties(DataScopeProperties.class)*/
+@EnableConfigurationProperties(DataScopeProperties.class)
 public class DataScopeConfiguration {
 
-	/*@Bean
+	@Bean
 	@ConditionalOnMissingBean(DataScopeInterceptor.class)
-	public DataScopeInterceptor interceptor(JdbcTemplate template,DataScopeProperties dataScopeProperties) {
+	public DataScopeInterceptor interceptor(JdbcTemplate template, DataScopeProperties dataScopeProperties) {
 		return new DataScopeInterceptor(template, dataScopeProperties);
-	}*/
+	}
 
 }
