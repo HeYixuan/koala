@@ -36,12 +36,6 @@
             <artifactId>koala-hystrix</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
-        <!--API-->
-        <!--<dependency>
-            <groupId>org.igetwell</groupId>
-            <artifactId>koala-system-api</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>-->
         <!--安全依赖 包含了依赖API-->
         <dependency>
             <groupId>org.igetwell</groupId>
@@ -54,16 +48,6 @@
             <artifactId>koala-cache</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
-        <!--安全模块
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-oauth2</artifactId>
-        </dependency>-->
-
-        <!--<dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-security</artifactId>
-        </dependency>-->
 
         <!--Mybatis-->
         <dependency>
@@ -71,11 +55,6 @@
             <artifactId>koala-data-scope</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
-        <!--<dependency>
-            <groupId>com.baomidou</groupId>
-            <artifactId>mybatis-plus</artifactId>
-            <version>${mybatis.plus.version}</version>
-        </dependency>-->
         <dependency>
             <groupId>org.mybatis.spring.boot</groupId>
             <artifactId>mybatis-spring-boot-starter</artifactId>
@@ -88,41 +67,19 @@
         </dependency>
 
         <!--数据库驱动-->
-        <!--<dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-jdbc</artifactId>
-        </dependency>-->
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>8.0.16</version>
         </dependency>
 
-        <!-- druid 连接池 -->
-       <!-- <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>druid-spring-boot-starter</artifactId>
-            <version>1.1.18</version>
-        </dependency>-->
-
-        <!--<dependency>
-            <groupId>com.zaxxer</groupId>
-            <artifactId>HikariCP</artifactId>
-            <version>3.3.1</version>
-        </dependency>-->
-
-        <!--生成代码工具-->
-        <dependency>
-            <groupId>org.mybatis.generator</groupId>
-            <artifactId>mybatis-generator-core</artifactId>
-            <version>1.3.7</version>
-        </dependency>
         <!--web 模块-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
+        <!--thymeleaf 模板-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
@@ -133,11 +90,13 @@
             <artifactId>nekohtml</artifactId>
             <version>1.9.22</version>
         </dependency>
+
+
+        <!--生成代码工具-->
         <dependency>
-            <groupId>org.igetwell</groupId>
-            <artifactId>koala-register</artifactId>
-            <version>1.0-SNAPSHOT</version>
-            <scope>compile</scope>
+            <groupId>org.mybatis.generator</groupId>
+            <artifactId>mybatis-generator-core</artifactId>
+            <version>1.3.7</version>
         </dependency>
 
     </dependencies>
