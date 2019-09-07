@@ -1,10 +1,6 @@
 package org.igetwell.common.data.tenant;
 
-import com.baomidou.mybatisplus.extension.plugins.tenant.TenantHandler;
 import lombok.extern.slf4j.Slf4j;
-import net.sf.jsqlparser.expression.Expression;
-import net.sf.jsqlparser.expression.LongValue;
-import net.sf.jsqlparser.expression.NullValue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 
@@ -24,14 +20,14 @@ public class KoalaTenantHandler implements TenantHandler {
 	 * @return 租户值
 	 */
 	@Override
-	public Expression getTenantId() {
+	public Long getTenantId() {
 		String tenantId = TenantContextHolder.getTenantId();
 		log.debug("当前租户为 >> {}", tenantId);
 
 		if (StringUtils.isEmpty(tenantId)) {
-			return new NullValue();
+			return null;
 		}
-		return new LongValue(tenantId);
+		return new Long(tenantId);
 	}
 
 	/**
