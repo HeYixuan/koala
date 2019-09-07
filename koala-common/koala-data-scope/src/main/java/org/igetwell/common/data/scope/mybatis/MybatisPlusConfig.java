@@ -44,7 +44,7 @@ public class MybatisPlusConfig implements InitializingBean {
 	 *
 	 * @param tenantHandler 租户处理器
 	 * @return PaginationInterceptor
-	 */
+	 *//*
 	@Bean
 	@ConditionalOnMissingBean
 	@ConditionalOnProperty(name = "mybatisPlus.tenantEnable", havingValue = "true", matchIfMissing = true)
@@ -56,7 +56,7 @@ public class MybatisPlusConfig implements InitializingBean {
 		sqlParserList.add(tenantSqlParser);
 		paginationInterceptor.setSqlParserList(sqlParserList);
 		return paginationInterceptor;
-	}
+	}*/
 
 	/**
 	 * 数据权限插件
