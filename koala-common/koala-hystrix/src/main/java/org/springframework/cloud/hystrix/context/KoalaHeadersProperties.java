@@ -10,8 +10,6 @@ import java.util.List;
 
 /**
  * Hystrix Headers 配置
- *
- * @author L.cm
  */
 @Getter
 @Setter

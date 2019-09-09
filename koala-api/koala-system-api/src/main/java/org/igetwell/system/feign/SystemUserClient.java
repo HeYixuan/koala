@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.List;
 
-@FeignClient(value = "koala-system")
+@FeignClient(contextId = "systemUserClient", value = "koala-system")
 public interface SystemUserClient {
 
     /**

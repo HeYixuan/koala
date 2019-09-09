@@ -14,7 +14,7 @@ import org.springframework.context.annotation.*;
 
 
 /**
- * mica feign 增强配置
+ * feign 增强配置
  *
  */
 @Configuration
@@ -50,8 +50,7 @@ public class KoalaFeignAutoConfiguration {
      *
      * @param objectProvider ObjectProvider
      * @return SpringMvcContract
-     */
-    /*@Bean
+    @Bean
     public Contract feignContract(@Qualifier("mvcConversionService") ObjectProvider<ConversionService> objectProvider) {
         ConversionService conversionService = objectProvider.getIfAvailable(DefaultConversionService::new);
         ConverterRegistry converterRegistry = ((ConverterRegistry) conversionService);
