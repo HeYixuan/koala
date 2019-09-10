@@ -40,4 +40,48 @@ public class ResponseEntity<T> implements Serializable {
         this.message = HttpStatus.OK.getMessage();
         this.timestamp = new Date();
     }
+
+    public static ResponseEntity ok() {
+        return new ResponseEntity().status(HttpStatus.OK.value()).message(HttpStatus.OK.getMessage());
+    }
+
+    public static ResponseEntity ok(Object data) {
+        return new ResponseEntity()
+                .status(HttpStatus.OK.value())
+                .data(data)
+                .message(HttpStatus.OK.getMessage());
+    }
+
+    public static ResponseEntity error() {
+        return new ResponseEntity().status(HttpStatus.INTERNAL_SERVER_ERROR.value()).message(HttpStatus.INTERNAL_SERVER_ERROR.getMessage());
+    }
+
+    public static ResponseEntity error(HttpStatus status, String exception) {
+        return new ResponseEntity().status(status.value()).message(status.getMessage()).exception(exception);
+    }
+
+    public ResponseEntity data(T data) {
+        this.data = data;
+        return this;
+    }
+
+    public ResponseEntity timestamp() {
+        this.timestamp = new Date();
+        return this;
+    }
+
+    public ResponseEntity status(int status) {
+        this.status = status;
+        return this;
+    }
+
+    public ResponseEntity message(String message) {
+        this.message = message;
+        return this;
+    }
+
+    public ResponseEntity exception(String exception) {
+        this.exception = exception;
+        return this;
+    }
 }
