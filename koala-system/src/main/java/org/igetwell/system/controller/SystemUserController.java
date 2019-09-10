@@ -10,14 +10,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 @RestController
-@RequestMapping("/systemUser")
-public class SystemUserController {
+public class SystemUserController implements SystemUserClient{
 
     @Autowired
-    private SystemUserClient systemUserClient;
+    private ISystemUserService iSystemUserService;
 
     /**
      * 登录(根据租户ID和用户名查询)
@@ -25,18 +25,18 @@ public class SystemUserController {
      * @param username 用户名
      * @return
      */
-    @PostMapping("/loadByUsername")
-    public ResponseEntity<SystemUser> loadByUsername(String tenant, String username){
-        SystemUser systemUser = systemUserClient.loadByUsername(tenant, username);
-        return new ResponseEntity<SystemUser>(systemUser);
+    @PostMapping("/loadByUsername/{tenant}/{username}")
+    public SystemUser loadByUsername(String tenant, String username){
+        SystemUser systemUser = iSystemUserService.loadByUsername(tenant, username);
+        return systemUser;
     }
 
     @PostMapping("/getList")
-    public ResponseEntity<SystemUser> getList(){
+    public List<SystemUser>  getList(){
         //PageHelper.startPage(1,10);
-        List<SystemUser> systemUserList = systemUserClient.getList();
+        List<SystemUser> systemUserList = iSystemUserService.getList();
         Pagination<SystemUser> pagination = new Pagination<>(systemUserList);
-        return new ResponseEntity(pagination);
+        return systemUserList;
     }
 
 
