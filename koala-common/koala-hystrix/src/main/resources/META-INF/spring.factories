@@ -1,2 +1,2 @@
-#org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-#  org.springframework.cloud.openfeign.KoalaHystrixFeignTargeterConfiguration
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  org.springframework.cloud.openfeign.KoalaHystrixFeignTargeterConfiguration

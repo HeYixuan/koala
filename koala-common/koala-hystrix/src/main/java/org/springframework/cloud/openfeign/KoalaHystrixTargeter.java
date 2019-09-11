@@ -11,7 +11,6 @@ import org.springframework.lang.Nullable;
  * <p>
  * 注入默认的 fallbackFactory
  */
-@SuppressWarnings("unchecked")
 public class KoalaHystrixTargeter implements Targeter {
 
 	@Override
