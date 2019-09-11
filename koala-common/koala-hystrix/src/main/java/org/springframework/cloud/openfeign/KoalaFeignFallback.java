@@ -3,6 +3,7 @@ package org.springframework.cloud.openfeign;
 import cn.hutool.core.util.StrUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import feign.FeignException;
+import feign.RetryableException;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -38,12 +39,13 @@ public class KoalaFeignFallback<T> implements MethodInterceptor {
 			return null;
 		}
 		// 非 FeignException，直接返回请求被拒绝
-		if (!(cause instanceof FeignException)) {
+		if (!(cause instanceof FeignException) || (cause instanceof RetryableException)) {
 			return new ResponseEntity(HttpStatus.FORBIDDEN, cause.getMessage());
 		}
+
 		FeignException exception = (FeignException) cause;
 
-		byte[] content = exception.content();
+		byte[] content = exception.getMessage().getBytes();
 
 		String str = StrUtil.str(content, StandardCharsets.UTF_8);
 
