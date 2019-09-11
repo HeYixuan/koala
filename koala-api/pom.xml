@@ -23,4 +23,12 @@
         <module>koala-system-api</module>
     </modules>
 
+    <dependencies>
+        <dependency>
+            <groupId>org.igetwell</groupId>
+            <artifactId>koala-utils</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
+
 </project>

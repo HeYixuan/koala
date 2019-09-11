@@ -3,18 +3,15 @@ package org.igetwell.system.controller;
 import org.igetwell.common.uitls.Pagination;
 import org.igetwell.common.uitls.ResponseEntity;
 import org.igetwell.system.entity.SystemUser;
-import org.igetwell.system.feign.SystemUserClient;
 import org.igetwell.system.service.ISystemUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.annotation.Resource;
 import java.util.List;
 
 @RestController
-public class SystemUserController implements SystemUserClient{
+public class SystemUserController {
 
     @Autowired
     private ISystemUserService iSystemUserService;
@@ -25,18 +22,22 @@ public class SystemUserController implements SystemUserClient{
      * @param username 用户名
      * @return
      */
-    @PostMapping("/loadByUsername/{tenant}/{username}")
+    @PostMapping("/systemUser/loadByUsername/{tenant}/{username}")
     public SystemUser loadByUsername(String tenant, String username){
         SystemUser systemUser = iSystemUserService.loadByUsername(tenant, username);
         return systemUser;
     }
 
-    @PostMapping("/getList")
+    @PostMapping("/systemUser/getList")
     public List<SystemUser>  getList(){
-        //PageHelper.startPage(1,10);
         List<SystemUser> systemUserList = iSystemUserService.getList();
         Pagination<SystemUser> pagination = new Pagination<>(systemUserList);
         return systemUserList;
+    }
+
+    @PostMapping("/systemUser/test")
+    public ResponseEntity test(){
+        return ResponseEntity.ok("abcd");
     }
 
 

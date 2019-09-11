@@ -46,7 +46,7 @@ security:
 
 feign:
   hystrix:
-    enabled: false
+    enabled: true
   okhttp:
     enabled: true
   httpclient:
@@ -63,15 +63,15 @@ feign:
       enabled: true
 # hystrix If you need to use ThreadLocal bound variables in your RequestInterceptor`s
 # you will need to either set the thread isolation strategy for Hystrix to `SEMAPHORE or disable Hystrix in Feign.
-#hystrix:
-#  command:
-#    default:
-#      execution:
-#        isolation:
-#          strategy: SEMAPHORE
-#          thread:
-#            timeoutInMilliseconds: 60000
-#  shareSecurityContext: true
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          strategy: SEMAPHORE
+          thread:
+            timeoutInMilliseconds: 60000
+  shareSecurityContext: true
 
 
 ribbon:

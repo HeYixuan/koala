@@ -1,6 +1,7 @@
 package org.igetwell.system.feign;
 
 
+import org.igetwell.common.uitls.ResponseEntity;
 import org.igetwell.system.entity.SystemUser;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -8,7 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.List;
 
-@FeignClient(contextId = "systemUserClient", value = "koala-system")
+@FeignClient(value = "koala-system")
 public interface SystemUserClient {
 
     /**
@@ -17,13 +18,16 @@ public interface SystemUserClient {
      * @param username 用户名
      * @return
      */
-    @PostMapping("/loadByUsername/{tenant}/{username}")
+    @PostMapping("/systemUser/loadByUsername/{tenant}/{username}")
     SystemUser loadByUsername(@PathVariable("tenant") String tenant, @PathVariable("username") String username);
 
     /**
      * 获取用户列表
      * @return
      */
-    @PostMapping("/getList")
+    @PostMapping("/systemUser/getList")
     List<SystemUser> getList();
+
+    @PostMapping("/systemUser/test")
+    ResponseEntity test();
 }

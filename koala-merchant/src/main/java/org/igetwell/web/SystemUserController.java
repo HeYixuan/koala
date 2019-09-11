@@ -1,5 +1,6 @@
 package org.igetwell.web;
 
+import org.igetwell.common.uitls.ResponseEntity;
 import org.igetwell.system.entity.SystemUser;
 import org.igetwell.system.feign.SystemUserClient;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,5 +21,10 @@ public class SystemUserController {
     public List<SystemUser> getList(){
         List<SystemUser> systemUserList = systemUserClient.getList();
         return systemUserList;
+    }
+
+    @PostMapping("/test")
+    public ResponseEntity test(){
+        return systemUserClient.test();
     }
 }
