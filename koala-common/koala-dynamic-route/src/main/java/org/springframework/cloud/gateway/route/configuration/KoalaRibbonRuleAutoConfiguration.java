@@ -40,10 +40,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 
 /**
- * Mica ribbon rule auto configuration.
- *
- * @author L.cm
- * @link https://github.com/lets-mica/mica
+ * ribbon rule auto configuration.
  */
 @Configuration
 @RequiredArgsConstructor

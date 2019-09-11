@@ -1,0 +1,13 @@
+security:
+  encode:
+    key: 'pigxpigxpigxpigx'
+
+ignore:
+  clients:
+    - test
+  swagger-providers:
+    - ${AUTH-HOST:koala-oauth}
+
+ribbon:
+  rule:
+    gray-enabled: true

@@ -11,10 +11,7 @@ import java.net.URI;
 
 import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.GATEWAY_REQUEST_URL_ATTR;
 
-/**
- * @author Spencer Gibb
- * @author Tim Ysewyn
- */
+
 public class GrayLoadBalancerClientFilter extends LoadBalancerClientFilter {
 	private final RibbonLoadBalancerClient loadBalancer;
 

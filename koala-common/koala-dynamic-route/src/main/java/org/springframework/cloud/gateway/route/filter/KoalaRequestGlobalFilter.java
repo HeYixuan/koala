@@ -34,9 +34,7 @@ import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.G
 import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.addOriginalRequestUrl;
 
 /**
- * <p>
  * 全局拦截器，作用所有的微服务
- * <p>
  * 1. 对请求头中参数进行处理 from 参数进行清洗
  * 2. 重写StripPrefix = 1,支持全局
  * <p>
