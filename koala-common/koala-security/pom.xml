@@ -26,11 +26,6 @@
         </dependency>
 
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-security</artifactId>
-        </dependency>
-
-        <dependency>
             <groupId>org.igetwell</groupId>
             <artifactId>koala-system-api</artifactId>
             <version>1.0-SNAPSHOT</version>
