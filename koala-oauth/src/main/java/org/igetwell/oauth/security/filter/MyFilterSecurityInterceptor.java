@@ -1,6 +1,5 @@
 package org.igetwell.oauth.security.filter;
 
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.SecurityMetadataSource;
 import org.springframework.security.access.intercept.AbstractSecurityInterceptor;
@@ -14,11 +13,13 @@ import javax.servlet.*;
 import java.io.IOException;
 
 @Component
-@AllArgsConstructor
 public class MyFilterSecurityInterceptor extends AbstractSecurityInterceptor implements Filter {
 
+    @Autowired
     private MyInvocationSecurityMetadataSource metadataSource;
+    @Autowired
     private MyAccessDecisionManager accessDecisionManager;
+    @Autowired
     private AuthenticationManager authenticationManager;
 
     @PostConstruct

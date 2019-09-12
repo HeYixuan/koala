@@ -1,6 +1,5 @@
 package org.igetwell.oauth.security.filter;
 
-import lombok.AllArgsConstructor;
 import org.igetwell.system.entity.SystemMenu;
 import org.igetwell.system.entity.SystemRole;
 import org.igetwell.system.feign.SystemMenuClient;
@@ -31,10 +30,11 @@ import java.util.concurrent.ConcurrentMap;
  * @create 2017-04-27 22:05
  */
 @Component
-@AllArgsConstructor
 public class MyInvocationSecurityMetadataSource implements FilterInvocationSecurityMetadataSource {
 
+    @Autowired
     private SystemRoleClient systemRoleClient;
+    @Autowired
     private SystemMenuClient systemMenuClient;
 
     private ConcurrentMap<String, Collection<ConfigAttribute>> resourceMap = null;

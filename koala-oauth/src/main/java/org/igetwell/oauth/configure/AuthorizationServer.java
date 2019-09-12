@@ -39,14 +39,9 @@ import java.util.Map;
 @AllArgsConstructor
 public class AuthorizationServer extends AuthorizationServerConfigurerAdapter {
 
-    @Autowired
     private AuthenticationManager authenticationManager;
-
-    @Autowired
     private DataSource dataSource;
-
     private final SpringSecurityService springSecurityService;
-
     private final RedisConnectionFactory redisConnectionFactory;
 
 

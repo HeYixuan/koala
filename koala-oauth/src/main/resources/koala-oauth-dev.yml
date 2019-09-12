@@ -2,13 +2,18 @@ spring:
   redis:
     password:
     host: ${REDIS-HOST:pigx-redis}
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.zaxxer.hikari.HikariDataSource
+    url: jdbc:mysql://localhost:3306/koala?autoReconnect=true&useUnicode=true&characterEncoding=UTF-8&allowMultiQueries=true&useSSL=false
+    username: root
+    password: 123456
+    hikari:
+      pool-name: DatebookHikariCP
+      minimum-idle: 5
+      maximum-pool-size: 15
+      idle-timeout: 30000
+      connection-timeout: 30000
 
   main:
     allow-bean-definition-overriding: true
-
-security:
-  basic:
-    enabled: false
-management:
-  security:
-    enabled: false
