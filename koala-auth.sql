@@ -119,6 +119,30 @@ insert  into `sys_dict`(`id`,`parent_id`,`code`,`dict_key`,`dict_value`,`sort`,`
 (1123598814738675241,1123598814738675240,'scope_category',1,'数据权限',1,NULL,0),
 (1123598814738675242,1123598814738675240,'scope_category',2,'接口权限',2,NULL,0);
 
+/*Table structure for table `sys_gateway_route` */
+
+DROP TABLE IF EXISTS `sys_gateway_route`;
+
+CREATE TABLE `sys_gateway_route` (
+  `id` varchar(64) NOT NULL COMMENT '路由ID',
+  `route_name` varchar(64) NOT NULL COMMENT '路由名称',
+  `predicates` json DEFAULT NULL COMMENT '断言',
+  `filters` json DEFAULT NULL COMMENT '过滤器',
+  `uri` varchar(50) DEFAULT NULL,
+  `order` int(2) DEFAULT '0' COMMENT '排序',
+  `create_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
+  `del_flag` char(1) DEFAULT '0' COMMENT '删除标记',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci ROW_FORMAT=DYNAMIC COMMENT='服务网关路由配置表';
+
+/*Data for the table `sys_gateway_route` */
+
+insert  into `sys_gateway_route`(`id`,`route_name`,`predicates`,`filters`,`uri`,`order`,`create_time`,`update_time`,`del_flag`) values 
+('koala-merchant','商户中心','[{\"args\": {\"_genkey_0\": \"/system/**\"}, \"name\": \"Path\"}]','[]','lb://koala-merchant',0,'2019-09-12 06:16:40','2019-09-12 06:16:42','0'),
+('koala-oauth','认证中心','[{\"args\": {\"_genkey_0\": \"/oauth/**\"}, \"name\": \"Path\"}]','[{\"args\": {}, \"name\": \"ValidateCodeGatewayFilter\"}, {\"args\": {}, \"name\": \"PasswordDecoderFilter\"}]','lb://koala-oauth',0,'2019-09-12 15:35:18','2019-09-20 14:53:13','0'),
+('koala-system','通用权限模块','[{\"args\": {\"_genkey_0\": \"/system/**\"}, \"name\": \"Path\"}]','[{\"args\": {\"key-resolver\": \"#{@remoteAddrKeyResolver}\", \"redis-rate-limiter.burstCapacity\": \"20\", \"redis-rate-limiter.replenishRate\": \"10\"}, \"name\": \"RequestRateLimiter\"}, {\"args\": {\"name\": \"default\", \"fallbackUri\": \"forward:/fallback\"}, \"name\": \"Hystrix\"}]','lb://koala-system',0,'2019-09-12 15:35:18','2019-09-20 14:53:21','0');
+
 /*Table structure for table `sys_menu` */
 
 DROP TABLE IF EXISTS `sys_menu`;
@@ -193,7 +217,7 @@ insert  into `sys_oauth_client_details`(`id`,`client_id`,`client_secret`,`resour
 (1123598811738675206,'mp','mp',NULL,'server','password,refresh_token',NULL,NULL,3600,604800,NULL,'true',0),
 (1123598811738675207,'pig','pig',NULL,'server','password,refresh_token,authorization_code,client_credentials','http://localhost:4040/sso1/login,http://localhost:4041/sso1/login',NULL,3600,604800,NULL,'true',0),
 (1123598811738675208,'test','test',NULL,'server','password,refresh_token,authorization_code,client_credentials','https://www.baidu.com/',NULL,3600,604800,NULL,'true',0),
-(1123598811738675209,'test2','$2a$10$V5VcbvDPzgo/dAg1fbnzAub6YMpX4QvPzlw4Hc.wjSSl2EW1SqASS',NULL,'all','password,refresh_token,authorization_code,client_credentials','https://www.baidu.com/',NULL,3600,604800,NULL,'true',0);
+(1123598811738675209,'test2','test2',NULL,'all','password,refresh_token,authorization_code,client_credentials','https://www.baidu.com/',NULL,3600,604800,'{\r\n	\"website\": \"http://www.baidu.com\",\r\n	\"apiKey\": \"7gBZcbsC7kLIWCdELIl8nxcs\",\r\n	\"secretKey\": \"0osTIhce7uPvDKHz6aa67bhCukaKoYl4\",\r\n	\"appName\": \"平台用户认证服务器\",\r\n	\"updateTime\": 1562841065000,\r\n	\"isPersist\": 1,\r\n	\"appOs\": \"\",\r\n	\"appIcon\": \"\",\r\n	\"developerId\": 0,\r\n	\"createTime\": 1542016125000,\r\n	\"appType\": \"server\",\r\n	\"appDesc\": \"资源服务器\",\r\n	\"appId\": \"1552274783265\",\r\n	\"appNameEn\": \"open-cloud-uaa-admin-server\",\r\n	\"status\": 1\r\n}','false',0);
 
 /*Table structure for table `sys_param` */
 
@@ -376,8 +400,8 @@ CREATE TABLE `sys_user` (
   `phone` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '手机',
   `birthday` datetime DEFAULT NULL COMMENT '生日',
   `sex` smallint(6) DEFAULT NULL COMMENT '性别',
-  `role_id` varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '角色id',
-  `dept_id` varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '部门id',
+  `role_id` bigint(64) DEFAULT NULL COMMENT '角色id',
+  `dept_id` bigint(64) DEFAULT NULL COMMENT '部门id',
   `is_enabled` int(1) DEFAULT '1' COMMENT '账户启用状态：0停用 1启用',
   `account_non_expired` int(1) DEFAULT '1' COMMENT '账户是否过期：0过期 1未过期',
   `account_non_locked` int(1) DEFAULT '1' COMMENT '账户是否锁定：0锁定 1未锁定',
@@ -395,11 +419,11 @@ CREATE TABLE `sys_user` (
 /*Data for the table `sys_user` */
 
 insert  into `sys_user`(`id`,`tenant_id`,`username`,`password`,`name`,`real_name`,`email`,`phone`,`birthday`,`sex`,`role_id`,`dept_id`,`is_enabled`,`account_non_expired`,`account_non_locked`,`credentials_non_expired`,`last_login_time`,`create_user`,`create_dept`,`create_time`,`update_user`,`update_time`,`is_deleted`) values 
-(1123598821738675201,'000000','admin','90b9aa7e25f80cf4f64e990b78a9fc5ebd6cecad','管理员','管理员','admin@bladex.vip','123333333333','2018-08-08 00:00:00',1,'1123598816738675201','1123598813738675201',1,1,1,1,NULL,1123598821738675201,1123598813738675201,'2018-08-08 00:00:00',1123598821738675201,'2018-08-08 00:00:00',0),
-(1123598821738675202,'000000','hr','5e79b90f7bba52d54115f086e48f539016a27ec6','人事','人事','hr@bladex.vip','123333333333','2018-08-08 00:00:00',1,'1123598816738675203','1123598813738675203',1,1,1,1,NULL,1123598821738675201,1123598813738675201,'2019-04-27 17:03:10',1123598821738675201,'2019-04-27 17:03:10',0),
-(1123598821738675203,'000000','manager','dfbaa3b61caa3a319f463cc165085aa8c822d2ce','经理','经理','manager@bladex.vip','123333333333','2018-08-08 00:00:00',1,'1123598816738675204','1123598813738675201',1,1,1,1,NULL,1123598821738675201,1123598813738675201,'2019-04-27 17:03:38',1123598821738675201,'2019-04-27 17:03:38',0),
-(1123598821738675204,'000000','boss','abe57d23e18f7ad8ea99c86e430c90a05119a9d3','老板','老板','boss@bladex.vip','123333333333','2018-08-08 00:00:00',1,'1123598816738675205','1123598813738675201',1,1,1,1,NULL,1123598821738675201,1123598813738675201,'2019-04-27 17:03:55',1123598821738675201,'2019-04-27 17:03:55',0),
-(1123598821738675205,'000000','admin2','$2a$10$QOfWxxFyAMmEEmnuw9UI/..1s4B4eF/u9PzE2ZaGO.ij9YfmcUy.u','管理员','管理员','admin@bladex.vip','123333333333','2018-08-08 00:00:00',1,'1123598816738675201','1123598813738675201',1,1,1,1,NULL,1123598821738675201,1123598813738675201,'2018-08-08 00:00:00',1123598821738675201,'2018-08-08 00:00:00',0);
+(1123598821738675201,'000000','admin','$2a$10$L4rfVQP7QL9p3bgE.8vZ3.gB2O2cj6NmymJ413EwfpV8dhEL/6n0S','管理员','管理员','admin@bladex.vip','123333333333','2018-08-08 00:00:00',1,1123598816738675201,1123598813738675201,1,1,1,1,NULL,1123598821738675201,1123598813738675201,'2018-08-08 00:00:00',1123598821738675201,'2018-08-08 00:00:00',0),
+(1123598821738675202,'000000','hr','5e79b90f7bba52d54115f086e48f539016a27ec6','人事','人事','hr@bladex.vip','123333333333','2018-08-08 00:00:00',1,1123598816738675203,1123598813738675203,1,1,1,1,NULL,1123598821738675201,1123598813738675201,'2019-04-27 17:03:10',1123598821738675201,'2019-04-27 17:03:10',0),
+(1123598821738675203,'000000','manager','dfbaa3b61caa3a319f463cc165085aa8c822d2ce','经理','经理','manager@bladex.vip','123333333333','2018-08-08 00:00:00',1,1123598816738675204,1123598813738675201,1,1,1,1,NULL,1123598821738675201,1123598813738675201,'2019-04-27 17:03:38',1123598821738675201,'2019-04-27 17:03:38',0),
+(1123598821738675204,'000000','boss','abe57d23e18f7ad8ea99c86e430c90a05119a9d3','老板','老板','boss@bladex.vip','123333333333','2018-08-08 00:00:00',1,1123598816738675205,1123598813738675201,1,1,1,1,NULL,1123598821738675201,1123598813738675201,'2019-04-27 17:03:55',1123598821738675201,'2019-04-27 17:03:55',0),
+(1123598821738675205,'000000','admin2','$2a$10$L4rfVQP7QL9p3bgE.8vZ3.gB2O2cj6NmymJ413EwfpV8dhEL/6n0S','管理员','管理员','admin@bladex.vip','123333333333','2018-08-08 00:00:00',1,1123598816738675201,1123598813738675201,1,1,1,1,NULL,1123598821738675201,1123598813738675201,'2018-08-08 00:00:00',1123598821738675201,'2018-08-08 00:00:00',0);
 
 /*Table structure for table `sys_user_role` */
 
