@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.igetwell.system.mapper.SystemGatewayRouteMapper">
+  <resultMap id="baseMap" type="org.igetwell.system.entity.SystemGatewayRoute">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="route_name" jdbcType="VARCHAR" property="routeName" />
+    <result column="predicates" jdbcType="LONGVARCHAR" property="predicates" />
+    <result column="filters" jdbcType="LONGVARCHAR" property="filters" />
+    <result column="uri" jdbcType="VARCHAR" property="uri" />
+    <result column="order" jdbcType="INTEGER" property="order" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="del_flag" jdbcType="CHAR" property="delFlag" />
+  </resultMap>
+
+
+  <sql id="baseSql">
+    ID, ROUTE_NAME, PREDICATES, FILTERS, URI, `ORDER`, CREATE_TIME, UPDATE_TIME, DEL_FLAG
+  </sql>
+
+  <select id="getList" resultMap="baseMap">
+    SELECT
+        <include refid="baseSql" />
+    FROM SYS_GATEWAY_ROUTE
+  </select>
+
+  <delete id="deleteById" parameterType="java.lang.Long">
+    DELETE FROM SYS_GATEWAY_ROUTE WHERE ID= #{id}
+  </delete>
+
+
+  <insert id="addRoute" parameterType="org.igetwell.system.entity.SystemGatewayRoute" >
+    insert into sys_gateway_routes
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="routeName != null" >
+        ROUTE_NAME,
+      </if>
+      <if test="predicates != null" >
+        PREDICATES,
+      </if>
+      <if test="filters != null" >
+        FILTERS,
+      </if>
+      <if test="uri != null" >
+        URI,
+      </if>
+      <if test="order != null" >
+        `ORDER`,
+      </if>
+      <if test="createTime != null" >
+        CREATE_TIME,
+      </if>
+      <if test="updateTime != null" >
+        UPDATE_TIME,
+      </if>
+      <if test="delFlag != null" >
+        DEL_FLAG,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="routeName != null" >
+        #{routeName,jdbcType=VARCHAR},
+      </if>
+      <if test="predicates != null" >
+        #{predicates,jdbcType=VARCHAR},
+      </if>
+      <if test="filters != null" >
+        #{filters,jdbcType=VARCHAR},
+      </if>
+      <if test="uri != null" >
+        #{uri,jdbcType=VARCHAR},
+      </if>
+      <if test="order != null" >
+        #{order,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="delFlag != null" >
+        #{delFlag,jdbcType=CHAR},
+      </if>
+    </trim>
+  </insert>
+
+  <update id="updateRoute" parameterType="org.igetwell.system.entity.SystemGatewayRoute">
+    UPDATE SYS_GATEWAY_ROUTE
+    <set>
+      <if test="id != null">
+        ID = #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="routeName != null">
+        ROUTE_NAME = #{routeName,jdbcType=VARCHAR},
+      </if>
+      <if test="predicates != null">
+        PREDICATES = #{predicates,jdbcType=VARCHAR},
+      </if>
+      <if test="filters != null">
+        FILTERS = #{filters,jdbcType=VARCHAR},
+      </if>
+      <if test="uri != null">
+        URI = #{uri,jdbcType=VARCHAR},
+      </if>
+      <if test="order != null">
+        `ORDER` = #{order,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="delFlag != null">
+        DEL_FLAG = #{delFlag,jdbcType=CHAR},
+      </if>
+    </set>
+    WHERE ID = #{id,jdbcType=VARCHAR}
+  </update>
+
+</mapper>

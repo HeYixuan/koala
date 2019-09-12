@@ -1,0 +1,14 @@
+spring:
+  redis:
+    password:
+    host: ${REDIS-HOST:pigx-redis}
+
+  main:
+    allow-bean-definition-overriding: true
+
+security:
+  basic:
+    enabled: false
+management:
+  security:
+    enabled: false

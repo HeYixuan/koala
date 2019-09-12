@@ -61,7 +61,7 @@ public class KoalaResourceServerConfigurerAdapter extends ResourceServerConfigur
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                 .and()
                 .authorizeRequests()
-                .antMatchers("/login/**","/oauth/**", "/systemUser/**", "/getList/**").permitAll()
+                .antMatchers("/login/**","/oauth/**", "/systemUser/**", "/systemRole/**","/systemMenu/**").permitAll()
                 // 监控端点内部放行
                 .requestMatchers(EndpointRequest.toAnyEndpoint()).permitAll()
                 .anyRequest().authenticated()

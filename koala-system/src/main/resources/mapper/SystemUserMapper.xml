@@ -2,9 +2,6 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.igetwell.system.mapper.SystemUserMapper">
   <resultMap id="baseMap" type="org.igetwell.system.entity.SystemUser">
-    <!--
-      WARNING - @mbg.generated
-    -->
     <id column="ID" jdbcType="BIGINT" property="id" />
     <result column="TENANT_ID" jdbcType="VARCHAR" property="tenantId" />
     <result column="USERNAME" jdbcType="VARCHAR" property="username" />
@@ -132,5 +129,6 @@
         IS_DELETED = #{isDeleted,jdbcType=INTEGER},
       </if>
     </set>
+    WHERE ID = #{id,jdbcType=VARCHAR}
   </update>
 </mapper>

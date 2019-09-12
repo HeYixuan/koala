@@ -1,6 +1,5 @@
 package org.igetwell.system.feign;
 
-
 import org.igetwell.common.uitls.ResponseEntity;
 import org.igetwell.system.entity.SystemUser;
 import org.springframework.cloud.openfeign.FeignClient;

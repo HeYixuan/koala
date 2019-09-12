@@ -3,6 +3,9 @@ package org.igetwell.system.feign;
 import org.igetwell.system.entity.SystemRole;
 import org.igetwell.system.vo.SystemRoleVo;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
@@ -13,6 +16,7 @@ public interface SystemRoleClient {
      * 获取所有角色
      * @return
      */
+    @PostMapping("/systemRole/getList")
     List<SystemRole> getList();
 
     /**
@@ -20,7 +24,8 @@ public interface SystemRoleClient {
      * @param idList
      * @return
      */
-    List<SystemRoleVo> getRoleNames(List<String> idList);
+    @PostMapping("/systemRole/getRoleNames")
+    List<SystemRoleVo> getRoleNames(@RequestBody List<String> idList);
 
 
     /**
@@ -28,7 +33,8 @@ public interface SystemRoleClient {
      * @param id
      * @return
      */
-    List<SystemRoleVo> loadByUser(Long id);
+    @PostMapping("/systemRole/loadByUser/{id}")
+    List<SystemRoleVo> loadByUser(@PathVariable("id") Long id);
 
     /**
      * 根据租户ID和用户ID查询所有角色
@@ -36,20 +42,6 @@ public interface SystemRoleClient {
      * @param id
      * @return
      */
-    List<SystemRoleVo> loadByTenant(String tenant, Long id);
-
-    /**
-     * 根据角色ID查询数据权限类型
-     * @param id
-     * @return
-     */
-    Integer getDsType(Long id);
-
-    /**
-     * 根据租户ID和角色ID查询数据权限类型
-     * @param tenant
-     * @param id
-     * @return
-     */
-    Integer getDataScopeType(String tenant, Long id);
+    @PostMapping("/systemRole/loadByTenant/{tenant}/{id}")
+    List<SystemRoleVo> loadByTenant(@PathVariable("tenant") String tenant, @PathVariable("id") Long id);
 }

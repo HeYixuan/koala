@@ -31,6 +31,12 @@ logging:
   config: classpath:logback.xml
 
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+
 #oauth2授权
 security:
   oauth2:

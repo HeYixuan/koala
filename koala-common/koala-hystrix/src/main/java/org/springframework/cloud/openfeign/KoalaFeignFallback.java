@@ -33,6 +33,7 @@ public class KoalaFeignFallback<T> implements MethodInterceptor {
 	@Override
 	@SneakyThrows
 	public Object intercept(Object o, Method method, Object[] objects, MethodProxy methodProxy) {
+		log.error("KoalaFeignFallback:[{}.{}] serviceId:[{}] message:[{}]", targetType.getName(), method.getName(), targetName, cause.getMessage());
 		Class<?> returnType = method.getReturnType();
 		// 暂时不支持 flux，rx，异步等，返回值不是 ResponseEntity，直接返回 null。
 		if (ResponseEntity.class != returnType) {

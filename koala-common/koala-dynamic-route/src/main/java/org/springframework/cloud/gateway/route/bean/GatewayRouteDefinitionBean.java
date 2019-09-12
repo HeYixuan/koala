@@ -12,7 +12,7 @@ import java.io.Serializable;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class RouteDefinitionBean extends RouteDefinition implements Serializable {
+public class GatewayRouteDefinitionBean extends RouteDefinition implements Serializable {
 	/**
 	 * 路由名称
 	 */

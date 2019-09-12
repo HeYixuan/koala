@@ -24,6 +24,6 @@ public class DataScopeProperties {
 	/**
 	 * mapper过滤
 	 */
-	private List<String> mapperExclude = Collections.singletonList("SystemRoleMapper");
+	private List<String> mapperExclude = Arrays.asList("SystemRoleMapper", "SystemGatewayRouteMapper");
 
 }

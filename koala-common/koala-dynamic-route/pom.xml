@@ -19,22 +19,17 @@
     </properties>
 
     <dependencies>
-        <!--注册中心客户端-->
+
         <dependency>
             <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
-            <version>${spring-cloud-alibaba.version}</version>
+            <artifactId>spring-cloud-gateway-core</artifactId>
         </dependency>
-        <!--配置中心客户端-->
+
         <dependency>
             <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
+            <artifactId>spring-cloud-alibaba-nacos-discovery</artifactId>
         </dependency>
-        <!--gateway 网关依赖,内置webflux 依赖-->
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-gateway</artifactId>
-        </dependency>
+
         <!--缓存
         <dependency>
             <groupId>org.springframework.boot</groupId>

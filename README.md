@@ -19,3 +19,8 @@ http://localhost:9001/oauth/check_token?token=b78a15ce-0faa-4ee8-95d5-433e121b5a
 手动授权 用户名：admin 123456
 <br/>
 http://localhost:9001/oauth/authorize?client_id=test2&response_type=code&redirect_uri=https://www.baidu.com/
+
+
+1.使用了Feign增强,不需要手动写Feign实现,只需要写Controller的Mapping映射和Feign的映射一致
+2.网关
+3.

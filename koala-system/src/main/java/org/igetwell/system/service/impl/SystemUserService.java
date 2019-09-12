@@ -7,10 +7,6 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.util.List;
 
-/**
- * 服务实现类
- *
- */
 @Service
 public class SystemUserService implements ISystemUserService {
 

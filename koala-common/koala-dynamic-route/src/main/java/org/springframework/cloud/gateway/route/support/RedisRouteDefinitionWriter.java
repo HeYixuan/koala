@@ -6,7 +6,7 @@ import org.igetwell.common.constans.cache.CacheKey;
 import org.springframework.beans.BeanUtils;
 import org.springframework.cloud.gateway.route.RouteDefinition;
 import org.springframework.cloud.gateway.route.RouteDefinitionRepository;
-import org.springframework.cloud.gateway.route.bean.RouteDefinitionBean;
+import org.springframework.cloud.gateway.route.bean.GatewayRouteDefinitionBean;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
@@ -29,7 +29,7 @@ public class RedisRouteDefinitionWriter implements RouteDefinitionRepository {
 	@Override
 	public Mono<Void> save(Mono<RouteDefinition> route) {
 		return route.flatMap(r -> {
-			RouteDefinitionBean bean = new RouteDefinitionBean();
+			GatewayRouteDefinitionBean bean = new GatewayRouteDefinitionBean();
 			BeanUtils.copyProperties(r, bean);
 			log.info("保存路由信息{}", bean);
 			redisTemplate.setKeySerializer(new StringRedisSerializer());
@@ -57,8 +57,8 @@ public class RedisRouteDefinitionWriter implements RouteDefinitionRepository {
 	@Override
 	public Flux<RouteDefinition> getRouteDefinitions() {
 		redisTemplate.setKeySerializer(new StringRedisSerializer());
-		redisTemplate.setHashValueSerializer(new Jackson2JsonRedisSerializer<>(RouteDefinitionBean.class));
-		List<RouteDefinitionBean> values = redisTemplate.opsForHash().values(CacheKey.ROUTE_KEY);
+		redisTemplate.setHashValueSerializer(new Jackson2JsonRedisSerializer<>(GatewayRouteDefinitionBean.class));
+		List<GatewayRouteDefinitionBean> values = redisTemplate.opsForHash().values(CacheKey.ROUTE_KEY);
 		List<RouteDefinition> definitionList = new ArrayList<>();
 		values.forEach(bean -> {
 			RouteDefinition routeDefinition = new RouteDefinition();

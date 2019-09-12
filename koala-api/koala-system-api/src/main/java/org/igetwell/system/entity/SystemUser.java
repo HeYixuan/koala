@@ -1,13 +1,10 @@
 package org.igetwell.system.entity;
 
-import lombok.Data;
-
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
 
-@Data
 @Table(name = "sys_user")
 public class SystemUser implements Serializable {
 
