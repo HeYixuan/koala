@@ -36,11 +36,11 @@ public class PasswordDecoderFilter extends AbstractGatewayFilterFactory {
 	private String encodeKey;
 
 	@SneakyThrows
-	private static String decryptAES(String data, String pass) {
+	private static String decryptAES(String password, String encodeKey) {
 		AES aes = new AES(Mode.CBC,Padding.NoPadding,
-				new SecretKeySpec(pass.getBytes(), KEY_ALGORITHM),
-				new IvParameterSpec(pass.getBytes()));
-		byte[] result = aes.decrypt(Base64.decode(data.getBytes(StandardCharsets.UTF_8)));
+				new SecretKeySpec(encodeKey.getBytes(), KEY_ALGORITHM),
+				new IvParameterSpec(encodeKey.getBytes()));
+		byte[] result = aes.decrypt(Base64.decode(password.getBytes(StandardCharsets.UTF_8)));
 		return new String(result, StandardCharsets.UTF_8);
 	}
 
@@ -55,8 +55,8 @@ public class PasswordDecoderFilter extends AbstractGatewayFilterFactory {
 			}
 
 			URI uri = exchange.getRequest().getURI();
-			String queryParam = uri.getRawQuery();
-			Map<String, String> paramMap = HttpUtil.decodeParamMap(queryParam, CharsetUtil.UTF_8);
+			String param = uri.getRawQuery();
+			Map<String, String> paramMap = HttpUtil.decodeParamMap(param, CharsetUtil.UTF_8);
 
 			String password = paramMap.get(PASSWORD);
 			if (StrUtil.isNotBlank(password)) {

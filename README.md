@@ -23,4 +23,15 @@ http://localhost:9001/oauth/authorize?client_id=test2&response_type=code&redirec
 
 1.使用了Feign增强,不需要手动写Feign实现,只需要写Controller的Mapping映射和Feign的映射一致
 2.网关
-3.
+3.登陆密码需要传入AES加密过的密码,因为会走网关密码拦截器拦截。<br/>
+3.1：AES加密链接:http://tool.chacuo.net/cryptaes <br/>
+加密模式：CBC  
+填充：ZERO_PADDING  <br/>
+密码：koalakoalakoalak  <br/>
+偏移量：koalakoalakoalak <br/>
+输出:Base64  <br/>
+加密明文：123456  <br/>
+加密后密文：v5mRVijjCH4VLpTSIzstuQ==  <br/>
+密文urlEncode后字符串是：v5mRVijjCH4VLpTSIzstuQ%3D%3D  <br/>
+
+
