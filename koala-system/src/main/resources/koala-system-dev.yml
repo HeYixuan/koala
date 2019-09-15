@@ -44,10 +44,7 @@ koala:
     column: tenant_id
     tables:
       - sys_user
-      - sys_role
-      - sys_dept
       - sys_file
-
 
 mybatis-plus:
   tenant-enable: ture

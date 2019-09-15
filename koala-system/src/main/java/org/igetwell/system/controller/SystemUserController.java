@@ -5,6 +5,7 @@ import org.igetwell.common.uitls.ResponseEntity;
 import org.igetwell.system.entity.SystemUser;
 import org.igetwell.system.service.ISystemUserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -23,7 +24,7 @@ public class SystemUserController {
      * @return
      */
     @PostMapping("/systemUser/loadByUsername/{tenant}/{username}")
-    public SystemUser loadByUsername(String tenant, String username){
+    public SystemUser loadByUsername(@PathVariable("tenant") String tenant, @PathVariable("username") String username){
         SystemUser systemUser = iSystemUserService.loadByUsername(tenant, username);
         return systemUser;
     }

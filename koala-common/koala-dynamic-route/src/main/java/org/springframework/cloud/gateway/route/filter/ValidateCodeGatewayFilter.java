@@ -73,6 +73,7 @@ public class ValidateCodeGatewayFilter extends AbstractGatewayFilterFactory {
 				checkCode(request);
 			} catch (Exception e) {
 				ServerHttpResponse response = exchange.getResponse();
+				response.getHeaders().add("content-type", "application/json;charset=UTF-8");
 				response.setStatusCode(HttpStatus.BAD_REQUEST);
 				try {
 					return response.writeWith(Mono.just(response.bufferFactory()

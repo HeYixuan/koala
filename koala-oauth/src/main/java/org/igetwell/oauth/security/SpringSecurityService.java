@@ -55,7 +55,7 @@ public class SpringSecurityService implements UserDetailsService {
         if (StringUtils.isEmpty(tenant)){
             throw new UsernameNotFoundException("租户ID不能为空");
         }
-        SystemUser systemUser = systemUserClient.loadByUsername(TenantContextHolder.getTenantId(), username);
+        SystemUser systemUser = systemUserClient.loadByUsername(tenant, username);
         if (null == systemUser){
             throw new UsernameNotFoundException("用户账号: " + username + " 不存在");
         }

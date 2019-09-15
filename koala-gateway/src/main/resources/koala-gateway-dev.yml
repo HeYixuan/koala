@@ -5,6 +5,7 @@ security:
 ignore:
   clients:
     - test
+    - test2
   swagger-providers:
     - ${AUTH-HOST:koala-oauth}
 
