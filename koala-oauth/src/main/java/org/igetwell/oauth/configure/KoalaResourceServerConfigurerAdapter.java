@@ -66,7 +66,10 @@ public class KoalaResourceServerConfigurerAdapter extends ResourceServerConfigur
                 .requestMatchers(EndpointRequest.toAnyEndpoint()).permitAll()
                 .anyRequest().authenticated()
                 .and()
-                .formLogin().loginPage("/login").permitAll()
+                .formLogin()
+                .loginPage("/login")
+                .loginProcessingUrl("/login")
+                .permitAll()
                 .and()
                 .logout().permitAll()
                 // /logout退出清除cookie

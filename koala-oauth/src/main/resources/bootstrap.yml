@@ -1,47 +1,45 @@
 server:
-    port: 9000
-
+  port: 9000
 spring:
-    application:
-        name: koala-oauth
-    cloud:
-        nacos:
-            discovery:
-                server-addr: ${NACOS-HOST:pigx-register}:${NACOS-PORT:8848}
-            config:
-                server-addr: ${spring.cloud.nacos.discovery.server-addr}
-                file-extension: yml
-                shared-dataids: ${spring.application.name}-${spring.profiles.active}.${spring.cloud.nacos.config.file-extension}
-    profiles:
-        active: dev
-    messages:
-        basename: static/i18n/messages #相对路径 开头请勿添加斜杠
+  application:
+    name: koala-oauth
 
-    main:
-        allow-bean-definition-overriding: true
+  cloud:
+    nacos:
+      discovery:
+        server-addr: ${NACOS-HOST:pigx-register}:${NACOS-PORT:8848}
+      config:
+        server-addr: ${spring.cloud.nacos.discovery.server-addr}
+        file-extension: yml
+        shared-dataids: ${spring.application.name}-${spring.profiles.active}.${spring.cloud.nacos.config.file-extension}
+  profiles:
+    active: dev
 
-    thymeleaf:
-        mode: LEGACYHTML5
-        prefix: classpath:/templates/
-        suffix: .html
-        encoding: UTF-8
-        cache: false
+  main:
+    allow-bean-definition-overriding: true
+
+  thymeleaf:
+    mode: LEGACYHTML5
+    prefix: classpath:/templates/
+    suffix: .html
+    encoding: UTF-8
+    cache: false
 
 management:
-    endpoints:
-        web:
-            exposure:
-                include: '*'
+  endpoints:
+    web:
+      exposure:
+        include: '*'
 
 #oauth2授权
 security:
-    oauth2:
-        client:
-            client-id: koala
-            client-secret: koala
-            user-authorization-uri: http://localhost:9000/oauth/authorize
-            access-token-uri: http://localhost:9000/oauth/token
-            scope: server
-        resource:
-            loadBalanced: true
-            token-info-uri: http://localhost:9000/oauth/check_token
+  oauth2:
+    client:
+      client-id: koala
+      client-secret: koala
+      user-authorization-uri: http://localhost:9999/oauth/oauth/authorize
+      access-token-uri: http://localhost:9999/oauth/oauth/token
+      scope: server
+    resource:
+      loadBalanced: true
+      token-info-uri: http://localhost:9999/oauth/oauth/check_token
