@@ -1,9 +1,9 @@
 server:
     port: 9000
+
 spring:
     application:
         name: koala-oauth
-
     cloud:
         nacos:
             discovery:
@@ -14,6 +14,8 @@ spring:
                 shared-dataids: ${spring.application.name}-${spring.profiles.active}.${spring.cloud.nacos.config.file-extension}
     profiles:
         active: dev
+    messages:
+        basename: static/i18n/messages #相对路径 开头请勿添加斜杠
 
     main:
         allow-bean-definition-overriding: true
@@ -25,15 +27,21 @@ spring:
         encoding: UTF-8
         cache: false
 
+management:
+    endpoints:
+        web:
+            exposure:
+                include: '*'
+
 #oauth2授权
 security:
     oauth2:
         client:
             client-id: koala
             client-secret: koala
-            user-authorization-uri: http://localhost:9999/auth/oauth/authorize
-            access-token-uri: http://localhost:9999/auth/oauth/token
+            user-authorization-uri: http://localhost:9000/oauth/authorize
+            access-token-uri: http://localhost:9000/oauth/token
             scope: server
         resource:
             loadBalanced: true
-            token-info-uri: http://localhost:9999/auth/oauth/check_token
+            token-info-uri: http://localhost:9000/oauth/check_token
