@@ -35,3 +35,16 @@ http://localhost:9001/oauth/authorize?client_id=test2&response_type=code&redirec
 密文urlEncode后字符串是：Y3rzvgYsYvBBLGjOCl4jTg%3D%3D  <br/>
 
 
+通过网关访问登录
+http://localhost:9999/oauth/oauth/token?username=admin2&password=Y3rzvgYsYvBBLGjOCl4jTg%3D%3D&grant_type=password&scope=all
+<br/>携带请求头
+Authorization: Basic dGVzdDI6dGVzdDI=
+<br/>
+TENANT-ID: 000000
+注：TENANT-ID 默认000000
+
+获取到token后请求
+http://localhost:9999/system/systemUser/getList
+<br/>携带请求头
+Authorization: Bearer 6265b580-f096-4826-ab2d-b61b45cb19a6
+
