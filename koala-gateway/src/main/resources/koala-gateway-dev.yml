@@ -1,6 +1,6 @@
 security:
   encode:
-    key: "0oY/L0SBdNjXm8DM4mf4kQ=="
+    key: "0oYL0SBdNjXm8DkQ"
 
 ignore:
   clients:
@@ -12,3 +12,6 @@ ignore:
 ribbon:
   rule:
     gray-enabled: true
+
+
+spring.

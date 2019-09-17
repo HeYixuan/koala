@@ -362,7 +362,7 @@ public class SystemUser implements Serializable {
      * @return is_enable - 账户启用状态：0停用 1启用
      */
     public boolean isEnabled() {
-        return isEnabled;
+        return true;
     }
 
     /**
@@ -371,7 +371,7 @@ public class SystemUser implements Serializable {
      * @param isEnabled 账户启用状态：0停用 1启用
      */
     public void setIsEnabled(boolean isEnabled) {
-        this.isEnabled = isEnabled;
+        this.isEnabled = true;
     }
 
     /**

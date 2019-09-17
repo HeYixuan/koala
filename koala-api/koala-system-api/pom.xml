@@ -24,6 +24,10 @@
             <artifactId>persistence-api</artifactId>
             <version>1.0.2</version>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-gateway-core</artifactId>
+        </dependency>
 <!--        &lt;!&ndash;feign 依赖&ndash;&gt;-->
 <!--        <dependency>-->
 <!--            <groupId>io.github.openfeign</groupId>-->
@@ -33,6 +37,7 @@
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-openfeign</artifactId>
         </dependency>
+
     </dependencies>
 
 </project>

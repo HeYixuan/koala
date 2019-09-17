@@ -24,3 +24,16 @@ spring:
         suffix: .html
         encoding: UTF-8
         cache: false
+
+#oauth2授权
+security:
+    oauth2:
+        client:
+            client-id: koala
+            client-secret: koala
+            user-authorization-uri: http://localhost:9999/auth/oauth/authorize
+            access-token-uri: http://localhost:9999/auth/oauth/token
+            scope: server
+        resource:
+            loadBalanced: true
+            token-info-uri: http://localhost:9999/auth/oauth/check_token

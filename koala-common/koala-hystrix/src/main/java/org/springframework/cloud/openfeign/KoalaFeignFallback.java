@@ -36,9 +36,9 @@ public class KoalaFeignFallback<T> implements MethodInterceptor {
 		log.error("KoalaFeignFallback:[{}.{}] serviceId:[{}] message:[{}]", targetType.getName(), method.getName(), targetName, cause.getMessage());
 		Class<?> returnType = method.getReturnType();
 		// 暂时不支持 flux，rx，异步等，返回值不是 ResponseEntity，直接返回 null。
-		if (ResponseEntity.class != returnType) {
+		/*if (ResponseEntity.class != returnType) {
 			return null;
-		}
+		}*/
 		// 非 FeignException，直接返回请求被拒绝
 		if (!(cause instanceof FeignException) || (cause instanceof RetryableException)) {
 			return new ResponseEntity(HttpStatus.FORBIDDEN, cause.getMessage());

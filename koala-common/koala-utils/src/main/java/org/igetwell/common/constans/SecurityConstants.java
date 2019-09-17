@@ -70,6 +70,11 @@ public interface SecurityConstants {
 	String OAUTH_TOKEN_URL = "/oauth/token";
 
 	/**
+	 * OAUTH URL
+	 */
+	String OAUTH_AUTHORIZE_URL = "/oauth/authorize";
+
+	/**
 	 * 手机号登录URL
 	 */
 	String SMS_TOKEN_URL = "/mobile/token/sms";

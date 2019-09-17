@@ -51,7 +51,7 @@ public class SpringSecurityWebAppConfig extends WebSecurityConfigurerAdapter {
         http
                 .addFilterBefore(filterSecurityInterceptor, FilterSecurityInterceptor.class)
                 .authorizeRequests()
-                .antMatchers("/login", "/oauth/**", "/systemUser/**", "/systemRole/**","/systemMenu/**")
+                .antMatchers("/login", "/oauth/**", "/systemUser/**", "/systemRole/**","/systemMenu/**", "/gateway/**")
                 .permitAll()
                 .and()
                 .authorizeRequests()

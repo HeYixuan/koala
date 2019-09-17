@@ -10,8 +10,31 @@ import reactor.core.publisher.Mono;
  */
 @Configuration
 public class RateLimiterConfiguration {
+
+	/**
+	 * IP限流
+	 * @return
+	 */
 	@Bean(value = "remoteAddrKeyResolver")
 	public KeyResolver remoteAddrKeyResolver() {
 		return exchange -> Mono.just(exchange.getRequest().getRemoteAddress().getAddress().getHostAddress());
+	}
+
+	/**
+	 * 用户限流，使用这种方式限流，请求路径中必须携带userId参数
+	 * @return
+	 */
+	@Bean(value = "remoteUserKeyResolver")
+	public KeyResolver userKeyResolver() {
+		return exchange -> Mono.just(exchange.getRequest().getQueryParams().getFirst("userId"));
+	}
+
+	/**
+	 * 接口限流，获取请求地址的uri作为限流key
+	 * @return
+	 */
+	@Bean(value = "remoteApiKeyResolver")
+	public KeyResolver apiKeyResolver() {
+		return exchange -> Mono.just(exchange.getRequest().getPath().value());
 	}
 }

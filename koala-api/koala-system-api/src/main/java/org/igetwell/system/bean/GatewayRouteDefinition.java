@@ -1,8 +1,6 @@
 package org.igetwell.system.bean;
 
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +14,8 @@ import java.util.List;
 @EqualsAndHashCode
 @Builder
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class GatewayRouteDefinition {
 
     /**

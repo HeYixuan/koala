@@ -1,18 +1,17 @@
-package org.igetwell.system.configure;
+package org.springframework.cloud.gateway.route.support;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.igetwell.common.constans.cache.CacheKey;
 import org.igetwell.common.uitls.GsonUtils;
-import org.igetwell.system.service.ISystemGatewayRouteService;
+import org.igetwell.system.bean.GatewayRouteDefinitionBean;
+import org.igetwell.system.feign.SystemGatewayRouteClient;
 import org.springframework.beans.BeanUtils;
 import org.springframework.boot.web.context.WebServerInitializedEvent;
 import org.springframework.cloud.gateway.config.GatewayProperties;
 import org.springframework.cloud.gateway.config.PropertiesRouteDefinitionLocator;
 import org.springframework.cloud.gateway.filter.FilterDefinition;
 import org.springframework.cloud.gateway.handler.predicate.PredicateDefinition;
-import org.springframework.cloud.gateway.route.bean.GatewayRouteDefinitionBean;
-import org.springframework.cloud.gateway.route.support.DynamicRouteInitEvent;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.EventListener;
@@ -22,7 +21,8 @@ import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.scheduling.annotation.Async;
 
 import java.net.URI;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 容器启动后保存配置文件里面的路由信息到Redis
@@ -32,16 +32,16 @@ import java.util.*;
 @AllArgsConstructor
 public class DynamicRouteInitRunner {
 	private final RedisTemplate redisTemplate;
-	private final ISystemGatewayRouteService iSystemGatewayRouteService;
+	private final SystemGatewayRouteClient systemGatewayRouteClient;
 
 	@Async
 	@Order
 	@EventListener({WebServerInitializedEvent.class, DynamicRouteInitEvent.class})
 	public void initRoute() {
-		Boolean result = redisTemplate.delete(CacheKey.ROUTE_KEY);
-		log.info("初始化网关路由 {} ", result);
+		boolean bool = redisTemplate.delete(CacheKey.ROUTE_KEY);
+		log.info("初始化网关路由 {} ", bool);
 
-		iSystemGatewayRouteService.routes().forEach(route -> {
+		systemGatewayRouteClient.routes().forEach(route -> {
 
 			GatewayRouteDefinitionBean gatewayRouteDefinition = new GatewayRouteDefinitionBean();
 			BeanUtils.copyProperties(route, gatewayRouteDefinition);

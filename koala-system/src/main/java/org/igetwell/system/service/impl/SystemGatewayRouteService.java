@@ -2,22 +2,15 @@ package org.igetwell.system.service.impl;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.igetwell.common.constans.cache.CacheKey;
 import org.igetwell.common.uitls.GsonUtils;
+import org.igetwell.system.bean.GatewayRouteDefinitionBean;
 import org.igetwell.system.entity.SystemGatewayRoute;
 import org.igetwell.system.mapper.SystemGatewayRouteMapper;
 import org.igetwell.system.service.ISystemGatewayRouteService;
 import org.springframework.beans.BeanUtils;
-import org.springframework.cloud.gateway.event.RefreshRoutesEvent;
-import org.springframework.cloud.gateway.route.bean.GatewayRouteDefinitionBean;
-import org.springframework.cloud.gateway.route.support.DynamicRouteInitEvent;
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
-import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -28,8 +21,6 @@ import java.util.List;
 public class SystemGatewayRouteService implements ISystemGatewayRouteService {
 
     private final SystemGatewayRouteMapper systemGatewayRouteMapper;
-    private final RedisTemplate redisTemplate;
-    private final ApplicationEventPublisher applicationEventPublisher;
 
 
     @Override
@@ -42,45 +33,15 @@ public class SystemGatewayRouteService implements ISystemGatewayRouteService {
         SystemGatewayRoute gatewayRoute = transToGatewayRoutes(route);
         systemGatewayRouteMapper.addRoute(gatewayRoute);
     }
-
-    @Override
-    public Mono<Void> updateRoutes(GatewayRouteDefinitionBean route) {
-        try {
-            // 清空Redis 缓存
-            boolean bool = redisTemplate.delete(CacheKey.ROUTE_KEY);
-            log.info("清空网关路由 {} ", bool);
-            SystemGatewayRoute gatewayRoute = transToGatewayRoutes(route);
-            systemGatewayRouteMapper.updateRoute(gatewayRoute);
-            redisTemplate.setHashValueSerializer(new Jackson2JsonRedisSerializer<>(SystemGatewayRoute.class));
-            redisTemplate.opsForHash().put(CacheKey.ROUTE_KEY, gatewayRoute.getId(), gatewayRoute);
-            this.applicationEventPublisher.publishEvent(new RefreshRoutesEvent(this));
-            log.debug("=============更新网关路由结束===============");
-        } catch (Exception e){
-            log.error("路由配置解析失败", e);
-            // 回滚路由，重新加载即可
-            this.applicationEventPublisher.publishEvent(new DynamicRouteInitEvent(this));
-            throw new RuntimeException("路由配置解析失败");
-        }
-        return Mono.empty();
-    }
-
     @Override
     public void updateRoute(GatewayRouteDefinitionBean route) {
         try {
-            // 清空Redis 缓存
-            boolean bool = redisTemplate.delete(CacheKey.ROUTE_KEY);
-            log.info("清空网关路由 {} ", bool);
             SystemGatewayRoute gatewayRoute = transToGatewayRoutes(route);
             systemGatewayRouteMapper.updateRoute(gatewayRoute);
-            redisTemplate.setHashValueSerializer(new Jackson2JsonRedisSerializer<>(SystemGatewayRoute.class));
-            redisTemplate.opsForHash().put(CacheKey.ROUTE_KEY, gatewayRoute.getId(), gatewayRoute);
-            this.applicationEventPublisher.publishEvent(new RefreshRoutesEvent(this));
-            log.debug("=============更新网关路由结束===============");
         } catch (Exception e){
             log.error("路由配置解析失败", e);
             // 回滚路由，重新加载即可
-            this.applicationEventPublisher.publishEvent(new DynamicRouteInitEvent(this));
-            throw new RuntimeException("路由配置解析失败");
+            throw new RuntimeException("路由配置更新失败");
         }
 
     }
@@ -121,11 +82,5 @@ public class SystemGatewayRouteService implements ISystemGatewayRouteService {
      */
     @Override
     public void refreshGateway() {
-        try {
-            this.applicationEventPublisher.publishEvent(new RefreshRoutesEvent(this));
-            log.info("refreshGateway:success");
-        } catch (Exception e) {
-            log.error("refreshGateway error:{}", e.getMessage());
-        }
     }
 }

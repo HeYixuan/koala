@@ -15,3 +15,39 @@ spring:
         shared-dataids: ${spring.application.name}-${spring.profiles.active}.${spring.cloud.nacos.config.file-extension}
   profiles:
     active: dev
+  main:
+    allow-bean-definition-overriding: true
+
+feign:
+  hystrix:
+    enabled: true
+  okhttp:
+    enabled: true
+  httpclient:
+    enabled: false
+  client:
+    config:
+      default:
+        connectTimeout: 10000
+        readTimeout: 10000
+  compression:
+    request:
+      enabled: true
+    response:
+      enabled: true
+# hystrix If you need to use ThreadLocal bound variables in your RequestInterceptor`s
+# you will need to either set the thread isolation strategy for Hystrix to `SEMAPHORE or disable Hystrix in Feign.
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          strategy: SEMAPHORE
+          thread:
+            timeoutInMilliseconds: 60000
+  shareSecurityContext: true
+
+
+ribbon:
+  ReadTimeout: 120000
+  ConnectTimeout: 30000

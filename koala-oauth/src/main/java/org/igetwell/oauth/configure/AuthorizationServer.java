@@ -55,13 +55,10 @@ public class AuthorizationServer extends AuthorizationServerConfigurerAdapter {
                 .userDetailsService(springSecurityService)
                 .accessTokenConverter(buildAccessTokenConverter())
                 .authenticationManager(authenticationManager)
-                .reuseRefreshTokens(false);
-        // 自定义确认授权页面
-        endpoints.pathMapping("/oauth/confirm_access", "/oauth/confirm_access");
-        // 自定义错误页
-        endpoints.pathMapping("/oauth/error", "/oauth/error");
-        // 自定义异常转换类
-        //endpoints.exceptionTranslator(new OpenOAuth2WebResponseExceptionTranslator());
+                .reuseRefreshTokens(false)
+                .pathMapping("/oauth/confirm_access", "/token/confirm_access") // 自定义确认授权页面
+                .pathMapping("/oauth/error", "/oauth/error"); // 自定义错误页
+                //.exceptionTranslator(new OpenOAuth2WebResponseExceptionTranslator()); // 自定义异常转换类
     }
 
     /**

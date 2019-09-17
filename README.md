@@ -27,11 +27,11 @@ http://localhost:9001/oauth/authorize?client_id=test2&response_type=code&redirec
 3.1：AES加密链接:http://tool.chacuo.net/cryptaes <br/>
 加密模式：CBC  
 填充：ZERO_PADDING  <br/>
-密码：koalakoalakoalak  <br/>
-偏移量：koalakoalakoalak <br/>
+密码：0oYL0SBdNjXm8DkQ  <br/>
+偏移量：0oYL0SBdNjXm8DkQ <br/>
 输出:Base64  <br/>
 加密明文：123456  <br/>
-加密后密文：v5mRVijjCH4VLpTSIzstuQ==  <br/>
-密文urlEncode后字符串是：v5mRVijjCH4VLpTSIzstuQ%3D%3D  <br/>
+加密后密文：Y3rzvgYsYvBBLGjOCl4jTg==  <br/>
+密文urlEncode后字符串是：Y3rzvgYsYvBBLGjOCl4jTg%3D%3D  <br/>
 
 

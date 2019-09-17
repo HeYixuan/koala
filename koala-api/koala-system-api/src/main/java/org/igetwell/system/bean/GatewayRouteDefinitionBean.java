@@ -1,4 +1,4 @@
-package org.springframework.cloud.gateway.route.bean;
+package org.igetwell.system.bean;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;

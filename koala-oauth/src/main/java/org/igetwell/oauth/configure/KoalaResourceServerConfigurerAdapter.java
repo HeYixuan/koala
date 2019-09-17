@@ -1,4 +1,4 @@
-package org.igetwell.system.configure;
+package org.igetwell.oauth.configure;
 
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
