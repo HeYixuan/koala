@@ -1,11 +1,8 @@
 package org.igetwell.common.uitls;
 
-import lombok.experimental.UtilityClass;
-
 import java.util.ArrayList;
 import java.util.List;
 
-@UtilityClass
 public class TreeUtils {
 
     public List<TreeNode> treeNodes(List<TreeNode> nodes) {
