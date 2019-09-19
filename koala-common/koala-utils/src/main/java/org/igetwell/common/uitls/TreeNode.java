@@ -55,4 +55,8 @@ public class TreeNode {
     public void setChildren(List<TreeNode> children) {
         this.children = children;
     }
+
+    public void add(TreeNode node) {
+        children.add(node);
+    }
 }
