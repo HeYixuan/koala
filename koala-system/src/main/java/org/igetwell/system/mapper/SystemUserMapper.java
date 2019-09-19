@@ -15,6 +15,13 @@ public interface SystemUserMapper {
      */
     SystemUser loadByUsername(String tenant, String username);
 
+    /**
+     * 检查手机号
+     * @param mobile
+     * @return
+     */
+    SystemUser checkMobile(String mobile);
+
     List<SystemUser> getList();
 
     int deleteById(Long id);

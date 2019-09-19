@@ -56,6 +56,9 @@ public class ResponseEntity<T> implements Serializable {
         return new ResponseEntity().status(HttpStatus.INTERNAL_SERVER_ERROR.value()).message(HttpStatus.INTERNAL_SERVER_ERROR.getMessage());
     }
 
+    public static ResponseEntity error(HttpStatus status, String message, String exception) {
+        return new ResponseEntity().status(status.value()).message(message).exception(exception);
+    }
     public static ResponseEntity error(HttpStatus status, String exception) {
         return new ResponseEntity().status(status.value()).message(status.getMessage()).exception(exception);
     }

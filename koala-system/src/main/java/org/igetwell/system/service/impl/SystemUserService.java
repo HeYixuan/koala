@@ -24,6 +24,17 @@ public class SystemUserService implements ISystemUserService {
         return systemUserMapper.loadByUsername(tenant, username);
     }
 
+    /**
+     * 检查手机号
+     * @param mobile
+     * @return
+     */
+    @Override
+    public SystemUser checkMobile(String mobile) {
+        return systemUserMapper.checkMobile(mobile);
+    }
+
+
     @Override
     public List<SystemUser> getList() {
         List<SystemUser> systemUserList = systemUserMapper.getList();

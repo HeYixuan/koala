@@ -48,6 +48,13 @@
     WHERE TENANT_ID = #{param1} AND USERNAME = #{param2} AND IS_DELETED = 0
   </select>
 
+  <select id="checkMobile" resultMap="baseMap">
+    SELECT
+      <include refid="baseSql"/>
+    FROM SYS_USER
+    WHERE PHONE = #{mobile}
+  </select>
+
 
   <select id="getList" resultMap="baseMap">
     SELECT
