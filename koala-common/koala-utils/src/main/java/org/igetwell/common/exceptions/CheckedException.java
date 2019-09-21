@@ -1,4 +1,4 @@
-package org.igetwell.common.exeception;
+package org.igetwell.common.exceptions;
 
 import lombok.NoArgsConstructor;
 

@@ -9,7 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.igetwell.common.constans.CommonConstants;
 import org.igetwell.common.constans.SecurityConstants;
 import org.igetwell.common.enums.LoginTypeEnum;
-import org.igetwell.common.exeception.ValidateCodeException;
+import org.igetwell.common.exceptions.ValidateCodeException;
 import org.igetwell.common.uitls.ResponseEntity;
 import org.igetwell.common.uitls.WebUtils;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
@@ -62,7 +62,7 @@ public class ValidateCodeGatewayFilter extends AbstractGatewayFilterFactory {
 				// 如果是社交登录，判断是否包含SMS
 				if (StrUtil.containsAnyIgnoreCase(request.getURI().getPath(), SecurityConstants.SOCIAL_TOKEN_URL)) {
 					String mobile = request.getQueryParams().getFirst("mobile");
-					if (StrUtil.containsAny(mobile, LoginTypeEnum.SMS.getType())) {
+					if (StrUtil.containsAny(mobile, LoginTypeEnum.MOBILE.getType())) {
 						throw new ValidateCodeException("验证码不合法");
 					} else {
 						return chain.filter(exchange);
