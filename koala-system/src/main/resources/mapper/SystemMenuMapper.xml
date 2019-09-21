@@ -10,19 +10,17 @@
     <result column="code" jdbcType="VARCHAR" property="code" />
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="alias" jdbcType="VARCHAR" property="alias" />
+    <result column="icon_class" jdbcType="VARCHAR" property="iconClass" />
     <result column="path" jdbcType="VARCHAR" property="path" />
     <result column="source" jdbcType="VARCHAR" property="source" />
-    <result column="sort" jdbcType="INTEGER" property="sort" />
-    <result column="category" jdbcType="INTEGER" property="category" />
-    <result column="action" jdbcType="INTEGER" property="action" />
+    <result column="menu_type" jdbcType="INTEGER" property="menuType" />
     <result column="keep_alive" jdbcType="INTEGER" property="keepAlive" />
-    <result column="remark" jdbcType="VARCHAR" property="remark" />
-    <result column="is_deleted" jdbcType="INTEGER" property="isDeleted" />
+    <result column="sort" jdbcType="INTEGER" property="sort" />
+
   </resultMap>
 
   <sql id="baseSql">
-    M.ID, M.PARENT_ID, M.CODE, M.NAME, M.ALIAS, M.PATH, M.SOURCE, M.SORT, M.CATEGORY, M.ACTION, M.KEEP_ALIVE,
-    M.REMARK, M.IS_DELETED
+    M.ID, M.PARENT_ID, M.CODE, M.NAME, M.ALIAS, M.ICON_CLASS, M.PATH, M.SOURCE, M.MENU_TYPE, M.KEEP_ALIVE, M.SORT
   </sql>
 
   <select id="loadByRole" resultMap="baseMap">

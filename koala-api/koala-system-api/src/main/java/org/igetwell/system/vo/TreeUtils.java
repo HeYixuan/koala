@@ -1,4 +1,4 @@
-package org.igetwell.common.uitls;
+package org.igetwell.system.vo;
 
 import java.util.ArrayList;
 import java.util.List;

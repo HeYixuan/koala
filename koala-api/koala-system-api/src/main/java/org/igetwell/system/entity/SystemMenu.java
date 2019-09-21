@@ -33,6 +33,12 @@ public class SystemMenu {
     private String alias;
 
     /**
+     * 菜单图标
+     */
+    @Column(name = "icon_class")
+    private String iconClass;
+
+    /**
      * 请求地址
      */
     private String path;
@@ -43,19 +49,10 @@ public class SystemMenu {
     private String source;
 
     /**
-     * 排序
+     * 菜单类型: 0-菜单 1-按钮
      */
-    private Integer sort;
-
-    /**
-     * 菜单类型
-     */
-    private Integer category;
-
-    /**
-     * 操作按钮类型
-     */
-    private Integer action;
+    @Column(name = "menu_type")
+    private Integer menuType;
 
     /**
      * 0开启 1关闭
@@ -64,15 +61,10 @@ public class SystemMenu {
     private Integer keepAlive;
 
     /**
-     * 备注
+     * 排序
      */
-    private String remark;
+    private Integer sort;
 
-    /**
-     * 是否已删除
-     */
-    @Column(name = "is_deleted")
-    private Integer isDeleted;
 
     /**
      * 获取主键
@@ -165,6 +157,23 @@ public class SystemMenu {
     }
 
     /**
+     * 获取菜单图标
+     * @return
+     */
+    public String getIconClass() {
+        return iconClass;
+    }
+
+    /**
+     * 获取菜单图标
+     * @param iconClass
+     */
+    public void setIconClass(String iconClass) {
+        this.iconClass = iconClass;
+    }
+
+
+    /**
      * 获取请求地址
      *
      * @return path - 请求地址
@@ -201,58 +210,21 @@ public class SystemMenu {
     }
 
     /**
-     * 获取排序
-     *
-     * @return sort - 排序
+     * 设置菜单类型: 0-菜单 1-按钮
+     * @return
      */
-    public Integer getSort() {
-        return sort;
+    public Integer getMenuType() {
+        return menuType;
     }
 
     /**
-     * 设置排序
-     *
-     * @param sort 排序
+     * 设置菜单类型: 0-菜单 1-按钮
+     * @param menuType
      */
-    public void setSort(Integer sort) {
-        this.sort = sort;
+    public void setMenuType(Integer menuType) {
+        this.menuType = menuType;
     }
 
-    /**
-     * 获取菜单类型
-     *
-     * @return category - 菜单类型
-     */
-    public Integer getCategory() {
-        return category;
-    }
-
-    /**
-     * 设置菜单类型
-     *
-     * @param category 菜单类型
-     */
-    public void setCategory(Integer category) {
-        this.category = category;
-    }
-
-    /**
-     * 获取操作按钮类型
-     *
-     * @return action - 操作按钮类型
-     */
-    public Integer getAction() {
-        return action;
-    }
-
-    /**
-     * 设置操作按钮类型
-     *
-     * @param action 操作按钮类型
-     */
-    public void setAction(Integer action) {
-        this.action = action;
-    }
 
     /**
      * 获取0开启 1关闭
@@ -273,38 +245,22 @@ public class SystemMenu {
     }
 
     /**
-     * 获取备注
+     * 获取排序
      *
-     * @return remark - 备注
+     * @return sort - 排序
      */
-    public String getRemark() {
-        return remark;
+    public Integer getSort() {
+        return sort;
     }
 
     /**
-     * 设置备注
+     * 设置排序
      *
-     * @param remark 备注
+     * @param sort 排序
      */
-    public void setRemark(String remark) {
-        this.remark = remark == null ? null : remark.trim();
+    public void setSort(Integer sort) {
+        this.sort = sort;
     }
 
-    /**
-     * 获取是否已删除
-     *
-     * @return is_deleted - 是否已删除
-     */
-    public Integer getIsDeleted() {
-        return isDeleted;
-    }
 
-    /**
-     * 设置是否已删除
-     *
-     * @param isDeleted 是否已删除
-     */
-    public void setIsDeleted(Integer isDeleted) {
-        this.isDeleted = isDeleted;
-    }
 }

@@ -1,4 +1,4 @@
-package org.igetwell.common.uitls;
+package org.igetwell.system.vo;
 
 import java.util.List;
 
@@ -7,7 +7,7 @@ public class TreeNode {
     /**
      * 当前节点ID
      */
-    private String id;
+    private Long id;
 
     /**
      * 当前节点名称
@@ -17,18 +17,18 @@ public class TreeNode {
     /**
      * 父节点ID
      */
-    private String parentId;
+    private Long parentId;
 
     /**
      * 子节点列表
      */
     private List<TreeNode> children;
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -40,11 +40,11 @@ public class TreeNode {
         this.name = name;
     }
 
-    public String getParentId() {
+    public Long getParentId() {
         return parentId;
     }
 
-    public void setParentId(String parentId) {
+    public void setParentId(Long parentId) {
         this.parentId = parentId;
     }
 
