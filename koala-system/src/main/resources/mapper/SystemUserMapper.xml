@@ -61,10 +61,21 @@
   </select>
 
 
-  <select id="getList" resultMap="baseMap">
+  <select id="getList" resultMap="baseMap" parameterType="org.igetwell.system.dto.SystemUserPageDto">
     SELECT
-    <include refid="baseSql" />
+      <include refid="baseSql" />
     FROM SYS_USER
+    <where>
+      <if test="username !=null and username != ''">
+        AND USERNAME LIKE CONCAT('%',#{username},'%')
+      </if>
+      <if test="email !=null and email != ''">
+        AND EMAIL = #{email}
+      </if>
+      <if test="mobile !=null and mobile != ''">
+        AND MOBILE = #{mobile}
+      </if>
+    </where>
   </select>
 
     <delete id="deleteById" parameterType="java.lang.Long">

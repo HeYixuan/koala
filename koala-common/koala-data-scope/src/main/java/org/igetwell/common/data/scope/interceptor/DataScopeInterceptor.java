@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
+import org.apache.ibatis.executor.parameter.ParameterHandler;
 import org.apache.ibatis.executor.statement.StatementHandler;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
@@ -19,6 +20,7 @@ import org.igetwell.common.data.scope.datascope.DataScope;
 import org.igetwell.common.data.scope.enums.DataScopeEnum;
 import org.igetwell.common.data.scope.props.DataScopeProperties;
 import org.igetwell.common.uitls.ClassUtils;
+import org.igetwell.common.uitls.Pagination;
 import org.igetwell.common.uitls.SpringContextHolder;
 import org.igetwell.oauth.security.KoalaUser;
 import org.igetwell.oauth.security.SpringSecurityUtils;
@@ -27,6 +29,7 @@ import org.springframework.security.core.GrantedAuthority;
 
 import java.lang.reflect.Method;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -50,9 +53,10 @@ public class DataScopeInterceptor extends AbstractSqlParserHandler implements In
     @SneakyThrows
 	public Object intercept(Invocation invocation) {
 
-		StatementHandler statementHandler = PluginUtils.realTarget(invocation.getTarget());
+		//获取StatementHandler，默认是RoutingStatementHandler
+		StatementHandler statementHandler = (StatementHandler) invocation.getTarget();
+		//获取statementHandler包装类
 		MetaObject metaObject = SystemMetaObject.forObject(statementHandler);
-		this.sqlParser(metaObject);
 		// 先判断是不是SELECT操作
 		MappedStatement mappedStatement = (MappedStatement) metaObject.getValue("delegate.mappedStatement");
 		if (!SqlCommandType.SELECT.equals(mappedStatement.getSqlCommandType())
@@ -62,7 +66,6 @@ public class DataScopeInterceptor extends AbstractSqlParserHandler implements In
 
 		//查找注解中包含DataAuth类型的参数
 		DataScopeAuth dataAuth = findDataAuthAnnotation(mappedStatement);
-
 
 		//注解为空并且数据权限方法名未匹配到,则放行
 		String mapperId = mappedStatement.getId();
@@ -120,9 +123,35 @@ public class DataScopeInterceptor extends AbstractSqlParserHandler implements In
 			}
 
 		}
+
+		/*String join = StringUtils.join(deptIds, ",");
+		originalSql = "select * from (" + originalSql + ") temp_data_scope where temp_data_scope." + column + " in (" + join + ")";
+		metaObject.setValue("delegate.boundSql.sql", originalSql);*/
+
 		String join = StringUtils.join(deptIds, ",");
 		originalSql = "select * from (" + originalSql + ") temp_data_scope where temp_data_scope." + column + " in (" + join + ")";
-		metaObject.setValue("delegate.boundSql.sql", originalSql);
+
+
+		ParameterHandler parameterHandler = (ParameterHandler) metaObject.getValue("delegate.parameterHandler");
+		//获取请求时的参数
+		Object parameterObject = parameterHandler.getParameterObject();
+		if (parameterObject instanceof Pagination){
+			Pagination pagination = (Pagination) parameterObject;
+			//String sql = (String) metaObject.getValue("delegate.boundSql.sql");
+			//也可以通过statementHandler直接获取
+			//sql = statementHandler.getBoundSql().getSql();
+			log.info("mybatis intercept sql:{}", originalSql);
+
+			String countSql = "select count(*) from (" + originalSql + ") temp";
+			Connection connection = (Connection) invocation.getArgs()[0];
+			PreparedStatement preparedStatement = connection.prepareStatement(countSql);
+			parameterHandler.setParameters(preparedStatement);
+			String pageSql = originalSql + " limit " + (pagination.getPageNo()-1) * pagination.getPageSize() + ", " + pagination.getPageSize();
+			metaObject.setValue("delegate.boundSql.sql", pageSql);
+		}else {
+			metaObject.setValue("delegate.boundSql.sql", originalSql);
+		}
+
 		return invocation.proceed();
 	}
 
@@ -147,7 +176,12 @@ public class DataScopeInterceptor extends AbstractSqlParserHandler implements In
 	 */
 	@Override
 	public void setProperties(Properties properties) {
-
+		//如果项目中分页的pageSize是统一的，也可以在这里统一配置和获取，这样就不用每次请求都传递pageSize参数了。参数是在配置拦截器时配置的。
+		//String limit = properties.getProperty("limit", "10");
+		//this.pageSize = Integer.valueOf(limit);
+		//String dialect = properties.getProperty("dialect");
+		//log.info("mybatis intercept dialect:{}", dialect);
+		//this.dbType = properties.getProperty("dbType", "mysql");
 	}
 
 	/**

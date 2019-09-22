@@ -2,11 +2,13 @@ package org.igetwell.system.controller;
 
 import org.igetwell.common.uitls.Pagination;
 import org.igetwell.common.uitls.ResponseEntity;
+import org.igetwell.system.dto.SystemUserPageDto;
 import org.igetwell.system.entity.SystemUser;
 import org.igetwell.system.service.ISystemUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -30,9 +32,10 @@ public class SystemUserController {
     }
 
     @PostMapping("/systemUser/getList")
-    public List<SystemUser>  getList(){
-        List<SystemUser> systemUserList = iSystemUserService.getList();
-        Pagination<SystemUser> pagination = new Pagination<>(systemUserList);
+    public List<SystemUser>  getList(@RequestBody SystemUserPageDto dto){
+        Pagination pagination = new Pagination();
+        List<SystemUser> systemUserList = iSystemUserService.getList(pagination, dto);
+        //Pagination<SystemUser> pagination = new Pagination<>(systemUserList);
         return systemUserList;
     }
 

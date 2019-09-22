@@ -1,5 +1,7 @@
 package org.igetwell.system.service.impl;
 
+import org.igetwell.common.uitls.Pagination;
+import org.igetwell.system.dto.SystemUserPageDto;
 import org.igetwell.system.entity.SystemUser;
 import org.igetwell.system.mapper.SystemUserMapper;
 import org.igetwell.system.service.ISystemUserService;
@@ -45,8 +47,8 @@ public class SystemUserService implements ISystemUserService {
 
 
     @Override
-    public List<SystemUser> getList() {
-        List<SystemUser> systemUserList = systemUserMapper.getList();
+    public List<SystemUser> getList(Pagination pagination, SystemUserPageDto dto) {
+        List<SystemUser> systemUserList = systemUserMapper.getList(pagination, dto);
         return systemUserList;
     }
 }

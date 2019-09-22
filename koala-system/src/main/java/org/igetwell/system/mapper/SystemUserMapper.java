@@ -3,6 +3,8 @@ package org.igetwell.system.mapper;
 import java.util.List;
 import java.util.Map;
 
+import org.igetwell.common.uitls.Pagination;
+import org.igetwell.system.dto.SystemUserPageDto;
 import org.igetwell.system.entity.SystemUser;
 
 public interface SystemUserMapper {
@@ -29,7 +31,7 @@ public interface SystemUserMapper {
      */
     SystemUser checkMobile(String mobile);
 
-    List<SystemUser> getList();
+    List<SystemUser> getList(Pagination pagination, SystemUserPageDto dto);
 
     int deleteById(Long id);
 

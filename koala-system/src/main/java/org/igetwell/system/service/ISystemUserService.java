@@ -1,5 +1,7 @@
 package org.igetwell.system.service;
 
+import org.igetwell.common.uitls.Pagination;
+import org.igetwell.system.dto.SystemUserPageDto;
 import org.igetwell.system.entity.SystemUser;
 import java.util.List;
 
@@ -27,6 +29,6 @@ public interface ISystemUserService {
      */
     SystemUser checkMobile(String mobile);
 
-    List<SystemUser> getList();
+    List<SystemUser> getList(Pagination pagination, SystemUserPageDto dto);
 
 }
