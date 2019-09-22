@@ -1,6 +1,7 @@
 package org.igetwell.system.service;
 
 import org.igetwell.system.entity.SystemMenu;
+import org.igetwell.system.vo.MenuTree;
 
 import java.util.List;
 
@@ -18,4 +19,16 @@ public interface ISystemMenuService {
      * @return
      */
     List<SystemMenu> loadUnbound();
+
+    /**
+     * 获取菜单树
+     * @return
+     */
+    List<MenuTree> getMenuTree();
+
+    /**
+     * 获取菜单树列表
+     * @return
+     */
+    List<MenuTree> getMenus();
 }

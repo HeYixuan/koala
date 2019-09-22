@@ -14,6 +14,13 @@ public interface ISystemUserService {
     SystemUser loadByUsername(String tenant, String username);
 
     /**
+     * 登录(根据手机号查询)
+     * @param mobile
+     * @return
+     */
+    SystemUser loadByMobile(String mobile);
+
+    /**
      * 检查手机号
      * @param mobile
      * @return

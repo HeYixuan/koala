@@ -25,6 +25,15 @@ public class SystemUserService implements ISystemUserService {
     }
 
     /**
+     * 登录(根据手机号查询)
+     * @param mobile
+     * @return
+     */
+    public SystemUser loadByMobile(String mobile){
+        return systemUserMapper.loadByMobile(mobile);
+    }
+
+    /**
      * 检查手机号
      * @param mobile
      * @return

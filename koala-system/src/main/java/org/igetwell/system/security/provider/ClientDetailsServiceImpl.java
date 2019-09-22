@@ -23,4 +23,19 @@ public class ClientDetailsServiceImpl implements IClientDetailsService {
 		}
 	}
 
+	/**
+	 * 根据租户和客户端ID查询
+	 * @param tenant
+	 * @param clientId
+	 * @return
+	 */
+	@Override
+	public IClientDetails loadClientByTenantClientId(String tenant, String clientId){
+		try {
+			return jdbcTemplate.queryForObject(SecurityConstants.DEFAULT_TENANT_SELECT_STATEMENT, new String[]{tenant, clientId}, new BeanPropertyRowMapper<>(ClientDetails.class));
+		} catch (Exception ex) {
+			return null;
+		}
+	}
+
 }

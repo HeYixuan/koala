@@ -16,6 +16,13 @@ public interface SystemUserMapper {
     SystemUser loadByUsername(String tenant, String username);
 
     /**
+     * 登录(根据租户ID和用户名查询)
+     * @param mobile 用户名
+     * @return
+     */
+    SystemUser loadByMobile(String mobile);
+
+    /**
      * 检查手机号
      * @param mobile
      * @return

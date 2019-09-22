@@ -2,7 +2,7 @@ package org.igetwell.system.vo;
 
 import java.util.List;
 
-public class TreeNode {
+public class TreeNode<T> {
 
     /**
      * 当前节点ID
@@ -22,7 +22,7 @@ public class TreeNode {
     /**
      * 子节点列表
      */
-    private List<TreeNode> children;
+    private List<T> children;
 
     public Long getId() {
         return id;
@@ -48,15 +48,12 @@ public class TreeNode {
         this.parentId = parentId;
     }
 
-    public List<TreeNode> getChildren() {
+    public List<T> getChildren() {
         return children;
     }
 
-    public void setChildren(List<TreeNode> children) {
+    public void setChildren(List<T> children) {
         this.children = children;
     }
 
-    public void add(TreeNode node) {
-        children.add(node);
-    }
 }

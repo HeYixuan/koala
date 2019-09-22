@@ -19,9 +19,31 @@
 
   </resultMap>
 
-  <sql id="baseSql">
-    M.ID, M.PARENT_ID, M.CODE, M.NAME, M.ALIAS, M.ICON_CLASS, M.PATH, M.SOURCE, M.MENU_TYPE, M.KEEP_ALIVE, M.SORT
-  </sql>
+  <resultMap id="treeMap" type="org.igetwell.system.vo.MenuTree">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="parent_id" jdbcType="BIGINT" property="parentId" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="alias" jdbcType="VARCHAR" property="alias" />
+    <result column="icon_class" jdbcType="VARCHAR" property="iconClass" />
+    <result column="path" jdbcType="VARCHAR" property="path" />
+    <result column="menu_type" jdbcType="INTEGER" property="menuType" />
+    <result column="keep_alive" jdbcType="INTEGER" property="keepAlive" />
+    <result column="sort" jdbcType="INTEGER" property="sort" />
+
+  </resultMap>
+
+    <sql id="baseSql">
+      M.ID, M.PARENT_ID, M.CODE, M.NAME, M.ALIAS, M.ICON_CLASS, M.PATH, M.SOURCE, M.MENU_TYPE, M.KEEP_ALIVE, M.SORT
+    </sql>
+
+    <sql id="treeSql">
+        ID, PARENT_ID, CODE, NAME, ALIAS, ICON_CLASS, PATH, MENU_TYPE, KEEP_ALIVE, SORT
+    </sql>
+
 
   <select id="loadByRole" resultMap="baseMap">
     SELECT
@@ -36,5 +58,21 @@
     <include refid="baseSql" />
     FROM SYS_MENU M WHERE M.ID NOT IN (SELECT DISTINCT MENU_ID FROM SYS_ROLE_MENU)
   </select>
+
+
+
+
+
+    <select id="getMenuTree" resultMap="treeMap">
+        SELECT
+          <include refid="treeSql" />
+        FROM SYS_MENU
+    </select>
+
+    <select id="getMenus" resultMap="treeMap">
+        SELECT
+          <include refid="treeSql" />
+        FROM SYS_MENU WHERE MENU_TYPE = 1
+    </select>
 
 </mapper>

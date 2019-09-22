@@ -6,12 +6,10 @@
     <result column="TENANT_ID" jdbcType="VARCHAR" property="tenantId" />
     <result column="USERNAME" jdbcType="VARCHAR" property="username" />
     <result column="PASSWORD" jdbcType="VARCHAR" property="password" />
-    <result column="NAME" jdbcType="VARCHAR" property="name" />
-    <result column="REAL_NAME" jdbcType="VARCHAR" property="realName" />
     <result column="EMAIL" jdbcType="VARCHAR" property="email" />
-    <result column="PHONE" jdbcType="VARCHAR" property="phone" />
+    <result column="MOBILE" jdbcType="VARCHAR" property="mobile" />
     <result column="BIRTHDAY" jdbcType="TIMESTAMP" property="birthday" />
-    <result column="SEX" jdbcType="SMALLINT" property="sex" />
+    <result column="SEX" jdbcType="CHAR" property="sex" />
     <result column="ROLE_ID" jdbcType="VARCHAR" property="roleId" />
     <result column="DEPT_ID" jdbcType="VARCHAR" property="deptId" />
     <result column="IS_ENABLED" jdbcType="INTEGER" property="isEnabled" />
@@ -28,14 +26,14 @@
   </resultMap>
 
   <sql id="baseSql">
-    ID, TENANT_ID, USERNAME, PASSWORD, NAME, REAL_NAME, EMAIL, PHONE, BIRTHDAY, SEX,
+    ID, TENANT_ID, USERNAME, PASSWORD, EMAIL, MOBILE, BIRTHDAY, SEX,
     ROLE_ID, DEPT_ID, IS_ENABLED, ACCOUNT_NON_EXPIRED, ACCOUNT_NON_LOCKED, CREDENTIALS_NON_EXPIRED,
     LAST_LOGIN_TIME, CREATE_USER, CREATE_DEPT, CREATE_TIME, UPDATE_USER, UPDATE_TIME,
     IS_DELETED
   </sql>
 
   <sql id="securityLogin">
-    ID, TENANT_ID, USERNAME, PASSWORD, NAME, REAL_NAME, EMAIL, PHONE, BIRTHDAY, SEX,
+    ID, TENANT_ID, USERNAME, PASSWORD, EMAIL, PHONE, BIRTHDAY, SEX,
     ROLE_ID, DEPT_ID, IS_ENABLED, ACCOUNT_NON_EXPIRED, ACCOUNT_NON_LOCKED, CREDENTIALS_NON_EXPIRED,
     LAST_LOGIN_TIME, CREATE_USER, CREATE_DEPT, CREATE_TIME, UPDATE_USER, UPDATE_TIME,
     IS_DELETED
@@ -46,6 +44,13 @@
         <include refid="baseSql"/>
     FROM SYS_USER
     WHERE TENANT_ID = #{param1} AND USERNAME = #{param2} AND IS_DELETED = 0
+  </select>
+
+  <select id="loadByMobile" resultType="org.igetwell.system.entity.SystemUser">
+    SELECT
+      <include refid="baseSql"/>
+    FROM SYS_USER
+    WHERE USERNAME = #{param2} AND IS_DELETED = 0
   </select>
 
   <select id="checkMobile" resultMap="baseMap">
@@ -62,7 +67,7 @@
     FROM SYS_USER
   </select>
 
-  <delete id="deleteById" parameterType="java.lang.Long">
+    <delete id="deleteById" parameterType="java.lang.Long">
     DELETE FROM SYS_USER WHERE ID= #{id}
   </delete>
 
@@ -78,12 +83,6 @@
       <if test="password != null">
         PASSWORD = #{password,jdbcType=VARCHAR},
       </if>
-      <if test="name != null">
-        NAME = #{name,jdbcType=VARCHAR},
-      </if>
-      <if test="realName != null">
-        REAL_NAME = #{realName,jdbcType=VARCHAR},
-      </if>
       <if test="email != null">
         EMAIL = #{email,jdbcType=VARCHAR},
       </if>
@@ -94,7 +93,7 @@
         BIRTHDAY = #{birthday,jdbcType=TIMESTAMP},
       </if>
       <if test="sex != null">
-        SEX = #{sex,jdbcType=SMALLINT},
+        SEX = #{sex,jdbcType=CHAR},
       </if>
       <if test="roleId != null">
         ROLE_ID = #{roleId,jdbcType=VARCHAR},

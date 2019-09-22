@@ -15,4 +15,12 @@ public interface IClientDetailsService {
 	 */
 	IClientDetails loadClientByClientId(String clientId);
 
+	/**
+	 * 根据租户和客户端ID查询
+	 * @param tenant
+	 * @param clientId
+	 * @return
+	 */
+	IClientDetails loadClientByTenantClientId(String tenant, String clientId);
+
 }

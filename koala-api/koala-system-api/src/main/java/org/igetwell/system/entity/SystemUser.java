@@ -32,17 +32,6 @@ public class SystemUser implements Serializable {
     private String password;
 
     /**
-     * 昵称
-     */
-    private String name;
-
-    /**
-     * 真名
-     */
-    @Column(name = "real_name")
-    private String realName;
-
-    /**
      * 邮箱
      */
     private String email;
@@ -50,7 +39,7 @@ public class SystemUser implements Serializable {
     /**
      * 手机
      */
-    private String phone;
+    private String mobile;
 
     /**
      * 生日
@@ -60,7 +49,7 @@ public class SystemUser implements Serializable {
     /**
      * 性别
      */
-    private Short sex;
+    private char sex;
 
     /**
      * 角色id
@@ -213,42 +202,6 @@ public class SystemUser implements Serializable {
     }
 
     /**
-     * 获取昵称
-     *
-     * @return name - 昵称
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * 设置昵称
-     *
-     * @param name 昵称
-     */
-    public void setName(String name) {
-        this.name = name == null ? null : name.trim();
-    }
-
-    /**
-     * 获取真名
-     *
-     * @return real_name - 真名
-     */
-    public String getRealName() {
-        return realName;
-    }
-
-    /**
-     * 设置真名
-     *
-     * @param realName 真名
-     */
-    public void setRealName(String realName) {
-        this.realName = realName == null ? null : realName.trim();
-    }
-
-    /**
      * 获取邮箱
      *
      * @return email - 邮箱
@@ -269,19 +222,19 @@ public class SystemUser implements Serializable {
     /**
      * 获取手机
      *
-     * @return phone - 手机
+     * @return mobile - 手机
      */
-    public String getPhone() {
-        return phone;
+    public String getMobile() {
+        return mobile;
     }
 
     /**
      * 设置手机
      *
-     * @param phone 手机
+     * @param mobile 手机
      */
-    public void setPhone(String phone) {
-        this.phone = phone == null ? null : phone.trim();
+    public void setMobile(String mobile) {
+        this.mobile = mobile == null ? null : mobile.trim();
     }
 
     /**
@@ -307,7 +260,7 @@ public class SystemUser implements Serializable {
      *
      * @return sex - 性别
      */
-    public Short getSex() {
+    public char getSex() {
         return sex;
     }
 
@@ -316,7 +269,7 @@ public class SystemUser implements Serializable {
      *
      * @param sex 性别
      */
-    public void setSex(Short sex) {
+    public void setSex(char sex) {
         this.sex = sex;
     }
 

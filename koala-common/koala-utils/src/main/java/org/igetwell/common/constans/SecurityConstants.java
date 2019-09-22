@@ -144,6 +144,11 @@ public interface SecurityConstants {
 	String DEFAULT_SELECT_STATEMENT = BASE_FIND_STATEMENT + " where client_id = ?";
 
 	/**
+	 * 按条件client_id 查询
+	 */
+	String DEFAULT_TENANT_SELECT_STATEMENT = BASE_FIND_STATEMENT + " where tenant_id = ? and client_id = ? ";
+
+	/**
 	 * 资源服务器默认bean名称
 	 */
 	String RESOURCE_SERVER_CONFIGURER = "resourceServerConfigurerAdapter";
