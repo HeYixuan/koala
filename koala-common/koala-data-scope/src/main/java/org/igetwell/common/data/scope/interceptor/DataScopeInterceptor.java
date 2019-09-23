@@ -30,6 +30,7 @@ import org.springframework.security.core.GrantedAuthority;
 import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -141,11 +142,11 @@ public class DataScopeInterceptor extends AbstractSqlParserHandler implements In
 			//也可以通过statementHandler直接获取
 			//sql = statementHandler.getBoundSql().getSql();
 			log.info("mybatis intercept sql:{}", originalSql);
-
-			String countSql = "select count(*) from (" + originalSql + ") temp";
+			String countSql = "select count(1) from (" + originalSql + ") temp";
 			Connection connection = (Connection) invocation.getArgs()[0];
-			PreparedStatement preparedStatement = connection.prepareStatement(countSql);
-			parameterHandler.setParameters(preparedStatement);
+			int total = getTotal(parameterHandler, connection, countSql);
+			pagination.setTotal(total);
+
 			String pageSql = originalSql + " limit " + (pagination.getPageNo()-1) * pagination.getPageSize() + ", " + pagination.getPageSize();
 			metaObject.setValue("delegate.boundSql.sql", pageSql);
 		}else {
@@ -176,12 +177,7 @@ public class DataScopeInterceptor extends AbstractSqlParserHandler implements In
 	 */
 	@Override
 	public void setProperties(Properties properties) {
-		//如果项目中分页的pageSize是统一的，也可以在这里统一配置和获取，这样就不用每次请求都传递pageSize参数了。参数是在配置拦截器时配置的。
-		//String limit = properties.getProperty("limit", "10");
-		//this.pageSize = Integer.valueOf(limit);
-		//String dialect = properties.getProperty("dialect");
-		//log.info("mybatis intercept dialect:{}", dialect);
-		//this.dbType = properties.getProperty("dbType", "mysql");
+
 	}
 
 	/**
@@ -227,6 +223,28 @@ public class DataScopeInterceptor extends AbstractSqlParserHandler implements In
 			}
 			return null;
 		});
+	}
+
+	/**
+	 * 获取总计录 缓存具有相同SQL语句和参数的总数
+	 *
+	 * @param parameterHandler
+	 * @param connection
+	 * @param countSql
+	 * @return
+	 * @throws Exception
+	 */
+	private int getTotal(ParameterHandler parameterHandler, Connection connection, String countSql) throws Exception {
+		PreparedStatement prepareStatement = connection.prepareStatement(countSql);
+		parameterHandler.setParameters(prepareStatement);
+		ResultSet rs = prepareStatement.executeQuery();
+		int count = 0;
+		if (rs.next()) {
+			count = rs.getInt(1);
+		}
+		rs.close();
+		prepareStatement.close();
+		return count;
 	}
 
 }
