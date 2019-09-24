@@ -1,7 +1,5 @@
 package org.igetwell.common.data.scope.interceptor;
 
-import com.baomidou.mybatisplus.core.toolkit.PluginUtils;
-import com.baomidou.mybatisplus.extension.handlers.AbstractSqlParserHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +13,7 @@ import org.apache.ibatis.mapping.StatementType;
 import org.apache.ibatis.plugin.*;
 import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.reflection.SystemMetaObject;
+import org.apache.ibatis.session.RowBounds;
 import org.igetwell.common.data.scope.annotation.DataScopeAuth;
 import org.igetwell.common.data.scope.datascope.DataScope;
 import org.igetwell.common.data.scope.enums.DataScopeEnum;
@@ -43,7 +42,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @RequiredArgsConstructor
 @Intercepts({@Signature(type = StatementHandler.class, method = "prepare", args = {Connection.class, Integer.class})})
-public class DataScopeInterceptor extends AbstractSqlParserHandler implements Interceptor {
+public class DataScopeInterceptor implements Interceptor {
 	private ConcurrentMap<String, DataScopeAuth> dataAuthMap = new ConcurrentHashMap<>(8);
 
 	private final JdbcTemplate jdbcTemplate;
@@ -133,11 +132,13 @@ public class DataScopeInterceptor extends AbstractSqlParserHandler implements In
 		originalSql = "select * from (" + originalSql + ") temp_data_scope where temp_data_scope." + column + " in (" + join + ")";
 
 
-		ParameterHandler parameterHandler = (ParameterHandler) metaObject.getValue("delegate.parameterHandler");
+		ParameterHandler parameterHandler = statementHandler.getParameterHandler();
+		//ParameterHandler parameterHandler = (ParameterHandler) metaObject.getValue("delegate.parameterHandler");
+		RowBounds rowBounds = (RowBounds) metaObject.getValue("delegate.rowBounds");
 		//获取请求时的参数
-		Object parameterObject = parameterHandler.getParameterObject();
-		if (parameterObject instanceof Pagination){
-			Pagination pagination = (Pagination) parameterObject;
+		//Object parameterObject = parameterHandler.getParameterObject();
+		if (rowBounds instanceof Pagination){
+			Pagination pagination = (Pagination) rowBounds;
 			//String sql = (String) metaObject.getValue("delegate.boundSql.sql");
 			//也可以通过statementHandler直接获取
 			//sql = statementHandler.getBoundSql().getSql();
@@ -147,8 +148,10 @@ public class DataScopeInterceptor extends AbstractSqlParserHandler implements In
 			int total = getTotal(parameterHandler, connection, countSql);
 			pagination.setTotal(total);
 
-			String pageSql = originalSql + " limit " + (pagination.getPageNo()-1) * pagination.getPageSize() + ", " + pagination.getPageSize();
+			String pageSql = originalSql + " limit " + (pagination.getOffset()-1) * pagination.getLimit() + ", " + pagination.getLimit();
 			metaObject.setValue("delegate.boundSql.sql", pageSql);
+			metaObject.setValue("delegate.rowBounds.offset", (pagination.getOffset()-1) * pagination.getLimit());
+			metaObject.setValue("delegate.rowBounds.limit", pagination.getLimit());
 		}else {
 			metaObject.setValue("delegate.boundSql.sql", originalSql);
 		}
@@ -210,7 +213,7 @@ public class DataScopeInterceptor extends AbstractSqlParserHandler implements In
 		String id = mappedStatement.getId();
 		return dataAuthMap.computeIfAbsent(id, (key) -> {
 			String className = key.substring(0, key.lastIndexOf("."));
-			String mapperBean = com.baomidou.mybatisplus.core.toolkit.StringUtils.firstCharToLower(ClassUtils.getShortName(className));
+			String mapperBean = org.igetwell.common.uitls.StringUtils.firstCharToLower(ClassUtils.getShortName(className));
 			Object mapper = SpringContextHolder.getBean(mapperBean);
 			String methodName = key.substring(key.lastIndexOf(".") + 1);
 			Class<?>[] interfaces = ClassUtils.getAllInterfaces(mapper);

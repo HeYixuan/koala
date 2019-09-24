@@ -1,31 +1,22 @@
 package org.igetwell.common.data.scope.mybatis;
 
-import com.baomidou.mybatisplus.core.injector.ISqlInjector;
-import com.baomidou.mybatisplus.core.parser.ISqlParser;
-import com.baomidou.mybatisplus.extension.injector.LogicSqlInjector;
-import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
-import com.baomidou.mybatisplus.extension.plugins.tenant.TenantSqlParser;
 import org.igetwell.common.data.scope.interceptor.DataScopeInterceptor;
+import org.igetwell.common.data.scope.interceptor.PaginationResultSetHandlerInterceptor;
 import org.igetwell.common.data.scope.props.DataScopeProperties;
 import org.igetwell.common.data.tenant.KoalaTenantHandler;
-import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Configuration
 @AutoConfigureAfter(DataSourceAutoConfiguration.class)
 @EnableConfigurationProperties(DataScopeProperties.class)
-@MapperScan("org.igetwell.*.mapper")
+//@MapperScan("org.igetwell.*.mapper")
 public class MybatisPlusConfig implements InitializingBean {
 
 	/**
@@ -71,14 +62,13 @@ public class MybatisPlusConfig implements InitializingBean {
 	}
 
 	/**
-	 * 逻辑删除插件
-	 *
-	 * @return LogicSqlInjector
+	 * 分页结果集插件
+	 * @return
 	 */
 	@Bean
 	@ConditionalOnMissingBean
-	public ISqlInjector sqlInjector() {
-		return new LogicSqlInjector();
+	public PaginationResultSetHandlerInterceptor paginationInterceptor() {
+		return new PaginationResultSetHandlerInterceptor();
 	}
 
 	@Override

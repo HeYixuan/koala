@@ -1,6 +1,5 @@
 package org.igetwell.common.exceptions.controller;
 
-import com.baomidou.mybatisplus.extension.api.R;
 import lombok.extern.slf4j.Slf4j;
 import org.igetwell.common.enums.HttpStatus;
 import org.igetwell.common.exceptions.BaseException;

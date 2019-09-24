@@ -2,14 +2,14 @@ package org.igetwell.web;
 
 import org.igetwell.common.uitls.ResponseEntity;
 import org.igetwell.service.ISystemUserService;
-import org.igetwell.system.entity.SystemUser;
+import org.igetwell.system.dto.SystemUserPageDto;
 import org.igetwell.system.feign.SystemUserClient;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-import java.util.List;
 
 @RestController
 @RequestMapping("/systemUser")
@@ -22,9 +22,8 @@ public class SystemUserController {
     private ISystemUserService iSystemUserService;
 
     @PostMapping("/getList")
-    public List<SystemUser> getList(){
-        List<SystemUser> systemUserList = systemUserClient.getList();
-        return systemUserList;
+    public ResponseEntity getList(@RequestBody SystemUserPageDto dto){
+        return systemUserClient.getList(dto);
     }
 
     @PostMapping("/test")

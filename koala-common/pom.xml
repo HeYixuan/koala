@@ -40,11 +40,10 @@
             <artifactId>transmittable-thread-local</artifactId>
             <version>${ttl.version}</version>
         </dependency>
-        <!--mybatis plus extension,包含了mybatis plus core-->
         <dependency>
-            <groupId>com.baomidou</groupId>
-            <artifactId>mybatis-plus-extension</artifactId>
-            <version>3.1.2</version>
+            <groupId>org.mybatis</groupId>
+            <artifactId>mybatis</artifactId>
+            <version>3.5.1</version>
         </dependency>
         <dependency>
             <groupId>cn.hutool</groupId>

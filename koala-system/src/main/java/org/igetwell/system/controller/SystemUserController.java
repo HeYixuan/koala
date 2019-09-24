@@ -1,5 +1,6 @@
 package org.igetwell.system.controller;
 
+import org.igetwell.common.uitls.GsonUtils;
 import org.igetwell.common.uitls.Pagination;
 import org.igetwell.common.uitls.ResponseEntity;
 import org.igetwell.system.dto.SystemUserPageDto;
@@ -32,25 +33,14 @@ public class SystemUserController {
     }
 
     @PostMapping("/systemUser/getList")
-    public List<SystemUser>  getList(@RequestBody SystemUserPageDto dto){
-        Pagination pagination = new Pagination();
-        List<SystemUser> systemUserList = iSystemUserService.getList(pagination, dto);
-        //Pagination<SystemUser> pagination = new Pagination<>(systemUserList);
-        return systemUserList;
+    public ResponseEntity getList(@RequestBody SystemUserPageDto dto){
+        Pagination<SystemUser> pagination = new Pagination<SystemUser>();
+        iSystemUserService.getList(pagination, dto);
+        return ResponseEntity.ok(pagination);
     }
 
     @PostMapping("/systemUser/test")
     public ResponseEntity test(){
         return ResponseEntity.ok("abcd");
     }
-
-
-    /*@PostMapping("/getList")
-    public ResponseEntity<SystemUser> getList(){
-        PageHelper.startPage(1,10);
-        DataScope dataScope = new DataScope();
-        List<SystemUser> systemUserList = iSystemUserService.getList(dataScope);
-        Pagination<SystemUser> pagination = new Pagination<>(systemUserList);
-        return new ResponseEntity(pagination);
-    }*/
 }

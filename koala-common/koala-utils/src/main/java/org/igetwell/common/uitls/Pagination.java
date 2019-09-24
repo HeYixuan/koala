@@ -1,12 +1,14 @@
 package org.igetwell.common.uitls;
 
+import org.apache.ibatis.session.RowBounds;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class Pagination<T> {
+public class Pagination<T> extends RowBounds {
 
-    private int pageNo = 1; //当前页
-    private int pageSize = 20; //每页显示数
+    private int offset = 1; //当前页
+    private int limit = 20; //每页显示数
     private List<T> rows = new ArrayList<T>(); //结果集
     private int pages = 0; //总页数
     private long total = 0; //总记录数
@@ -20,8 +22,8 @@ public class Pagination<T> {
     public Pagination(List<T> rows) {
 //        if (rows instanceof Page){
 //            Page<T> page = (Page<T>) rows;
-//            this.setPageNo(page.getPageNum());
-//            this.setPageSize(page.getPageSize());
+//            this.setOffset(page.getPageNum());
+//            this.setLimit(page.getlimit());
 //            this.setTotal(page.getTotal());
 //            this.setPages(page.getPages());
 //            this.index = getFirstIndex();
@@ -34,39 +36,39 @@ public class Pagination<T> {
     }
 
     /**
-     * 根据pageNo和pageSize计算当前页第一条记录在总结果集中的索引位置.
+     * 根据offset和limit计算当前页第一条记录在总结果集中的索引位置.
      */
     public int getFirstIndex() {
-        if (pageNo < 1 || pageSize < 1)
+        if (offset < 1 || limit < 1)
             return 0;
         else
-            return (((pageNo - 1) * pageSize) < total? ((pageNo - 1) * pageSize) : (int) total) + 1;
+            return (((offset - 1) * limit) < total? ((offset - 1) * limit) : (int) total) + 1;
     }
 
-    public Pagination(int pageNo, int pageSize, int total, List<T> rows) {
+    public Pagination(int offset, int limit, int total, List<T> rows) {
         this.setTotal(total);
-        this.setPageNo(pageNo);
-        this.setPageSize(pageSize);
+        this.setOffset(offset);
+        this.setLimit(limit);
         this.setRows(rows);
     }
 
 
 
-    public int getPageNo() {
-        return pageNo;
+    public int getOffset() {
+        return offset;
     }
 
     /**
      * 设置当前页
-     * @param pageNo
+     * @param offset
      */
-    public void setPageNo(int pageNo) {
-        if (pageNo < 1) {
-            this.pageNo = 1;
+    public void setOffset(int offset) {
+        if (offset < 1) {
+            this.offset = 1;
         } else {
-            this.pageNo = pageNo;
+            this.offset = offset;
         }
-        if(pageNo == 1){//第一页
+        if(offset == 1){//第一页
             setFirstPage(true);
         }else{
             setFirstPage(false);
@@ -74,19 +76,19 @@ public class Pagination<T> {
     }
 
 
-    public int getPageSize() {
-        return pageSize;
+    public int getLimit() {
+        return limit;
     }
 
     /**
      * 设置每页记录数
-     * @param pageSize
+     * @param limit
      */
-    public void setPageSize(int pageSize) {
-        if (pageSize < 1) {
-            this.pageSize = 15;
+    public void setLimit(int limit) {
+        if (limit < 1) {
+            this.limit = 15;
         } else {
-            this.pageSize = pageSize;
+            this.limit = limit;
         }
     }
 
@@ -125,10 +127,10 @@ public class Pagination<T> {
     public void setTotal(long total) {
         this.total = total;
         pages = getTotalPage();
-        if (pageNo > pages) {
-            pageNo = pages;
+        if (offset > pages) {
+            offset = pages;
         }
-        if(pageNo == pages){
+        if(offset == pages){
             setLastPage(true);  //最后一页
         }else{
             setLastPage(false);
@@ -142,7 +144,7 @@ public class Pagination<T> {
         if (total < 1) {
             return 0;
         }
-        return (int) ((total - 1) / pageSize + 1);
+        return (int) ((total - 1) / limit + 1);
     }
 
     public boolean isFirstPage() {

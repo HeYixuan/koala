@@ -1,10 +1,12 @@
 package org.igetwell.system.feign;
 
 import org.igetwell.common.uitls.ResponseEntity;
+import org.igetwell.system.dto.SystemUserPageDto;
 import org.igetwell.system.entity.SystemUser;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
@@ -25,7 +27,7 @@ public interface SystemUserClient {
      * @return
      */
     @PostMapping("/systemUser/getList")
-    List<SystemUser> getList();
+    ResponseEntity getList(@RequestBody SystemUserPageDto dto);
 
     @PostMapping("/systemUser/test")
     ResponseEntity test();
