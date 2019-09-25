@@ -1,10 +1,10 @@
 package org.igetwell.system.service.impl;
 
+import org.igetwell.common.uitls.Pagination;
 import org.igetwell.system.entity.SystemMenu;
 import org.igetwell.system.mapper.SystemMenuMapper;
 import org.igetwell.system.service.ISystemMenuService;
 import org.igetwell.system.vo.MenuTree;
-import org.igetwell.system.vo.TreeUtils;
 import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.util.List;
@@ -35,5 +35,9 @@ public class SystemMenuService implements ISystemMenuService {
     public List<MenuTree> getMenus() {
         List<MenuTree> list = systemMenuMapper.getMenus();
         return list;
+    }
+
+    public List<MenuTree> getMenus(Pagination pagination){
+        return systemMenuMapper.getMenus(pagination);
     }
 }

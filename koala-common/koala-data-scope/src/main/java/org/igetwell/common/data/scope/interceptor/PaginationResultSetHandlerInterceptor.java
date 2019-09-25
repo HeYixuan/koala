@@ -1,5 +1,6 @@
 package org.igetwell.common.data.scope.interceptor;
 
+import lombok.SneakyThrows;
 import org.apache.ibatis.executor.resultset.ResultSetHandler;
 import org.apache.ibatis.plugin.*;
 import org.apache.ibatis.reflection.MetaObject;
@@ -13,7 +14,8 @@ import java.util.Properties;
 public class PaginationResultSetHandlerInterceptor implements Interceptor {
 
     @Override
-    public Object intercept(Invocation invocation) throws Throwable {
+    @SneakyThrows
+    public Object intercept(Invocation invocation) {
     	Object rows = null;
         try{
             //获取StatementHandler

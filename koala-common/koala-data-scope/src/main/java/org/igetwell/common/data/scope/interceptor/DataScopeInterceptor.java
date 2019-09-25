@@ -6,7 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.apache.ibatis.executor.parameter.ParameterHandler;
 import org.apache.ibatis.executor.statement.StatementHandler;
-import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.SqlCommandType;
 import org.apache.ibatis.mapping.StatementType;
@@ -55,6 +54,8 @@ public class DataScopeInterceptor implements Interceptor {
 
 		//获取StatementHandler，默认是RoutingStatementHandler
 		StatementHandler statementHandler = (StatementHandler) invocation.getTarget();
+		//获取参数
+		ParameterHandler parameterHandler = statementHandler.getParameterHandler();
 		//获取statementHandler包装类
 		MetaObject metaObject = SystemMetaObject.forObject(statementHandler);
 		// 先判断是不是SELECT操作
@@ -64,8 +65,11 @@ public class DataScopeInterceptor implements Interceptor {
 			return invocation.proceed();
 		}
 
-		//查找注解中包含DataAuth类型的参数
-		DataScopeAuth dataAuth = findDataAuthAnnotation(mappedStatement);
+		//获取分页对象
+		RowBounds rowBounds = (RowBounds) metaObject.getValue("delegate.rowBounds");
+		//获取SQL
+		//BoundSql boundSql = (BoundSql) metaObject.getValue("delegate.boundSql");
+		String originalSql = statementHandler.getBoundSql().getSql();
 
 		//注解为空并且数据权限方法名未匹配到,则放行
 		String mapperId = mappedStatement.getId();
@@ -75,26 +79,30 @@ public class DataScopeInterceptor implements Interceptor {
 		boolean mapperSkip = dataScopeProperties.getMapperKey().stream().noneMatch(methodName::contains)
 				|| dataScopeProperties.getMapperExclude().stream().anyMatch(mapperName::contains);
 		if (mapperSkip) {
+			//获取请求时的参数
+			if (rowBounds instanceof Pagination){
+				Pagination pagination = (Pagination) rowBounds;
+				log.info("mybatis intercept sql:{}", originalSql);
+				int total = getTotal(parameterHandler, invocation, originalSql);
+				pagination.setTotal(total);
+			}
 			return invocation.proceed();
 		}
+
+		//查找注解中包含DataAuth类型的参数
+		DataScopeAuth dataAuth = findDataAuthAnnotation(mappedStatement);
 		KoalaUser koalaUser = SpringSecurityUtils.getUser();
 		if (dataAuth == null && koalaUser == null) {
 			return invocation.proceed();
-			//throw new Exception("DataScopeInterceptor auto datascope, set up security details true");
 		}
 
-		BoundSql boundSql = (BoundSql) metaObject.getValue("delegate.boundSql");
-		String originalSql = boundSql.getSql();
-		String column = "dept_id";
 		List<Long> deptIds = new ArrayList<>();
 		// 优先获取赋值数据
+		//String column = dataAuth.column();
+		String column = "dept_id";
 		if (StringUtils.isNotEmpty(koalaUser.getDeptId())) {
-
-			List<String> roleIdList = koalaUser.getAuthorities()
-					.stream().map(GrantedAuthority::getAuthority)
+			List<String> roleIdList = koalaUser.getAuthorities().stream().map(GrantedAuthority::getAuthority)
 					.collect(Collectors.toList());
-
-			System.err.println(roleIdList);
 
 			Map<String,Object> params = jdbcTemplate.queryForMap("SELECT ds_type, ds_scope FROM sys_role where id = ?", new Object[]{koalaUser.getRoleId()});
 			int dsType = (int) params.get("ds_type");
@@ -106,9 +114,9 @@ public class DataScopeInterceptor implements Interceptor {
 			// 自定义
 			if (DataScopeEnum.CUSTOM.getType() == dsType) {
 			    String dsScope = (String) params.get("ds_scope");
-                deptIds.addAll(Arrays.stream(dsScope.split(","))
-                        .map(Long::parseLong).collect(Collectors.toList()));
+                deptIds.addAll(Arrays.stream(dsScope.split(",")).map(Long::parseLong).collect(Collectors.toList()));
 			}
+
 			if (DataScopeEnum.OWN.getType() == dsType) {
 				deptIds.add(koalaUser.getId());
 			}
@@ -131,31 +139,16 @@ public class DataScopeInterceptor implements Interceptor {
 		String join = StringUtils.join(deptIds, ",");
 		originalSql = "select * from (" + originalSql + ") temp_data_scope where temp_data_scope." + column + " in (" + join + ")";
 
-
-		ParameterHandler parameterHandler = statementHandler.getParameterHandler();
-		//ParameterHandler parameterHandler = (ParameterHandler) metaObject.getValue("delegate.parameterHandler");
-		RowBounds rowBounds = (RowBounds) metaObject.getValue("delegate.rowBounds");
-		//获取请求时的参数
-		//Object parameterObject = parameterHandler.getParameterObject();
 		if (rowBounds instanceof Pagination){
 			Pagination pagination = (Pagination) rowBounds;
-			//String sql = (String) metaObject.getValue("delegate.boundSql.sql");
-			//也可以通过statementHandler直接获取
-			//sql = statementHandler.getBoundSql().getSql();
 			log.info("mybatis intercept sql:{}", originalSql);
-			String countSql = "select count(1) from (" + originalSql + ") temp";
-			Connection connection = (Connection) invocation.getArgs()[0];
-			int total = getTotal(parameterHandler, connection, countSql);
+			int total = getTotal(parameterHandler, invocation, originalSql);
 			pagination.setTotal(total);
-
-			String pageSql = originalSql + " limit " + (pagination.getOffset()-1) * pagination.getLimit() + ", " + pagination.getLimit();
+			String pageSql = originalSql + " limit " + pagination.getOffset() + ", " + pagination.getLimit();
 			metaObject.setValue("delegate.boundSql.sql", pageSql);
-			metaObject.setValue("delegate.rowBounds.offset", (pagination.getOffset()-1) * pagination.getLimit());
-			metaObject.setValue("delegate.rowBounds.limit", pagination.getLimit());
 		}else {
 			metaObject.setValue("delegate.boundSql.sql", originalSql);
 		}
-
 		return invocation.proceed();
 	}
 
@@ -232,12 +225,14 @@ public class DataScopeInterceptor implements Interceptor {
 	 * 获取总计录 缓存具有相同SQL语句和参数的总数
 	 *
 	 * @param parameterHandler
-	 * @param connection
-	 * @param countSql
+	 * @param invocation
+	 * @param originalSql
 	 * @return
 	 * @throws Exception
 	 */
-	private int getTotal(ParameterHandler parameterHandler, Connection connection, String countSql) throws Exception {
+	private int getTotal(ParameterHandler parameterHandler, Invocation invocation, String originalSql) throws Exception {
+		String countSql = "select count(1) from (" + originalSql + ") temp";
+		Connection connection = (Connection) invocation.getArgs()[0];
 		PreparedStatement prepareStatement = connection.prepareStatement(countSql);
 		parameterHandler.setParameters(prepareStatement);
 		ResultSet rs = prepareStatement.executeQuery();

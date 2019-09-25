@@ -1,6 +1,7 @@
 package org.igetwell.system.controller;
 
 import org.igetwell.common.uitls.GsonUtils;
+import org.igetwell.common.uitls.Pagination;
 import org.igetwell.common.uitls.ResponseEntity;
 import org.igetwell.oauth.security.KoalaUser;
 import org.igetwell.oauth.security.SpringSecurityUtils;
@@ -11,6 +12,7 @@ import org.igetwell.system.vo.TreeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -69,6 +71,12 @@ public class SystemMenuController {
         List<MenuTree> nodeTree = TreeUtils.treeMenu(list);
         System.err.println(GsonUtils.toJson(nodeTree));
         return nodeTree;
+    }
+
+    @PostMapping("/systemMenu/testMenus")
+    public ResponseEntity testMenus(Pagination pagination){
+        iSystemMenuService.getMenus(pagination);
+        return ResponseEntity.ok(pagination);
     }
 
     @PostMapping("/systemMenu/setting")

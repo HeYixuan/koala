@@ -7,8 +7,6 @@ import java.util.List;
 
 public class Pagination<T> extends RowBounds {
 
-    private int offset = 1; //当前页
-    private int limit = 20; //每页显示数
     private List<T> rows = new ArrayList<T>(); //结果集
     private int pages = 0; //总页数
     private long total = 0; //总记录数
@@ -20,15 +18,6 @@ public class Pagination<T> extends RowBounds {
     }
 
     public Pagination(List<T> rows) {
-//        if (rows instanceof Page){
-//            Page<T> page = (Page<T>) rows;
-//            this.setOffset(page.getPageNum());
-//            this.setLimit(page.getlimit());
-//            this.setTotal(page.getTotal());
-//            this.setPages(page.getPages());
-//            this.index = getFirstIndex();
-//            this.setRows(page);
-//        }
 
         if (rows instanceof ArrayList){
             System.err.println("rows as arrayList");
@@ -39,10 +28,10 @@ public class Pagination<T> extends RowBounds {
      * 根据offset和limit计算当前页第一条记录在总结果集中的索引位置.
      */
     public int getFirstIndex() {
-        if (offset < 1 || limit < 1)
+        if (super.getOffset() < 1 || super.getLimit() < 1)
             return 0;
         else
-            return (((offset - 1) * limit) < total? ((offset - 1) * limit) : (int) total) + 1;
+            return (((super.getOffset() - 1) * super.getLimit()) < total? ((super.getOffset() - 1) * super.getLimit()) : (int) total) + 1;
     }
 
     public Pagination(int offset, int limit, int total, List<T> rows) {
@@ -50,46 +39,6 @@ public class Pagination<T> extends RowBounds {
         this.setOffset(offset);
         this.setLimit(limit);
         this.setRows(rows);
-    }
-
-
-
-    public int getOffset() {
-        return offset;
-    }
-
-    /**
-     * 设置当前页
-     * @param offset
-     */
-    public void setOffset(int offset) {
-        if (offset < 1) {
-            this.offset = 1;
-        } else {
-            this.offset = offset;
-        }
-        if(offset == 1){//第一页
-            setFirstPage(true);
-        }else{
-            setFirstPage(false);
-        }
-    }
-
-
-    public int getLimit() {
-        return limit;
-    }
-
-    /**
-     * 设置每页记录数
-     * @param limit
-     */
-    public void setLimit(int limit) {
-        if (limit < 1) {
-            this.limit = 15;
-        } else {
-            this.limit = limit;
-        }
     }
 
     public List<T> getRows() {
@@ -127,10 +76,10 @@ public class Pagination<T> extends RowBounds {
     public void setTotal(long total) {
         this.total = total;
         pages = getTotalPage();
-        if (offset > pages) {
-            offset = pages;
+        if (super.getOffset() > pages) {
+            super.setOffset(pages);
         }
-        if(offset == pages){
+        if((super.getOffset() / super.getLimit()) + 1 == pages){
             setLastPage(true);  //最后一页
         }else{
             setLastPage(false);
@@ -144,11 +93,15 @@ public class Pagination<T> extends RowBounds {
         if (total < 1) {
             return 0;
         }
-        return (int) ((total - 1) / limit + 1);
+        return (int) ((total - 1) / super.getLimit() + 1);
     }
 
     public boolean isFirstPage() {
-        return firstPage;
+        if (super.getOffset() <= 1){
+            return true;
+        }else {
+            return false;
+        }
     }
 
     public void setFirstPage(boolean firstPage) {

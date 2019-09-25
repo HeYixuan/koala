@@ -22,14 +22,6 @@ mybatis:
   mapper-locations: classpath:/mapper/*Mapper.xml
 
 
-
-#分页设置
-pagehelper:
-  helper-dialect: mysql
-  reasonable: true
-  support-methods-arguments: true
-  params: count=countSql
-
 security:
   basic:
     enabled: false

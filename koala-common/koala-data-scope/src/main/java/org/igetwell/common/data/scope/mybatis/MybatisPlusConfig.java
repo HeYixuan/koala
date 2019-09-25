@@ -16,7 +16,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 @Configuration
 @AutoConfigureAfter(DataSourceAutoConfiguration.class)
 @EnableConfigurationProperties(DataScopeProperties.class)
-//@MapperScan("org.igetwell.*.mapper")
 public class MybatisPlusConfig implements InitializingBean {
 
 	/**
@@ -73,6 +72,6 @@ public class MybatisPlusConfig implements InitializingBean {
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		System.out.println("==========被加载了");
+		System.out.println("===========Mybatis 自定义 Plugin被加载了============");
 	}
 }

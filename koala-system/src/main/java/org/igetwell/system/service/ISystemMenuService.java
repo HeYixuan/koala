@@ -1,5 +1,6 @@
 package org.igetwell.system.service;
 
+import org.igetwell.common.uitls.Pagination;
 import org.igetwell.system.entity.SystemMenu;
 import org.igetwell.system.vo.MenuTree;
 
@@ -31,4 +32,6 @@ public interface ISystemMenuService {
      * @return
      */
     List<MenuTree> getMenus();
+
+    List<MenuTree> getMenus(Pagination pagination);
 }
