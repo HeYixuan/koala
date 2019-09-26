@@ -1,6 +1,13 @@
 # koala
 koala是基于spring cloud 开发的spring cloud数据权限框架
 
+密码模式授权：
+<br/>
+http://localhost:9001/oauth/token?username=admin2&password=123456&grant_type=password&scope=all
+
+手机号验证码模式授权：
+<br/>
+http://localhost:9001/oauth/mobile/login?mobile=15218725510&captcha=123456&grant_type=password&scope=all
 
 
 授权码模式自动授权：

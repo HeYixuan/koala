@@ -52,10 +52,4 @@ public class RowBounds {
     this.limit = limit;
   }
 
-  public static void main(String[] args) {
-    RowBounds rowBounds = new RowBounds();
-    rowBounds.offset = 3;
-    System.err.println(rowBounds.getOffset());
-  }
-
 }
