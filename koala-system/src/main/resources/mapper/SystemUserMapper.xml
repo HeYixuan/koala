@@ -25,6 +25,19 @@
     <result column="IS_DELETED" jdbcType="INTEGER" property="isDeleted" />
   </resultMap>
 
+  <resultMap id="baseListMap" type="org.igetwell.system.bean.SystemUserBean">
+    <id column="ID" jdbcType="BIGINT" property="id" />
+    <result column="TENANT_NAME" jdbcType="VARCHAR" property="tenantName" />
+    <result column="USERNAME" jdbcType="VARCHAR" property="username" />
+    <result column="EMAIL" jdbcType="VARCHAR" property="email" />
+    <result column="MOBILE" jdbcType="VARCHAR" property="mobile" />
+    <result column="BIRTHDAY" jdbcType="TIMESTAMP" property="birthday" />
+    <result column="SEX" jdbcType="CHAR" property="sex" />
+    <result column="ROLE_NAME" jdbcType="VARCHAR" property="roleName" />
+    <result column="DEPT_NAME" jdbcType="VARCHAR" property="deptName" />
+    <result column="IS_ENABLED" jdbcType="INTEGER" property="isEnabled" />
+  </resultMap>
+
   <sql id="baseSql">
     ID, TENANT_ID, USERNAME, PASSWORD, EMAIL, MOBILE, BIRTHDAY, SEX,
     ROLE_ID, DEPT_ID, IS_ENABLED, ACCOUNT_NON_EXPIRED, ACCOUNT_NON_LOCKED, CREDENTIALS_NON_EXPIRED,
@@ -39,6 +52,12 @@
     IS_DELETED
   </sql>
 
+  <sql id="baseListSql">
+    ID, TENANT_ID, USERNAME, EMAIL, MOBILE, BIRTHDAY, SEX,
+    (SELECT ROLE_NAME FROM sys_role WHERE id = role_id)ROLE_NAME,
+    (SELECT DEPT_NAME FROM sys_dept WHERE id = dept_id) DEPT_NAME, IS_ENABLED
+  </sql>
+
   <select id="loadByUsername" resultMap="baseMap">
     SELECT
         <include refid="baseSql"/>
@@ -50,20 +69,13 @@
     SELECT
       <include refid="baseSql"/>
     FROM SYS_USER
-    WHERE USERNAME = #{param2} AND IS_DELETED = 0
-  </select>
-
-  <select id="checkMobile" resultMap="baseMap">
-    SELECT
-      <include refid="baseSql"/>
-    FROM SYS_USER
-    WHERE PHONE = #{mobile}
+    WHERE MOBILE = #{mobile} AND IS_DELETED = 0
   </select>
 
 
-  <select id="getList" resultMap="baseMap" parameterType="org.igetwell.system.dto.SystemUserPageDto">
+  <select id="getList" resultMap="baseListMap" parameterType="org.igetwell.system.dto.SystemUserPageDto">
     SELECT
-      <include refid="baseSql" />
+      <include refid="baseListSql" />
     FROM SYS_USER
     <where>
       <if test="username !=null and username != ''">
@@ -78,11 +90,145 @@
     </where>
   </select>
 
-    <delete id="deleteById" parameterType="java.lang.Long">
+  <insert id="insert" parameterType="org.igetwell.system.entity.SystemUser">
+    INSERT INTO SYS_USER
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null and id != ''">
+        ID,
+      </if>
+      <if test="tenantId != null and tenantId != ''">
+        TENANT_ID,
+      </if>
+      <if test="username != null and username != ''">
+        USERNAME,
+      </if>
+      <if test="password != null and password != ''">
+        PASSWORD,
+      </if>
+      <if test="email != null and email != ''">
+        EMAIL,
+      </if>
+      <if test="mobile != null and mobile != ''">
+        MOBILE,
+      </if>
+      <if test="birthday != null">
+        BIRTHDAY,
+      </if>
+      <if test="sex != null and sex != ''">
+        SEX,
+      </if>
+      <if test="roleId != null and roleId != ''">
+        ROLE_ID,
+      </if>
+      <if test="deptId != null and deptId != ''">
+        DEPT_ID,
+      </if>
+      <if test="isEnabled != null">
+        IS_ENABLED,
+      </if>
+      <if test="accountNonExpired != null">
+        ACCOUNT_NON_EXPIRED,
+      </if>
+      <if test="accountNonLocked != null">
+        ACCOUNT_NON_LOCKED,
+      </if>
+      <if test="credentialsNonExpired != null">
+        CREDENTIALS_NON_EXPIRED,
+      </if>
+      <if test="lastLoginTime != null">
+        LAST_LOGIN_TIME,
+      </if>
+      <if test="createUser != null">
+        CREATE_USER,
+      </if>
+      <if test="createDept != null">
+        CREATE_DEPT,
+      </if>
+      <if test="createTime != null">
+        CREATE_TIME,
+      </if>
+      <if test="updateUser != null">
+        UPDATE_USER,
+      </if>
+      <if test="updateTime != null">
+        UPDATE_TIME,
+      </if>
+      <if test="isDeleted != null">
+        IS_DELETED,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null and id != ''">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="tenantId != null and tenantId != ''">
+        #{tenantId,jdbcType=VARCHAR},
+      </if>
+      <if test="username != null and username != ''">
+        #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null and password != ''">
+        #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null and email != ''">
+        #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="mobile != null and mobile != ''">
+        #{mobile,jdbcType=VARCHAR},
+      </if>
+      <if test="birthday != null">
+        #{birthday,jdbcType=TIMESTAMP},
+      </if>
+      <if test="sex != null and sex != ''">
+        #{sex,jdbcType=CHAR},
+      </if>
+      <if test="roleId != null and roleId != ''">
+        #{roleId,jdbcType=VARCHAR},
+      </if>
+      <if test="deptId != null and deptId != ''">
+        #{deptId,jdbcType=VARCHAR},
+      </if>
+      <if test="isEnabled != null">
+        #{isEnabled,jdbcType=INTEGER},
+      </if>
+      <if test="accountNonExpired != null">
+        #{accountNonExpired,jdbcType=INTEGER},
+      </if>
+      <if test="accountNonLocked != null">
+        #{accountNonLocked,jdbcType=INTEGER},
+      </if>
+      <if test="credentialsNonExpired != null">
+        #{credentialsNonExpired,jdbcType=INTEGER},
+      </if>
+      <if test="lastLoginTime != null">
+        #{lastLoginTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUser != null">
+        #{createUser,jdbcType=BIGINT},
+      </if>
+      <if test="createDept != null">
+        #{createDept,jdbcType=BIGINT},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null">
+        #{updateUser,jdbcType=BIGINT},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isDeleted != null">
+        #{isDeleted,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+
+  <delete id="deleteById" parameterType="java.lang.Long">
     DELETE FROM SYS_USER WHERE ID= #{id}
   </delete>
 
-  <update id="update">
+  <update id="update" parameterType="org.igetwell.system.entity.SystemUser">
     UPDATE SYS_USER
     <set>
       <if test="tenantId != null">
@@ -97,8 +243,8 @@
       <if test="email != null">
         EMAIL = #{email,jdbcType=VARCHAR},
       </if>
-      <if test="phone != null">
-        PHONE = #{phone,jdbcType=VARCHAR},
+      <if test="mobile != null">
+        MOBILE = #{mobile,jdbcType=VARCHAR},
       </if>
       <if test="birthday != null">
         BIRTHDAY = #{birthday,jdbcType=TIMESTAMP},

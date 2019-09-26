@@ -28,7 +28,7 @@ public class SmsLoginHandler extends AbstractLoginHandler {
 
 	@Override
 	public SystemUser get(String mobile) {
-		SystemUser systemUser = iSystemUserService.checkMobile(mobile);
+		SystemUser systemUser = iSystemUserService.loadByMobile(mobile);
 		if (systemUser == null){
 			log.info("手机号未注册:{}", mobile);
 			return null;

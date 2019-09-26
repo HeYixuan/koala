@@ -1,6 +1,8 @@
 package org.igetwell.system.service.impl;
 
 import org.igetwell.common.uitls.Pagination;
+import org.igetwell.common.uitls.ResponseEntity;
+import org.igetwell.system.bean.SystemUserBean;
 import org.igetwell.system.dto.SystemUserPageDto;
 import org.igetwell.system.entity.SystemUser;
 import org.igetwell.system.mapper.SystemUserMapper;
@@ -36,19 +38,37 @@ public class SystemUserService implements ISystemUserService {
     }
 
     /**
-     * 检查手机号
-     * @param mobile
+     * 获取用户列表
+     * @param pagination
+     * @param dto
      * @return
      */
     @Override
-    public SystemUser checkMobile(String mobile) {
-        return systemUserMapper.checkMobile(mobile);
+    public List<SystemUserBean> getList(Pagination pagination, SystemUserPageDto dto) {
+        List<SystemUserBean> systemUserList = systemUserMapper.getList(pagination, dto);
+        return systemUserList;
     }
 
+    @Override
+    public ResponseEntity insert(SystemUser systemUser){
+        int i = systemUserMapper.insert(systemUser);
+        if (i > 0){
+            return ResponseEntity.ok();
+        }
+        return ResponseEntity.error();
+    }
 
     @Override
-    public List<SystemUser> getList(Pagination pagination, SystemUserPageDto dto) {
-        List<SystemUser> systemUserList = systemUserMapper.getList(pagination, dto);
-        return systemUserList;
+    public ResponseEntity deleteById(Long id){
+        return ResponseEntity.ok();
+    }
+
+    @Override
+    public ResponseEntity update(SystemUser systemUser){
+        int i = systemUserMapper.update(systemUser);
+        if (i > 0){
+            return ResponseEntity.ok();
+        }
+        return ResponseEntity.error();
     }
 }

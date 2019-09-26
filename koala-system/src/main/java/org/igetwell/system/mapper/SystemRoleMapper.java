@@ -50,4 +50,10 @@ public interface SystemRoleMapper {
      * @return
      */
     Integer getDataScopeType(String tenant, Long id);
+
+    int deleteById(Long id);
+
+    int insert(SystemRole systemRole);
+
+    int update(SystemRole systemRole);
 }

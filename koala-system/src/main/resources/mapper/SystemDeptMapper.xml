@@ -26,4 +26,86 @@
     SELECT CHILD FROM SYS_DEPT_RELATION WHERE PARENT = #{deptId}
   </select>
 
+  <delete id="deleteById" parameterType="java.lang.Long">
+    DELETE FROM SYS_DEPT WHERE ID = #{id,jdbcType=BIGINT}
+  </delete>
+
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="org.igetwell.system.entity.SystemDept" useGeneratedKeys="true">
+    INSERT INTO SYS_DEPT
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="tenantId != null">
+        tenant_id,
+      </if>
+      <if test="parentId != null">
+        parent_id,
+      </if>
+      <if test="ancestors != null">
+        ancestors,
+      </if>
+      <if test="deptCategory != null">
+        dept_category,
+      </if>
+      <if test="deptName != null">
+        dept_name,
+      </if>
+      <if test="fullName != null">
+        full_name,
+      </if>
+      <if test="sort != null">
+        sort,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="tenantId != null">
+        #{tenantId,jdbcType=VARCHAR},
+      </if>
+      <if test="parentId != null">
+        #{parentId,jdbcType=BIGINT},
+      </if>
+      <if test="ancestors != null">
+        #{ancestors,jdbcType=VARCHAR},
+      </if>
+      <if test="deptCategory != null">
+        #{deptCategory,jdbcType=INTEGER},
+      </if>
+      <if test="deptName != null">
+        #{deptName,jdbcType=VARCHAR},
+      </if>
+      <if test="fullName != null">
+        #{fullName,jdbcType=VARCHAR},
+      </if>
+      <if test="sort != null">
+        #{sort,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+
+  <update id="update" parameterType="org.igetwell.system.entity.SystemDept">
+    UPDATE SYS_DEPT
+    <set>
+      <if test="tenantId != null">
+        tenant_id = #{tenantId,jdbcType=VARCHAR},
+      </if>
+      <if test="parentId != null">
+        parent_id = #{parentId,jdbcType=BIGINT},
+      </if>
+      <if test="ancestors != null">
+        ancestors = #{ancestors,jdbcType=VARCHAR},
+      </if>
+      <if test="deptCategory != null">
+        dept_category = #{deptCategory,jdbcType=INTEGER},
+      </if>
+      <if test="deptName != null">
+        dept_name = #{deptName,jdbcType=VARCHAR},
+      </if>
+      <if test="fullName != null">
+        full_name = #{fullName,jdbcType=VARCHAR},
+      </if>
+      <if test="sort != null">
+        sort = #{sort,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
 </mapper>

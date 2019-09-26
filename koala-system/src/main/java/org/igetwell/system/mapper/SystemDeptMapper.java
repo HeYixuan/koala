@@ -1,5 +1,7 @@
 package org.igetwell.system.mapper;
 
+import org.igetwell.system.entity.SystemDept;
+
 import java.util.List;
 
 public interface SystemDeptMapper {
@@ -11,7 +13,7 @@ public interface SystemDeptMapper {
      * @param deptId 部门id
      * @return deptIds
      */
-    public List<Long> getDeptAncestors(Long deptId);
+    List<Long> getDeptAncestors(Long deptId);
 
     /**
      * 获取部门子级
@@ -19,5 +21,11 @@ public interface SystemDeptMapper {
      * @param deptId 部门id
      * @return deptIds
      */
-    public List<Long> getAncestors(Long deptId);
+    List<Long> getAncestors(Long deptId);
+
+    int deleteById(Long id);
+
+    int insert(SystemDept systemDept);
+
+    int update(SystemDept systemDept);
 }

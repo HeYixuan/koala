@@ -66,5 +66,78 @@
     SELECT * FROM SYS_ROLE WHERE TENANT_ID = #{param1} AND ID = #{param2}
   </select>
 
+  <delete id="deleteById" parameterType="java.lang.Long">
+    DELETE FROM SYS_ROLE WHERE ID = #{id,jdbcType=BIGINT}
+  </delete>
+
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="org.igetwell.system.entity.SystemRole" useGeneratedKeys="true">
+    INSERT INTO SYS_ROLE
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="tenantId != null">
+        tenant_id,
+      </if>
+      <if test="parentId != null">
+        parent_id,
+      </if>
+      <if test="roleName != null">
+        role_name,
+      </if>
+      <if test="roleAlias != null">
+        role_alias,
+      </if>
+      <if test="dsType != null">
+        ds_type,
+      </if>
+      <if test="dsScope != null">
+        ds_scope,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="tenantId != null">
+        #{tenantId,jdbcType=VARCHAR},
+      </if>
+      <if test="parentId != null">
+        #{parentId,jdbcType=BIGINT},
+      </if>
+      <if test="roleName != null">
+        #{roleName,jdbcType=VARCHAR},
+      </if>
+      <if test="roleAlias != null">
+        #{roleAlias,jdbcType=VARCHAR},
+      </if>
+      <if test="dsType != null">
+        #{dsType,jdbcType=INTEGER},
+      </if>
+      <if test="dsScope != null">
+        #{dsScope,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+
+  <update id="update" parameterType="org.igetwell.system.entity.SystemRole">
+    UPDATE SYS_ROLE
+    <set>
+      <if test="tenantId != null">
+        tenant_id = #{tenantId,jdbcType=VARCHAR},
+      </if>
+      <if test="parentId != null">
+        parent_id = #{parentId,jdbcType=BIGINT},
+      </if>
+      <if test="roleName != null">
+        role_name = #{roleName,jdbcType=VARCHAR},
+      </if>
+      <if test="roleAlias != null">
+        role_alias = #{roleAlias,jdbcType=VARCHAR},
+      </if>
+      <if test="dsType != null">
+        ds_type = #{dsType,jdbcType=INTEGER},
+      </if>
+      <if test="dsScope != null">
+        ds_scope = #{dsScope,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
 
 </mapper>

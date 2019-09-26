@@ -35,12 +35,11 @@ public class MobileService implements IMobileService {
     @Override
     public ResponseEntity sendSmsCode(String mobile) {
 
-        SystemUser systemUser = systemUserMapper.checkMobile(mobile);
+        SystemUser systemUser = systemUserMapper.loadByMobile(mobile);
         if (systemUser == null){
             log.info("手机号未注册:{}", mobile);
             return ResponseEntity.error(HttpStatus.BAD_REQUEST,"手机号未注册");
         }
-
 
         Object code = redisTemplate.opsForValue().get(CommonConstants.DEFAULT_CODE_KEY + LoginTypeEnum.MOBILE.getType() + "#" + mobile);
 

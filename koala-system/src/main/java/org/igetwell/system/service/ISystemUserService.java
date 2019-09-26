@@ -1,6 +1,8 @@
 package org.igetwell.system.service;
 
 import org.igetwell.common.uitls.Pagination;
+import org.igetwell.common.uitls.ResponseEntity;
+import org.igetwell.system.bean.SystemUserBean;
 import org.igetwell.system.dto.SystemUserPageDto;
 import org.igetwell.system.entity.SystemUser;
 import java.util.List;
@@ -23,12 +25,17 @@ public interface ISystemUserService {
     SystemUser loadByMobile(String mobile);
 
     /**
-     * 检查手机号
-     * @param mobile
+     * 获取用户列表
+     * @param pagination
+     * @param dto
      * @return
      */
-    SystemUser checkMobile(String mobile);
+    List<SystemUserBean> getList(Pagination pagination, SystemUserPageDto dto);
 
-    List<SystemUser> getList(Pagination pagination, SystemUserPageDto dto);
+    ResponseEntity insert(SystemUser systemUser);
+
+    ResponseEntity deleteById(Long id);
+
+    ResponseEntity update(SystemUser systemUser);
 
 }

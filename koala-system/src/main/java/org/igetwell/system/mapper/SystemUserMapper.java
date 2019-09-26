@@ -1,9 +1,8 @@
 package org.igetwell.system.mapper;
 
 import java.util.List;
-import java.util.Map;
-
 import org.igetwell.common.uitls.Pagination;
+import org.igetwell.system.bean.SystemUserBean;
 import org.igetwell.system.dto.SystemUserPageDto;
 import org.igetwell.system.entity.SystemUser;
 
@@ -25,15 +24,16 @@ public interface SystemUserMapper {
     SystemUser loadByMobile(String mobile);
 
     /**
-     * 检查手机号
-     * @param mobile
+     * 获取用户列表
+     * @param pagination
+     * @param dto
      * @return
      */
-    SystemUser checkMobile(String mobile);
+    List<SystemUserBean> getList(Pagination pagination, SystemUserPageDto dto);
 
-    List<SystemUser> getList(Pagination pagination, SystemUserPageDto dto);
+    int insert(SystemUser systemUser);
 
     int deleteById(Long id);
 
-    int update(Map map);
+    int update(SystemUser systemUser);
 }
