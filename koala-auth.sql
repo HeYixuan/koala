@@ -26,7 +26,7 @@ CREATE TABLE `sys_dept` (
   `parent_id` bigint(64) DEFAULT '0' COMMENT '父主键',
   `ancestors` varchar(2000) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '祖级列表',
   `dept_category` int(2) DEFAULT NULL COMMENT '部门类型',
-  `dept_name` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '部门名',
+  `name` varchar(45) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '部门名称',
   `full_name` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '部门全称',
   `sort` int(11) DEFAULT NULL COMMENT '排序',
   PRIMARY KEY (`id`) USING BTREE
@@ -34,7 +34,7 @@ CREATE TABLE `sys_dept` (
 
 /*Data for the table `sys_dept` */
 
-insert  into `sys_dept`(`id`,`tenant_id`,`parent_id`,`ancestors`,`dept_category`,`dept_name`,`full_name`,`sort`) values 
+insert  into `sys_dept`(`id`,`tenant_id`,`parent_id`,`ancestors`,`dept_category`,`name`,`full_name`,`sort`) values 
 (1123598813738675201,'000000',0,'0',1,'刀锋科技','江苏刀锋科技有限公司',1),
 (1123598813738675202,'000000',1123598813738675201,'0,1123598813738675201',1,'常州刀锋','常州刀锋科技有限公司',1),
 (1123598813738675203,'000000',1123598813738675201,'0,1123598813738675201',1,'苏州刀锋','苏州刀锋科技有限公司',1);
@@ -139,8 +139,8 @@ CREATE TABLE `sys_gateway_route` (
 /*Data for the table `sys_gateway_route` */
 
 insert  into `sys_gateway_route`(`id`,`route_name`,`predicates`,`filters`,`uri`,`order`,`create_time`,`update_time`,`del_flag`) values 
-('koala-merchant','商户中心','[{\"args\": {\"_genkey_0\": \"/system/**\"}, \"name\": \"Path\"}]','[]','lb://koala-merchant',0,'2019-09-12 06:16:40','2019-09-12 06:16:42','0'),
-('koala-oauth','认证中心','[{\"args\": {\"_genkey_0\": \"/oauth/**\"}, \"name\": \"Path\"}]','[{\"args\": {}, \"name\": \"ValidateCodeGatewayFilter\"}, {\"args\": {}, \"name\": \"PasswordDecoderFilter\"}]','lb://koala-oauth',0,'2019-09-12 15:35:18','2019-09-20 14:53:13','0'),
+('koala-merchant','商户中心','[{\"args\": {\"_genkey_0\": \"/merchant/**\"}, \"name\": \"Path\"}]','[]','lb://koala-merchant',0,'2019-09-12 06:16:40','2019-09-16 13:25:17','0'),
+('koala-oauth','认证中心','[{\"args\": {\"_genkey_0\": \"/oauth/**\"}, \"name\": \"Path\"}]','[{\"args\": {}, \"name\": \"ValidateCodeGatewayFilter\"}, {\"args\": {}, \"name\": \"PasswordDecoderFilter\"}]','lb://koala-oauth',0,'2019-09-12 15:35:18','2019-09-17 16:04:39','0'),
 ('koala-system','通用权限模块','[{\"args\": {\"_genkey_0\": \"/system/**\"}, \"name\": \"Path\"}]','[{\"args\": {\"key-resolver\": \"#{@remoteAddrKeyResolver}\", \"redis-rate-limiter.burstCapacity\": \"20\", \"redis-rate-limiter.replenishRate\": \"10\"}, \"name\": \"RequestRateLimiter\"}, {\"args\": {\"name\": \"default\", \"fallbackUri\": \"forward:/fallback\"}, \"name\": \"Hystrix\"}]','lb://koala-system',0,'2019-09-12 15:35:18','2019-09-20 14:53:21','0');
 
 /*Table structure for table `sys_menu` */
@@ -153,37 +153,35 @@ CREATE TABLE `sys_menu` (
   `code` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '菜单编号',
   `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '菜单名称',
   `alias` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '菜单别名',
-  `path` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '请求地址',
+  `icon_class` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '菜单图标',
+  `uri` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '请求地址',
   `source` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '菜单资源',
+  `menu_type` int(2) DEFAULT NULL COMMENT '菜单类型',
   `sort` int(2) DEFAULT NULL COMMENT '排序',
-  `category` int(2) DEFAULT NULL COMMENT '菜单类型',
-  `action` int(2) DEFAULT '0' COMMENT '操作按钮类型',
   `keep_alive` int(2) DEFAULT '1' COMMENT '0开启 1关闭',
-  `remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '备注',
-  `is_deleted` int(2) DEFAULT '0' COMMENT '是否已删除',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='菜单表';
 
 /*Data for the table `sys_menu` */
 
-insert  into `sys_menu`(`id`,`parent_id`,`code`,`name`,`alias`,`path`,`source`,`sort`,`category`,`action`,`keep_alive`,`remark`,`is_deleted`) values 
-(1123598815738675201,0,'desk','工作台','menu','/desk','iconfont iconicon_airplay',1,1,0,1,NULL,0),
-(1123598815738675202,1123598815738675201,'notice','通知公告','menu','/desk/notice','iconfont iconicon_sms',1,1,0,1,NULL,0),
-(1123598815738675203,0,'system','系统管理','menu','/system','iconfont iconicon_setting',99,1,0,1,NULL,0),
-(1123598815738675204,1123598815738675203,'user','用户管理','menu','/system/user','iconfont iconicon_principal',1,1,0,1,NULL,0),
-(1123598815738675205,1123598815738675203,'dept','机构管理','menu','/system/dept','iconfont iconicon_group',2,1,0,1,NULL,0),
-(1123598815738675206,1123598815738675203,'dict','字典管理','menu','/system/dict','iconfont iconicon_addresslist',3,1,0,1,NULL,0),
-(1123598815738675207,1123598815738675203,'menu','菜单管理','menu','/system/menu','iconfont iconicon_subordinate',4,1,0,1,NULL,0),
-(1123598815738675208,1123598815738675203,'topmenu','顶部菜单','menu','/system/topmenu','iconfont icon-canshu',5,1,0,1,NULL,0),
-(1123598815738675209,1123598815738675203,'param','参数管理','menu','/system/param','iconfont iconicon_community_line',6,1,0,1,NULL,0),
-(1123598815738675210,0,'monitor','系统监控','menu','/monitor','iconfont icon-yanzhengma',3,1,0,1,NULL,0),
-(1123598815738675256,1123598815738675203,'tenant','租户管理','menu','/system/tenant','iconfont icon-quanxian',7,1,0,1,NULL,0),
-(1123598815738675307,0,'authority','权限管理','menu','/authority','iconfont icon-bofangqi-suoping',98,1,0,1,'',0),
-(1123598815738675308,1123598815738675307,'role','角色管理','menu','/authority/role','iconfont iconicon_boss',1,1,0,1,NULL,0),
-(1123598815738675309,1123598815738675307,'data_scope','数据权限','menu','/authority/datascope','iconfont icon-shujuzhanshi2',2,1,0,1,'',0),
-(1123598815738675310,1123598815738675309,'data_scope_setting','数据权限配置','menu','/authority/datascope/setting','setting',1,2,2,1,NULL,0),
-(1123598815738675311,1123598815738675307,'api_scope','接口权限','menu','/authority/apiscope','iconfont icon-iconset0216',3,1,0,1,'',0),
-(1123598815738675312,1123598815738675311,'api_scope_setting','接口权限设置','menu','/authority/apiscope/setting','setting',1,2,2,1,NULL,0);
+insert  into `sys_menu`(`id`,`parent_id`,`code`,`name`,`alias`,`icon_class`,`uri`,`source`,`menu_type`,`sort`,`keep_alive`) values 
+(1123598815738675201,0,'desk','工作台','menu',NULL,'/desk','iconfont iconicon_airplay',1,1,1),
+(1123598815738675202,1123598815738675201,'notice','通知公告','menu',NULL,'/desk/notice','iconfont iconicon_sms',1,1,1),
+(1123598815738675203,0,'system','系统管理','menu',NULL,'/system','iconfont iconicon_setting',1,99,1),
+(1123598815738675204,1123598815738675203,'user','用户管理','menu',NULL,'/system/user','iconfont iconicon_principal',1,1,1),
+(1123598815738675205,1123598815738675203,'dept','机构管理','menu',NULL,'/system/dept','iconfont iconicon_group',1,2,1),
+(1123598815738675206,1123598815738675203,'dict','字典管理','menu',NULL,'/system/dict','iconfont iconicon_addresslist',1,3,1),
+(1123598815738675207,1123598815738675203,'menu','菜单管理','menu',NULL,'/system/menu','iconfont iconicon_subordinate',1,4,1),
+(1123598815738675208,1123598815738675203,'topmenu','顶部菜单','menu',NULL,'/system/topmenu','iconfont icon-canshu',1,5,1),
+(1123598815738675209,1123598815738675203,'param','参数管理','menu',NULL,'/system/param','iconfont iconicon_community_line',1,6,1),
+(1123598815738675210,0,'monitor','系统监控','menu',NULL,'/monitor','iconfont icon-yanzhengma',1,3,1),
+(1123598815738675256,1123598815738675203,'tenant','租户管理','menu',NULL,'/system/tenant','iconfont icon-quanxian',1,7,1),
+(1123598815738675307,0,'authority','权限管理','menu',NULL,'/authority','iconfont icon-bofangqi-suoping',1,98,1),
+(1123598815738675308,1123598815738675307,'role','角色管理','menu',NULL,'/authority/role','iconfont iconicon_boss',1,1,1),
+(1123598815738675309,1123598815738675307,'data_scope','数据权限','menu',NULL,'/authority/datascope','iconfont icon-shujuzhanshi2',1,2,1),
+(1123598815738675310,1123598815738675309,'data_scope_setting','数据权限配置','menu',NULL,'/authority/datascope/setting','setting',2,1,1),
+(1123598815738675311,1123598815738675307,'api_scope','接口权限','menu',NULL,'/authority/apiscope','iconfont icon-iconset0216',1,3,1),
+(1123598815738675312,1123598815738675311,'api_scope_setting','接口权限设置','menu',NULL,'/authority/apiscope/setting','setting',2,1,1);
 
 /*Table structure for table `sys_oauth_client_details` */
 
@@ -394,12 +392,10 @@ CREATE TABLE `sys_user` (
   `tenant_id` varchar(12) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '000000' COMMENT '租户ID',
   `username` varchar(45) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '账号',
   `password` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '密码',
-  `name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '昵称',
-  `real_name` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '真名',
   `email` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '邮箱',
-  `phone` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '手机',
+  `mobile` varchar(45) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '手机',
   `birthday` datetime DEFAULT NULL COMMENT '生日',
-  `sex` smallint(6) DEFAULT NULL COMMENT '性别',
+  `sex` char(1) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '性别：M-男，F-女，N-未知',
   `role_id` bigint(64) DEFAULT NULL COMMENT '角色id',
   `dept_id` bigint(64) DEFAULT NULL COMMENT '部门id',
   `is_enabled` int(1) DEFAULT '1' COMMENT '账户启用状态：0停用 1启用',
@@ -418,12 +414,12 @@ CREATE TABLE `sys_user` (
 
 /*Data for the table `sys_user` */
 
-insert  into `sys_user`(`id`,`tenant_id`,`username`,`password`,`name`,`real_name`,`email`,`phone`,`birthday`,`sex`,`role_id`,`dept_id`,`is_enabled`,`account_non_expired`,`account_non_locked`,`credentials_non_expired`,`last_login_time`,`create_user`,`create_dept`,`create_time`,`update_user`,`update_time`,`is_deleted`) values 
-(1123598821738675201,'000000','admin','$2a$10$L4rfVQP7QL9p3bgE.8vZ3.gB2O2cj6NmymJ413EwfpV8dhEL/6n0S','管理员','管理员','admin@bladex.vip','123333333333','2018-08-08 00:00:00',1,1123598816738675201,1123598813738675201,1,1,1,1,NULL,1123598821738675201,1123598813738675201,'2018-08-08 00:00:00',1123598821738675201,'2018-08-08 00:00:00',0),
-(1123598821738675202,'000000','hr','5e79b90f7bba52d54115f086e48f539016a27ec6','人事','人事','hr@bladex.vip','123333333333','2018-08-08 00:00:00',1,1123598816738675203,1123598813738675203,1,1,1,1,NULL,1123598821738675201,1123598813738675201,'2019-04-27 17:03:10',1123598821738675201,'2019-04-27 17:03:10',0),
-(1123598821738675203,'000000','manager','dfbaa3b61caa3a319f463cc165085aa8c822d2ce','经理','经理','manager@bladex.vip','123333333333','2018-08-08 00:00:00',1,1123598816738675204,1123598813738675201,1,1,1,1,NULL,1123598821738675201,1123598813738675201,'2019-04-27 17:03:38',1123598821738675201,'2019-04-27 17:03:38',0),
-(1123598821738675204,'000000','boss','abe57d23e18f7ad8ea99c86e430c90a05119a9d3','老板','老板','boss@bladex.vip','123333333333','2018-08-08 00:00:00',1,1123598816738675205,1123598813738675201,1,1,1,1,NULL,1123598821738675201,1123598813738675201,'2019-04-27 17:03:55',1123598821738675201,'2019-04-27 17:03:55',0),
-(1123598821738675205,'000000','admin2','$2a$10$L4rfVQP7QL9p3bgE.8vZ3.gB2O2cj6NmymJ413EwfpV8dhEL/6n0S','管理员','管理员','admin@bladex.vip','123333333333','2018-08-08 00:00:00',1,1123598816738675201,1123598813738675201,1,1,1,1,NULL,1123598821738675201,1123598813738675201,'2018-08-08 00:00:00',1123598821738675201,'2018-08-08 00:00:00',0);
+insert  into `sys_user`(`id`,`tenant_id`,`username`,`password`,`email`,`mobile`,`birthday`,`sex`,`role_id`,`dept_id`,`is_enabled`,`account_non_expired`,`account_non_locked`,`credentials_non_expired`,`last_login_time`,`create_user`,`create_dept`,`create_time`,`update_user`,`update_time`,`is_deleted`) values 
+(1123598821738675201,'000000','admin','$2a$10$L4rfVQP7QL9p3bgE.8vZ3.gB2O2cj6NmymJ413EwfpV8dhEL/6n0S','admin@bladex.vip','123333333333','2018-08-08 00:00:00','M',1123598816738675201,1123598813738675201,1,1,1,1,NULL,1123598821738675201,1123598813738675201,'2018-08-08 00:00:00',1123598821738675201,'2018-08-08 00:00:00',0),
+(1123598821738675202,'000000','hr','5e79b90f7bba52d54115f086e48f539016a27ec6','hr@bladex.vip','123333333333','2018-08-23 00:00:00','M',1123598816738675203,1123598813738675203,1,1,1,1,NULL,1123598821738675201,1123598813738675201,'2019-04-27 17:03:10',1123598821738675201,'2019-04-27 17:03:10',0),
+(1123598821738675203,'000000','manager','dfbaa3b61caa3a319f463cc165085aa8c822d2ce','manager@bladex.vip','123333333333','2018-08-08 00:00:00','F',1123598816738675204,1123598813738675201,1,1,1,1,NULL,1123598821738675201,1123598813738675201,'2019-04-27 17:03:38',1123598821738675201,'2019-04-27 17:03:38',0),
+(1123598821738675204,'000000','boss','abe57d23e18f7ad8ea99c86e430c90a05119a9d3','boss@bladex.vip','123333333333','2018-08-08 00:00:00','F',1123598816738675205,1123598813738675201,1,1,1,1,NULL,1123598821738675201,1123598813738675201,'2019-04-27 17:03:55',1123598821738675201,'2019-04-27 17:03:55',0),
+(1123598821738675205,'000000','admin2','$2a$10$L4rfVQP7QL9p3bgE.8vZ3.gB2O2cj6NmymJ413EwfpV8dhEL/6n0S','admin@bladex.vip','123333333333','2018-08-08 00:00:00','N',1123598816738675201,1123598813738675201,1,1,1,1,NULL,1123598821738675201,1123598813738675201,'2018-08-08 00:00:00',1123598821738675201,'2018-08-08 00:00:00',0);
 
 /*Table structure for table `sys_user_role` */
 
