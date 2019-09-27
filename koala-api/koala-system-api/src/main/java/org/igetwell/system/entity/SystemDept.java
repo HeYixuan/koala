@@ -37,8 +37,8 @@ public class SystemDept {
     /**
      * 部门名
      */
-    @Column(name = "dept_name")
-    private String deptName;
+    @Column(name = "name")
+    private String name;
 
     /**
      * 部门全称
@@ -144,19 +144,19 @@ public class SystemDept {
     /**
      * 获取部门名
      *
-     * @return dept_name - 部门名
+     * @return name - 部门名
      */
-    public String getDeptName() {
-        return deptName;
+    public String getName() {
+        return name;
     }
 
     /**
      * 设置部门名
      *
-     * @param deptName 部门名
+     * @param name 部门名
      */
-    public void setDeptName(String deptName) {
-        this.deptName = deptName == null ? null : deptName.trim();
+    public void setName(String name) {
+        this.name = name == null ? null : name.trim();
     }
 
     /**

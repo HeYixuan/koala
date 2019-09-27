@@ -5,17 +5,17 @@
     <!--
       WARNING - @mbg.generated
     -->
-    <id column="id" jdbcType="BIGINT" property="id" />
-    <result column="tenant_id" jdbcType="VARCHAR" property="tenantId" />
-    <result column="parent_id" jdbcType="BIGINT" property="parentId" />
-    <result column="ancestors" jdbcType="VARCHAR" property="ancestors" />
-    <result column="dept_category" jdbcType="INTEGER" property="deptCategory" />
-    <result column="dept_name" jdbcType="VARCHAR" property="deptName" />
-    <result column="full_name" jdbcType="VARCHAR" property="fullName" />
-    <result column="sort" jdbcType="INTEGER" property="sort" />
+    <id column="ID" jdbcType="BIGINT" property="id" />
+    <result column="TENANT_ID" jdbcType="VARCHAR" property="tenantId" />
+    <result column="PARENT_ID" jdbcType="BIGINT" property="parentId" />
+    <result column="ANCESTORS" jdbcType="VARCHAR" property="ancestors" />
+    <result column="DEPT_CATEGORY" jdbcType="INTEGER" property="deptCategory" />
+    <result column="NAME" jdbcType="VARCHAR" property="name" />
+    <result column="FULL_NAME" jdbcType="VARCHAR" property="fullName" />
+    <result column="SORT" jdbcType="INTEGER" property="sort" />
   </resultMap>
   <sql id="baseSql">
-    ID, TENANT_ID, PARENT_ID, ANCESTORS, DEPT_CATEGORY, DEPT_NAME, FULL_NAME, SORT
+    ID, TENANT_ID, PARENT_ID, ANCESTORS, DEPT_CATEGORY, NAME, FULL_NAME, SORT
   </sql>
 
   <select id="getDeptAncestors" resultType="java.lang.Long" parameterType="java.lang.Long">
@@ -30,48 +30,48 @@
     DELETE FROM SYS_DEPT WHERE ID = #{id,jdbcType=BIGINT}
   </delete>
 
-  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="org.igetwell.system.entity.SystemDept" useGeneratedKeys="true">
+  <insert id="insert" keyColumn="ID" keyProperty="id" parameterType="org.igetwell.system.entity.SystemDept" useGeneratedKeys="true">
     INSERT INTO SYS_DEPT
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="tenantId != null">
-        tenant_id,
+      <if test="tenantId != null and tenantId != ''">
+        TENANT_ID,
       </if>
       <if test="parentId != null">
-        parent_id,
+        PARENT_ID,
       </if>
-      <if test="ancestors != null">
-        ancestors,
+      <if test="ancestors != null and ancestors != ''">
+        ANCESTORS,
       </if>
       <if test="deptCategory != null">
-        dept_category,
+        DEPT_CATEGORY,
       </if>
-      <if test="deptName != null">
-        dept_name,
+      <if test="name != null and name !=''">
+        NAME,
       </if>
-      <if test="fullName != null">
-        full_name,
+      <if test="fullName != null and fullName != ''">
+        FULL_NAME,
       </if>
       <if test="sort != null">
-        sort,
+        SORT,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="tenantId != null">
+      <if test="tenantId != null and tenantId != ''">
         #{tenantId,jdbcType=VARCHAR},
       </if>
       <if test="parentId != null">
         #{parentId,jdbcType=BIGINT},
       </if>
-      <if test="ancestors != null">
+      <if test="ancestors != null and ancestors != ''">
         #{ancestors,jdbcType=VARCHAR},
       </if>
       <if test="deptCategory != null">
         #{deptCategory,jdbcType=INTEGER},
       </if>
-      <if test="deptName != null">
-        #{deptName,jdbcType=VARCHAR},
+      <if test="name != null and name != ''">
+        #{name,jdbcType=VARCHAR},
       </if>
-      <if test="fullName != null">
+      <if test="fullName != null and fullName != ''">
         #{fullName,jdbcType=VARCHAR},
       </if>
       <if test="sort != null">
@@ -83,29 +83,29 @@
   <update id="update" parameterType="org.igetwell.system.entity.SystemDept">
     UPDATE SYS_DEPT
     <set>
-      <if test="tenantId != null">
-        tenant_id = #{tenantId,jdbcType=VARCHAR},
+      <if test="tenantId != null and tenantId != ''">
+        TENANT_ID = #{tenantId,jdbcType=VARCHAR},
       </if>
       <if test="parentId != null">
-        parent_id = #{parentId,jdbcType=BIGINT},
+        PARENT_ID = #{parentId,jdbcType=BIGINT},
       </if>
       <if test="ancestors != null">
-        ancestors = #{ancestors,jdbcType=VARCHAR},
+        ANCESTORS = #{ancestors,jdbcType=VARCHAR},
       </if>
       <if test="deptCategory != null">
-        dept_category = #{deptCategory,jdbcType=INTEGER},
+        DEPT_CATEGORY = #{deptCategory,jdbcType=INTEGER},
       </if>
-      <if test="deptName != null">
-        dept_name = #{deptName,jdbcType=VARCHAR},
+      <if test="name != null and name != ''">
+        NAME = #{name,jdbcType=VARCHAR},
       </if>
-      <if test="fullName != null">
-        full_name = #{fullName,jdbcType=VARCHAR},
+      <if test="fullName != null and fullName != ''">
+        FULL_NAME = #{fullName,jdbcType=VARCHAR},
       </if>
       <if test="sort != null">
-        sort = #{sort,jdbcType=INTEGER},
+        SORT = #{sort,jdbcType=INTEGER},
       </if>
     </set>
-    where id = #{id,jdbcType=BIGINT}
+    where ID = #{id,jdbcType=BIGINT}
   </update>
 
 </mapper>

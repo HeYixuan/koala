@@ -1,11 +1,18 @@
 package org.igetwell.system.bean;
 
+import lombok.Data;
+
 import java.util.Date;
 
+@Data
 public class SystemUserBean {
 
     private Long id;
 
+    /**
+     * 租户ID
+     */
+    private String tenantId;
     /**
      * 所属租户
      */
@@ -15,6 +22,16 @@ public class SystemUserBean {
      * 账号
      */
     private String username;
+
+    /**
+     * 角色id
+     */
+    private String roleId;
+
+    /**
+     * 部门id
+     */
+    private String deptId;
 
     /**
      * 邮箱
@@ -32,7 +49,7 @@ public class SystemUserBean {
     private Date birthday;
 
     /**
-     * 性别
+     * 性别：M-男，F-女，N-未知
      */
     private char sex;
 

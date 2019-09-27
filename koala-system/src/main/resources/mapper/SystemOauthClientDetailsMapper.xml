@@ -6,19 +6,19 @@
     <!--
       WARNING - @mbg.generated
     -->
-    <id column="id" jdbcType="BIGINT" property="id" />
-    <result column="client_id" jdbcType="VARCHAR" property="clientId" />
-    <result column="client_secret" jdbcType="VARCHAR" property="clientSecret" />
-    <result column="resource_ids" jdbcType="VARCHAR" property="resourceIds" />
-    <result column="scope" jdbcType="VARCHAR" property="scope" />
-    <result column="authorized_grant_types" jdbcType="VARCHAR" property="authorizedGrantTypes" />
-    <result column="web_server_redirect_uri" jdbcType="VARCHAR" property="webServerRedirectUri" />
-    <result column="authorities" jdbcType="VARCHAR" property="authorities" />
-    <result column="access_token_validity" jdbcType="INTEGER" property="accessTokenValidity" />
-    <result column="refresh_token_validity" jdbcType="INTEGER" property="refreshTokenValidity" />
-    <result column="additional_information" jdbcType="VARCHAR" property="additionalInformation" />
-    <result column="autoapprove" jdbcType="VARCHAR" property="autoapprove" />
-    <result column="tenant_id" jdbcType="INTEGER" property="tenantId" />
+    <id column="ID" jdbcType="BIGINT" property="id" />
+    <result column="CLIENT_ID" jdbcType="VARCHAR" property="clientId" />
+    <result column="CLIENT_SECRET" jdbcType="VARCHAR" property="clientSecret" />
+    <result column="RESOURCE_IDS" jdbcType="VARCHAR" property="resourceIds" />
+    <result column="SCOPE" jdbcType="VARCHAR" property="scope" />
+    <result column="AUTHORIZED_GRANT_TYPES" jdbcType="VARCHAR" property="authorizedGrantTypes" />
+    <result column="WEB_SERVER_REDIRECT_URI" jdbcType="VARCHAR" property="webServerRedirectUri" />
+    <result column="AUTHORITIES" jdbcType="VARCHAR" property="authorities" />
+    <result column="ACCESS_TOKEN_VALIDITY" jdbcType="INTEGER" property="accessTokenValidity" />
+    <result column="REFRESH_TOKEN_VALIDITY" jdbcType="INTEGER" property="refreshTokenValidity" />
+    <result column="ADDITIONAL_INFORMATION" jdbcType="VARCHAR" property="additionalInformation" />
+    <result column="AUTOAPPROVE" jdbcType="VARCHAR" property="autoapprove" />
+    <result column="TENANT_ID" jdbcType="VARCHAR" property="tenantId" />
   </resultMap>
 
   <sql id="baseSql">
@@ -28,70 +28,69 @@
   </sql>
 
   <delete id="deleteById" parameterType="java.lang.Long">
-    delete from sys_oauth_client_details
-    where id = #{id,jdbcType=BIGINT}
+    DELETE FROM SYS_OAUTH_CLIENT_DETAILS WHERE ID = #{id,jdbcType=BIGINT}
   </delete>
 
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="org.igetwell.system.entity.SystemOauthClientDetails" useGeneratedKeys="true">
     INSERT INTO SYS_OAUTH_CLIENT_DETAILS
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="clientId != null">
-        client_id,
+      <if test="clientId != null and clientId != ''">
+        CLIENT_ID,
       </if>
-      <if test="clientSecret != null">
-        client_secret,
+      <if test="clientSecret != null and clientSecret != ''">
+        CLIENT_SECRET,
       </if>
-      <if test="resourceIds != null">
-        resource_ids,
+      <if test="resourceIds != null and resourceIds != ''">
+        RESOURCE_IDS,
       </if>
-      <if test="scope != null">
-        `scope`,
+      <if test="scope != null and scope != ''">
+        `SCOPE`,
       </if>
-      <if test="authorizedGrantTypes != null">
-        authorized_grant_types,
+      <if test="authorizedGrantTypes != null and authorizedGrantTypes != ''">
+        AUTHORIZED_GRANT_TYPES,
       </if>
-      <if test="webServerRedirectUri != null">
-        web_server_redirect_uri,
+      <if test="webServerRedirectUri != null and webServerRedirectUri != ''">
+        WEB_SERVER_REDIRECT_URI,
       </if>
-      <if test="authorities != null">
-        authorities,
+      <if test="authorities != null and authorities != ''">
+        AUTHORITIES,
       </if>
       <if test="accessTokenValidity != null">
-        access_token_validity,
+        ACCESS_TOKEN_VALIDITY,
       </if>
       <if test="refreshTokenValidity != null">
-        refresh_token_validity,
+        REFRESH_TOKEN_VALIDITY,
       </if>
-      <if test="additionalInformation != null">
-        additional_information,
+      <if test="additionalInformation != null and additionalInformation != ''">
+        ADDITIONAL_INFORMATION,
       </if>
-      <if test="autoapprove != null">
-        autoapprove,
+      <if test="autoapprove != null and autoapprove != ''">
+        AUTOAPPROVE,
       </if>
-      <if test="tenantId != null">
-        tenant_id,
+      <if test="tenantId != null and tenantId !=''">
+        TENANT_ID,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="clientId != null">
+      <if test="clientId != null and clientId !=''">
         #{clientId,jdbcType=VARCHAR},
       </if>
-      <if test="clientSecret != null">
+      <if test="clientSecret != null and clientSecret !=''">
         #{clientSecret,jdbcType=VARCHAR},
       </if>
-      <if test="resourceIds != null">
+      <if test="resourceIds != null and resourceIds !=''">
         #{resourceIds,jdbcType=VARCHAR},
       </if>
-      <if test="scope != null">
+      <if test="scope != null and scope !=''">
         #{scope,jdbcType=VARCHAR},
       </if>
-      <if test="authorizedGrantTypes != null">
+      <if test="authorizedGrantTypes != null and authorizedGrantTypes !=''">
         #{authorizedGrantTypes,jdbcType=VARCHAR},
       </if>
-      <if test="webServerRedirectUri != null">
+      <if test="webServerRedirectUri != null and webServerRedirectUri !=''">
         #{webServerRedirectUri,jdbcType=VARCHAR},
       </if>
-      <if test="authorities != null">
+      <if test="authorities != null and authorities !=''">
         #{authorities,jdbcType=VARCHAR},
       </if>
       <if test="accessTokenValidity != null">
@@ -100,14 +99,14 @@
       <if test="refreshTokenValidity != null">
         #{refreshTokenValidity,jdbcType=INTEGER},
       </if>
-      <if test="additionalInformation != null">
+      <if test="additionalInformation != null and additionalInformation != ''">
         #{additionalInformation,jdbcType=VARCHAR},
       </if>
-      <if test="autoapprove != null">
+      <if test="autoapprove != null and autoapprove != ''">
         #{autoapprove,jdbcType=VARCHAR},
       </if>
-      <if test="tenantId != null">
-        #{tenantId,jdbcType=INTEGER},
+      <if test="tenantId != null and tenantId != ''">
+        #{tenantId,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -115,25 +114,25 @@
   <update id="update" parameterType="org.igetwell.system.entity.SystemOauthClientDetails">
     UPDATE SYS_OAUTH_CLIENT_DETAILS
     <set>
-      <if test="clientId != null">
+      <if test="clientId != null and clientId != ''">
         client_id = #{clientId,jdbcType=VARCHAR},
       </if>
-      <if test="clientSecret != null">
+      <if test="clientSecret != null and clientSecret != ''">
         client_secret = #{clientSecret,jdbcType=VARCHAR},
       </if>
-      <if test="resourceIds != null">
+      <if test="resourceIds != null and resourceIds != ''">
         resource_ids = #{resourceIds,jdbcType=VARCHAR},
       </if>
-      <if test="scope != null">
+      <if test="scope != null and scope != ''">
         `scope` = #{scope,jdbcType=VARCHAR},
       </if>
-      <if test="authorizedGrantTypes != null">
+      <if test="authorizedGrantTypes != null and authorizedGrantTypes != ''">
         authorized_grant_types = #{authorizedGrantTypes,jdbcType=VARCHAR},
       </if>
-      <if test="webServerRedirectUri != null">
+      <if test="webServerRedirectUri != null and webServerRedirectUri != ''">
         web_server_redirect_uri = #{webServerRedirectUri,jdbcType=VARCHAR},
       </if>
-      <if test="authorities != null">
+      <if test="authorities != null and authorities != ''">
         authorities = #{authorities,jdbcType=VARCHAR},
       </if>
       <if test="accessTokenValidity != null">
@@ -142,17 +141,17 @@
       <if test="refreshTokenValidity != null">
         refresh_token_validity = #{refreshTokenValidity,jdbcType=INTEGER},
       </if>
-      <if test="additionalInformation != null">
+      <if test="additionalInformation != null and additionalInformation != ''">
         additional_information = #{additionalInformation,jdbcType=VARCHAR},
       </if>
-      <if test="autoapprove != null">
-        autoapprove = #{autoapprove,jdbcType=VARCHAR},
+      <if test="autoapprove != null and autoapprove != ''">
+        AUTOAPPROVE = #{autoapprove,jdbcType=VARCHAR},
       </if>
-      <if test="tenantId != null">
-        tenant_id = #{tenantId,jdbcType=INTEGER},
+      <if test="tenantId != null and tenantId != ''">
+        TENANT_ID = #{tenantId,jdbcType=VARCHAR},
       </if>
     </set>
-    where id = #{id,jdbcType=BIGINT}
+    WHERE ID = #{id,jdbcType=BIGINT}
   </update>
 
 </mapper>

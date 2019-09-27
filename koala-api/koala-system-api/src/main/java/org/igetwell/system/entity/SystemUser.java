@@ -47,7 +47,7 @@ public class SystemUser implements Serializable {
     private Date birthday;
 
     /**
-     * 性别
+     * 性别：M-男，F-女，N-未知
      */
     private char sex;
 

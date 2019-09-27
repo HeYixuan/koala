@@ -2,15 +2,15 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.igetwell.system.mapper.SystemGatewayRouteMapper">
   <resultMap id="baseMap" type="org.igetwell.system.entity.SystemGatewayRoute">
-    <id column="id" jdbcType="VARCHAR" property="id" />
-    <result column="route_name" jdbcType="VARCHAR" property="routeName" />
-    <result column="predicates" jdbcType="LONGVARCHAR" property="predicates" />
-    <result column="filters" jdbcType="LONGVARCHAR" property="filters" />
-    <result column="uri" jdbcType="VARCHAR" property="uri" />
-    <result column="order" jdbcType="INTEGER" property="order" />
-    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
-    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
-    <result column="del_flag" jdbcType="CHAR" property="delFlag" />
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="ROUTE_NAME" jdbcType="VARCHAR" property="routeName" />
+    <result column="PREDICATES" jdbcType="LONGVARCHAR" property="predicates" />
+    <result column="FILTERS" jdbcType="LONGVARCHAR" property="filters" />
+    <result column="URI" jdbcType="VARCHAR" property="uri" />
+    <result column="ORDER" jdbcType="INTEGER" property="order" />
+    <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="DEL_FLAG" jdbcType="CHAR" property="delFlag" />
   </resultMap>
 
 
@@ -32,19 +32,19 @@
   <insert id="addRoute" parameterType="org.igetwell.system.entity.SystemGatewayRoute" >
     insert into sys_gateway_routes
     <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
+      <if test="id != null and id !=''" >
         ID,
       </if>
-      <if test="routeName != null" >
+      <if test="routeName != null and routeName !=''" >
         ROUTE_NAME,
       </if>
-      <if test="predicates != null" >
+      <if test="predicates != null and predicates !=''" >
         PREDICATES,
       </if>
-      <if test="filters != null" >
+      <if test="filters != null and filters !=''" >
         FILTERS,
       </if>
-      <if test="uri != null" >
+      <if test="uri != null and uri !=''" >
         URI,
       </if>
       <if test="order != null" >
@@ -56,24 +56,24 @@
       <if test="updateTime != null" >
         UPDATE_TIME,
       </if>
-      <if test="delFlag != null" >
+      <if test="delFlag != null and delFlag !=''" >
         DEL_FLAG,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
+      <if test="id != null and id !=''" >
         #{id,jdbcType=VARCHAR},
       </if>
-      <if test="routeName != null" >
+      <if test="routeName != null and routeName !=''" >
         #{routeName,jdbcType=VARCHAR},
       </if>
-      <if test="predicates != null" >
+      <if test="predicates != null and predicates !=''" >
         #{predicates,jdbcType=VARCHAR},
       </if>
-      <if test="filters != null" >
+      <if test="filters != null and filters !=''" >
         #{filters,jdbcType=VARCHAR},
       </if>
-      <if test="uri != null" >
+      <if test="uri != null and uri !=''" >
         #{uri,jdbcType=VARCHAR},
       </if>
       <if test="order != null" >
@@ -85,7 +85,7 @@
       <if test="updateTime != null" >
         #{updateTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="delFlag != null" >
+      <if test="delFlag != null and delFlag !=''" >
         #{delFlag,jdbcType=CHAR},
       </if>
     </trim>
@@ -94,19 +94,19 @@
   <update id="updateRoute" parameterType="org.igetwell.system.entity.SystemGatewayRoute">
     UPDATE SYS_GATEWAY_ROUTE
     <set>
-      <if test="id != null">
+      <if test="id != null and id !=''" >
         ID = #{id,jdbcType=VARCHAR},
       </if>
-      <if test="routeName != null">
+      <if test="routeName != null and routeName !=''" >
         ROUTE_NAME = #{routeName,jdbcType=VARCHAR},
       </if>
-      <if test="predicates != null">
+      <if test="predicates != null and predicates !=''" >
         PREDICATES = #{predicates,jdbcType=VARCHAR},
       </if>
-      <if test="filters != null">
+      <if test="filters != null and filters !=''" >
         FILTERS = #{filters,jdbcType=VARCHAR},
       </if>
-      <if test="uri != null">
+      <if test="uri != null and uri !=''" >
         URI = #{uri,jdbcType=VARCHAR},
       </if>
       <if test="order != null">
@@ -118,7 +118,7 @@
       <if test="updateTime != null">
         UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="delFlag != null">
+      <if test="delFlag != null and delFlag !=''" >
         DEL_FLAG = #{delFlag,jdbcType=CHAR},
       </if>
     </set>

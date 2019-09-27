@@ -27,8 +27,11 @@
 
   <resultMap id="baseListMap" type="org.igetwell.system.bean.SystemUserBean">
     <id column="ID" jdbcType="BIGINT" property="id" />
+    <result column="TENANT_ID" jdbcType="VARCHAR" property="tenantId" />
     <result column="TENANT_NAME" jdbcType="VARCHAR" property="tenantName" />
     <result column="USERNAME" jdbcType="VARCHAR" property="username" />
+    <result column="ROLE_ID" jdbcType="BIGINT" property="roleId" />
+    <result column="DEPT_ID" jdbcType="BIGINT" property="deptId" />
     <result column="EMAIL" jdbcType="VARCHAR" property="email" />
     <result column="MOBILE" jdbcType="VARCHAR" property="mobile" />
     <result column="BIRTHDAY" jdbcType="TIMESTAMP" property="birthday" />
@@ -53,9 +56,11 @@
   </sql>
 
   <sql id="baseListSql">
-    ID, TENANT_ID, USERNAME, EMAIL, MOBILE, BIRTHDAY, SEX,
+    ID, TENANT_ID, USERNAME, ROLE_ID, DEPT_ID, EMAIL, MOBILE, BIRTHDAY, SEX,
+    (SELECT TENANT_NAME FROM sys_tenant WHERE tenant_id = tenant_id) TENANT_NAME,
     (SELECT ROLE_NAME FROM sys_role WHERE id = role_id)ROLE_NAME,
-    (SELECT DEPT_NAME FROM sys_dept WHERE id = dept_id) DEPT_NAME, IS_ENABLED
+    (SELECT NAME FROM sys_dept WHERE id = dept_id) DEPT_NAME,
+    IS_ENABLED
   </sql>
 
   <select id="loadByUsername" resultMap="baseMap">

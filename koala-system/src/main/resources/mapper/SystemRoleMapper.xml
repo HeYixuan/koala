@@ -5,13 +5,13 @@
     <!--
       WARNING - @mbg.generated
     -->
-    <id column="id" jdbcType="BIGINT" property="id" />
-    <result column="tenant_id" jdbcType="VARCHAR" property="tenantId" />
-    <result column="parent_id" jdbcType="BIGINT" property="parentId" />
-    <result column="role_name" jdbcType="VARCHAR" property="roleName" />
-    <result column="role_alias" jdbcType="VARCHAR" property="roleAlias" />
-    <result column="ds_type" jdbcType="INTEGER" property="dsType"/>
-    <result column="ds_scope" jdbcType="VARCHAR" property="dsScope"/>
+    <id column="ID" jdbcType="BIGINT" property="id" />
+    <result column="TENANT_ID" jdbcType="VARCHAR" property="tenantId" />
+    <result column="PARENT_ID" jdbcType="BIGINT" property="parentId" />
+    <result column="ROLE_NAME" jdbcType="VARCHAR" property="roleName" />
+    <result column="ROLE_ALIAS" jdbcType="VARCHAR" property="roleAlias" />
+    <result column="DS_TYPE" jdbcType="INTEGER" property="dsType"/>
+    <result column="DS_SCOPE" jdbcType="VARCHAR" property="dsScope"/>
   </resultMap>
 
   <sql id="baseSql">
@@ -73,36 +73,36 @@
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="org.igetwell.system.entity.SystemRole" useGeneratedKeys="true">
     INSERT INTO SYS_ROLE
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="tenantId != null">
-        tenant_id,
+      <if test="tenantId != null and tenantId !=''">
+        TENANT_ID,
       </if>
       <if test="parentId != null">
-        parent_id,
+        PARENT_ID,
       </if>
-      <if test="roleName != null">
-        role_name,
+      <if test="roleName != null and roleName !=''">
+        ROLE_NAME,
       </if>
-      <if test="roleAlias != null">
-        role_alias,
+      <if test="roleAlias != null and roleAlias !=''">
+        ROLE_ALIAS,
       </if>
       <if test="dsType != null">
-        ds_type,
+        DS_TYPE,
       </if>
       <if test="dsScope != null">
-        ds_scope,
+        DS_SCOPE,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="tenantId != null">
+      <if test="tenantId != null and tenantId !=''">
         #{tenantId,jdbcType=VARCHAR},
       </if>
       <if test="parentId != null">
         #{parentId,jdbcType=BIGINT},
       </if>
-      <if test="roleName != null">
+      <if test="roleName != null and roleName !=''">
         #{roleName,jdbcType=VARCHAR},
       </if>
-      <if test="roleAlias != null">
+      <if test="roleAlias != null and roleAlias !=''">
         #{roleAlias,jdbcType=VARCHAR},
       </if>
       <if test="dsType != null">
@@ -117,26 +117,26 @@
   <update id="update" parameterType="org.igetwell.system.entity.SystemRole">
     UPDATE SYS_ROLE
     <set>
-      <if test="tenantId != null">
-        tenant_id = #{tenantId,jdbcType=VARCHAR},
+      <if test="tenantId != null and tenantId !=''">
+        TENANT_ID = #{tenantId,jdbcType=VARCHAR},
       </if>
       <if test="parentId != null">
-        parent_id = #{parentId,jdbcType=BIGINT},
+        PARENT_ID = #{parentId,jdbcType=BIGINT},
       </if>
-      <if test="roleName != null">
-        role_name = #{roleName,jdbcType=VARCHAR},
+      <if test="roleName != null and roleName !=''">
+        ROLE_NAME = #{roleName,jdbcType=VARCHAR},
       </if>
-      <if test="roleAlias != null">
-        role_alias = #{roleAlias,jdbcType=VARCHAR},
+      <if test="roleAlias != null and roleAlias !=''">
+        ROLE_ALIAS = #{roleAlias,jdbcType=VARCHAR},
       </if>
       <if test="dsType != null">
-        ds_type = #{dsType,jdbcType=INTEGER},
+        DS_TYPE = #{dsType,jdbcType=INTEGER},
       </if>
       <if test="dsScope != null">
-        ds_scope = #{dsScope,jdbcType=VARCHAR},
+        DS_SCOPE = #{dsScope,jdbcType=VARCHAR},
       </if>
     </set>
-    where id = #{id,jdbcType=BIGINT}
+    where ID = #{id,jdbcType=BIGINT}
   </update>
 
 
