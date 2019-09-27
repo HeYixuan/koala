@@ -8,7 +8,7 @@
     <result column="NAME" jdbcType="VARCHAR" property="name" />
     <result column="ALIAS" jdbcType="VARCHAR" property="alias" />
     <result column="ICON_CLASS" jdbcType="VARCHAR" property="iconClass" />
-    <result column="PATH" jdbcType="VARCHAR" property="path" />
+    <result column="URI" jdbcType="VARCHAR" property="uri" />
     <result column="SOURCE" jdbcType="VARCHAR" property="source" />
     <result column="MENU_TYPE" jdbcType="INTEGER" property="menuType" />
     <result column="KEEP_ALIVE" jdbcType="INTEGER" property="keepAlive" />
@@ -22,7 +22,7 @@
     <result column="NAME" jdbcType="VARCHAR" property="name" />
     <result column="ALIAS" jdbcType="VARCHAR" property="alias" />
     <result column="ICON_CLASS" jdbcType="VARCHAR" property="iconClass" />
-    <result column="PATH" jdbcType="VARCHAR" property="path" />
+    <result column="URI" jdbcType="VARCHAR" property="uri" />
     <result column="MENU_TYPE" jdbcType="INTEGER" property="menuType" />
     <result column="KEEP_ALIVE" jdbcType="INTEGER" property="keepAlive" />
     <result column="SORT" jdbcType="INTEGER" property="sort" />
@@ -30,11 +30,11 @@
   </resultMap>
 
     <sql id="baseSql">
-      M.ID, M.PARENT_ID, M.CODE, M.NAME, M.ALIAS, M.ICON_CLASS, M.PATH, M.SOURCE, M.MENU_TYPE, M.KEEP_ALIVE, M.SORT
+      M.ID, M.PARENT_ID, M.CODE, M.NAME, M.ALIAS, M.ICON_CLASS, M.URI, M.SOURCE, M.MENU_TYPE, M.KEEP_ALIVE, M.SORT
     </sql>
 
     <sql id="treeSql">
-        ID, PARENT_ID, CODE, NAME, ALIAS, ICON_CLASS, PATH, MENU_TYPE, KEEP_ALIVE, SORT
+        ID, PARENT_ID, CODE, NAME, ALIAS, ICON_CLASS, URI, MENU_TYPE, KEEP_ALIVE, SORT
     </sql>
 
 
@@ -87,8 +87,8 @@
       <if test="iconClass != null and iconClass !=''">
         icon_class,
       </if>
-      <if test="path != null and path !=''">
-        `path`,
+      <if test="uri != null and uri !=''">
+        `URI`,
       </if>
       <if test="source != null and source !=''">
         `source`,
@@ -119,8 +119,8 @@
       <if test="iconClass != null and iconClass !=''">
         #{iconClass,jdbcType=VARCHAR},
       </if>
-      <if test="path != null and path !=''">
-        #{path,jdbcType=VARCHAR},
+      <if test="uri != null and uri !=''">
+        #{uri,jdbcType=VARCHAR},
       </if>
       <if test="source != null and code !=''">
         #{source,jdbcType=VARCHAR},
@@ -155,8 +155,8 @@
       <if test="iconClass != null and iconClass !=''">
         ICON_CLASS = #{iconClass,jdbcType=VARCHAR},
       </if>
-      <if test="path != null and path !=''">
-        `PATH` = #{path,jdbcType=VARCHAR},
+      <if test="uri != null and uri !=''">
+        `URI` = #{uri,jdbcType=VARCHAR},
       </if>
       <if test="source != null and source !=''">
         `SOURCE` = #{source,jdbcType=VARCHAR},

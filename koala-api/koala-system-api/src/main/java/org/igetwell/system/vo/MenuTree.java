@@ -21,16 +21,10 @@ public class MenuTree extends TreeNode {
 	 */
 	private String alias;
 
-
-	/**
-	 * 是否展开叶子
-	 */
-	private boolean isExpand = false;
-
 	/**
 	 * 请求地址
 	 */
-	private String path;
+	private String uri;
 
 	/**
 	 * 路由缓冲

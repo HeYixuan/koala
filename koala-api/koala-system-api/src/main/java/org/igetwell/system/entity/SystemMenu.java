@@ -41,7 +41,7 @@ public class SystemMenu {
     /**
      * 请求地址
      */
-    private String path;
+    private String uri;
 
     /**
      * 菜单资源
@@ -176,19 +176,19 @@ public class SystemMenu {
     /**
      * 获取请求地址
      *
-     * @return path - 请求地址
+     * @return uri - 请求地址
      */
-    public String getPath() {
-        return path;
+    public String getUri() {
+        return uri;
     }
 
     /**
      * 设置请求地址
      *
-     * @param path 请求地址
+     * @param uri 请求地址
      */
-    public void setPath(String path) {
-        this.path = path == null ? null : path.trim();
+    public void setUri(String uri) {
+        this.uri = uri == null ? null : uri.trim();
     }
 
     /**

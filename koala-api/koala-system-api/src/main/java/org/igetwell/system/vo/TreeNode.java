@@ -20,9 +20,15 @@ public class TreeNode<T> {
     private Long parentId;
 
     /**
+     * 是否展开叶子
+     */
+    private boolean hidden = false;
+
+    /**
      * 子节点列表
      */
     private List<T> children;
+
 
     public Long getId() {
         return id;
@@ -48,6 +54,14 @@ public class TreeNode<T> {
         this.parentId = parentId;
     }
 
+    public boolean isHidden() {
+        return hidden;
+    }
+
+    public void setHidden(boolean hidden) {
+        this.hidden = hidden;
+    }
+
     public List<T> getChildren() {
         return children;
     }
@@ -55,5 +69,4 @@ public class TreeNode<T> {
     public void setChildren(List<T> children) {
         this.children = children;
     }
-
 }

@@ -30,6 +30,7 @@ spring:
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8
+    defaultPropertyInclusion: NON_EMPTY
 
 logging:
   config: classpath:logback.xml

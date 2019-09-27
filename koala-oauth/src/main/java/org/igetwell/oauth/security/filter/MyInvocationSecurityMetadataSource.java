@@ -58,11 +58,11 @@ public class MyInvocationSecurityMetadataSource implements FilterInvocationSecur
                 unbindResources.forEach(e -> {
                     Collection<ConfigAttribute> attrs = new ArrayList<>();
                     attrs.add(ca);
-                    resourceMap.put(e.getPath(), attrs);
+                    resourceMap.put(e.getUri(), attrs);
                 });
             } else {
                 resources.forEach(r -> {
-                    String url = r.getPath();
+                    String url = r.getUri();
                     //判断资源文件和权限的对应关系，如果已经存在相关的资源url，则要通过该url为key提取出权限集合，将权限增加到权限集合中
                     if (resourceMap.containsKey(url)) { //如果已存在url 加入权限
                         Collection<ConfigAttribute> value = resourceMap.get(url);
