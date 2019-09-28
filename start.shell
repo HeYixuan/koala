@@ -1,0 +1,35 @@
+ #拉取代码
+
+    echo pull project
+
+    cd /code/weixin-server(项目名)
+
+    git pull
+
+    #maven打包
+
+    echo maven build
+
+    cd /code/weixin-server(项目名)/
+
+    mvn clean package
+
+    #杀掉进程
+
+    echo kill progress
+
+    ps -ef|grep weixin-server.jar(项目打成的jar包)|grep -v grep |awk '{print "kill -9 "$2}'|bash
+
+    echo "---------------"
+
+    #复制jar包到指定路径
+
+    echo maven bulid
+
+    cp /code/weixin-server/target/weixin-server.jar(项目打成的jar包) /software/jar/
+
+    #启动服务
+
+    cd /software/jar/
+
+    nohup java -jar weixin-server.jar(项目打成的jar包) &

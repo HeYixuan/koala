@@ -56,10 +56,41 @@ http://localhost:9999/system/systemUser/getList
 Authorization: Bearer 6265b580-f096-4826-ab2d-b61b45cb19a6
 
 
-jar启动命令：java -Xms2048m -Xmx2048m -jar koala-register-1.0-SNAPSHOT.jar --server.port=8848
+jar启动方法一:
+jar启动命令：nohup java -Xms64m -Xmx128m -jar koala-register-1.0-SNAPSHOT.jar --server.port=8848 &
+
+
+java -Xms64m -Xmx512m -jar koala-system-1.0-SNAPSHOT.jar --server.port=9001
+
+//nohup 意思是不挂断运行命令,当账户退出或终端关闭时,程序仍然运行
+//当用 nohup 命令执行作业时，缺省情况下该作业的所有输出被重定向到nohup.out的文件中
+//除非另外指定了输出文件。
+
+
+jar启动方法二:
+$ nohup java -jar test.jar >temp.txt &
+ 
+//这种方法会把日志文件输入到你指定的文件中，没有则会自动创建
+
+$ jobs
+//那么就会列出所有后台执行的作业，并且每个作业前面都有个编号。
+//如果想将某个作业调回前台控制，只需要 fg + 编号即可。
+$ fg 2
+
+查看某端口占用的线程的pid
+netstat -nlp |grep :8080
 
 
 120.78.66.117
 root
 123456
 Hyx930512
+
+
+<executions>
+    <execution>
+        <goals>
+            <goal>repackage</goal>
+        </goals>
+    </execution>
+</executions>
