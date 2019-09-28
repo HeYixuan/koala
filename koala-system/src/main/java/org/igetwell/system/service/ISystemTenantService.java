@@ -1,12 +1,13 @@
-package org.igetwell.system.mapper;
+package org.igetwell.system.service;
 
 import org.igetwell.common.uitls.Pagination;
+import org.igetwell.common.uitls.ResponseEntity;
 import org.igetwell.system.dto.SystemTenantPageDto;
 import org.igetwell.system.entity.SystemTenant;
 
 import java.util.List;
 
-public interface SystemTenantMapper {
+public interface ISystemTenantService {
 
     /**
      * 根据租户ID查询
@@ -23,9 +24,9 @@ public interface SystemTenantMapper {
      */
     List<SystemTenant> getList(Pagination pagination, SystemTenantPageDto dto);
 
-    int deleteById(Long id);
+    ResponseEntity deleteById(Long id);
 
-    int insert(SystemTenant systemTenant);
+    ResponseEntity insert(SystemTenant systemTenant);
 
-    int update(SystemTenant systemTenant);
+    ResponseEntity update(SystemTenant systemTenant);
 }

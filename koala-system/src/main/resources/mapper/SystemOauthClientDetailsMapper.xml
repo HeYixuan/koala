@@ -21,14 +21,55 @@
     <result column="TENANT_ID" jdbcType="VARCHAR" property="tenantId" />
   </resultMap>
 
+  <resultMap id="baseListMap" type="org.igetwell.system.bean.SystemOauthClientDetailsBean">
+    <result column="CLIENT_ID" jdbcType="VARCHAR" property="clientId" />
+    <result column="CLIENT_SECRET" jdbcType="VARCHAR" property="clientSecret" />
+    <result column="SCOPE" jdbcType="VARCHAR" property="scope" />
+    <result column="AUTHORIZED_GRANT_TYPES" jdbcType="VARCHAR" property="authorizedGrantTypes" />
+    <result column="WEB_SERVER_REDIRECT_URI" jdbcType="VARCHAR" property="webServerRedirectUri" />
+    <result column="ACCESS_TOKEN_VALIDITY" jdbcType="INTEGER" property="accessTokenValidity" />
+    <result column="REFRESH_TOKEN_VALIDITY" jdbcType="INTEGER" property="refreshTokenValidity" />
+    <result column="AUTOAPPROVE" jdbcType="VARCHAR" property="autoapprove" />
+    <result column="TENANT_ID" jdbcType="VARCHAR" property="tenantId" />
+    <result column="TENANT_NAME" jdbcType="VARCHAR" property="tenantName" />
+  </resultMap>
+
   <sql id="baseSql">
     ID, CLIENT_ID, CLIENT_SECRET, RESOURCE_IDS, SCOPE, AUTHORIZED_GRANT_TYPES, WEB_SERVER_REDIRECT_URI,
     AUTHORITIES, ACCESS_TOKEN_VALIDITY, REFRESH_TOKEN_VALIDITY, ADDITIONAL_INFORMATION,
     AUTOAPPROVE, TENANT_ID
   </sql>
 
-  <delete id="deleteById" parameterType="java.lang.Long">
-    DELETE FROM SYS_OAUTH_CLIENT_DETAILS WHERE ID = #{id,jdbcType=BIGINT}
+  <sql id="baseListSql">
+    CLIENT_ID, CLIENT_SECRET, SCOPE, AUTHORIZED_GRANT_TYPES, WEB_SERVER_REDIRECT_URI,
+    ACCESS_TOKEN_VALIDITY, REFRESH_TOKEN_VALIDITY, AUTOAPPROVE, TENANT_ID,
+    (SELECT TENANT_NAME FROM SYS_TENANT WHERE TENANT_ID = SYS_OAUTH_CLIENT_DETAILS.TENANT_ID) TENANT_NAME
+  </sql>
+
+
+  <select id="get" resultMap="baseMap" parameterType="java.lang.String">
+    SELECT
+        <include refid="baseListSql" />
+    FROM SYS_OAUTH_CLIENT_DETAILS
+    WHERE CLIENT_ID = #{clientId}
+  </select>
+
+  <select id="getList" resultMap="baseListMap" parameterType="org.igetwell.system.dto.SystemOauthClientDetailsPageDto">
+    SELECT
+    <include refid="baseListSql" />
+    FROM SYS_OAUTH_CLIENT_DETAILS
+    <where>
+      <if test="clientId !=null and clientId != ''">
+        AND CLIENT_ID = #{clientId}
+      </if>
+      <if test="tenantId !=null and tenantId != ''">
+        AND TENANT_ID = #{tenantId}
+      </if>
+    </where>
+  </select>
+
+  <delete id="deleteById" parameterType="java.lang.String">
+    DELETE FROM SYS_OAUTH_CLIENT_DETAILS WHERE CLIENT_ID = #{clientId,jdbcType=VARCHAR}
   </delete>
 
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="org.igetwell.system.entity.SystemOauthClientDetails" useGeneratedKeys="true">

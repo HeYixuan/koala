@@ -1,5 +1,6 @@
 package org.igetwell.system.service.impl;
 
+import org.igetwell.common.uitls.ResponseEntity;
 import org.igetwell.system.entity.SystemRole;
 import org.igetwell.system.mapper.SystemRoleMapper;
 import org.igetwell.system.service.ISystemRoleService;
@@ -42,5 +43,32 @@ public class SystemRoleService implements ISystemRoleService {
     @Override
     public Integer getDataScopeType(String tenant, Long id) {
         return systemRoleMapper.getDataScopeType(tenant, id);
+    }
+
+    @Override
+    public ResponseEntity deleteById(Long id) {
+        int i = systemRoleMapper.deleteById(id);
+        if (i > 0){
+            return ResponseEntity.ok();
+        }
+        return ResponseEntity.error();
+    }
+
+    @Override
+    public ResponseEntity insert(SystemRole systemRole) {
+        int i = systemRoleMapper.insert(systemRole);
+        if (i > 0){
+            return ResponseEntity.ok();
+        }
+        return ResponseEntity.error();
+    }
+
+    @Override
+    public ResponseEntity update(SystemRole systemRole) {
+        int i = systemRoleMapper.update(systemRole);
+        if (i > 0){
+            return ResponseEntity.ok();
+        }
+        return ResponseEntity.error();
     }
 }

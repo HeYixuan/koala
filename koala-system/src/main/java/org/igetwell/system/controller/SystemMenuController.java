@@ -12,6 +12,7 @@ import org.igetwell.system.vo.TreeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -70,6 +71,21 @@ public class SystemMenuController {
         List<MenuTree> nodeTree = TreeUtils.treeMenu(list);
         System.err.println(GsonUtils.toJson(nodeTree));
         return nodeTree;
+    }
+
+    @PostMapping("/systemMenu/add")
+    public ResponseEntity insert(@RequestBody SystemMenu systemMenu){
+        return iSystemMenuService.insert(systemMenu);
+    }
+
+    @PostMapping("/systemMenu/deleteById/{id}")
+    public ResponseEntity deleteById(@PathVariable("id") Long id){
+        return iSystemMenuService.deleteById(id);
+    }
+
+    @PostMapping("/systemMenu/update")
+    public ResponseEntity update(@RequestBody SystemMenu systemMenu){
+        return iSystemMenuService.update(systemMenu);
     }
 
     @PostMapping("/systemMenu/testMenus")

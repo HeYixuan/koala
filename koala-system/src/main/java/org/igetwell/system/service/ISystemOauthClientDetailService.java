@@ -1,14 +1,14 @@
-package org.igetwell.system.mapper;
-
+package org.igetwell.system.service;
 
 import org.igetwell.common.uitls.Pagination;
+import org.igetwell.common.uitls.ResponseEntity;
 import org.igetwell.system.bean.SystemOauthClientDetailsBean;
 import org.igetwell.system.dto.SystemOauthClientDetailsPageDto;
 import org.igetwell.system.entity.SystemOauthClientDetails;
 
 import java.util.List;
 
-public interface SystemOauthClientDetailsMapper {
+public interface ISystemOauthClientDetailService {
 
     /**
      * 根据应用ID查询客户端信息
@@ -25,9 +25,9 @@ public interface SystemOauthClientDetailsMapper {
      */
     List<SystemOauthClientDetailsBean> getList(Pagination pagination, SystemOauthClientDetailsPageDto dto);
 
-    int deleteById(String clientId);
+    ResponseEntity deleteById(String clientId);
 
-    int insert(SystemOauthClientDetails systemOauthClientDetails);
+    ResponseEntity insert(SystemOauthClientDetails systemOauthClientDetails);
 
-    int update(SystemOauthClientDetails systemOauthClientDetails);
+    ResponseEntity update(SystemOauthClientDetails systemOauthClientDetails);
 }

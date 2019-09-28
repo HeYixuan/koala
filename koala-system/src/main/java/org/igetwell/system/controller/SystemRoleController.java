@@ -1,5 +1,6 @@
 package org.igetwell.system.controller;
 
+import org.igetwell.common.uitls.ResponseEntity;
 import org.igetwell.system.entity.SystemRole;
 import org.igetwell.system.service.ISystemRoleService;
 import org.igetwell.system.vo.SystemRoleVo;
@@ -55,5 +56,20 @@ public class SystemRoleController {
     @PostMapping("/systemRole/loadByTenant/{tenant}/{id}")
     public List<SystemRoleVo> loadByTenant(@PathVariable("tenant") String tenant, @PathVariable("id") Long id){
         return iSystemRoleService.loadByTenant(tenant, id);
+    }
+
+    @PostMapping("/systemRole/add")
+    public ResponseEntity insert(@RequestBody SystemRole systemRole){
+        return iSystemRoleService.insert(systemRole);
+    }
+
+    @PostMapping("/systemRole/deleteById/{id}")
+    public ResponseEntity deleteById(@PathVariable("id") Long id){
+        return iSystemRoleService.deleteById(id);
+    }
+
+    @PostMapping("/systemRole/update")
+    public ResponseEntity update(@RequestBody SystemRole systemRole){
+        return iSystemRoleService.update(systemRole);
     }
 }

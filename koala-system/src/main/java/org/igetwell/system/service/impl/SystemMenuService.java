@@ -1,6 +1,7 @@
 package org.igetwell.system.service.impl;
 
 import org.igetwell.common.uitls.Pagination;
+import org.igetwell.common.uitls.ResponseEntity;
 import org.igetwell.system.entity.SystemMenu;
 import org.igetwell.system.mapper.SystemMenuMapper;
 import org.igetwell.system.service.ISystemMenuService;
@@ -39,5 +40,32 @@ public class SystemMenuService implements ISystemMenuService {
 
     public List<MenuTree> getMenus(Pagination pagination){
         return systemMenuMapper.getMenus(pagination);
+    }
+
+    @Override
+    public ResponseEntity deleteById(Long id) {
+        int i = systemMenuMapper.deleteById(id);
+        if (i > 0){
+            return ResponseEntity.ok();
+        }
+        return ResponseEntity.error();
+    }
+
+    @Override
+    public ResponseEntity insert(SystemMenu systemMenu) {
+        int i = systemMenuMapper.insert(systemMenu);
+        if (i > 0){
+            return ResponseEntity.ok();
+        }
+        return ResponseEntity.error();
+    }
+
+    @Override
+    public ResponseEntity update(SystemMenu systemMenu) {
+        int i = systemMenuMapper.update(systemMenu);
+        if (i > 0){
+            return ResponseEntity.ok();
+        }
+        return ResponseEntity.error();
     }
 }

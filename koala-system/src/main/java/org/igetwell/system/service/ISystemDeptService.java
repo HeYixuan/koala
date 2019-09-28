@@ -1,5 +1,8 @@
 package org.igetwell.system.service;
 
+import org.igetwell.common.uitls.ResponseEntity;
+import org.igetwell.system.entity.SystemDept;
+
 import java.util.List;
 
 public interface ISystemDeptService {
@@ -19,4 +22,10 @@ public interface ISystemDeptService {
      * @return deptIds
      */
     public List<Long> getAncestors(Long deptId);
+
+    ResponseEntity deleteById(Long id);
+
+    ResponseEntity insert(SystemDept systemDept);
+
+    ResponseEntity update(SystemDept systemDept);
 }

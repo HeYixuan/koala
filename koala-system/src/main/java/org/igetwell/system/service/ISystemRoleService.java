@@ -1,5 +1,6 @@
 package org.igetwell.system.service;
 
+import org.igetwell.common.uitls.ResponseEntity;
 import org.igetwell.system.entity.SystemRole;
 import org.igetwell.system.vo.SystemRoleVo;
 
@@ -50,4 +51,10 @@ public interface ISystemRoleService {
      * @return
      */
     Integer getDataScopeType(String tenant, Long id);
+
+    ResponseEntity deleteById(Long id);
+
+    ResponseEntity insert(SystemRole systemRole);
+
+    ResponseEntity update(SystemRole systemRole);
 }

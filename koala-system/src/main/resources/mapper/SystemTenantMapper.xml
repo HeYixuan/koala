@@ -14,7 +14,7 @@
     <result column="ADDRESS" jdbcType="VARCHAR" property="address" />
     <result column="BEGIN_TIME" jdbcType="TIMESTAMP" property="beginTime" />
     <result column="END_TIME" jdbcType="TIMESTAMP" property="endTime" />
-    <result column="STATUS" jdbcType="CHAR" property="status" />
+    <result column="STATUS" jdbcType="INTEGER" property="status" />
     <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
     <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="IS_DELETED" jdbcType="INTEGER" property="isDeleted" />
@@ -24,6 +24,28 @@
     ID, TENANT_ID, TENANT_NAME, LINKMAN, EMAIL, MOBILE, ADDRESS, BEGIN_TIME, END_TIME,
     STATUS, CREATE_TIME, UPDATE_TIME, IS_DELETED
   </sql>
+
+  <select id="get" resultMap="baseMap" parameterType="java.lang.String">
+    SELECT
+        <include refid="baseSql" />
+    FROM SYS_TENANT
+    WHERE TENANT_ID = #{tenantId}
+  </select>
+
+  <select id="getList" resultMap="baseMap" parameterType="org.igetwell.system.dto.SystemUserPageDto">
+    SELECT
+        <include refid="baseSql" />
+    FROM SYS_TENANT
+    <where>
+      <if test="tenantId !=null and tenantId != ''">
+        AND TENANT_ID = #{tenantId}
+      </if>
+      <if test="tenantName !=null and tenantName != ''">
+        AND TENANT_NAME LIKE CONCAT('%',#{tenantName},'%')
+      </if>
+    </where>
+  </select>
+
 
   <delete id="deleteById" parameterType="java.lang.Long">
     DELETE FROM SYS_TENANT WHERE ID = #{id,jdbcType=BIGINT}
@@ -56,7 +78,7 @@
       <if test="endTime != null">
         END_TIME,
       </if>
-      <if test="status != null and status !=''">
+      <if test="status != null">
         `STATUS`,
       </if>
       <if test="createTime != null">
@@ -94,8 +116,8 @@
       <if test="endTime != null">
         #{endTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="status != null and status !=''">
-        #{status,jdbcType=CHAR},
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
       </if>
       <if test="createTime != null">
         #{createTime,jdbcType=TIMESTAMP},
@@ -136,8 +158,8 @@
       <if test="endTime != null">
         END_TIME = #{endTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="status != null and status !=''">
-        `STATUS` = #{status,jdbcType=CHAR},
+      <if test="status != null">
+        `STATUS` = #{status,jdbcType=INTEGER},
       </if>
       <if test="createTime != null">
         CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},

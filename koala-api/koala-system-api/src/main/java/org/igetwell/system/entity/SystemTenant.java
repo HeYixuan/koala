@@ -59,7 +59,7 @@ public class SystemTenant {
     /**
      * 0正常 1-冻结
      */
-    private String status;
+    private Integer status;
 
     /**
      * 创建时间
@@ -246,7 +246,7 @@ public class SystemTenant {
      *
      * @return status - 0正常 1-冻结
      */
-    public String getStatus() {
+    public Integer getStatus() {
         return status;
     }
 
@@ -255,8 +255,8 @@ public class SystemTenant {
      *
      * @param status 0正常 1-冻结
      */
-    public void setStatus(String status) {
-        this.status = status == null ? null : status.trim();
+    public void setStatus(Integer status) {
+        this.status = status == null ? null : status;
     }
 
     /**

@@ -1,6 +1,5 @@
 package org.igetwell.system.service.impl;
 
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.igetwell.common.uitls.GsonUtils;
 import org.igetwell.system.bean.GatewayRouteDefinitionBean;
@@ -12,15 +11,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 @Slf4j
 @Service
-@AllArgsConstructor
 @Transactional(rollbackFor = Exception.class)
 public class SystemGatewayRouteService implements ISystemGatewayRouteService {
 
-    private final SystemGatewayRouteMapper systemGatewayRouteMapper;
+    @Resource
+    private SystemGatewayRouteMapper systemGatewayRouteMapper;
 
 
     @Override
