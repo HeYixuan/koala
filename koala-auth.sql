@@ -200,22 +200,23 @@ CREATE TABLE `sys_oauth_client_details` (
   `refresh_token_validity` int(11) NOT NULL COMMENT '刷新令牌过期秒数',
   `additional_information` varchar(4096) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '附加说明',
   `autoapprove` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '自动授权',
-  `tenant_id` int(11) NOT NULL DEFAULT '0' COMMENT '所属租户',
-  PRIMARY KEY (`id`) USING BTREE
+  `tenant_id` varchar(12) COLLATE utf8mb4_general_ci NOT NULL COMMENT '所属租户',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE KEY `sys_oauth_client_details_client_id_uindex` (`client_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='客户端表';
 
 /*Data for the table `sys_oauth_client_details` */
 
 insert  into `sys_oauth_client_details`(`id`,`client_id`,`client_secret`,`resource_ids`,`scope`,`authorized_grant_types`,`web_server_redirect_uri`,`authorities`,`access_token_validity`,`refresh_token_validity`,`additional_information`,`autoapprove`,`tenant_id`) values 
-(1123598811738675201,'sword','sword_secret',NULL,'all','refresh_token,password,authorization_code','http://localhost:8888',NULL,3600,604800,NULL,'true',0),
-(1123598811738675202,'saber','saber_secret',NULL,'all','refresh_token,password,authorization_code','http://localhost:8080',NULL,3600,604800,NULL,'true',0),
-(1123598811738675203,'app','app',NULL,'server','password,refresh_token','http://localhost:8080',NULL,3600,604800,NULL,'true',0),
-(1123598811738675204,'daemon','daemon',NULL,'server','password,refresh_token',NULL,NULL,3600,604800,NULL,'true',0),
-(1123598811738675205,'gen','gen',NULL,'server','password,refresh_token',NULL,NULL,3600,604800,NULL,'true',0),
-(1123598811738675206,'mp','mp',NULL,'server','password,refresh_token',NULL,NULL,3600,604800,NULL,'true',0),
-(1123598811738675207,'pig','pig',NULL,'server','password,refresh_token,authorization_code,client_credentials','http://localhost:4040/sso1/login,http://localhost:4041/sso1/login',NULL,3600,604800,NULL,'true',0),
-(1123598811738675208,'test','test',NULL,'server','password,refresh_token,authorization_code,client_credentials','https://www.baidu.com/',NULL,3600,604800,NULL,'true',0),
-(1123598811738675209,'test2','test2',NULL,'all','password,refresh_token,authorization_code,client_credentials','https://www.baidu.com/',NULL,3600,604800,'{\r\n	\"website\": \"http://www.baidu.com\",\r\n	\"apiKey\": \"7gBZcbsC7kLIWCdELIl8nxcs\",\r\n	\"secretKey\": \"0osTIhce7uPvDKHz6aa67bhCukaKoYl4\",\r\n	\"appName\": \"平台用户认证服务器\",\r\n	\"updateTime\": 1562841065000,\r\n	\"isPersist\": 1,\r\n	\"appOs\": \"\",\r\n	\"appIcon\": \"\",\r\n	\"developerId\": 0,\r\n	\"createTime\": 1542016125000,\r\n	\"appType\": \"server\",\r\n	\"appDesc\": \"资源服务器\",\r\n	\"appId\": \"1552274783265\",\r\n	\"appNameEn\": \"open-cloud-uaa-admin-server\",\r\n	\"status\": 1\r\n}','false',0);
+(1123598811738675201,'sword','sword_secret',NULL,'all','refresh_token,password,authorization_code','http://localhost:8888',NULL,3600,604800,NULL,'true','000000'),
+(1123598811738675202,'saber','saber_secret',NULL,'all','refresh_token,password,authorization_code','http://localhost:8080',NULL,3600,604800,NULL,'true','000000'),
+(1123598811738675203,'app','app',NULL,'server','password,refresh_token','http://localhost:8080',NULL,3600,604800,NULL,'true','111111'),
+(1123598811738675204,'daemon','daemon',NULL,'server','password,refresh_token',NULL,NULL,3600,604800,NULL,'true','111111'),
+(1123598811738675205,'gen','gen',NULL,'server','password,refresh_token',NULL,NULL,3600,604800,NULL,'true','111111'),
+(1123598811738675206,'mp','mp',NULL,'server','password,refresh_token',NULL,NULL,3600,604800,NULL,'true','000000'),
+(1123598811738675207,'pig','pig',NULL,'server','password,refresh_token,authorization_code,client_credentials','http://localhost:4040/sso1/login,http://localhost:4041/sso1/login',NULL,3600,604800,NULL,'true','000000'),
+(1123598811738675208,'test','test',NULL,'server','password,refresh_token,authorization_code,client_credentials','https://www.baidu.com/',NULL,3600,604800,NULL,'true','000000'),
+(1123598811738675209,'test2','test2',NULL,'all','password,refresh_token,authorization_code,client_credentials','https://www.baidu.com/',NULL,3600,604800,'{\r\n	\"website\": \"http://www.baidu.com\",\r\n	\"apiKey\": \"7gBZcbsC7kLIWCdELIl8nxcs\",\r\n	\"secretKey\": \"0osTIhce7uPvDKHz6aa67bhCukaKoYl4\",\r\n	\"appName\": \"平台用户认证服务器\",\r\n	\"updateTime\": 1562841065000,\r\n	\"isPersist\": 1,\r\n	\"appOs\": \"\",\r\n	\"appIcon\": \"\",\r\n	\"developerId\": 0,\r\n	\"createTime\": 1542016125000,\r\n	\"appType\": \"server\",\r\n	\"appDesc\": \"资源服务器\",\r\n	\"appId\": \"1552274783265\",\r\n	\"appNameEn\": \"open-cloud-uaa-admin-server\",\r\n	\"status\": 1\r\n}','false','000000');
 
 /*Table structure for table `sys_param` */
 
@@ -371,7 +372,7 @@ CREATE TABLE `sys_tenant` (
   `address` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '联系地址',
   `begin_time` timestamp NULL DEFAULT NULL COMMENT '开始时间',
   `end_time` timestamp NULL DEFAULT NULL COMMENT '结束时间',
-  `status` char(1) COLLATE utf8mb4_general_ci NOT NULL DEFAULT '0' COMMENT '0正常 1-冻结',
+  `status` int(1) NOT NULL DEFAULT '0' COMMENT '状态：0正常 1-冻结',
   `create_time` datetime DEFAULT NULL COMMENT '创建时间',
   `update_time` datetime DEFAULT NULL COMMENT '修改时间',
   `is_deleted` int(2) DEFAULT '0' COMMENT '是否已删除',
@@ -381,7 +382,8 @@ CREATE TABLE `sys_tenant` (
 /*Data for the table `sys_tenant` */
 
 insert  into `sys_tenant`(`id`,`tenant_id`,`tenant_name`,`linkman`,`email`,`mobile`,`address`,`begin_time`,`end_time`,`status`,`create_time`,`update_time`,`is_deleted`) values 
-(1123598820738675201,'000000','管理组','admin','xxxx@qq.com',' 15218725510','广东省深圳市',NULL,NULL,'0',NULL,NULL,0);
+(1123598820738675201,'000000','管理组','admin','xxxx@qq.com',' 15218725510','广东省深圳市',NULL,NULL,0,'2019-09-27 23:49:32','2019-09-27 23:49:31',0),
+(1123598820738675202,'111111','开发组','administrator','15517551511@126.com',' 15218725510','广东省深圳市',NULL,NULL,0,'2019-09-27 23:49:33','2019-09-27 23:49:29',0);
 
 /*Table structure for table `sys_user` */
 
