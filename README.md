@@ -55,3 +55,11 @@ http://localhost:9999/system/systemUser/getList
 <br/>携带请求头
 Authorization: Bearer 6265b580-f096-4826-ab2d-b61b45cb19a6
 
+
+jar启动命令：java -Xms2048m -Xmx2048m -jar koala-register-1.0-SNAPSHOT.jar --server.port=8848
+
+
+120.78.66.117
+root
+123456
+Hyx930512
