@@ -1,6 +1,5 @@
 package org.igetwell.system.controller;
 
-import org.igetwell.common.uitls.GsonUtils;
 import org.igetwell.common.uitls.Pagination;
 import org.igetwell.common.uitls.ResponseEntity;
 import org.igetwell.oauth.security.KoalaUser;
@@ -45,7 +44,6 @@ public class SystemMenuController {
     @PostMapping("/systemMenu/menu")
     public ResponseEntity menu(){
         KoalaUser koalaUser = SpringSecurityUtils.getUser();
-        System.err.println(GsonUtils.toJson(koalaUser));
         return new ResponseEntity("menu");
     }
 
@@ -53,24 +51,22 @@ public class SystemMenuController {
      * 获取菜单树
      * @return
      */
-    @PostMapping("/systemMenu/menuTree")
-    public List<MenuTree> getMenuTree(){
+    @PostMapping("/systemMenu/getMenuTree")
+    public ResponseEntity getMenuTree(){
         List<MenuTree> list = iSystemMenuService.getMenuTree();
         List<MenuTree> nodeTree = TreeUtils.treeMenu(list);
-        System.err.println(GsonUtils.toJson(nodeTree));
-        return nodeTree;
+        return ResponseEntity.ok(nodeTree);
     }
 
     /**
-     * 获取菜单树列表
+     * 获取菜单列表(获取左侧菜单列表)
      * @return
      */
-    @PostMapping("/systemMenu/menus")
-    public List<MenuTree> getMenus(){
+    @PostMapping("/systemMenu/getMenus")
+    public ResponseEntity getMenus(){
         List<MenuTree> list = iSystemMenuService.getMenus();
         List<MenuTree> nodeTree = TreeUtils.treeMenu(list);
-        System.err.println(GsonUtils.toJson(nodeTree));
-        return nodeTree;
+        return ResponseEntity.ok(nodeTree);
     }
 
     @PostMapping("/systemMenu/add")

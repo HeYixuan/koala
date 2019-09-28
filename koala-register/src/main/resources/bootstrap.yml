@@ -11,7 +11,7 @@ db:
   user: root
   password: 123456
   url:
-    0: jdbc:mysql://pigx-mysql:3306/pigxx_config?characterEncoding=utf8&connectTimeout=1000&socketTimeout=3000&autoReconnect=true
+    0: jdbc:mysql://localhost:3306/koala-register?characterEncoding=utf8&connectTimeout=1000&socketTimeout=3000&autoReconnect=true
 
 spring:
   datasource:
