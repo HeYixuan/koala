@@ -60,7 +60,7 @@ jar启动方法一:
 jar启动命令：nohup java -Xms64m -Xmx128m -jar koala-register-1.0-SNAPSHOT.jar --server.port=8848 &
 
 
-java -Xms64m -Xmx512m -jar koala-system-1.0-SNAPSHOT.jar --server.port=9001
+nohup java -Xms64m -Xmx512m -jar koala-system-1.0-SNAPSHOT.jar --server.port=9001 &
 
 //nohup 意思是不挂断运行命令,当账户退出或终端关闭时,程序仍然运行
 //当用 nohup 命令执行作业时，缺省情况下该作业的所有输出被重定向到nohup.out的文件中

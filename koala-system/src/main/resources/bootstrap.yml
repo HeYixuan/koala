@@ -1,91 +1,19 @@
 server:
   port: 9001
-
 spring:
   application:
     name: koala-system
+
   cloud:
     nacos:
       discovery:
-        server-addr: ${NACOS-HOST:pigx-register}:${NACOS-PORT:8848}
+        server-addr: ${NACOS-HOST:koala-register}:${NACOS-PORT:8848}
       config:
         server-addr: ${spring.cloud.nacos.discovery.server-addr}
         file-extension: yml
         shared-dataids: ${spring.application.name}-${spring.profiles.active}.${spring.cloud.nacos.config.file-extension}
   profiles:
     active: dev
-  messages:
-    basename: static/i18n/messages #相对路径 开头请勿添加斜杠
-
   main:
     allow-bean-definition-overriding: true
-
-  thymeleaf:
-    mode: LEGACYHTML5
-    prefix: classpath:/templates/
-    suffix: .html
-    encoding: UTF-8
-    cache: false
-
-  jackson:
-    date-format: yyyy-MM-dd HH:mm:ss
-    time-zone: GMT+8
-    defaultPropertyInclusion: NON_EMPTY
-
-logging:
-  config: classpath:logback.xml
-
-
-management:
-  endpoints:
-    web:
-      exposure:
-        include: '*'
-
-#oauth2授权
-security:
-  oauth2:
-    client:
-      client-id: koala
-      client-secret: koala
-      user-authorization-uri: http://localhost:9001/oauth/authorize
-      access-token-uri: http://localhost:9001/oauth/token
-      scope: server
-    resource:
-      loadBalanced: true
-      token-info-uri: http://localhost:9001/oauth/check_token
-
-feign:
-  hystrix:
-    enabled: true
-  okhttp:
-    enabled: true
-  httpclient:
-    enabled: false
-  client:
-    config:
-      default:
-        connectTimeout: 10000
-        readTimeout: 10000
-  compression:
-    request:
-      enabled: true
-    response:
-      enabled: true
-# hystrix If you need to use ThreadLocal bound variables in your RequestInterceptor`s
-# you will need to either set the thread isolation strategy for Hystrix to `SEMAPHORE or disable Hystrix in Feign.
-hystrix:
-  command:
-    default:
-      execution:
-        isolation:
-          strategy: SEMAPHORE
-          thread:
-            timeoutInMilliseconds: 60000
-  shareSecurityContext: true
-
-
-ribbon:
-  ReadTimeout: 120000
-  ConnectTimeout: 30000
 
