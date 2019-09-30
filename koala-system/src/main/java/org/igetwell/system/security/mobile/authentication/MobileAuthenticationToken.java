@@ -16,28 +16,29 @@ public class MobileAuthenticationToken extends AbstractAuthenticationToken {
     private final Object principal;
     private Object credentials;
 
-    public MobileAuthenticationToken(Object principal, Object credentials) {
+    public MobileAuthenticationToken(String mobile) {
         super(null);
-        this.principal = principal;
-        this.credentials = credentials;
-        this.setAuthenticated(false);
+        this.principal = mobile;
+        setAuthenticated(false);
     }
 
-    public MobileAuthenticationToken(Object principal, Object credentials, Collection<? extends GrantedAuthority> authorities) {
+    public MobileAuthenticationToken(Object principal, Collection<? extends GrantedAuthority> authorities) {
         super(authorities);
         this.principal = principal;
-        this.credentials = credentials;
         super.setAuthenticated(true);
     }
 
+    @Override
     public Object getCredentials() {
-        return this.credentials;
+        return null;
     }
 
+    @Override
     public Object getPrincipal() {
         return this.principal;
     }
 
+    @Override
     @SneakyThrows
     public void setAuthenticated(boolean isAuthenticated){
         if (isAuthenticated) {
@@ -46,9 +47,8 @@ public class MobileAuthenticationToken extends AbstractAuthenticationToken {
             super.setAuthenticated(false);
         }
     }
-
+    @Override
     public void eraseCredentials() {
         super.eraseCredentials();
-        this.credentials = null;
     }
 }

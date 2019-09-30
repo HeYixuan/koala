@@ -55,7 +55,7 @@ public class MobileAuthenticationFilter extends AbstractAuthenticationProcessing
 
             mobile = mobile.trim();
             captcha = captcha.trim();
-            MobileAuthenticationToken mobileAuthenticationToken = new MobileAuthenticationToken(mobile, captcha);
+            MobileAuthenticationToken mobileAuthenticationToken = new MobileAuthenticationToken(mobile);
             this.setDetails(request, mobileAuthenticationToken);
             Authentication authentication = null;
             try {
@@ -101,7 +101,7 @@ public class MobileAuthenticationFilter extends AbstractAuthenticationProcessing
     }
 
     public void setCaptcha(String captcha) {
-        Assert.hasText(captcha, "Password parameter must not be empty or null");
+        Assert.hasText(captcha, "Captcha parameter must not be empty or null");
         this.captcha = captcha;
     }
 
