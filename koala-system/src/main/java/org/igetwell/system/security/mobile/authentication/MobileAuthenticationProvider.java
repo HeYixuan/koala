@@ -1,7 +1,9 @@
 package org.igetwell.system.security.mobile.authentication;
 
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.igetwell.system.security.SpringSecurityService;
+import org.igetwell.system.security.provider.KoalaSpringSecurityService;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
@@ -11,20 +13,14 @@ import org.springframework.security.core.userdetails.UserDetails;
 @Slf4j
 public class MobileAuthenticationProvider implements AuthenticationProvider {
 
-    private SpringSecurityService springSecurityService;
-
-    public SpringSecurityService getSpringSecurityService() {
-        return springSecurityService;
-    }
-
-    public void setSpringSecurityService(SpringSecurityService springSecurityService) {
-        this.springSecurityService = springSecurityService;
-    }
+    @Getter
+    @Setter
+    private KoalaSpringSecurityService koalaSpringSecurityService;
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         MobileAuthenticationToken mobileAuthenticationToken= (MobileAuthenticationToken) authentication;
-        UserDetails userDetails = springSecurityService.loadUserByUsername((String) mobileAuthenticationToken.getPrincipal());
+        UserDetails userDetails = koalaSpringSecurityService.loadUserByMobile((String) mobileAuthenticationToken.getPrincipal());
         if (userDetails == null) {
             log.debug("Authentication failed: no credentials provided");
             throw new BadCredentialsException("AbstractUserDetailsAuthenticationProvider.Not Found Mobile");

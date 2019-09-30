@@ -1,5 +1,7 @@
 package org.igetwell.system.security.mobile.authentication;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.security.authentication.AuthenticationEventPublisher;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -22,18 +24,19 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class MobileAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
 
-    public static final String SPRING_SECURITY_FORM_MOBILE_KEY = "mobile";
-    public static final String SPRING_SECURITY_FORM_CAPTCHA_KEY = "captcha";
-    private String mobileParameter = SPRING_SECURITY_FORM_MOBILE_KEY;
-    private String captchaParameter  = SPRING_SECURITY_FORM_CAPTCHA_KEY;
+    public static final String MOBILE_KEY = "mobile";
+    public static final String CAPTCHA_KEY = "captcha";
+    private String mobile = MOBILE_KEY;
+    private String captcha  = CAPTCHA_KEY;
     private boolean postOnly = true;
-    @Resource
+    @Getter
+    @Setter
     private AuthenticationEventPublisher eventPublisher;
     @Resource
     private AuthenticationEntryPoint authenticationEntryPoint;
 
     public MobileAuthenticationFilter() {
-        super(new AntPathRequestMatcher("/mobile/login", "POST"));
+        super(new AntPathRequestMatcher("/mobile/login/*", "POST"));
     }
 
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
@@ -54,11 +57,11 @@ public class MobileAuthenticationFilter extends AbstractAuthenticationProcessing
             captcha = captcha.trim();
             MobileAuthenticationToken mobileAuthenticationToken = new MobileAuthenticationToken(mobile, captcha);
             this.setDetails(request, mobileAuthenticationToken);
-            Authentication authResult = null;
+            Authentication authentication = null;
             try {
-                authResult = this.getAuthenticationManager().authenticate(mobileAuthenticationToken);
-                logger.debug("Authentication success: " + authResult);
-                SecurityContextHolder.getContext().setAuthentication(authResult);
+                authentication = this.getAuthenticationManager().authenticate(mobileAuthenticationToken);
+                logger.debug("Authentication success: " + authentication);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
 
             } catch (Exception failed) {
                 SecurityContextHolder.clearContext();
@@ -75,16 +78,16 @@ public class MobileAuthenticationFilter extends AbstractAuthenticationProcessing
                 }
             }
 
-            return authResult;
+            return authentication;
         }
     }
 
     protected String obtainMobile(HttpServletRequest request) {
-        return request.getParameter(this.mobileParameter);
+        return request.getParameter(this.mobile);
     }
 
     protected String obtainCaptcha(HttpServletRequest request) {
-        return request.getParameter(this.captchaParameter);
+        return request.getParameter(this.captcha);
     }
 
 
@@ -92,25 +95,25 @@ public class MobileAuthenticationFilter extends AbstractAuthenticationProcessing
         authRequest.setDetails(this.authenticationDetailsSource.buildDetails(request));
     }
 
-    public void setMobileParameter(String mobileParameter) {
-        Assert.hasText(mobileParameter, "Username parameter must not be empty or null");
-        this.mobileParameter = mobileParameter;
+    public void setMobile(String mobile) {
+        Assert.hasText(mobile, "Username parameter must not be empty or null");
+        this.mobile = mobile;
     }
 
-    public void setCaptchaParameter(String captchaParameter) {
-        Assert.hasText(captchaParameter, "Password parameter must not be empty or null");
-        this.captchaParameter = captchaParameter;
+    public void setCaptcha(String captcha) {
+        Assert.hasText(captcha, "Password parameter must not be empty or null");
+        this.captcha = captcha;
     }
 
     public void setPostOnly(boolean postOnly) {
         this.postOnly = postOnly;
     }
 
-    public final String getMobileParameter() {
-        return this.mobileParameter;
+    public final String getMobile() {
+        return this.mobile;
     }
 
-    public final String getCaptchaParameter() {
-        return this.captchaParameter;
+    public final String getCaptcha() {
+        return this.CAPTCHA_KEY;
     }
 }

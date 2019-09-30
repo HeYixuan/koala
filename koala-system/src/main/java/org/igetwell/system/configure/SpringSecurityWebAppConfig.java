@@ -5,6 +5,7 @@ import org.igetwell.oauth.security.handler.AuthenticationFailureHandler;
 import org.igetwell.oauth.security.handler.AuthenticationSuccessHandler;
 import org.igetwell.oauth.security.handler.OAuth2AuthenticationEntryPoint;
 import org.igetwell.system.security.SpringSecurityService;
+import org.igetwell.system.security.mobile.authentication.MobileAuthenticationSecurityConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -48,10 +49,11 @@ public class SpringSecurityWebAppConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .csrf()
                 .disable();
+        http.apply(mobileSecurityConfigurer());
         http
                 .addFilterBefore(filterSecurityInterceptor, FilterSecurityInterceptor.class)
                 .authorizeRequests()
-                .antMatchers("/login", "/oauth/**", "/systemUser/**", "/systemRole/**","/systemMenu/**", "/gateway/**")
+                .antMatchers("/login", "/oauth/**", "/mobile/**", "/systemUser/**", "/systemRole/**","/systemMenu/**", "/gateway/**")
                 .permitAll()
                 .and()
                 .authorizeRequests()
@@ -93,6 +95,15 @@ public class SpringSecurityWebAppConfig extends WebSecurityConfigurerAdapter {
         return new JwtAuthenticationTokenFilter();
     }
 */
+
+    /**
+     * 手机号验证码登录
+     * @return
+     */
+    @Bean
+    public MobileAuthenticationSecurityConfig mobileSecurityConfigurer() {
+        return new MobileAuthenticationSecurityConfig();
+    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {

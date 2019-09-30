@@ -15,7 +15,6 @@ import org.springframework.cache.CacheManager;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -83,7 +82,7 @@ public class KoalaSpringSecurityService implements KoalaUserDetailsService {
         if (cache != null && cache.get(mobile) != null) {
             return (KoalaUser) cache.get(mobile).get();
         }
-        UserDetails systemUserDetails = getUserDetails(mobile);
+        UserDetails systemUserDetails = getMobileUserDetails(mobile);
         cache.put(mobile, systemUserDetails);
         return systemUserDetails;
     }

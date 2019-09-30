@@ -36,6 +36,8 @@ public interface ISystemMenuService {
 
     List<MenuTree> getMenus(Pagination pagination);
 
+    SystemMenu get(String menuName);
+
     ResponseEntity deleteById(Long id);
 
     ResponseEntity insert(SystemMenu systemMenu);

@@ -1,5 +1,6 @@
 package org.igetwell.system.service.impl;
 
+import org.igetwell.common.enums.HttpStatus;
 import org.igetwell.common.uitls.Pagination;
 import org.igetwell.common.uitls.ResponseEntity;
 import org.igetwell.system.bean.SystemOauthClientDetailsBean;
@@ -8,6 +9,7 @@ import org.igetwell.system.entity.SystemOauthClientDetails;
 import org.igetwell.system.mapper.SystemOauthClientDetailsMapper;
 import org.igetwell.system.service.ISystemOauthClientDetailService;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -39,6 +41,13 @@ public class SystemOauthClientDetailService implements ISystemOauthClientDetailS
 
     @Override
     public ResponseEntity insert(SystemOauthClientDetails systemOauthClientDetails) {
+        if (!checkParam(systemOauthClientDetails)){
+            return ResponseEntity.error(HttpStatus.BAD_REQUEST, "应用ID不可为空!");
+        }
+        SystemOauthClientDetails oauthClientDetails = get(systemOauthClientDetails.getClientId());
+        if (!StringUtils.isEmpty(oauthClientDetails)){
+            return ResponseEntity.error(HttpStatus.BAD_REQUEST, "此应用ID已存在!");
+        }
         int i = systemOauthClientDetailsMapper.insert(systemOauthClientDetails);
         if (i > 0){
             return ResponseEntity.ok();
@@ -48,10 +57,24 @@ public class SystemOauthClientDetailService implements ISystemOauthClientDetailS
 
     @Override
     public ResponseEntity update(SystemOauthClientDetails systemOauthClientDetails) {
+        if (!checkParam(systemOauthClientDetails)){
+            return ResponseEntity.error(HttpStatus.BAD_REQUEST, "应用ID不可为空!");
+        }
+        SystemOauthClientDetails oauthClientDetails = get(systemOauthClientDetails.getClientId());
+        if (StringUtils.isEmpty(oauthClientDetails)){
+            return ResponseEntity.error(HttpStatus.BAD_REQUEST, "此应用ID不存在!");
+        }
         int i = systemOauthClientDetailsMapper.update(systemOauthClientDetails);
         if (i > 0){
             return ResponseEntity.ok();
         }
         return ResponseEntity.error();
+    }
+
+    private boolean checkParam(SystemOauthClientDetails oauthClientDetails){
+        if (StringUtils.isEmpty(oauthClientDetails) || !StringUtils.hasText(oauthClientDetails.getClientId())){
+            return false;
+        }
+        return true;
     }
 }

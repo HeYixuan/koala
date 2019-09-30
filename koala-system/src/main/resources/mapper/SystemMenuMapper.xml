@@ -61,11 +61,18 @@
 
     <select id="getMenus" resultMap="treeMap">
         SELECT
-          <include refid="treeSql" />
+            <include refid="treeSql" />
         FROM SYS_MENU WHERE MENU_TYPE = 1
     </select>
 
-  <delete id="deleteById" parameterType="java.lang.Long">
+    <select id="get" resultMap="baseMap" parameterType="java.lang.String">
+        SELECT
+            <include refid="baseSql"/>
+      FROM SYS_MENU M
+      WHERE M.NAME = #{menuName}
+    </select>
+
+    <delete id="deleteById" parameterType="java.lang.Long">
     DELETE FROM SYS_MENU WHERE ID = #{id,jdbcType=BIGINT}
   </delete>
 

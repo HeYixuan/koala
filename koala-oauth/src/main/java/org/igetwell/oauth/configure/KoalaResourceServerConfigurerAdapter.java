@@ -11,6 +11,7 @@ import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointR
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.Authentication;
@@ -46,11 +47,11 @@ public class KoalaResourceServerConfigurerAdapter extends ResourceServerConfigur
 
 
     @Autowired
-    private RedisConnectionFactory redisConnectionFactory;
+    private LettuceConnectionFactory lettuceConnectionFactory;
 
     @Bean
     public RedisTokenStore redisTokenStore() {
-        return new RedisTokenStore(redisConnectionFactory);
+        return new RedisTokenStore(lettuceConnectionFactory);
     }
 
     private BearerTokenExtractor tokenExtractor = new BearerTokenExtractor();

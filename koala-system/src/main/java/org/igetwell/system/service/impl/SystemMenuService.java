@@ -1,5 +1,6 @@
 package org.igetwell.system.service.impl;
 
+import org.igetwell.common.enums.HttpStatus;
 import org.igetwell.common.uitls.Pagination;
 import org.igetwell.common.uitls.ResponseEntity;
 import org.igetwell.system.entity.SystemMenu;
@@ -7,6 +8,8 @@ import org.igetwell.system.mapper.SystemMenuMapper;
 import org.igetwell.system.service.ISystemMenuService;
 import org.igetwell.system.vo.MenuTree;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+
 import javax.annotation.Resource;
 import java.util.List;
 
@@ -38,8 +41,15 @@ public class SystemMenuService implements ISystemMenuService {
         return list;
     }
 
+    @Override
     public List<MenuTree> getMenus(Pagination pagination){
         return systemMenuMapper.getMenus(pagination);
+    }
+
+
+    @Override
+    public SystemMenu get(String menuName){
+        return systemMenuMapper.get(menuName);
     }
 
     @Override
@@ -53,6 +63,13 @@ public class SystemMenuService implements ISystemMenuService {
 
     @Override
     public ResponseEntity insert(SystemMenu systemMenu) {
+        if (!checkParam(systemMenu)){
+            return ResponseEntity.error(HttpStatus.BAD_REQUEST, "菜单名称不可为空!");
+        }
+        SystemMenu sysMenu = get(systemMenu.getName());
+        if (!StringUtils.isEmpty(sysMenu)){
+            return ResponseEntity.error(HttpStatus.BAD_REQUEST, "菜单信息已存在!");
+        }
         int i = systemMenuMapper.insert(systemMenu);
         if (i > 0){
             return ResponseEntity.ok();
@@ -62,10 +79,24 @@ public class SystemMenuService implements ISystemMenuService {
 
     @Override
     public ResponseEntity update(SystemMenu systemMenu) {
+        if (!checkParam(systemMenu)){
+            return ResponseEntity.error(HttpStatus.BAD_REQUEST, "菜单名称不可为空!");
+        }
+        SystemMenu sysMenu = get(systemMenu.getName());
+        if (StringUtils.isEmpty(sysMenu)){
+            return ResponseEntity.error(HttpStatus.BAD_REQUEST, "菜单信息不存在!");
+        }
         int i = systemMenuMapper.update(systemMenu);
         if (i > 0){
             return ResponseEntity.ok();
         }
         return ResponseEntity.error();
+    }
+
+    private boolean checkParam(SystemMenu systemMenu){
+        if (StringUtils.isEmpty(systemMenu) || !StringUtils.hasText(systemMenu.getName()) || !StringUtils.hasText(systemMenu.getName())){
+            return false;
+        }
+        return true;
     }
 }

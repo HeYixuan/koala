@@ -1,5 +1,6 @@
 package org.igetwell.system.service.impl;
 
+import org.igetwell.common.enums.HttpStatus;
 import org.igetwell.common.uitls.Pagination;
 import org.igetwell.common.uitls.ResponseEntity;
 import org.igetwell.system.bean.SystemUserBean;
@@ -8,6 +9,8 @@ import org.igetwell.system.entity.SystemUser;
 import org.igetwell.system.mapper.SystemUserMapper;
 import org.igetwell.system.service.ISystemUserService;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+
 import javax.annotation.Resource;
 import java.util.List;
 
@@ -51,6 +54,13 @@ public class SystemUserService implements ISystemUserService {
 
     @Override
     public ResponseEntity insert(SystemUser systemUser){
+        if (!checkParam(systemUser)){
+            return ResponseEntity.error(HttpStatus.BAD_REQUEST, "用户名不可为空!");
+        }
+        SystemUser sysUser = loadByUsername(systemUser.getTenantId(), systemUser.getUsername());
+        if (!StringUtils.isEmpty(sysUser)){
+            return ResponseEntity.error(HttpStatus.BAD_REQUEST, "此用户已存在!");
+        }
         int i = systemUserMapper.insert(systemUser);
         if (i > 0){
             return ResponseEntity.ok();
@@ -65,10 +75,24 @@ public class SystemUserService implements ISystemUserService {
 
     @Override
     public ResponseEntity update(SystemUser systemUser){
+        if (!checkParam(systemUser)){
+            return ResponseEntity.error(HttpStatus.BAD_REQUEST, "用户名不可为空!");
+        }
+        SystemUser sysUser = loadByUsername(systemUser.getTenantId(), systemUser.getUsername());
+        if (StringUtils.isEmpty(sysUser)){
+            return ResponseEntity.error(HttpStatus.BAD_REQUEST, "此用户信息不存在!");
+        }
         int i = systemUserMapper.update(systemUser);
         if (i > 0){
             return ResponseEntity.ok();
         }
         return ResponseEntity.error();
+    }
+
+    private boolean checkParam(SystemUser systemUser){
+        if (StringUtils.isEmpty(systemUser) || !StringUtils.hasText(systemUser.getTenantId()) || !StringUtils.hasText(systemUser.getUsername())){
+            return false;
+        }
+        return true;
     }
 }

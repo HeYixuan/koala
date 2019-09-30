@@ -2,8 +2,9 @@ package org.igetwell.system.security.mobile.authentication;
 
 import org.igetwell.oauth.security.handler.AuthenticationFailureHandler;
 import org.igetwell.oauth.security.handler.AuthenticationSuccessHandler;
-import org.igetwell.system.security.SpringSecurityService;
+import org.igetwell.system.security.provider.KoalaSpringSecurityService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationEventPublisher;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.SecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -20,19 +21,21 @@ public class MobileAuthenticationSecurityConfig extends SecurityConfigurerAdapte
     private AuthenticationFailureHandler authenticationFailureHandler;
     @Autowired
     private AuthenticationSuccessHandler authenticationSuccessHandler;
-    //实现类怎么确定？ 自定义的实现？？
     @Autowired
-    private SpringSecurityService springSecurityService;
+    private AuthenticationEventPublisher defaultAuthenticationEventPublisher;
+    @Autowired
+    private KoalaSpringSecurityService koalaSpringSecurityService;
 
     @Override
     public void configure(HttpSecurity http) {
-        MobileAuthenticationFilter filter = new MobileAuthenticationFilter();
-        filter.setAuthenticationManager(http.getSharedObject(AuthenticationManager.class));
-        filter.setAuthenticationFailureHandler(authenticationFailureHandler);
-        filter.setAuthenticationSuccessHandler(authenticationSuccessHandler);
+        MobileAuthenticationFilter mobileAuthenticationFilter = new MobileAuthenticationFilter();
+        mobileAuthenticationFilter.setAuthenticationManager(http.getSharedObject(AuthenticationManager.class));
+        mobileAuthenticationFilter.setAuthenticationFailureHandler(authenticationFailureHandler);
+        mobileAuthenticationFilter.setAuthenticationSuccessHandler(authenticationSuccessHandler);
+        mobileAuthenticationFilter.setEventPublisher(defaultAuthenticationEventPublisher);
 
         MobileAuthenticationProvider mobileAuthenticationProvider = new MobileAuthenticationProvider();
-        mobileAuthenticationProvider.setSpringSecurityService(springSecurityService);
+        mobileAuthenticationProvider.setKoalaSpringSecurityService(koalaSpringSecurityService);
 
         http
                 // 注册到AuthenticationManager中去
@@ -41,6 +44,6 @@ public class MobileAuthenticationSecurityConfig extends SecurityConfigurerAdapte
                 // 貌似所有的入口都是 UsernamePasswordAuthenticationFilter
                 // 然后UsernamePasswordAuthenticationFilter的provider不支持这个地址的请求
                 // 所以就会落在我们自己的认证过滤器上。完成接下来的认证
-                .addFilterAfter(filter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterAfter(mobileAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
     }
 }

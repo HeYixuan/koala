@@ -35,6 +35,8 @@ public interface SystemMenuMapper {
 
     List<MenuTree> getMenus(Pagination pagination);
 
+    SystemMenu get(String menuName);
+
     int deleteById(Long id);
 
     int insert(SystemMenu systemMenu);
