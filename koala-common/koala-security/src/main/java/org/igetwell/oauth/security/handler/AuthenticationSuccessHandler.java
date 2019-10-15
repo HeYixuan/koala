@@ -1,24 +1,21 @@
 package org.igetwell.oauth.security.handler;
 
+import lombok.extern.slf4j.Slf4j;
 import org.igetwell.common.uitls.WebUtils;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-
+@Slf4j
 @Component
-public class AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
+public class AuthenticationSuccessHandler extends AbstractAuthenticationSuccessEventHandler {
 
+    /**
+     * 处理登录成功方法
+     * 获取到登录的authentication 对象
+     * @param authentication 登录对象
+     */
     @Override
-    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-        response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
-        response.setStatus(HttpStatus.OK.value());
-        System.err.println("用户授权信息：["+authentication.getDetails()+"],真实IP是：[" + WebUtils.getIP() + "]");
+    public void handle(Authentication authentication) {
+       log.info("用户授权信息：[{}],真实IP是：[{}]", authentication.getDetails(), WebUtils.getIP());
     }
 }

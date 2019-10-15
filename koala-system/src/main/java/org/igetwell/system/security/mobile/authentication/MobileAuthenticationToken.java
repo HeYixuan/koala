@@ -43,9 +43,8 @@ public class MobileAuthenticationToken extends AbstractAuthenticationToken {
     public void setAuthenticated(boolean isAuthenticated){
         if (isAuthenticated) {
             throw new IllegalArgumentException("Cannot set this token to trusted - use constructor which takes a GrantedAuthority list instead");
-        } else {
-            super.setAuthenticated(false);
         }
+        super.setAuthenticated(false);
     }
     @Override
     public void eraseCredentials() {

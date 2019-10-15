@@ -1,7 +1,5 @@
 package org.igetwell.system.security.mobile.authentication;
 
-import org.igetwell.oauth.security.handler.AuthenticationFailureHandler;
-import org.igetwell.oauth.security.handler.AuthenticationSuccessHandler;
 import org.igetwell.system.security.provider.KoalaSpringSecurityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationEventPublisher;
@@ -9,6 +7,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.SecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.DefaultSecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.stereotype.Component;
 
@@ -18,9 +17,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class MobileAuthenticationSecurityConfig extends SecurityConfigurerAdapter<DefaultSecurityFilterChain, HttpSecurity> {
     @Autowired
-    private AuthenticationFailureHandler authenticationFailureHandler;
-    @Autowired
-    private AuthenticationSuccessHandler authenticationSuccessHandler;
+    private AuthenticationSuccessHandler mobileLoginSuccessHandler;
     @Autowired
     private AuthenticationEventPublisher defaultAuthenticationEventPublisher;
     @Autowired
@@ -30,8 +27,7 @@ public class MobileAuthenticationSecurityConfig extends SecurityConfigurerAdapte
     public void configure(HttpSecurity http) {
         MobileAuthenticationFilter mobileAuthenticationFilter = new MobileAuthenticationFilter();
         mobileAuthenticationFilter.setAuthenticationManager(http.getSharedObject(AuthenticationManager.class));
-        mobileAuthenticationFilter.setAuthenticationFailureHandler(authenticationFailureHandler);
-        mobileAuthenticationFilter.setAuthenticationSuccessHandler(authenticationSuccessHandler);
+        mobileAuthenticationFilter.setAuthenticationSuccessHandler(mobileLoginSuccessHandler);
         mobileAuthenticationFilter.setEventPublisher(defaultAuthenticationEventPublisher);
 
         MobileAuthenticationProvider mobileAuthenticationProvider = new MobileAuthenticationProvider();

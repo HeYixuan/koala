@@ -6,6 +6,7 @@ import org.igetwell.oauth.security.handler.AuthenticationSuccessHandler;
 import org.igetwell.oauth.security.handler.OAuth2AuthenticationEntryPoint;
 import org.igetwell.system.security.SpringSecurityService;
 import org.igetwell.system.security.mobile.authentication.MobileAuthenticationSecurityConfig;
+import org.igetwell.oauth.security.handler.MobileLoginSuccessHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -95,6 +96,11 @@ public class SpringSecurityWebAppConfig extends WebSecurityConfigurerAdapter {
         return new JwtAuthenticationTokenFilter();
     }
 */
+
+    @Bean
+    public org.springframework.security.web.authentication.AuthenticationSuccessHandler mobileLoginSuccessHandler() {
+        return new MobileLoginSuccessHandler();
+    }
 
     /**
      * 手机号验证码登录
