@@ -32,7 +32,7 @@ mybatis:
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8
-    default-property-inclusion: non_empty
+    default-property-inclusion: NON_EMPTY
 
 logging:
   config: classpath:logback.xml

@@ -18,33 +18,7 @@ spring:
   main:
     allow-bean-definition-overriding: true
 
-  thymeleaf:
-    mode: LEGACYHTML5
-    prefix: classpath:/templates/
-    suffix: .html
-    encoding: UTF-8
-    cache: false
-
   jackson:
-    date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8
-    default-property-inclusion: non_empty
-
-management:
-  endpoints:
-    web:
-      exposure:
-        include: '*'
-
-#oauth2授权
-security:
-  oauth2:
-    client:
-      client-id: koala
-      client-secret: koala
-      user-authorization-uri: http://localhost:9999/oauth/oauth/authorize
-      access-token-uri: http://localhost:9999/oauth/oauth/token
-      scope: server
-    resource:
-      loadBalanced: true
-      token-info-uri: http://localhost:9999/oauth/oauth/check_token
+    default-property-inclusion: NON_EMPTY
+    date-format: yyyy-MM-dd HH:mm:ss
