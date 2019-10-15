@@ -49,7 +49,7 @@
   </sql>
 
   <sql id="securityLogin">
-    ID, TENANT_ID, USERNAME, PASSWORD, EMAIL, PHONE, BIRTHDAY, SEX,
+    ID, TENANT_ID, USERNAME, PASSWORD, EMAIL, MOBILE, BIRTHDAY, SEX,
     ROLE_ID, DEPT_ID, IS_ENABLED, ACCOUNT_NON_EXPIRED, ACCOUNT_NON_LOCKED, CREDENTIALS_NON_EXPIRED,
     LAST_LOGIN_TIME, CREATE_USER, CREATE_DEPT, CREATE_TIME, UPDATE_USER, UPDATE_TIME,
     IS_DELETED
@@ -70,7 +70,7 @@
     WHERE TENANT_ID = #{param1} AND USERNAME = #{param2} AND IS_DELETED = 0
   </select>
 
-  <select id="loadByMobile" resultType="org.igetwell.system.entity.SystemUser">
+  <select id="loadByMobile" resultMap="baseMap">
     SELECT
       <include refid="baseSql"/>
     FROM SYS_USER

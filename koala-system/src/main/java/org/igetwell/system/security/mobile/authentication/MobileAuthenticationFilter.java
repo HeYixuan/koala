@@ -36,7 +36,7 @@ public class MobileAuthenticationFilter extends AbstractAuthenticationProcessing
     private AuthenticationEntryPoint authenticationEntryPoint;
 
     public MobileAuthenticationFilter() {
-        super(new AntPathRequestMatcher("/mobile/login/*", "POST"));
+        super(new AntPathRequestMatcher("/oauth/mobile", "POST"));
     }
 
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
@@ -114,6 +114,6 @@ public class MobileAuthenticationFilter extends AbstractAuthenticationProcessing
     }
 
     public final String getCaptcha() {
-        return this.CAPTCHA_KEY;
+        return this.captcha;
     }
 }

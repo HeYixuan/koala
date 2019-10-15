@@ -13,7 +13,7 @@ public interface SystemDeptClient {
      * @param deptId 部门id
      * @return deptIds
      */
-    public List<Long> getDeptAncestors(Long deptId);
+    List<Long> getDeptAncestors(Long deptId);
 
     /**
      * 获取部门子级
@@ -21,5 +21,5 @@ public interface SystemDeptClient {
      * @param deptId 部门id
      * @return deptIds
      */
-    public List<Long> getAncestors(Long deptId);
+    List<Long> getAncestors(Long deptId);
 }

@@ -34,7 +34,9 @@ public class MobileService implements IMobileService {
      */
     @Override
     public ResponseEntity sendSmsCode(String mobile) {
-
+        if (StringUtils.isEmpty(mobile) || !StringUtils.hasText(mobile)){
+            return ResponseEntity.error(HttpStatus.BAD_REQUEST,"手机号不合法");
+        }
         SystemUser systemUser = systemUserMapper.loadByMobile(mobile);
         if (systemUser == null){
             log.info("手机号未注册:{}", mobile);
@@ -45,12 +47,12 @@ public class MobileService implements IMobileService {
 
         if (!StringUtils.isEmpty(code)) {
             log.info("手机号验证码未过期:{}，{}", mobile, code);
-            return ResponseEntity.error(HttpStatus.BAD_REQUEST, "验证码发送过频繁");
+            return ResponseEntity.error(HttpStatus.BAD_REQUEST, "验证码发送过于频繁");
         }
 
         String randomCode = RandomUtil.randomNumbers(Integer.parseInt(SecurityConstants.CODE_SIZE));
         log.debug("手机号生成验证码成功:{},{}", mobile, randomCode);
-        redisTemplate.opsForValue().set(CommonConstants.DEFAULT_CODE_KEY + LoginTypeEnum.MOBILE.getType() + "#" + mobile, code, SecurityConstants.CODE_TIME, TimeUnit.SECONDS);
+        redisTemplate.opsForValue().set(CommonConstants.DEFAULT_CODE_KEY + LoginTypeEnum.MOBILE.getType() + "#" + mobile, randomCode, SecurityConstants.CODE_TIME, TimeUnit.SECONDS);
         return ResponseEntity.ok();
     }
 }

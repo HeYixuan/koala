@@ -10,6 +10,7 @@ import org.igetwell.oauth.security.handler.MobileLoginSuccessHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -25,6 +26,7 @@ import org.springframework.security.web.access.intercept.FilterSecurityIntercept
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
+@Order(1) // WebSecurityConfigurerAdapter 默认为100 这里配置为2设置比资源认证器高
 public class SpringSecurityWebAppConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
@@ -91,11 +93,6 @@ public class SpringSecurityWebAppConfig extends WebSecurityConfigurerAdapter {
         return super.authenticationManager();
     }
 
-    /*@Bean
-    protected JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter(){
-        return new JwtAuthenticationTokenFilter();
-    }
-*/
 
     @Bean
     public org.springframework.security.web.authentication.AuthenticationSuccessHandler mobileLoginSuccessHandler() {

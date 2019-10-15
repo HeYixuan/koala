@@ -9,7 +9,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.crypto.codec.Base64;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.common.exceptions.InvalidClientException;
@@ -23,7 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.HashMap;
 
 /**
@@ -59,14 +58,14 @@ public class MobileLoginSuccessHandler implements AuthenticationSuccessHandler {
 		}
 
 		try {
-			String[] tokens = extractAndDecodeHeader(header);
-			assert tokens.length == 2;
-			String clientId = tokens[0];
+			String[] clients = extractAndDecodeHeader(header);
+			assert clients.length == 2;
+			String clientId = clients[0];
 
 			ClientDetails clientDetails = clientDetailsService.loadClientByClientId(clientId);
 
 			//校验secret
-			if (!passwordEncoder.matches(tokens[1], clientDetails.getClientSecret())) {
+			if (!passwordEncoder.matches(clients[1], clientDetails.getClientSecret())) {
 				throw new InvalidClientException("Given client ID does not match authenticated client");
 
 			}
@@ -103,26 +102,23 @@ public class MobileLoginSuccessHandler implements AuthenticationSuccessHandler {
 	public String[] extractAndDecodeHeader(String header) {
 
 		byte[] base64Token = header.substring(6).getBytes("UTF-8");
-		byte[] decoded;
+        String clients;
 		try {
-			decoded = Base64.decode(base64Token);
+			clients = new String(Base64.getDecoder().decode(base64Token));
 		} catch (IllegalArgumentException e) {
 			throw new RuntimeException(
 					"Failed to decode basic authentication token");
 		}
 
-		String token = new String(decoded, StandardCharsets.UTF_8);
-
-		int delimit = token.indexOf(":");
-
+		int delimit = clients.indexOf(":");
 		if (delimit == -1) {
 			throw new RuntimeException("Invalid basic authentication token");
 		}
-		return new String[]{token.substring(0, delimit), token.substring(delimit + 1)};
+        return clients.split(":");
 	}
 
 	/**
-	 * *从header 请求中的clientId/clientsecect
+	 * 从header 请求中的clientId/clientSecret
 	 *
 	 * @param request
 	 * @return
