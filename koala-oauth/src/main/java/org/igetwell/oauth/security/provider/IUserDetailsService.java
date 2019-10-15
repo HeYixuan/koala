@@ -1,10 +1,10 @@
-package org.igetwell.system.security.provider;
+package org.igetwell.oauth.security.provider;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-public interface KoalaUserDetailsService extends UserDetailsService {
+public interface IUserDetailsService extends UserDetailsService {
 
     /**
      * 根据手机号登录

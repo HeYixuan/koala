@@ -1,6 +1,6 @@
 package org.igetwell.system.security.mobile.authentication;
 
-import org.igetwell.system.security.provider.KoalaSpringSecurityService;
+import org.igetwell.system.security.SpringSecurityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationEventPublisher;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -21,7 +21,7 @@ public class MobileAuthenticationSecurityConfig extends SecurityConfigurerAdapte
     @Autowired
     private AuthenticationEventPublisher defaultAuthenticationEventPublisher;
     @Autowired
-    private KoalaSpringSecurityService koalaSpringSecurityService;
+    private SpringSecurityService springSecurityService;
 
     @Override
     public void configure(HttpSecurity http) {
@@ -31,7 +31,7 @@ public class MobileAuthenticationSecurityConfig extends SecurityConfigurerAdapte
         mobileAuthenticationFilter.setEventPublisher(defaultAuthenticationEventPublisher);
 
         MobileAuthenticationProvider mobileAuthenticationProvider = new MobileAuthenticationProvider();
-        mobileAuthenticationProvider.setKoalaSpringSecurityService(koalaSpringSecurityService);
+        mobileAuthenticationProvider.setSpringSecurityService(springSecurityService);
 
         http
                 // 注册到AuthenticationManager中去

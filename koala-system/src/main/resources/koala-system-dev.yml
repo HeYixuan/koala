@@ -1,7 +1,9 @@
 spring:
   redis:
+    port: 6379
+    host: ${REDIS-HOST:120.78.66.117}
     password:
-    host: ${REDIS-HOST:pigx-redis}
+
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     type: com.zaxxer.hikari.HikariDataSource
@@ -21,14 +23,71 @@ spring:
 mybatis:
   mapper-locations: classpath:/mapper/*Mapper.xml
 
+  thymeleaf:
+    mode: LEGACYHTML5
+    prefix: classpath:/templates/
+    suffix: .html
+    encoding: UTF-8
+    cache: false
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+    default-property-inclusion: non_empty
+
+logging:
+  config: classpath:logback.xml
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
 
 security:
-  basic:
-    enabled: false
-management:
-  security:
-    enabled: false
+  oauth2:
+    client:
+      client-id: koala
+      client-secret: koala
+      user-authorization-uri: http://localhost:9001/oauth/authorize
+      access-token-uri: http://localhost:9001/oauth/token
+      scope: server
+    resource:
+      token-info-uri: http://localhost:9001/oauth/check_token
 
+
+feign:
+  hystrix:
+    enabled: true
+  okhttp:
+    enabled: true
+  httpclient:
+    enabled: false
+  client:
+    config:
+      default:
+        connectTimeout: 10000
+        readTimeout: 10000
+  compression:
+    request:
+      enabled: true
+    response:
+      enabled: true
+# hystrix If you need to use ThreadLocal bound variables in your RequestInterceptor`s
+# you will need to either set the thread isolation strategy for Hystrix to `SEMAPHORE or disable Hystrix in Feign.
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          strategy: SEMAPHORE
+          thread:
+            timeoutInMilliseconds: 60000
+  shareSecurityContext: true
+
+
+ribbon:
+  ReadTimeout: 120000
+  ConnectTimeout: 30000
 
 # 租户表维护
 koala:
