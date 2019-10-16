@@ -1,15 +1,15 @@
 -- auto-generated definition
 create table MERCHANT
 (
-    ID                 bigint auto_increment,
+    ID                 bigint(64)  not null auto_increment,
     MERCHANT_NO        varchar(50) not null comment '商户编号',
     MERCHANT_NAME      varchar(50) null comment '商户名称',
     MERCHANT_EMAIL     varchar(12) null comment '商户邮箱',
     MERCHANT_MOBILE    varchar(13) not null comment '商户手机号',
-    MERCHANT_PARENT_ID bigint      null comment '上级商户',
-    constraint MERCHANT_ID_uindex
+    MERCHANT_PARENT_ID bigint(64)  null comment '上级商户',
+    constraint MERCHANT_ID_UINDEX
         unique (ID),
-    constraint MERCHANT_MERCHANT_NO_uindex
+    constraint MERCHANT_MERCHANT_NO_UINDEX
         unique (MERCHANT_NO)
 )
     comment '商户表';
@@ -22,9 +22,9 @@ alter table MERCHANT
 -- auto-generated definition
 create table MERCHANT_CARD
 (
-    ID              bigint auto_increment comment '商户卡ID'
+    ID              bigint(64)                          not null auto_increment comment '商户卡ID'
         primary key,
-    MERCHANT_ID     bigint                              not null comment '商户ID',
+    MERCHANT_ID     bigint(64)                          not null comment '商户ID',
     MERCHANT_NO     varchar(50)                         not null comment '商户编号',
     CARD_NAME       varchar(50)                         not null comment '会员卡名称',
     CARD_SUB_NAME   varchar(50)                         not null comment '会员卡副名称',
@@ -39,25 +39,27 @@ create table MERCHANT_CARD
 -- auto-generated definition
 create table MERCHANT_CARD_BONUS_RULE
 (
-    ID                  bigint auto_increment
+    ID                  bigint(64)  not null auto_increment comment '主键'
         primary key,
-    MERCHANT_CARD_ID    bigint not null comment '商户会员卡ID',
-    COST_MONEY          bigint not null comment '消费金额 以分为单位',
-    COST_INCR_BONUS     bigint null comment '对应消费增加的积分',
-    MAX_BONUS           bigint not null comment '用户单次可获取的积分上限',
-    COST_BONUS          bigint null comment '每使用5积分',
-    REDUCE_MONEY        bigint not null comment '抵扣xx元，（这里以分为单位）',
-    REDUCE_BONUS_FACTOR bigint not null comment '抵扣条件，满xx元（这里以分为单位）可用',
-    MAX_REDUCE_BONUS    bigint not null comment '抵扣条件，单笔最多使用xx积分'
+    MERCHANT_CARD_ID    bigint(64)  not null comment '商户会员卡ID',
+    MERCHANT_NO         varchar(50) not null comment '商户编号',
+    COST_MONEY          bigint(64)  not null comment '消费金额 以分为单位',
+    COST_INCR_BONUS     bigint(64)  null comment '对应消费增加的积分',
+    MAX_BONUS           bigint(64)  not null comment '用户单次可获取的积分上限',
+    COST_BONUS          bigint(64)  null comment '每使用5积分',
+    REDUCE_MONEY        bigint(64)  not null comment '抵扣xx元，（这里以分为单位）',
+    REDUCE_BONUS_FACTOR bigint(64)  not null comment '抵扣条件，满xx元（这里以分为单位）可用',
+    MAX_REDUCE_BONUS    bigint(64)  not null comment '抵扣条件，单笔最多使用xx积分'
 )
     comment '商户会员卡积分规则';
 
 -- auto-generated definition
 create table MERCHANT_CARD_CUSTOMIZE
 (
-    ID               bigint auto_increment
+    ID               bigint(64)   not null auto_increment comment '主键'
         primary key,
-    MERCHANT_CARD_ID bigint       null comment '商户会员卡ID',
+    MERCHANT_CARD_ID bigint(64)   not null comment '商户会员卡ID',
+    MERCHANT_NO      varchar(50)  not null comment '商户编号',
     MAIN_NAME        varchar(50)  not null comment '入口名称',
     MAIN_URL         varchar(200) null comment '入口URL',
     MAIN_NOTICE      varchar(50)  null comment '入口提示语',
@@ -68,10 +70,11 @@ create table MERCHANT_CARD_CUSTOMIZE
 -- auto-generated definition
 create table MERCHANT_CARD_EXPAND
 (
-    ID                   bigint auto_increment
+    ID                   bigint(64) auto_increment    not null comment '主键'
         primary key,
-    MERCHANT_CARD_ID     bigint                       not null comment '商户会员卡ID',
-    OPEN_METHOD          int            default 1     not null comment '开卡方式 1直接开卡 2预存开卡  3付费开卡',
+    MERCHANT_CARD_ID     bigint(64)                   not null comment '商户会员卡ID',
+    MERCHANT_NO          varchar(50)                  not null comment '商户编号',
+    OPEN_METHOD          int(1)            default 1     not null comment '开卡方式 1直接开卡 2预存开卡  3付费开卡',
     OPEN_MONEY           decimal(11, 2) default 0.00  not null comment '开卡金额：默认0.00  开放方式是直接开卡，此字段无效',
     OPEN_ATTR            varchar(50)    default '1,2' not null comment '开卡属性 1姓名 2手机号 3兴趣 4生日 5性别 6邮箱',
     CARD_NOTICE          varchar(50)                  not null comment '会员卡提示：结账时出示会员卡',
@@ -101,11 +104,11 @@ create table MERCHANT_CARD_EXPAND
 -- auto-generated definition
 create table MERCHANT_CARD_SKU
 (
-    ID               bigint auto_increment
+    ID               bigint(64) auto_increment not null comment '主键'
         primary key,
-    MERCHANT_ID      bigint           not null comment '商户ID',
+    MERCHANT_ID      bigint(64)       not null comment '商户ID',
     MERCHANT_NO      varchar(50)      not null comment '商户编号',
-    MERCHANT_CARD_ID bigint           not null comment '商户会员卡ID',
+    MERCHANT_CARD_ID bigint(64)       not null comment '商户会员卡ID',
     TOTAL_AMOUNT     int(9) default 1 not null comment '库存总数量：默认为1,最大为100000000',
     SURPLUS_AMOUNT   int(9) default 1 not null comment '剩余数量：默认为1,最大为100000000',
     USE_AMOUNT       int(9) default 0 not null comment '已领取库存数量'
@@ -115,12 +118,12 @@ create table MERCHANT_CARD_SKU
 -- auto-generated definition
 create table MERCHANT_STORE
 (
-    ID                         bigint auto_increment
+    ID                         bigint(64) auto_increment not null comment '主键'
         primary key,
-    MERCHANT_ID                bigint           not null comment '商户ID',
+    MERCHANT_ID                bigint(64)       not null comment '商户ID',
     MERCHANT_NO                varchar(50)      not null comment '商户编号',
-    MERCHANT_SID               bigint           not null comment '商户门店ID',
-    MERCHANT_POI_ID            bigint           not null comment '创建门店后微信返回的POI_ID 用作查询门店是否审核通过',
+    MERCHANT_SID               bigint(64)       not null comment '商户门店ID',
+    MERCHANT_POI_ID            bigint(64)       not null comment '创建门店后微信返回的POI_ID 用作查询门店是否审核通过',
     MERCHANT_STORE_NAME        varchar(50)      not null comment '门店名称',
     MERCHANT_SUB_STORE_NAME    varchar(50)      not null comment '分店名称',
     PROVINCE                   varchar(20)      not null comment '省',
@@ -131,16 +134,16 @@ create table MERCHANT_STORE
     MERCHANT_STORE_CLAZZ       varchar(100)     not null comment '门店类型(数组)：不同级分类用“,”隔开',
     MERCHANT_STORE_LOCATION    varchar(50)      not null comment '门店坐标',
     OFFSET_TYPE                int(1) default 1 not null comment '坐标类型： 1 为火星坐标 2 为sogou经纬度 3 为百度经纬度 4 为mapbar经纬度 5 为GPS坐标 6 为sogou墨卡托坐标 注：高德经纬度无需转换可直接使用',
-    MERCHANT_STORE_IMAGE       json             null comment '门店图片列表',
+    MERCHANT_STORE_IMAGE       varchar(500)     null comment '门店图片列表（json格式）',
     MERCHANT_STORE_OPEN_TIME   varchar(20)      null comment '营业时间，24 小时制表示，用“-”连接，如 8:00-20:00',
     MERCHANT_STORE_RECOMMEND   varchar(200)     null comment '推荐品',
     MERCHANT_STORE_SPECIAL     varchar(200)     null comment '特色服务',
     MERCHANT_STORE_DESCRIPTION varchar(300)     null comment '商户简介',
     MERCHANT_STORE_PRICE       int    default 1 null comment '人均价格',
-    MERCHANT_STORE_PARENT_SID  bigint           null comment '上级门店SID',
-    constraint MERCHANT_STORE_MERCHANT_POI_ID_uindex
+    MERCHANT_STORE_PARENT_SID  bigint(64)       null comment '上级门店SID',
+    constraint MERCHANT_STORE_MERCHANT_POI_ID_UINDEX
         unique (MERCHANT_POI_ID),
-    constraint MERCHANT_STORE_MERCHANT_SID_uindex
+    constraint MERCHANT_STORE_MERCHANT_SID_UINDEX
         unique (MERCHANT_SID)
 )
     comment '商户门店表';
