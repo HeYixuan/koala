@@ -1,4 +1,4 @@
-package org.igetwell.enums;
+package org.igetwell.common.enums;
 
 /**
  * 卡券类型

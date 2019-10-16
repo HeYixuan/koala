@@ -1,9 +1,9 @@
 package org.igetwell.merchant.card.bean;
 
+import org.igetwell.common.enums.CardDateType;
+import org.igetwell.common.enums.CardNameField;
+import org.igetwell.common.enums.CardType;
 import org.igetwell.common.uitls.GsonUtils;
-import org.igetwell.enums.CardDateType;
-import org.igetwell.enums.CardNameField;
-import org.igetwell.enums.CardType;
 import org.igetwell.merchant.card.bean.create.WxCardCreate;
 
 public class Main {

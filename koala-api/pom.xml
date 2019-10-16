@@ -21,6 +21,7 @@
 
     <modules>
         <module>koala-system-api</module>
+        <module>koala-merchant-api</module>
     </modules>
 
     <dependencies>
