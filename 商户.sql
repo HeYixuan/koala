@@ -148,3 +148,62 @@ create table MERCHANT_STORE
 )
     comment '商户门店表';
 
+
+
+create table member
+(
+    ID               bigint(64) auto_increment
+    comment '主键'
+        primary key,
+    MERCHANT_ID      bigint(64)                         not null
+    comment '商户ID',
+    MERCHANT_NO      varchar(50)                        not null
+    comment '商户编号',
+    MEMBER_NO        varchar(50)                        not null
+    comment '会员编号',
+    MEMBER_NAME      varchar(50)                        null
+    comment '会员名称',
+    MEMBER_NICK_NAME varchar(50)                        null
+    comment '会员昵称',
+    SEX              char                               null
+    comment '会员性别：M-男 F-女 N-未知',
+    BIRTHDAY         date                               null
+    comment '出生日期',
+    MOBILE           varchar(12)                        null
+    comment '手机号',
+    CREATE_TIME      datetime default CURRENT_TIMESTAMP null
+    comment '创建时间',
+    constraint MEMBER_MEMBER_NO_uindex
+    unique (MEMBER_NO)
+)
+    comment '会员信息表';
+
+create table payment
+(
+    ID          bigint(64) auto_increment
+    comment '主键'
+        primary key,
+    OPEN_ID     varchar(64)                        not null
+    comment '用户OPEN_ID',
+    PREPAY_ID   varchar(64)                        not null
+    comment '预付款ID',
+    ORDER_NO    varchar(64)                        not null
+    comment '订单编号',
+    TRADE_NO    varchar(64)                        not null
+    comment '交易单号',
+    PAYMENT_NO  varchar(64)                        null
+    comment '微信支付编号',
+    PAY_FEE     int(9) default '0'                 null
+    comment '支付金额(单位：分)',
+    PAY_STATUS  int(1) default '0'                 null
+    comment '支付状态：0-未支付  1-已支付  2-已退款',
+    PAY_METHOD  int(1) default '1'                 null
+    comment '支付方式：1-微信 2-支付宝 3-银联',
+    PAY_TIME    int(20)                            null
+    comment '支付完成时间',
+    CREATE_TIME datetime default CURRENT_TIMESTAMP null
+    comment '创建时间'
+)
+    comment '支付记录表';
+
+
