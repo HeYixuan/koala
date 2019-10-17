@@ -26,6 +26,7 @@
         <module>koala-cache</module>
         <module>koala-security</module>
         <module>koala-data-scope</module>
+        <module>koala-wechat-sdk</module>
     </modules>
 
     <dependencies>
