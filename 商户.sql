@@ -24,6 +24,7 @@ create table MERCHANT_CARD
 (
     ID              bigint(64)                          not null auto_increment comment '商户卡ID'
         primary key,
+    MERCHANT_CARD_NO varchar(50)                        not null comment '商户会员卡编号',
     MERCHANT_ID     bigint(64)                          not null comment '商户ID',
     MERCHANT_NO     varchar(50)                         not null comment '商户编号',
     CARD_NAME       varchar(50)                         not null comment '会员卡名称',
