@@ -69,6 +69,5 @@ public class Main {
         WxCardCreate<WxCard> wxCardCreate = new WxCardCreate<WxCard>();
         wxCardCreate.setCard(card);
         System.err.println(GsonUtils.toJson(wxCardCreate));
-
     }
 }

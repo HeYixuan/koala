@@ -49,6 +49,7 @@ public class WxCardBasis {
 
     /**
      * 券颜色。按色彩规范标注填写Color010-Color100<br>
+     * https://developers.weixin.qq.com/doc/offiaccount/Cards_and_Offer/Create_a_Coupon_Voucher_or_Card.html
      * 添加必填
      */
     private String color;
