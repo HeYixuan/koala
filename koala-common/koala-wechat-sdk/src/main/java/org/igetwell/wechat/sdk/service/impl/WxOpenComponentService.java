@@ -7,6 +7,7 @@ import org.igetwell.common.uitls.aes.WXBizMsgCrypt;
 import org.igetwell.wechat.sdk.WxOpenComponentAccessToken;
 import org.igetwell.wechat.sdk.WxOpenComponentAuthorization;
 import org.igetwell.wechat.sdk.WxOpenPreAuthAuthorization;
+import org.igetwell.wechat.sdk.api.MessageAPI;
 import org.igetwell.wechat.sdk.service.IWxOpenComponentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,6 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
 import java.net.URLEncoder;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -92,7 +94,7 @@ public class WxOpenComponentService implements IWxOpenComponentService {
      * @param authorizationCode  授权code
      */
     @Override
-    public void getQueryAuth(String authorizationCode) throws Exception {
+    public void getQueryAuth(String authorizationCode) {
         Map<String, String> params = new ConcurrentHashMap<>();
         params.put("component_appid", componentAppId);
         params.put("authorization_code", authorizationCode);
@@ -202,11 +204,11 @@ public class WxOpenComponentService implements IWxOpenComponentService {
         if(MessageUtils.MESSAGE_EVENT.equals(msgType)){
             log.info("---全网发布接入检测--step.3-----------事件消息--------");
             String event = XmlUtils.elementText(element,"Event");
-            replyEventMessage(request, response, event, fromUserName, toUserName);
+            replyEventMessage(response, event, fromUserName, toUserName);
         }else if(MessageUtils.MESSAGE_TEXT.equals(msgType)){
             log.info("---全网发布接入检测--step.3-----------文本消息--------");
             String content = XmlUtils.elementText(element,"Content");
-            processTextMessage(request, response, content, fromUserName, toUserName);
+            processTextMessage(response, content, fromUserName, toUserName);
         }
 
     }
@@ -214,55 +216,57 @@ public class WxOpenComponentService implements IWxOpenComponentService {
 
     /**
      * 微信全网接入  文本消息
-     * @param request
      * @param response
      * @param toUserName
      * @param fromUserName
      */
-    private void processTextMessage(HttpServletRequest request, HttpServletResponse response, String content, String toUserName, String fromUserName){
+    private void processTextMessage(HttpServletResponse response, String content, String toUserName, String fromUserName){
         if("TESTCOMPONENT_MSG_TYPE_TEXT".equals(content)){
             String returnContent = content+"_callback";
-            replyTextMessage(request,response,returnContent,toUserName,fromUserName);
+            replyTextMessage(response,returnContent,toUserName,fromUserName);
         }else if(StringUtils.startsWithIgnoreCase(content, "QUERY_AUTH_CODE")){
             //先回复空串
             output(response, "");
             //接下来客服API再回复一次消息
             //此时 content字符的内容为是 QUERY_AUTH_CODE:adsg5qe4q35
-            replyApiTextMessage(request,response, content.split(":")[1], toUserName);
+            replyApiTextMessage(content.split(":")[1], toUserName);
         }
     }
 
     /**
      * 方法描述: 类型为enevt的时候，拼接
-     * @param request
      * @param response
      * @param event
      * @param toUserName  发送接收人
      * @param fromUserName  发送人
      */
-    public void replyEventMessage(HttpServletRequest request, HttpServletResponse response, String event, String toUserName, String fromUserName) {
+    public void replyEventMessage(HttpServletResponse response, String event, String toUserName, String fromUserName) {
         String content = event + "from_callback";
-        replyTextMessage(request,response,content,toUserName,fromUserName);
+        replyTextMessage(response,content,toUserName,fromUserName);
     }
 
 
 
-    private void replyApiTextMessage(HttpServletRequest request, HttpServletResponse response, String auth_code, String fromUserName) {
-        String authorization_code = auth_code;
+    private void replyApiTextMessage(String authorizationCode, String fromUserName) {
         // 得到微信授权成功的消息后，应该立刻进行处理！！相关信息只会在首次授权的时候推送过来
-
+        getQueryAuth(authorizationCode);
+        String msg = authorizationCode + "_from_api";
+        Map<String, Object> params = new HashMap<>();
+        params.put("touser", fromUserName);
+        params.put("msgtype", "text");
+        Map<String, Object> text = new HashMap<>();
+        text.put("content", msg);
+        params.put("text", text);
+        String response = HttpClientUtils.getInstance().sendHttpPost(String.format(API_SEND_MESSAGE_URL, wxOpenConfigStorage.getComponentAccessToken()), GsonUtils.toJson(params));
     }
-
-
     /**
      * 回复微信服务器"文本消息"
-     * @param request
      * @param response
      * @param content
      * @param toUserName
      * @param fromUserName
      */
-    private void replyTextMessage(HttpServletRequest request, HttpServletResponse response, String content, String toUserName, String fromUserName) {
+    private void replyTextMessage(HttpServletResponse response, String content, String toUserName, String fromUserName) {
         Long createTime = System.currentTimeMillis() / 1000;
         StringBuffer sb = new StringBuffer();
         sb.append("<xml>");
@@ -297,5 +301,17 @@ public class WxOpenComponentService implements IWxOpenComponentService {
     public static void main(String [] args) throws Exception {
         WxOpenComponentService service = new WxOpenComponentService();
         service.createPreAuthUrl(null, null,null,false);
+
+
+        /*String xml = null;
+        try {
+            WXBizMsgCrypt pc = new WXBizMsgCrypt(COMPONENT_TOKEN, COMPONENT_ENCODINGAESKEY,
+                    "wx4addc310e841f58b");
+            xml = pc.decryptMsg("cbff9928c63f34e6fe0f3d63bf7ad8c5ab2322a3", "1481013633", "1836283428", "<xml>    <AppId><![CDATA[wx4addc310e841f58b]]></AppId>    <Encrypt><![CDATA[ouuB6+xRWHaoVpPqvgLJXztr3vnxrF9rWR0K8X7nU3DfjJBgc5NtxJM7C00Q8Ogx7vJSKkiv4T54EPIPn1cDORqZ/x0MVedRAKrRYRX7f5Cju+nBCF7+5YoXLbuT2HigTA1NrGz3aiYTTnwehlrquO9LwwggriDuvhETseHaa2lCoN9A18hFbMPcTIZobeNEVh97omziTBbq6bOOpWl1QSmjk89GnmhUN7f2MXqY+SQiLg1xdk6Tk6jh2MtCAmJdLQOKq+FFVLogarqBwn2G03y4/zzKwriDjYR80Yo4iHnz+7Vewlp6n0yw8BNXE5smnRe5FFzO4IMAODxKe8pPahKTOYrjqOez+AmER+7EW6N/6OGWsTqNfTmFSl1z/W3amXhBIXQXu+CJy/7lcwEYkGvaFA2PVSf1nwfqaWFxP72gpYHUemQe00aMkbtFi8wvNw8k6cDNuZ0CTp7zJLV/Lg==]]></Encrypt></xml>");
+        } catch (AesException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        System.out.println("第三方平台全网发布-----------------------解密后 Xml="+xml);*/
     }
 }

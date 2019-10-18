@@ -2,8 +2,6 @@ package org.igetwell.wechat.sdk.service;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-
 public interface IWxOpenComponentService {
 
     String API_COMPONENT_TOKEN_URL = "https://api.weixin.qq.com/cgi-bin/component/api_component_token";
@@ -40,6 +38,11 @@ public interface IWxOpenComponentService {
      */
     String FAST_REGISTER_WEAPP_URL = "https://api.weixin.qq.com/cgi-bin/component/fastregisterweapp?action=create";
     String FAST_REGISTER_WEAPP_SEARCH_URL = "https://api.weixin.qq.com/cgi-bin/component/fastregisterweapp?action=search";
+
+    /**
+     * 客服接口-发消息
+     */
+    String API_SEND_MESSAGE_URL = "https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token=%s";
 
     /**
      * 获取第三方平台access_token
@@ -82,7 +85,7 @@ public interface IWxOpenComponentService {
      * 使用授权码换取公众号的授权信息
      * @param authorizationCode  授权code
      */
-    void getQueryAuth(String authorizationCode) throws Exception;
+    void getQueryAuth(String authorizationCode);
 
 
     /**
