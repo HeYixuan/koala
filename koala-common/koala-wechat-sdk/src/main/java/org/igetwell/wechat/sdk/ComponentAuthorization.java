@@ -7,7 +7,7 @@ import java.util.List;
 
 @Getter
 @Setter
-public class WxOpenComponentAuthorization {
+public class ComponentAuthorization {
 
     private String authorizerAppid;
     private String authorizerAccessToken;

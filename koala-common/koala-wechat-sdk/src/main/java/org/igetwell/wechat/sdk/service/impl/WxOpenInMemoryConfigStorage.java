@@ -2,7 +2,7 @@ package org.igetwell.wechat.sdk.service.impl;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.igetwell.wechat.sdk.WxOpenComponentAccessToken;
+import org.igetwell.wechat.sdk.ComponentAccessToken;
 import org.igetwell.wechat.sdk.service.IWxOpenConfigStorage;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +20,7 @@ public class WxOpenInMemoryConfigStorage implements IWxOpenConfigStorage {
     private long componentExpiresTime;
 
     @Override
-    public void updateComponentAccessToken(WxOpenComponentAccessToken componentAccessToken) {
+    public void updateComponentAccessToken(ComponentAccessToken componentAccessToken) {
         updateComponentAccessToken(componentAccessToken.getComponentAccessToken(), componentAccessToken.getExpiresIn());
     }
 

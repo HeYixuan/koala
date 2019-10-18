@@ -1,6 +1,6 @@
 package org.igetwell.wechat.sdk.service;
 
-import org.igetwell.wechat.sdk.WxOpenComponentAccessToken;
+import org.igetwell.wechat.sdk.ComponentAccessToken;
 
 public interface IWxOpenConfigStorage {
 
@@ -8,7 +8,7 @@ public interface IWxOpenConfigStorage {
      * 更新第三方平台access_token
      * @param componentAccessToken
      */
-    void updateComponentAccessToken(WxOpenComponentAccessToken componentAccessToken);
+    void updateComponentAccessToken(ComponentAccessToken componentAccessToken);
 
     /**
      * 更新第三方平台access_token

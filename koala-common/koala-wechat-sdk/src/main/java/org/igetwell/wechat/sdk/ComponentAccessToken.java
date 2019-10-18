@@ -4,16 +4,17 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * 获取第三方平台预授权码
+ * 获取第三方平台access_token
  */
 @Getter
 @Setter
-public class WxOpenPreAuthAuthorization {
+public class ComponentAccessToken {
 
     /**
-     * 第三方平台预授权码
+     * 第三方平台access_token
      */
-    private String preAuthCode;
+    private String componentAccessToken;
+
 
     /**
      * 有效期

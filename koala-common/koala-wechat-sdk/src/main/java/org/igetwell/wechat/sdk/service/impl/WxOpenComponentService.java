@@ -4,10 +4,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.igetwell.common.constans.cache.RedisKey;
 import org.igetwell.common.uitls.*;
 import org.igetwell.common.uitls.aes.WXBizMsgCrypt;
-import org.igetwell.wechat.sdk.WxOpenComponentAccessToken;
-import org.igetwell.wechat.sdk.WxOpenComponentAuthorization;
-import org.igetwell.wechat.sdk.WxOpenPreAuthAuthorization;
-import org.igetwell.wechat.sdk.api.MessageAPI;
+
+import org.igetwell.wechat.sdk.ComponentAccessToken;
+import org.igetwell.wechat.sdk.ComponentAuthorization;
+import org.igetwell.wechat.sdk.PreAuthAuthorization;
 import org.igetwell.wechat.sdk.service.IWxOpenComponentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,11 +33,11 @@ public class WxOpenComponentService implements IWxOpenComponentService {
     @Value("${componentAppSecret}")
     private String componentAppSecret;
 
-    @Value("${componentMessageToken}")
-    private String componentMessageToken;
+    @Value("${componentToken}")
+    private String componentToken;
 
-    @Value("${componentAesKey}")
-    private String componentAesKey;
+    @Value("${encodingAesKey}")
+    private String encodingAesKey;
 
     private String componentVerifyTicket;
 
@@ -62,7 +62,7 @@ public class WxOpenComponentService implements IWxOpenComponentService {
             params.put("component_appsecret", componentAppSecret);
             params.put("component_verify_ticket", componentVerifyTicket);
             String response = HttpClientUtils.getInstance().sendHttpPost(API_COMPONENT_TOKEN_URL, GsonUtils.toJson(params));
-            WxOpenComponentAccessToken wxOpenComponentAccessToken = GsonUtils.fromJson(response, WxOpenComponentAccessToken.class);
+            ComponentAccessToken wxOpenComponentAccessToken = GsonUtils.fromJson(response, ComponentAccessToken.class);
             redisUtils.set(RedisKey.COMPONENT_ACCESS_TOKEN, wxOpenComponentAccessToken.getComponentAccessToken(), wxOpenComponentAccessToken.getExpiresIn()); //写入redis
             wxOpenConfigStorage.updateComponentAccessToken(wxOpenComponentAccessToken); //写入内存
         }
@@ -98,8 +98,8 @@ public class WxOpenComponentService implements IWxOpenComponentService {
         Map<String, String> params = new ConcurrentHashMap<>();
         params.put("component_appid", componentAppId);
         params.put("authorization_code", authorizationCode);
-        String response = HttpClientUtils.getInstance().sendHttpPost(API_QUERY_AUTH_URL, params);
-        WxOpenComponentAuthorization authorization = GsonUtils.fromJson(response, WxOpenComponentAuthorization.class);
+        String response = HttpClientUtils.getInstance().sendHttpPost(String.format(API_QUERY_AUTH_URL, wxOpenConfigStorage.getComponentAccessToken()), GsonUtils.toJson(params));
+        ComponentAuthorization authorization = GsonUtils.fromJson(response, ComponentAuthorization.class);
         if (StringUtils.isEmpty(authorization)){
             return;
         }
@@ -127,7 +127,7 @@ public class WxOpenComponentService implements IWxOpenComponentService {
             Map<String, String> params = new ConcurrentHashMap<>();
             params.put("component_appid", componentAppId); //这个AppId可以从缓存里面取
             String response = HttpClientUtils.getInstance().sendHttpPost(String.format(API_CREATE_PREAUTHCODE_URL, wxOpenConfigStorage.getComponentAccessToken()), GsonUtils.toJson(params));
-            WxOpenPreAuthAuthorization preAuth = GsonUtils.fromJson(response, WxOpenPreAuthAuthorization.class);
+            PreAuthAuthorization preAuth = GsonUtils.fromJson(response, PreAuthAuthorization.class);
             redisUtils.set(RedisKey.COMPONENT_PRE_AUTH_CODE, preAuth.getPreAuthCode(), preAuth.getExpiresIn());
             preAuthCode = preAuth.getPreAuthCode();
         }
@@ -149,15 +149,31 @@ public class WxOpenComponentService implements IWxOpenComponentService {
      * @throws Exception
      */
     public void processAuthorizeEvent(HttpServletRequest request, String nonce, String timestamp, String msgSignature) throws Exception {
-
+        if (StringUtils.isEmpty(nonce) || StringUtils.isEmpty(timestamp) || StringUtils.isEmpty(msgSignature)) {
+            throw new Exception("-------接收微信服务器回调字符串失败---------");
+        }
         String xml = HttpUtils.readData(request);
         log.info("第三方平台全网发布-----------------------原始 Xml={}", xml);
-        WXBizMsgCrypt pc = new WXBizMsgCrypt(componentMessageToken, componentAesKey, componentAppId);
+        //String appId = getAuthorizerAppidFromXml(xml);// 此时加密的xml数据中ToUserName是非加密的，解析xml获取即可
+        WXBizMsgCrypt pc = new WXBizMsgCrypt(componentToken, encodingAesKey, componentAppId);
         log.info("第三方平台全网发布-----------------------解密 WXBizMsgCrypt 成功.");
-        String xml1 = pc.DecryptMsg(msgSignature, timestamp, nonce, xml);
-        log.info("第三方平台全网发布-----------------------解密后 Xml={}", xml1);
-        processAuthorizationEvent(xml1);
+        xml = pc.DecryptMsg(msgSignature, timestamp, nonce, xml);
+        log.info("第三方平台全网发布-----------------------解密后 Xml={}", xml);
+        processAuthorizationEvent(xml);
 
+    }
+
+    /**
+     * 获取授权的appId
+     * @param xml
+     * @return
+     */
+    private String getAuthorizerAppidFromXml(String xml) {
+        Document doc;
+        doc = XmlUtils.parse(xml);
+        Element element = doc.getDocumentElement();
+        String toUserName = XmlUtils.elementText(element,"ToUserName");
+        return toUserName;
     }
 
     /**
@@ -191,7 +207,7 @@ public class WxOpenComponentService implements IWxOpenComponentService {
     public void checkWechatAllNetwork(HttpServletRequest request, HttpServletResponse response, String nonce, String timestamp, String msgSignature) throws Exception {
         String xml = HttpUtils.readData(request);
         log.info("全网发布接入检测消息反馈开始--------nonce:{}-------timestamp:{}---------msgSignature:{}.");
-        WXBizMsgCrypt pc = new WXBizMsgCrypt(componentMessageToken, componentAesKey, componentAppId);
+        WXBizMsgCrypt pc = new WXBizMsgCrypt(componentToken, encodingAesKey, componentAppId);
         xml = pc.DecryptMsg(msgSignature, timestamp, nonce, xml);
 
         Document doc = XmlUtils.parse(xml);
@@ -204,11 +220,11 @@ public class WxOpenComponentService implements IWxOpenComponentService {
         if(MessageUtils.MESSAGE_EVENT.equals(msgType)){
             log.info("---全网发布接入检测--step.3-----------事件消息--------");
             String event = XmlUtils.elementText(element,"Event");
-            replyEventMessage(response, event, fromUserName, toUserName);
+            replyEventMessage(response, event, toUserName, fromUserName);
         }else if(MessageUtils.MESSAGE_TEXT.equals(msgType)){
             log.info("---全网发布接入检测--step.3-----------文本消息--------");
             String content = XmlUtils.elementText(element,"Content");
-            processTextMessage(response, content, fromUserName, toUserName);
+            processTextMessage(response, content, toUserName, fromUserName);
         }
 
     }
@@ -223,7 +239,7 @@ public class WxOpenComponentService implements IWxOpenComponentService {
     private void processTextMessage(HttpServletResponse response, String content, String toUserName, String fromUserName){
         if("TESTCOMPONENT_MSG_TYPE_TEXT".equals(content)){
             String returnContent = content+"_callback";
-            replyTextMessage(response,returnContent,toUserName,fromUserName);
+            replyTextMessage(response,returnContent, toUserName, fromUserName);
         }else if(StringUtils.startsWithIgnoreCase(content, "QUERY_AUTH_CODE")){
             //先回复空串
             output(response, "");
@@ -242,13 +258,14 @@ public class WxOpenComponentService implements IWxOpenComponentService {
      */
     public void replyEventMessage(HttpServletResponse response, String event, String toUserName, String fromUserName) {
         String content = event + "from_callback";
-        replyTextMessage(response,content,toUserName,fromUserName);
+        replyTextMessage(response,content, toUserName, fromUserName);
     }
 
 
 
     private void replyApiTextMessage(String authorizationCode, String fromUserName) {
         // 得到微信授权成功的消息后，应该立刻进行处理！！相关信息只会在首次授权的时候推送过来
+        log.info("------step.4----使用客服消息接口回复粉丝----逻辑开始-------------------------");
         getQueryAuth(authorizationCode);
         String msg = authorizationCode + "_from_api";
         Map<String, Object> params = new HashMap<>();
@@ -277,7 +294,7 @@ public class WxOpenComponentService implements IWxOpenComponentService {
         sb.append("<Content><![CDATA["+content+"]]></Content>");
         sb.append("</xml>");
         try {
-            WXBizMsgCrypt pc = new WXBizMsgCrypt(getComponentAccessToken(true), componentAesKey, componentAppId);
+            WXBizMsgCrypt pc = new WXBizMsgCrypt(componentToken, encodingAesKey, componentAppId);
             String text = pc.EncryptMsg(sb.toString(), createTime.toString(), "easemob");
             output(response, text);
         } catch (Exception e) {
@@ -299,10 +316,15 @@ public class WxOpenComponentService implements IWxOpenComponentService {
 
 
     public static void main(String [] args) throws Exception {
-        WxOpenComponentService service = new WxOpenComponentService();
-        service.createPreAuthUrl(null, null,null,false);
-
-
+        /*WxOpenComponentService service = new WxOpenComponentService();
+        service.createPreAuthUrl(null, null,null,false);*/
+        ComponentAuthorization authorization = new ComponentAuthorization();
+        authorization.setAuthorizerAccessToken("1231311sa");
+        System.err.println(GsonUtils.toJson(authorization));
+        Map<String, String> params = new ConcurrentHashMap<>();    
+        params.put("component_Appid", "1213131");
+        params.put("authorization_code", "AB12");
+        System.err.println(GsonUtils.toJson(params));
         /*String xml = null;
         try {
             WXBizMsgCrypt pc = new WXBizMsgCrypt(COMPONENT_TOKEN, COMPONENT_ENCODINGAESKEY,
