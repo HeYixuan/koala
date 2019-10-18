@@ -275,6 +275,9 @@ public class WxOpenComponentService implements IWxOpenComponentService {
         text.put("content", msg);
         params.put("text", text);
         String response = HttpClientUtils.getInstance().sendHttpPost(String.format(API_SEND_MESSAGE_URL, wxOpenConfigStorage.getComponentAccessToken()), GsonUtils.toJson(params));
+        if (log.isDebugEnabled()){
+            log.debug("api reply message to to wechat whole network test respose = "+ response);
+        }
     }
     /**
      * 回复微信服务器"文本消息"
