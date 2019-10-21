@@ -90,4 +90,10 @@ public class WeChatController extends BaseController {
         }
         return null;
     }
+
+    @GetMapping("/test")
+    @ResponseBody
+    public String test(){
+        return "abc";
+    }
 }
