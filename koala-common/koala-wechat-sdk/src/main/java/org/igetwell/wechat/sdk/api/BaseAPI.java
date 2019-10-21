@@ -17,4 +17,5 @@ public abstract class BaseAPI {
     protected static Header APPLICATION_XML = new BasicHeader(HttpHeaders.CONTENT_TYPE,ContentType.APPLICATION_XML.toString());
 
     protected static final String ACCESS_TOKEN = "access_token";
+    protected static final String COMPONENT_ACCESS_TOKEN = "component_access_token";
 }
