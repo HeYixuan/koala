@@ -4,11 +4,9 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 import java.lang.reflect.Field;
 import java.util.*;
+
+import org.dom4j.Element;
 import org.springframework.util.StringUtils;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 public class BeanUtils {
 
@@ -75,16 +73,9 @@ public class BeanUtils {
      * @param xmlStr
      * @return
      */
-    public static Map<String, String> xmlBean2Map(String xmlStr) {
-        Document document = XmlUtils.parse(xmlStr);
-        Element root = document.getDocumentElement();
-        Map<String, String> params = new HashMap();
-        NodeList list = root.getChildNodes();
-        for(int i = 0; i < list.getLength(); ++i) {
-            Node node = list.item(i);
-            params.put(node.getNodeName(), node.getTextContent());
-        }
-
+    public static Map<String, Object> xmlBean2Map(String xmlStr) {
+        Element root = XmlUtils.parseXml(xmlStr);
+        Map<String, Object> params = XmlUtils.getAttrMap(root);
         params.remove("#text");
         return params;
     }

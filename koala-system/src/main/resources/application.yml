@@ -1,8 +1,16 @@
 spring:
   redis:
-    port: 6379
-    host: ${REDIS-HOST:localhost}
-    password:
+    cluster:
+      nodes:
+        - 120.78.66.117:7001
+        - 120.78.66.117:7002
+        - 120.78.66.117:7003
+        - 120.78.66.117:7004
+        - 120.78.66.117:7005
+        - 120.78.66.117:7006
+#    port: 6379
+#    host: ${REDIS-HOST:localhost}
+#    password:
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver

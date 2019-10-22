@@ -1,6 +1,7 @@
 package org.igetwell.wechat.sdk.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
+import org.dom4j.Element;
 import org.igetwell.common.constans.cache.RedisKey;
 import org.igetwell.common.uitls.*;
 import org.igetwell.common.uitls.aes.WXBizMsgCrypt;
@@ -13,8 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -169,9 +168,7 @@ public class WxOpenComponentService implements IWxOpenComponentService {
      * @return
      */
     private String getAuthorizerAppidFromXml(String xml) {
-        Document doc;
-        doc = XmlUtils.parse(xml);
-        Element element = doc.getDocumentElement();
+        Element element = XmlUtils.parseXml(xml);
         String toUserName = XmlUtils.elementText(element,"ToUserName");
         return toUserName;
     }
@@ -182,9 +179,7 @@ public class WxOpenComponentService implements IWxOpenComponentService {
      * @param xml
      */
     private void processAuthorizationEvent(String xml) {
-        Document doc;
-        doc = XmlUtils.parse(xml);
-        Element element = doc.getDocumentElement();
+        Element element = XmlUtils.parseXml(xml);
         String ticket = XmlUtils.elementText(element,"ComponentVerifyTicket");
         log.info("第三方平台全网发布-----------------------解密后 ComponentVerifyTicket={}", ticket);
         if(!StringUtils.isEmpty(ticket)){
@@ -210,8 +205,7 @@ public class WxOpenComponentService implements IWxOpenComponentService {
         WXBizMsgCrypt pc = new WXBizMsgCrypt(componentToken, encodingAesKey, componentAppId);
         xml = pc.DecryptMsg(msgSignature, timestamp, nonce, xml);
 
-        Document doc = XmlUtils.parse(xml);
-        Element element = doc.getDocumentElement();
+        Element element = XmlUtils.parseXml(xml);
         String msgType = XmlUtils.elementText(element, "MsgType");
         String toUserName = XmlUtils.elementText(element,"ToUserName");
         String fromUserName = XmlUtils.elementText(element,"FromUserName");
