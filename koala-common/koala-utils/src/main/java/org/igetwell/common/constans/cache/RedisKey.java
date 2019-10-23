@@ -1,6 +1,6 @@
 package org.igetwell.common.constans.cache;
 
-public class RedisKey {
+public interface RedisKey {
 
     /**
      * Access_TOKEN
@@ -31,6 +31,12 @@ public class RedisKey {
      * 第三方平台使用授权码换取公众号的授权信息
      */
     public static final String COMPONENT_AUTHORIZATION = "COMPONENT_AUTHORIZATION";
+
+
+    /**
+     * 第三方平台授权码
+     */
+    public static final String COMPONENT_AUTHORIZATION_CODE = "COMPONENT_AUTHORIZATION_CODE";
 
     /**
      * 第三方平台预授权码

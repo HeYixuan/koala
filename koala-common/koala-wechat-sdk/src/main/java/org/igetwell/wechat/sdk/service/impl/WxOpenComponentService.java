@@ -6,9 +6,7 @@ import org.igetwell.common.constans.cache.RedisKey;
 import org.igetwell.common.uitls.*;
 import org.igetwell.common.uitls.aes.WXBizMsgCrypt;
 
-import org.igetwell.wechat.sdk.ComponentAccessToken;
-import org.igetwell.wechat.sdk.ComponentAuthorization;
-import org.igetwell.wechat.sdk.PreAuthAuthorization;
+import org.igetwell.wechat.sdk.*;
 import org.igetwell.wechat.sdk.service.IWxOpenComponentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -49,21 +47,32 @@ public class WxOpenComponentService implements IWxOpenComponentService {
 
     /*@PostConstruct
     public void init(){
-        componentVerifyTicket = (String) redisTemplate.opsForValue().get(RedisKey.COMPONENT_VERIFY_TICKET);
+        componentVerifyTicket = (String) redisUtils.get(RedisKey.COMPONENT_VERIFY_TICKET);
     }*/
 
+    /**
+     * 是否强制获取微信第三方开放平台token
+     * @param forceRefresh
+     * @return
+     * @throws Exception
+     */
     @Override
-    public String getComponentAccessToken(boolean forceRefresh) {
+    public String getComponentAccessToken(boolean forceRefresh) throws Exception {
         if (forceRefresh){
             componentVerifyTicket = (String) redisUtils.get(RedisKey.COMPONENT_VERIFY_TICKET);
+            if(StringUtils.isEmpty(componentVerifyTicket)){
+                throw new Exception("获取微信开放平台验证票据失败");
+            }
             Map<String, String> params = new ConcurrentHashMap<>();
             params.put("component_appid", componentAppId);
             params.put("component_appsecret", componentAppSecret);
             params.put("component_verify_ticket", componentVerifyTicket);
             String response = HttpClientUtils.getInstance().sendHttpPost(API_COMPONENT_TOKEN_URL, GsonUtils.toJson(params));
-            ComponentAccessToken wxOpenComponentAccessToken = GsonUtils.fromJson(response, ComponentAccessToken.class);
-            redisUtils.set(RedisKey.COMPONENT_ACCESS_TOKEN, wxOpenComponentAccessToken.getComponentAccessToken(), wxOpenComponentAccessToken.getExpiresIn()); //写入redis
-            wxOpenConfigStorage.updateComponentAccessToken(wxOpenComponentAccessToken); //写入内存
+            ComponentAccessToken componentAccessToken = GsonUtils.fromJson(response, ComponentAccessToken.class);
+            if (!StringUtils.isEmpty(componentAccessToken) || !StringUtils.isEmpty(componentAccessToken.getComponentAccessToken())){
+                redisUtils.set(RedisKey.COMPONENT_ACCESS_TOKEN, componentAccessToken.getComponentAccessToken(), componentAccessToken.getExpiresIn()); //写入redis
+                wxOpenConfigStorage.updateComponentAccessToken(componentAccessToken); //写入内存
+            }
         }
         return wxOpenConfigStorage.getComponentAccessToken();
     }
@@ -98,13 +107,14 @@ public class WxOpenComponentService implements IWxOpenComponentService {
         params.put("component_appid", componentAppId);
         params.put("authorization_code", authorizationCode);
         String response = HttpClientUtils.getInstance().sendHttpPost(String.format(API_QUERY_AUTH_URL, wxOpenConfigStorage.getComponentAccessToken()), GsonUtils.toJson(params));
-        ComponentAuthorization authorization = GsonUtils.fromJson(response, ComponentAuthorization.class);
-        if (StringUtils.isEmpty(authorization)){
+        AuthorizationInfo authorizationInfo = GsonUtils.fromJson(response, AuthorizationInfo.class);
+        if (StringUtils.isEmpty(authorizationInfo)){
             return;
         }
 
-        if (!StringUtils.isEmpty(authorization.getAuthorizerAccessToken()) && !StringUtils.isEmpty(authorization.getAuthorizerRefreshToken())) {
-            redisUtils.set(RedisKey.COMPONENT_AUTHORIZATION + authorization.getAuthorizerAppid(), GsonUtils.toJson(authorization), authorization.getExpiresIn());
+        if (!StringUtils.isEmpty(authorizationInfo.getAuthorizationInfo().getAuthorizerAccessToken()) && !StringUtils.isEmpty(authorizationInfo.getAuthorizationInfo().getAuthorizerRefreshToken())) {
+            redisUtils.set(RedisKey.COMPONENT_AUTHORIZATION + authorizationInfo.getAuthorizationInfo().getAuthorizerAppid(), GsonUtils.toJson(authorizationInfo.getAuthorizationInfo()), authorizationInfo.getAuthorizationInfo().getExpiresIn());
+            wxOpenConfigStorage.updateComponentAuthorization(authorizationInfo.getAuthorizationInfo()); //写入内存
         }
 
     }
@@ -163,28 +173,36 @@ public class WxOpenComponentService implements IWxOpenComponentService {
     }
 
     /**
-     * 获取授权的appId
-     * @param xml
-     * @return
-     */
-    private String getAuthorizerAppidFromXml(String xml) {
-        Element element = XmlUtils.parseXml(xml);
-        String toUserName = XmlUtils.elementText(element,"ToUserName");
-        return toUserName;
-    }
-
-    /**
      * 保存微信开放平台Ticket
      *
      * @param xml
      */
     private void processAuthorizationEvent(String xml) {
         Element element = XmlUtils.parseXml(xml);
-        String ticket = XmlUtils.elementText(element,"ComponentVerifyTicket");
-        log.info("第三方平台全网发布-----------------------解密后 ComponentVerifyTicket={}", ticket);
-        if(!StringUtils.isEmpty(ticket)){
-            //设置10分钟
-            redisUtils.set(RedisKey.COMPONENT_VERIFY_TICKET, ticket, RedisKey.COMPONENT_VERIFY_TICKET_EXPIRE);
+        String infoType = XmlUtils.elementText(element,"InfoType");
+        if (!StringUtils.isEmpty(infoType)){
+            //验证票据component_verify_ticket
+            if (infoType.equalsIgnoreCase("component_verify_ticket")){
+                String ticket = XmlUtils.elementText(element,"ComponentVerifyTicket");
+                log.info("第三方平台全网发布-----------------------解密后 ComponentVerifyTicket={}", ticket);
+                if(!StringUtils.isEmpty(ticket)){
+                    //设置10分钟
+                    redisUtils.set(RedisKey.COMPONENT_VERIFY_TICKET, ticket, RedisKey.COMPONENT_VERIFY_TICKET_EXPIRE);
+                }
+            }
+            //取消授权
+            if (infoType.equalsIgnoreCase("unauthorized")){
+
+            }
+            //授权成功或更新授权
+            if (infoType.equalsIgnoreCase("authorized") ||infoType.equalsIgnoreCase("updateauthorized")){
+                String authorizationCode = XmlUtils.elementText(element, "AuthorizationCode");
+                String preAuthCode = XmlUtils.elementText(element, "PreAuthCode");
+                long expired =  Long.valueOf(XmlUtils.elementText(element, "AuthorizationCodeExpiredTime"));
+                redisUtils.set(RedisKey.COMPONENT_AUTHORIZATION_CODE, authorizationCode, expired);
+                redisUtils.set(RedisKey.COMPONENT_PRE_AUTH_CODE, preAuthCode, expired);
+
+            }
         }
 
     }
@@ -209,6 +227,11 @@ public class WxOpenComponentService implements IWxOpenComponentService {
         String msgType = XmlUtils.elementText(element, "MsgType");
         String toUserName = XmlUtils.elementText(element,"ToUserName");
         String fromUserName = XmlUtils.elementText(element,"FromUserName");
+
+
+        log.info("MsgType：{}, toUserName:{}, fromUserName", msgType, toUserName, fromUserName);
+
+
         log.info("全网发布接入检测--step.1-----------msgType={}----------toUserName={}---------fromUserName={}", msgType, toUserName, fromUserName);
         log.info("---全网发布接入检测--step.2-----------xml="+xml);
         if(MessageUtils.MESSAGE_EVENT.equals(msgType)){
@@ -268,7 +291,7 @@ public class WxOpenComponentService implements IWxOpenComponentService {
         Map<String, Object> text = new HashMap<>();
         text.put("content", msg);
         params.put("text", text);
-        String response = HttpClientUtils.getInstance().sendHttpPost(String.format(API_SEND_MESSAGE_URL, wxOpenConfigStorage.getComponentAccessToken()), GsonUtils.toJson(params));
+        String response = HttpClientUtils.getInstance().sendHttpPost(String.format(API_SEND_MESSAGE_URL, wxOpenConfigStorage.getAuthorizerAccessToken()), GsonUtils.toJson(params));
         if (log.isDebugEnabled()){
             log.debug("api reply message to to wechat whole network test respose = "+ response);
         }
@@ -313,24 +336,23 @@ public class WxOpenComponentService implements IWxOpenComponentService {
 
 
     public static void main(String [] args) throws Exception {
-        /*WxOpenComponentService service = new WxOpenComponentService();
-        service.createPreAuthUrl(null, null,null,false);*/
-        ComponentAuthorization authorization = new ComponentAuthorization();
+
+        /*ComponentAuthorization authorization = new ComponentAuthorization();
         authorization.setAuthorizerAccessToken("1231311sa");
         System.err.println(GsonUtils.toJson(authorization));
         Map<String, String> params = new ConcurrentHashMap<>();    
         params.put("component_Appid", "1213131");
         params.put("authorization_code", "AB12");
-        System.err.println(GsonUtils.toJson(params));
-        /*String xml = null;
-        try {
-            WXBizMsgCrypt pc = new WXBizMsgCrypt(COMPONENT_TOKEN, COMPONENT_ENCODINGAESKEY,
-                    "wx4addc310e841f58b");
-            xml = pc.decryptMsg("cbff9928c63f34e6fe0f3d63bf7ad8c5ab2322a3", "1481013633", "1836283428", "<xml>    <AppId><![CDATA[wx4addc310e841f58b]]></AppId>    <Encrypt><![CDATA[ouuB6+xRWHaoVpPqvgLJXztr3vnxrF9rWR0K8X7nU3DfjJBgc5NtxJM7C00Q8Ogx7vJSKkiv4T54EPIPn1cDORqZ/x0MVedRAKrRYRX7f5Cju+nBCF7+5YoXLbuT2HigTA1NrGz3aiYTTnwehlrquO9LwwggriDuvhETseHaa2lCoN9A18hFbMPcTIZobeNEVh97omziTBbq6bOOpWl1QSmjk89GnmhUN7f2MXqY+SQiLg1xdk6Tk6jh2MtCAmJdLQOKq+FFVLogarqBwn2G03y4/zzKwriDjYR80Yo4iHnz+7Vewlp6n0yw8BNXE5smnRe5FFzO4IMAODxKe8pPahKTOYrjqOez+AmER+7EW6N/6OGWsTqNfTmFSl1z/W3amXhBIXQXu+CJy/7lcwEYkGvaFA2PVSf1nwfqaWFxP72gpYHUemQe00aMkbtFi8wvNw8k6cDNuZ0CTp7zJLV/Lg==]]></Encrypt></xml>");
-        } catch (AesException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        System.out.println("第三方平台全网发布-----------------------解密后 Xml="+xml);*/
+        System.err.println(GsonUtils.toJson(params));*/
+        /*AuthorizationInfo info = new AuthorizationInfo();
+        ComponentAuthorization componentAuthorization = new ComponentAuthorization();
+        componentAuthorization.setAuthorizerAccessToken("123131");
+        info.setAuthorizationInfo(componentAuthorization);
+        System.err.println(GsonUtils.toJson(info));*/
+
+        String s = "{\"authorization_info\": {\"authorizer_appid\": \"wxf8b4f85f3a794e77\",\"authorizer_access_token\": \"QXjUqNqfYVH0yBE1iI_7vuN_9gQbpjfK7hYwJ3P7xOa88a89-Aga5x1NMYJyB8G2yKt1KCl0nPC3W9GJzw0Zzq_dBxc8pxIGUNi_bFes0qM\",\"expires_in\": 7200,\"authorizer_refresh_token\": \"dTo-YCXPL4llX-u1W1pPpnp8Hgm4wpJtlR6iV0doKdY\",\"func_info\": [{\"funcscope_category\": {\"id\": 1}},{\"funcscope_category\": {\"id\": 2}},{\"funcscope_category\": {\"id\": 3}}]}}";
+
+        AuthorizationInfo authorization = GsonUtils.fromJson(s, AuthorizationInfo.class);
+        System.err.println(GsonUtils.toJson(authorization.getAuthorizationInfo()));
     }
 }

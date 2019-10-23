@@ -1,6 +1,7 @@
 package org.igetwell.wechat.sdk.service;
 
 import org.igetwell.wechat.sdk.ComponentAccessToken;
+import org.igetwell.wechat.sdk.ComponentAuthorization;
 
 public interface IWxOpenConfigStorage {
 
@@ -17,4 +18,10 @@ public interface IWxOpenConfigStorage {
      * @param expiresInSeconds     过期时间，以秒为单位
      */
     void updateComponentAccessToken(String componentAccessToken, long expiresInSeconds);
+
+    /**
+     * 更新授权信息
+     * @param authorization
+     */
+    void updateComponentAuthorization(ComponentAuthorization authorization);
 }

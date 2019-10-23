@@ -49,7 +49,7 @@ public interface IWxOpenComponentService {
      * @param forceRefresh
      * @return
      */
-    String getComponentAccessToken(boolean forceRefresh);
+    String getComponentAccessToken(boolean forceRefresh) throws Exception;
 
     /**
      * 获取用户授权页URL（来路URL和成功跳转URL 的域名都需要为三方平台设置的 登录授权的发起页域名）
