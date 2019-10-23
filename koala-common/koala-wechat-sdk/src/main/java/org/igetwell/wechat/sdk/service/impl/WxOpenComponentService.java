@@ -17,7 +17,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -352,7 +354,28 @@ public class WxOpenComponentService implements IWxOpenComponentService {
 
         String s = "{\"authorization_info\": {\"authorizer_appid\": \"wxf8b4f85f3a794e77\",\"authorizer_access_token\": \"QXjUqNqfYVH0yBE1iI_7vuN_9gQbpjfK7hYwJ3P7xOa88a89-Aga5x1NMYJyB8G2yKt1KCl0nPC3W9GJzw0Zzq_dBxc8pxIGUNi_bFes0qM\",\"expires_in\": 7200,\"authorizer_refresh_token\": \"dTo-YCXPL4llX-u1W1pPpnp8Hgm4wpJtlR6iV0doKdY\",\"func_info\": [{\"funcscope_category\": {\"id\": 1}},{\"funcscope_category\": {\"id\": 2}},{\"funcscope_category\": {\"id\": 3}}]}}";
 
-        AuthorizationInfo authorization = GsonUtils.fromJson(s, AuthorizationInfo.class);
-        System.err.println(GsonUtils.toJson(authorization.getAuthorizationInfo()));
+       AuthorizationInfo authorization = GsonUtils.fromJson(s, AuthorizationInfo.class);
+        System.err.println(GsonUtils.toJson(authorization));
+
+
+
+        ComponentAuthorization componentAuthorization = new ComponentAuthorization();
+        componentAuthorization.setAuthorizerAccessToken("123131");
+        List<FuncInfo> infos = new ArrayList<>();
+        FuncInfo info1 = new FuncInfo();
+        FuncCategory category1 = new FuncCategory();
+        category1.setId(1);
+        info1.setFuncscopeCategory(category1);
+        FuncInfo info2 = new FuncInfo();
+        FuncCategory category2 = new FuncCategory();
+        category2.setId(2);
+        info2.setFuncscopeCategory(category2);
+
+        infos.add(info1);
+        infos.add(info2);
+        componentAuthorization.setFuncInfo(infos);
+        AuthorizationInfo authorizationInfo = new AuthorizationInfo();
+        authorizationInfo.setAuthorizationInfo(componentAuthorization);
+        System.err.println(GsonUtils.toJson(authorizationInfo));
     }
 }
