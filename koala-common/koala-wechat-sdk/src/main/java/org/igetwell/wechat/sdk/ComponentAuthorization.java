@@ -13,5 +13,5 @@ public class ComponentAuthorization {
     private String authorizerAccessToken;
     private long expiresIn;
     private String authorizerRefreshToken;
-    //private FuncInfo funcInfo;
+    private List<FuncInfo> funcInfo;
 }

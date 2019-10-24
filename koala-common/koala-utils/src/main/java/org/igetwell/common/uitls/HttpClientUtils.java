@@ -50,9 +50,27 @@ public class HttpClientUtils {
         return instance;
     }
 
+    /*
+     * 发送 get请求
+     * @param httpUrl
+     */
+    public String sendHttpGet(String httpUrl) {
+        HttpGet httpGet = new HttpGet(httpUrl);// 创建get请求
+        return sendHttpGet(httpGet);
+    }
+
+    /*
+     * 发送 get请求Https
+     * @param httpUrl
+     */
+    public String sendHttpsGet(String httpUrl) {
+        HttpGet httpGet = new HttpGet(httpUrl);// 创建get请求
+        return sendHttpsGet(httpGet);
+    }
+
     /**
      * 发送 post请求
-     * @param httpUrl 地址
+     * @param httpUrl 参数(格式:key1=value1&key2=value2)
      */
     public String sendHttpPost(String httpUrl) {
         HttpPost httpPost = new HttpPost(httpUrl);// 创建httpPost
@@ -62,22 +80,19 @@ public class HttpClientUtils {
     /**
      * 发送 post请求
      * @param httpUrl 地址
-     * @param params 参数(格式:key1=value1&key2=value2)
+     * @param params json参数(格式:{"key":"value"})
      */
     public String sendHttpPost(String httpUrl, String params) {
         HttpPost httpPost = new HttpPost(httpUrl);// 创建httpPost
-        try {
-            //设置参数
-            StringEntity stringEntity = new StringEntity(params, "UTF-8");
-            stringEntity.setContentType("application/x-www-form-urlencoded");
-            httpPost.setEntity(stringEntity);
-        } catch (Exception e) {
-            log.error("sendHttpPost请求失败：", e);
-        }
+        //设置参数
+        StringEntity stringEntity = new StringEntity(params, "UTF-8");
+        stringEntity.setContentEncoding("UTF-8");
+        stringEntity.setContentType("application/json");
+        httpPost.setEntity(stringEntity);
         return sendHttpPost(httpPost);
     }
 
-    /**
+    /*
      * 发送 post请求
      * @param httpUrl 地址
      * @param maps 参数
@@ -97,36 +112,7 @@ public class HttpClientUtils {
         return sendHttpPost(httpPost);
     }
 
-    /**
-     * 发送 post请求
-     * @param httpUrl 地址
-     * @param headers 请求头
-     * @param params 参数
-     * @return
-     */
-    public String sendHttpPost(String httpUrl, Map<String, String> headers, Map<String, Object> params){
-        HttpPost httpPost = new HttpPost(httpUrl);// 创建httpPost
-        for(Map.Entry<String, String> entry : headers.entrySet()){
-            httpPost.setHeader(entry.getKey(), entry.getValue());
-        }
-        if (params.isEmpty()){
-            log.error("请求参数不能为空!");
-            return null;
-        }
-        try {
-            String json = GsonUtils.toJson(params);
-            StringEntity entity = new StringEntity(json, "UTF-8");
-            entity.setContentEncoding("UTF-8");
-            entity.setContentType("application/json");
-            httpPost.setEntity(entity);
-
-        } catch (Exception e) {
-            log.error("sendHttpPost请求失败：", e);
-        }
-        return sendHttpPost(httpPost);
-    }
-
-    /**
+    /*
      * 发送 post请求（带文件）
      * @param httpUrl 地址
      * @param maps 参数
@@ -138,7 +124,7 @@ public class HttpClientUtils {
         return sendHttpPost(httpPost);
     }
 
-    /**
+    /*
      * 发送 post请求（带文件）
      * @param httpUrl 地址
      * @param maps 参数
@@ -153,6 +139,7 @@ public class HttpClientUtils {
         return sendHttpPost(httpPost);
     }
 
+
     private void setMultipartEntityBuilder(HttpPost httpPost, Map<String, String> maps, Map<String, File> fileMap){
         MultipartEntityBuilder multipartEntityBuilder = MultipartEntityBuilder.create();
         for(Map.Entry<String, File> entry : fileMap.entrySet()){
@@ -166,7 +153,7 @@ public class HttpClientUtils {
         httpPost.setEntity(entity);
     }
 
-    /**
+    /*
      * 设置上传文件时所附带的其他参数
      *
      * @param multipartEntityBuilder
@@ -184,25 +171,8 @@ public class HttpClientUtils {
         }
     }
 
-    /**
-     * 发送 get请求
-     * @param httpUrl
-     */
-    public String sendHttpGet(String httpUrl) {
-        HttpGet httpGet = new HttpGet(httpUrl);// 创建get请求
-        return sendHttpGet(httpGet);
-    }
 
-    /**
-     * 发送 get请求Https
-     * @param httpUrl
-     */
-    public String sendHttpsGet(String httpUrl) {
-        HttpGet httpGet = new HttpGet(httpUrl);// 创建get请求
-        return sendHttpsGet(httpGet);
-    }
-
-    /**
+    /*
      * 发送 get请求Https
      * @param httpUrl
      */
@@ -221,8 +191,7 @@ public class HttpClientUtils {
         return sendHttpsGet(httpGet);
     }
 
-
-    /**
+    /*
      * 发送Get请求Https
      * @param httpGet
      * @return

@@ -179,7 +179,7 @@ public class WxOpenComponentService implements IWxOpenComponentService {
      *
      * @param xml
      */
-    private void processAuthorizationEvent(String xml) {
+    private void processAuthorizationEvent(String xml) throws Exception {
         Element element = XmlUtils.parseXml(xml);
         String infoType = XmlUtils.elementText(element,"InfoType");
         if (!StringUtils.isEmpty(infoType)){
@@ -190,6 +190,7 @@ public class WxOpenComponentService implements IWxOpenComponentService {
                 if(!StringUtils.isEmpty(ticket)){
                     //设置10分钟
                     redisUtils.set(RedisKey.COMPONENT_VERIFY_TICKET, ticket, RedisKey.COMPONENT_VERIFY_TICKET_EXPIRE);
+                    getComponentAccessToken(true);
                 }
             }
             //取消授权

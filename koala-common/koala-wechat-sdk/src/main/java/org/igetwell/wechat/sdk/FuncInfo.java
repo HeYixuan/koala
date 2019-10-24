@@ -1,16 +1,14 @@
 package org.igetwell.wechat.sdk;
 
-import java.util.List;
-
 public class FuncInfo {
 
-    List<FuncCategory> funcscopeCategory;
+    private FuncCategory funcscopeCategory;
 
-    public List<FuncCategory> getFuncscopeCategory() {
+    public FuncCategory getFuncscopeCategory() {
         return funcscopeCategory;
     }
 
-    public void setFuncscopeCategory(List<FuncCategory> funcscopeCategory) {
+    public void setFuncscopeCategory(FuncCategory funcscopeCategory) {
         this.funcscopeCategory = funcscopeCategory;
     }
 }
