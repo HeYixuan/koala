@@ -20,19 +20,24 @@ public class MerchantCard implements Serializable {
     private String merchantNo;
 
     /**
+     * 会员卡ID
+     */
+    private String merchantCardId;
+
+    /**
+     * 品牌LOGO
+     */
+    private String brandLogo;
+
+    /**
+     * 品牌名称
+     */
+    private String brandName;
+
+    /**
      * 会员卡名称
      */
     private String cardName;
-
-    /**
-     * 会员卡副名称
-     */
-    private String cardSubName;
-
-    /**
-     * 会员卡LOGO
-     */
-    private String cardLogo;
 
     /**
      * 会员卡背景图
@@ -78,28 +83,36 @@ public class MerchantCard implements Serializable {
         this.merchantNo = merchantNo;
     }
 
+    public String getMerchantCardId() {
+        return merchantCardId;
+    }
+
+    public void setMerchantCardId(String merchantCardId) {
+        this.merchantCardId = merchantCardId;
+    }
+
+    public String getBrandLogo() {
+        return brandLogo;
+    }
+
+    public void setBrandLogo(String brandLogo) {
+        this.brandLogo = brandLogo;
+    }
+
+    public String getBrandName() {
+        return brandName;
+    }
+
+    public void setBrandName(String brandName) {
+        this.brandName = brandName;
+    }
+
     public String getCardName() {
         return cardName;
     }
 
     public void setCardName(String cardName) {
         this.cardName = cardName;
-    }
-
-    public String getCardSubName() {
-        return cardSubName;
-    }
-
-    public void setCardSubName(String cardSubName) {
-        this.cardSubName = cardSubName;
-    }
-
-    public String getCardLogo() {
-        return cardLogo;
-    }
-
-    public void setCardLogo(String cardLogo) {
-        this.cardLogo = cardLogo;
     }
 
     public String getCardBackUrl() {

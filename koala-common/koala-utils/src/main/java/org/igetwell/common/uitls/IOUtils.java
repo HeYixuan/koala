@@ -4,7 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.BufferedReader;
 import java.io.IOException;
 
-public class HttpUtils {
+public class IOUtils {
 
     public static String readData(HttpServletRequest request) {
         BufferedReader br = null;

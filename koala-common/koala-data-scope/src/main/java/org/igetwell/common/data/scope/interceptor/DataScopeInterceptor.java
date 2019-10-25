@@ -17,6 +17,7 @@ import org.igetwell.common.data.scope.annotation.DataScopeAuth;
 import org.igetwell.common.data.scope.datascope.DataScope;
 import org.igetwell.common.data.scope.enums.DataScopeEnum;
 import org.igetwell.common.data.scope.props.DataScopeProperties;
+import org.igetwell.common.uitls.CharacterUtils;
 import org.igetwell.common.uitls.ClassUtils;
 import org.igetwell.common.uitls.Pagination;
 import org.igetwell.common.uitls.SpringContextHolder;
@@ -206,7 +207,7 @@ public class DataScopeInterceptor implements Interceptor {
 		String id = mappedStatement.getId();
 		return dataAuthMap.computeIfAbsent(id, (key) -> {
 			String className = key.substring(0, key.lastIndexOf("."));
-			String mapperBean = org.igetwell.common.uitls.StringUtils.firstCharToLower(ClassUtils.getShortName(className));
+			String mapperBean = CharacterUtils.firstCharToLower(ClassUtils.getShortName(className));
 			Object mapper = SpringContextHolder.getBean(mapperBean);
 			String methodName = key.substring(key.lastIndexOf(".") + 1);
 			Class<?>[] interfaces = ClassUtils.getAllInterfaces(mapper);

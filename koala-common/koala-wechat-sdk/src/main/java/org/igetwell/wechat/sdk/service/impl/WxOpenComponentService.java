@@ -163,7 +163,7 @@ public class WxOpenComponentService implements IWxOpenComponentService {
         if (StringUtils.isEmpty(nonce) || StringUtils.isEmpty(timestamp) || StringUtils.isEmpty(msgSignature)) {
             throw new Exception("-------接收微信服务器回调字符串失败---------");
         }
-        String xml = HttpUtils.readData(request);
+        String xml = IOUtils.readData(request);
         log.info("第三方平台全网发布-----------------------原始 Xml={}", xml);
         //String appId = getAuthorizerAppidFromXml(xml);// 此时加密的xml数据中ToUserName是非加密的，解析xml获取即可
         WXBizMsgCrypt pc = new WXBizMsgCrypt(componentToken, encodingAesKey, componentAppId);
@@ -221,7 +221,7 @@ public class WxOpenComponentService implements IWxOpenComponentService {
      * @throws Exception
      */
     public void checkWechatAllNetwork(HttpServletRequest request, HttpServletResponse response, String nonce, String timestamp, String msgSignature) throws Exception {
-        String xml = HttpUtils.readData(request);
+        String xml = IOUtils.readData(request);
         log.info("全网发布接入检测消息反馈开始--------nonce:{}-------timestamp:{}---------msgSignature:{}.");
         WXBizMsgCrypt pc = new WXBizMsgCrypt(componentToken, encodingAesKey, componentAppId);
         xml = pc.DecryptMsg(msgSignature, timestamp, nonce, xml);

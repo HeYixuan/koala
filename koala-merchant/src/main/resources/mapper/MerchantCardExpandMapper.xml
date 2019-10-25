@@ -3,7 +3,7 @@
 <mapper namespace="org.igetwell.merchant.card.mapper.MerchantCardExpandMapper">
   <resultMap id="baseMap" type="org.igetwell.merchant.card.entity.MerchantCardExpand">
     <id column="ID" jdbcType="BIGINT" property="id" />
-    <result column="MERCHANT_CARD_ID" jdbcType="BIGINT" property="merchantCardId" />
+    <result column="MERCHANT_CARD_ID" jdbcType="VARCHAR" property="merchantCardId" />
     <result column="MERCHANT_NO" jdbcType="VARCHAR" property="merchantNo" />
     <result column="OPEN_METHOD" jdbcType="INTEGER" property="openMethod" />
     <result column="OPEN_MONEY" jdbcType="DECIMAL" property="openMoney" />
@@ -18,6 +18,7 @@
     <result column="CARD_LIMIT_BEGIN" jdbcType="VARCHAR" property="cardLimitBegin" />
     <result column="CARD_LIMIT_END" jdbcType="VARCHAR" property="cardLimitEnd" />
     <result column="ACTIVATE_TYPE" jdbcType="INTEGER" property="activateType" />
+    <result column="ACTIVATE_URL" jdbcType="VARCHAR" property="activateUrl" />
     <result column="DISPLAY_POINT" jdbcType="INTEGER" property="displayPoint" />
     <result column="CARD_POINT_URL" jdbcType="VARCHAR" property="cardPointUrl" />
     <result column="CARD_SUPPORT_BALANCE" jdbcType="INTEGER" property="cardSupportBalance" />
@@ -28,22 +29,23 @@
     <result column="CARD_CENTER_BUTTON" jdbcType="VARCHAR" property="cardCenterButton" />
     <result column="CARD_CENTER_TIPS" jdbcType="VARCHAR" property="cardCenterTips" />
     <result column="CARD_LIMIT" jdbcType="INTEGER" property="cardLimit" />
-    <result column="SUPPORT_STORES" jdbcType="INTEGER" property="supportStores" />
+    <result column="IS_SUPPORT_STORE" jdbcType="INTEGER" property="isSupportStore" />
+    <result column="SUPPORT_STORES" jdbcType="VARCHAR" property="supportStores" />
   </resultMap>
 
   <sql id="baseSql">
     ID, MERCHANT_CARD_ID, MERCHANT_NO, OPEN_METHOD, OPEN_MONEY, OPEN_ATTR, CARD_NOTICE, 
     CARD_DESCRIPTION, CARD_PRIVILEGE, CARD_VALID_TYPE, CARD_BEGIN, CARD_END, CARD_LIMIT_TIME, 
-    CARD_LIMIT_BEGIN, CARD_LIMIT_END, ACTIVATE_TYPE, DISPLAY_POINT, CARD_POINT_URL, CARD_SUPPORT_BALANCE, 
+    CARD_LIMIT_BEGIN, CARD_LIMIT_END, ACTIVATE_TYPE, ACTIVATE_URL, DISPLAY_POINT, CARD_POINT_URL, CARD_SUPPORT_BALANCE,
     CARD_BALANCE_URL, CARD_DISPLAY_FIELD, CARD_DISPLAY_BAR, CARD_CENTER_TYPE, CARD_CENTER_BUTTON, 
-    CARD_CENTER_TIPS, CARD_LIMIT, SUPPORT_STORES
+    CARD_CENTER_TIPS, CARD_LIMIT, IS_SUPPORT_STORE, SUPPORT_STORES
   </sql>
 
   <select id="get" parameterType="java.lang.Long" resultMap="baseMap">
     SELECT
         <include refid="baseSql" />
     FROM MERCHANT_CARD_EXPAND
-    where MERCHANT_CARD_ID = #{id,jdbcType=BIGINT}
+    where ID = #{id,jdbcType=BIGINT}
   </select>
 
   <delete id="deleteById" parameterType="java.lang.Long">
@@ -98,6 +100,9 @@
       <if test="activateType != null">
         ACTIVATE_TYPE,
       </if>
+      <if test="activateUrl != null">
+        ACTIVATE_URL,
+      </if>
       <if test="displayPoint != null">
         DISPLAY_POINT,
       </if>
@@ -128,13 +133,16 @@
       <if test="cardLimit != null">
         CARD_LIMIT,
       </if>
+      <if test="isSupportStore != null">
+        IS_SUPPORT_STORE,
+      </if>
       <if test="supportStores != null">
         SUPPORT_STORES,
       </if>
     </trim>
     <trim prefix="VALUES (" suffix=")" suffixOverrides=",">
       <if test="merchantCardId != null">
-        #{merchantCardId,jdbcType=BIGINT},
+        #{merchantCardId,jdbcType=VARCHAR},
       </if>
       <if test="merchantNo != null">
         #{merchantNo,jdbcType=VARCHAR},
@@ -178,6 +186,9 @@
       <if test="activateType != null">
         #{activateType,jdbcType=INTEGER},
       </if>
+      <if test="activateUrl != null">
+        #{activateUrl,jdbcType=VARCHAR},
+      </if>
       <if test="displayPoint != null">
         #{displayPoint,jdbcType=INTEGER},
       </if>
@@ -208,8 +219,11 @@
       <if test="cardLimit != null">
         #{cardLimit,jdbcType=INTEGER},
       </if>
+      <if test="isSupportStore != null">
+        #{isSupportStore,jdbcType=INTEGER},
+      </if>
       <if test="supportStores != null">
-        #{supportStores,jdbcType=INTEGER},
+        #{supportStores,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -218,7 +232,7 @@
     UPDATE MERCHANT_CARD_EXPAND
     <set>
       <if test="merchantCardId != null">
-        MERCHANT_CARD_ID = #{merchantCardId,jdbcType=BIGINT},
+        MERCHANT_CARD_ID = #{merchantCardId,jdbcType=VARCHAR},
       </if>
       <if test="merchantNo != null">
         MERCHANT_NO = #{merchantNo,jdbcType=VARCHAR},
@@ -262,6 +276,9 @@
       <if test="activateType != null">
         ACTIVATE_TYPE = #{activateType,jdbcType=INTEGER},
       </if>
+      <if test="activateUrl != null">
+        ACTIVATE_URL = #{activateUrl,jdbcType=VARCHAR},
+      </if>
       <if test="displayPoint != null">
         DISPLAY_POINT = #{displayPoint,jdbcType=INTEGER},
       </if>
@@ -292,8 +309,11 @@
       <if test="cardLimit != null">
         CARD_LIMIT = #{cardLimit,jdbcType=INTEGER},
       </if>
+      <if test="isSupportStore != null">
+        IS_SUPPORT_STORE = #{isSupportStore,jdbcType=INTEGER},
+      </if>
       <if test="supportStores != null">
-        SUPPORT_STORES = #{supportStores,jdbcType=INTEGER},
+        SUPPORT_STORES = #{supportStores,jdbcType=VARCHAR},
       </if>
     </set>
     where ID = #{id,jdbcType=BIGINT}

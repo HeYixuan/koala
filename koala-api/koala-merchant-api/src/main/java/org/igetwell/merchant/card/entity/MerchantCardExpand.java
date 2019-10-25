@@ -12,7 +12,7 @@ public class MerchantCardExpand implements Serializable {
     /**
      * 商户会员卡ID
      */
-    private Long merchantCardId;
+    private String merchantCardId;
 
     /**
      * 商户编号
@@ -20,7 +20,7 @@ public class MerchantCardExpand implements Serializable {
     private String merchantNo;
 
     /**
-     * 开卡方式 1直接开卡 2预存开卡  3付费开卡
+     * 开卡方式 1直接开卡 2预存开卡 3付费开卡
      */
     private Integer openMethod;
 
@@ -85,6 +85,11 @@ public class MerchantCardExpand implements Serializable {
     private Integer activateType;
 
     /**
+     * 激活地址
+     */
+    private String activateUrl;
+
+    /**
      * 是否显示积分：true或false
      */
     private Integer displayPoint;
@@ -137,7 +142,12 @@ public class MerchantCardExpand implements Serializable {
     /**
      * 是否支持所有门店：0否 1是
      */
-    private Integer supportStores;
+    private boolean isSupportStore;
+
+    /**
+     * 适用门店ID
+     */
+    private String supportStores;
 
     public Long getId() {
         return id;
@@ -147,11 +157,11 @@ public class MerchantCardExpand implements Serializable {
         this.id = id;
     }
 
-    public Long getMerchantCardId() {
+    public String getMerchantCardId() {
         return merchantCardId;
     }
 
-    public void setMerchantCardId(Long merchantCardId) {
+    public void setMerchantCardId(String merchantCardId) {
         this.merchantCardId = merchantCardId;
     }
 
@@ -267,6 +277,14 @@ public class MerchantCardExpand implements Serializable {
         this.activateType = activateType;
     }
 
+    public String getActivateUrl() {
+        return activateUrl;
+    }
+
+    public void setActivateUrl(String activateUrl) {
+        this.activateUrl = activateUrl;
+    }
+
     public Integer getDisplayPoint() {
         return displayPoint;
     }
@@ -347,11 +365,19 @@ public class MerchantCardExpand implements Serializable {
         this.cardLimit = cardLimit;
     }
 
-    public Integer getSupportStores() {
+    public String  getSupportStores() {
         return supportStores;
     }
 
-    public void setSupportStores(Integer supportStores) {
+    public void setSupportStores(String supportStores) {
         this.supportStores = supportStores;
+    }
+
+    public boolean isSupportStore() {
+        return isSupportStore;
+    }
+
+    public void setSupportStore(boolean supportStore) {
+        isSupportStore = supportStore;
     }
 }

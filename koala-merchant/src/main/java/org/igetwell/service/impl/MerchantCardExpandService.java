@@ -40,7 +40,7 @@ public class MerchantCardExpandService implements IMerchantCardExpandService {
         if (!checkParam(cardExpand)){
             return ResponseEntity.error(HttpStatus.BAD_REQUEST, "会员卡ID不可为空!");
         }
-        MerchantCardExpand expand = get(cardExpand.getMerchantCardId());
+        MerchantCardExpand expand = get(cardExpand.getId());
         if (!StringUtils.isEmpty(expand)){
             return ResponseEntity.error(HttpStatus.BAD_REQUEST, "此会员卡信息已存在!");
         }
@@ -56,7 +56,7 @@ public class MerchantCardExpandService implements IMerchantCardExpandService {
         if (!checkParam(cardExpand)){
             return ResponseEntity.error(HttpStatus.BAD_REQUEST, "会员卡ID不可为空!");
         }
-        MerchantCardExpand expand = get(cardExpand.getMerchantCardId());
+        MerchantCardExpand expand = get(cardExpand.getId());
         if (StringUtils.isEmpty(expand)){
             return ResponseEntity.error(HttpStatus.BAD_REQUEST, "此会员卡信息不存在!");
         }

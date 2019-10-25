@@ -5,9 +5,10 @@
     <id column="ID" jdbcType="BIGINT" property="id" />
     <result column="MERCHANT_ID" jdbcType="BIGINT" property="merchantId" />
     <result column="MERCHANT_NO" jdbcType="VARCHAR" property="merchantNo" />
+    <result column="MERCHANT_CARD_ID" jdbcType="VARCHAR" property="merchantCardId" />
+    <result column="BRAND_LOGO" jdbcType="VARCHAR" property="brandLogo" />
+    <result column="BRAND_NAME" jdbcType="VARCHAR" property="brandName" />
     <result column="CARD_NAME" jdbcType="VARCHAR" property="cardName" />
-    <result column="CARD_SUB_NAME" jdbcType="VARCHAR" property="cardSubName" />
-    <result column="CARD_LOGO" jdbcType="VARCHAR" property="cardLogo" />
     <result column="CARD_BACK_URL" jdbcType="VARCHAR" property="cardBackUrl" />
     <result column="CARD_BACK_COLOR" jdbcType="VARCHAR" property="cardBackColor" />
     <result column="CARD_STATUS" jdbcType="INTEGER" property="cardStatus" />
@@ -15,7 +16,7 @@
   </resultMap>
 
   <sql id="baseSql">
-    ID, MERCHANT_ID, MERCHANT_NO, CARD_NAME, CARD_SUB_NAME, CARD_LOGO, CARD_BACK_URL, 
+    ID, MERCHANT_ID, MERCHANT_NO, MERCHANT_CARD_ID, BRAND_LOGO, BRAND_NAME, CARD_NAME, CARD_BACK_URL,
     CARD_BACK_COLOR, CARD_STATUS, CREATE_TIME
   </sql>
 
@@ -39,14 +40,17 @@
       <if test="merchantNo != null">
         MERCHANT_NO,
       </if>
+      <if test="merchantCardId != null">
+        MERCHANT_CARD_ID,
+      </if>
+      <if test="brandName != null">
+        BRAND_NAME,
+      </if>
+      <if test="brandLogo != null">
+        BRAND_LOGO,
+      </if>
       <if test="cardName != null">
         CARD_NAME,
-      </if>
-      <if test="cardSubName != null">
-        CARD_SUB_NAME,
-      </if>
-      <if test="cardLogo != null">
-        CARD_LOGO,
       </if>
       <if test="cardBackUrl != null">
         CARD_BACK_URL,
@@ -68,14 +72,17 @@
       <if test="merchantNo != null">
         #{merchantNo,jdbcType=VARCHAR},
       </if>
+      <if test="merchantCardId != null">
+        #{merchantCardId,jdbcType=VARCHAR},
+      </if>
+      <if test="brandName != null">
+        #{brandName,jdbcType=VARCHAR},
+      </if>
+      <if test="brandLogo != null">
+        #{brandLogo,jdbcType=VARCHAR},
+      </if>
       <if test="cardName != null">
         #{cardName,jdbcType=VARCHAR},
-      </if>
-      <if test="cardSubName != null">
-        #{cardSubName,jdbcType=VARCHAR},
-      </if>
-      <if test="cardLogo != null">
-        #{cardLogo,jdbcType=VARCHAR},
       </if>
       <if test="cardBackUrl != null">
         #{cardBackUrl,jdbcType=VARCHAR},
@@ -101,14 +108,17 @@
       <if test="merchantNo != null">
         MERCHANT_NO = #{merchantNo,jdbcType=VARCHAR},
       </if>
+      <if test="merchantCardId != null">
+        MERCHANT_CARD_ID = #{merchantCardId,jdbcType=VARCHAR},
+      </if>
+      <if test="brandName != null">
+        BRAND_NAME = #{brandName,jdbcType=VARCHAR},
+      </if>
+      <if test="brandLogo != null">
+        BRAND_LOGO = #{brandLogo,jdbcType=VARCHAR},
+      </if>
       <if test="cardName != null">
         CARD_NAME = #{cardName,jdbcType=VARCHAR},
-      </if>
-      <if test="cardSubName != null">
-        CARD_SUB_NAME = #{cardSubName,jdbcType=VARCHAR},
-      </if>
-      <if test="cardLogo != null">
-        CARD_LOGO = #{cardLogo,jdbcType=VARCHAR},
       </if>
       <if test="cardBackUrl != null">
         CARD_BACK_URL = #{cardBackUrl,jdbcType=VARCHAR},
