@@ -83,12 +83,12 @@ public class WxMemberCard {
     private WxCardClazzField customField3;
 
     /**
-     * 积分清零规则
+     * 积分清零规则说明
      */
     private String bonusCleared;
 
     /**
-     * 积分规则
+     * 积分规则说明
      */
     private String bonusRules;
 

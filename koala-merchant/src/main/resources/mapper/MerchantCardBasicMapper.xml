@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.igetwell.merchant.card.mapper.MerchantCardBasicMapper">
+  <resultMap id="baseMap" type="org.igetwell.merchant.card.entity.MerchantCardBasic">
+    <id column="ID" jdbcType="BIGINT" property="id" />
+    <result column="MERCHANT_CARD_ID" jdbcType="VARCHAR" property="merchantCardId" />
+    <result column="MERCHANT_NO" jdbcType="VARCHAR" property="merchantNo" />
+    <result column="OPEN_METHOD" jdbcType="INTEGER" property="openMethod" />
+    <result column="OPEN_MONEY" jdbcType="DECIMAL" property="openMoney" />
+    <result column="OPEN_ATTR" jdbcType="VARCHAR" property="openAttr" />
+    <result column="ACTIVATE_TYPE" jdbcType="INTEGER" property="activateType" />
+    <result column="ACTIVATE_URL" jdbcType="VARCHAR" property="activateUrl" />
+    <result column="SUPPLY_BONUS" jdbcType="INTEGER" property="supplyBonus" />
+    <result column="BONUS_URL" jdbcType="VARCHAR" property="bonusUrl" />
+    <result column="SUPPLY_BALANCE" jdbcType="INTEGER" property="supplyBalance" />
+    <result column="BALANCE_URL" jdbcType="VARCHAR" property="balanceUrl" />
+    <result column="DISPLAY_FIELD" jdbcType="VARCHAR" property="displayField" />
+    <result column="BAR_TYPE" jdbcType="INTEGER" property="barType" />
+    <result column="CENTER_TYPE" jdbcType="INTEGER" property="centerType" />
+    <result column="CENTER_TEXT" jdbcType="VARCHAR" property="centerText" />
+    <result column="CENTER_SUB_TEXT" jdbcType="VARCHAR" property="centerSubText" />
+    <result column="VALID_TYPE" jdbcType="INTEGER" property="validType" />
+    <result column="BEGIN_TIME" jdbcType="INTEGER" property="beginTime" />
+    <result column="END_TIME" jdbcType="INTEGER" property="endTime" />
+    <result column="LIMIT_TIME" jdbcType="INTEGER" property="limitTime" />
+    <result column="LIMIT_BEGIN" jdbcType="VARCHAR" property="limitBegin" />
+    <result column="LIMIT_END" jdbcType="VARCHAR" property="limitEnd" />
+    <result column="CARD_LIMIT" jdbcType="INTEGER" property="cardLimit" />
+    <result column="IS_SUPPORT_STORE" jdbcType="INTEGER" property="isSupportStore" />
+    <result column="SUPPORT_STORES" jdbcType="VARCHAR" property="supportStores" />
+  </resultMap>
+
+  <sql id="baseSql">
+    ID, MERCHANT_CARD_ID, MERCHANT_NO, OPEN_METHOD, OPEN_MONEY, OPEN_ATTR, ACTIVATE_TYPE,
+    ACTIVATE_URL, SUPPLY_BONUS, BONUS_URL, SUPPLY_BALANCE, BALANCE_URL, DISPLAY_FIELD,
+    BAR_TYPE, CENTER_TYPE, CENTER_TEXT, CENTER_SUB_TEXT, VALID_TYPE, BEGIN_TIME, END_TIME,
+    LIMIT_TIME, LIMIT_BEGIN, LIMIT_END, CARD_LIMIT, IS_SUPPORT_STORE, SUPPORT_STORES
+  </sql>
+
+  <select id="get" parameterType="java.lang.Long" resultMap="baseMap">
+    SELECT
+        <include refid="baseSql" />
+    FROM MERCHANT_CARD_BASIC
+    where ID = #{id,jdbcType=BIGINT}
+  </select>
+
+  <delete id="deleteById" parameterType="java.lang.Long">
+    DELETE FROM MERCHANT_CARD_BASIC WHERE ID = #{id,jdbcType=BIGINT}
+  </delete>
+
+  <insert id="insert" keyColumn="ID" keyProperty="id" parameterType="org.igetwell.merchant.card.entity.MerchantCardBasic" useGeneratedKeys="true">
+    INSERT INTO MERCHANT_CARD_BASIC
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="merchantCardId != null">
+        MERCHANT_CARD_ID,
+      </if>
+      <if test="merchantNo != null">
+        MERCHANT_NO,
+      </if>
+      <if test="openMethod != null">
+        OPEN_METHOD,
+      </if>
+      <if test="openMoney != null">
+        OPEN_MONEY,
+      </if>
+      <if test="openAttr != null">
+        OPEN_ATTR,
+      </if>
+      <if test="activateType != null">
+        ACTIVATE_TYPE,
+      </if>
+      <if test="activateUrl != null">
+        ACTIVATE_URL,
+      </if>
+      <if test="supplyBonus != null">
+        SUPPLY_BONUS,
+      </if>
+      <if test="bonusUrl != null">
+        BONUS_URL,
+      </if>
+      <if test="supplyBalance != null">
+        SUPPLY_BALANCE,
+      </if>
+      <if test="balanceUrl != null">
+        BALANCE_URL,
+      </if>
+      <if test="displayField != null">
+        DISPLAY_FIELD,
+      </if>
+      <if test="barType != null">
+        BAR_TYPE,
+      </if>
+      <if test="centerType != null">
+        CENTER_TYPE,
+      </if>
+      <if test="centerText != null">
+        CENTER_TEXT,
+      </if>
+      <if test="centerSubText != null">
+        CENTER_SUB_TEXT,
+      </if>
+      <if test="validType != null">
+        VALID_TYPE,
+      </if>
+      <if test="beginTime != null">
+        BEGIN_TIME,
+      </if>
+      <if test="endTime != null">
+        END_TIME,
+      </if>
+      <if test="limitTime != null">
+        LIMIT_TIME,
+      </if>
+      <if test="limitBegin != null">
+        LIMIT_BEGIN,
+      </if>
+      <if test="limitEnd != null">
+        LIMIT_END,
+      </if>
+      <if test="cardLimit != null">
+        CARD_LIMIT,
+      </if>
+      <if test="isSupportStore != null">
+        IS_SUPPORT_STORE,
+      </if>
+      <if test="supportStores != null">
+        SUPPORT_STORES,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="merchantCardId != null">
+        #{merchantCardId,jdbcType=VARCHAR},
+      </if>
+      <if test="merchantNo != null">
+        #{merchantNo,jdbcType=VARCHAR},
+      </if>
+      <if test="openMethod != null">
+        #{openMethod,jdbcType=INTEGER},
+      </if>
+      <if test="openMoney != null">
+        #{openMoney,jdbcType=DECIMAL},
+      </if>
+      <if test="openAttr != null">
+        #{openAttr,jdbcType=VARCHAR},
+      </if>
+      <if test="activateType != null">
+        #{activateType,jdbcType=INTEGER},
+      </if>
+      <if test="activateUrl != null">
+        #{activateUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="supplyBonus != null">
+        #{supplyBonus,jdbcType=INTEGER},
+      </if>
+      <if test="bonusUrl != null">
+        #{bonusUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="supplyBalance != null">
+        #{supplyBalance,jdbcType=INTEGER},
+      </if>
+      <if test="balanceUrl != null">
+        #{balanceUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="displayField != null">
+        #{displayField,jdbcType=VARCHAR},
+      </if>
+      <if test="barType != null">
+        #{barType,jdbcType=INTEGER},
+      </if>
+      <if test="centerType != null">
+        #{centerType,jdbcType=INTEGER},
+      </if>
+      <if test="centerText != null">
+        #{centerText,jdbcType=VARCHAR},
+      </if>
+      <if test="centerSubText != null">
+        #{centerSubText,jdbcType=VARCHAR},
+      </if>
+      <if test="validType != null">
+        #{validType,jdbcType=INTEGER},
+      </if>
+      <if test="beginTime != null">
+        #{beginTime,jdbcType=INTEGER},
+      </if>
+      <if test="endTime != null">
+        #{endTime,jdbcType=INTEGER},
+      </if>
+      <if test="limitTime != null">
+        #{limitTime,jdbcType=INTEGER},
+      </if>
+      <if test="limitBegin != null">
+        #{limitBegin,jdbcType=VARCHAR},
+      </if>
+      <if test="limitEnd != null">
+        #{limitEnd,jdbcType=VARCHAR},
+      </if>
+      <if test="cardLimit != null">
+        #{cardLimit,jdbcType=INTEGER},
+      </if>
+      <if test="isSupportStore != null">
+        #{isSupportStore,jdbcType=INTEGER},
+      </if>
+      <if test="supportStores != null">
+        #{supportStores,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+
+  <update id="update" parameterType="org.igetwell.merchant.card.entity.MerchantCardBasic">
+    UPDATE MERCHANT_CARD_BASIC
+    <set>
+      <if test="merchantCardId != null">
+        MERCHANT_CARD_ID = #{merchantCardId,jdbcType=VARCHAR},
+      </if>
+      <if test="merchantNo != null">
+        MERCHANT_NO = #{merchantNo,jdbcType=VARCHAR},
+      </if>
+      <if test="openMethod != null">
+        OPEN_METHOD = #{openMethod,jdbcType=INTEGER},
+      </if>
+      <if test="openMoney != null">
+        OPEN_MONEY = #{openMoney,jdbcType=DECIMAL},
+      </if>
+      <if test="openAttr != null">
+        OPEN_ATTR = #{openAttr,jdbcType=VARCHAR},
+      </if>
+      <if test="activateType != null">
+        ACTIVATE_TYPE = #{activateType,jdbcType=INTEGER},
+      </if>
+      <if test="activateUrl != null">
+        ACTIVATE_URL = #{activateUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="supplyBonus != null">
+        SUPPLY_BONUS = #{supplyBonus,jdbcType=INTEGER},
+      </if>
+      <if test="bonusUrl != null">
+        BONUS_URL = #{bonusUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="supplyBalance != null">
+        SUPPLY_BALANCE = #{supplyBalance,jdbcType=INTEGER},
+      </if>
+      <if test="balanceUrl != null">
+        BALANCE_URL = #{balanceUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="displayField != null">
+        DISPLAY_FIELD = #{displayField,jdbcType=VARCHAR},
+      </if>
+      <if test="barType != null">
+        BAR_TYPE = #{barType,jdbcType=INTEGER},
+      </if>
+      <if test="centerType != null">
+        CENTER_TYPE = #{centerType,jdbcType=INTEGER},
+      </if>
+      <if test="centerText != null">
+        CENTER_TEXT = #{centerText,jdbcType=VARCHAR},
+      </if>
+      <if test="centerSubText != null">
+        CENTER_SUB_TEXT = #{centerSubText,jdbcType=VARCHAR},
+      </if>
+      <if test="validType != null">
+        VALID_TYPE = #{validType,jdbcType=INTEGER},
+      </if>
+      <if test="beginTime != null">
+        BEGIN_TIME = #{beginTime,jdbcType=INTEGER},
+      </if>
+      <if test="endTime != null">
+        END_TIME = #{endTime,jdbcType=INTEGER},
+      </if>
+      <if test="limitTime != null">
+        LIMIT_TIME = #{limitTime,jdbcType=INTEGER},
+      </if>
+      <if test="limitBegin != null">
+        LIMIT_BEGIN = #{limitBegin,jdbcType=VARCHAR},
+      </if>
+      <if test="limitEnd != null">
+        LIMIT_END = #{limitEnd,jdbcType=VARCHAR},
+      </if>
+      <if test="cardLimit != null">
+        CARD_LIMIT = #{cardLimit,jdbcType=INTEGER},
+      </if>
+      <if test="isSupportStore != null">
+        IS_SUPPORT_STORE = #{isSupportStore,jdbcType=INTEGER},
+      </if>
+      <if test="supportStores != null">
+        SUPPORT_STORES = #{supportStores,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

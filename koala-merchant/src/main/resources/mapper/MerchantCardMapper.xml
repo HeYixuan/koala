@@ -11,13 +11,18 @@
     <result column="CARD_NAME" jdbcType="VARCHAR" property="cardName" />
     <result column="CARD_BACK_URL" jdbcType="VARCHAR" property="cardBackUrl" />
     <result column="CARD_BACK_COLOR" jdbcType="VARCHAR" property="cardBackColor" />
+    <result column="DISCOUNT" jdbcType="INTEGER" property="discount" />
+    <result column="PRIVILEGE" jdbcType="VARCHAR" property="privilege" />
+    <result column="NOTICE" jdbcType="VARCHAR" property="notice" />
+    <result column="DESCRIPTION" jdbcType="VARCHAR" property="description" />
     <result column="CARD_STATUS" jdbcType="INTEGER" property="cardStatus" />
     <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
   </resultMap>
 
   <sql id="baseSql">
-    ID, MERCHANT_ID, MERCHANT_NO, MERCHANT_CARD_ID, BRAND_LOGO, BRAND_NAME, CARD_NAME, CARD_BACK_URL,
-    CARD_BACK_COLOR, CARD_STATUS, CREATE_TIME
+    ID, MERCHANT_ID, MERCHANT_NO, MERCHANT_CARD_ID, BRAND_LOGO, BRAND_NAME, CARD_NAME,
+    CARD_BACK_URL, CARD_BACK_COLOR, DISCOUNT, PRIVILEGE, NOTICE, DESCRIPTION, CARD_STATUS,
+    CREATE_TIME
   </sql>
 
   <select id="get" parameterType="java.lang.Long" resultMap="baseMap">
@@ -43,11 +48,11 @@
       <if test="merchantCardId != null">
         MERCHANT_CARD_ID,
       </if>
-      <if test="brandName != null">
-        BRAND_NAME,
-      </if>
       <if test="brandLogo != null">
         BRAND_LOGO,
+      </if>
+      <if test="brandName != null">
+        BRAND_NAME,
       </if>
       <if test="cardName != null">
         CARD_NAME,
@@ -57,6 +62,18 @@
       </if>
       <if test="cardBackColor != null">
         CARD_BACK_COLOR,
+      </if>
+      <if test="discount != null">
+        DISCOUNT,
+      </if>
+      <if test="privilege != null">
+        PRIVILEGE,
+      </if>
+      <if test="notice != null">
+        NOTICE,
+      </if>
+      <if test="description != null">
+        DESCRIPTION,
       </if>
       <if test="cardStatus != null">
         CARD_STATUS,
@@ -75,11 +92,11 @@
       <if test="merchantCardId != null">
         #{merchantCardId,jdbcType=VARCHAR},
       </if>
-      <if test="brandName != null">
-        #{brandName,jdbcType=VARCHAR},
-      </if>
       <if test="brandLogo != null">
         #{brandLogo,jdbcType=VARCHAR},
+      </if>
+      <if test="brandName != null">
+        #{brandName,jdbcType=VARCHAR},
       </if>
       <if test="cardName != null">
         #{cardName,jdbcType=VARCHAR},
@@ -89,6 +106,18 @@
       </if>
       <if test="cardBackColor != null">
         #{cardBackColor,jdbcType=VARCHAR},
+      </if>
+      <if test="discount != null">
+        #{discount,jdbcType=INTEGER},
+      </if>
+      <if test="privilege != null">
+        #{privilege,jdbcType=VARCHAR},
+      </if>
+      <if test="notice != null">
+        #{notice,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null">
+        #{description,jdbcType=VARCHAR},
       </if>
       <if test="cardStatus != null">
         #{cardStatus,jdbcType=INTEGER},
@@ -111,11 +140,11 @@
       <if test="merchantCardId != null">
         MERCHANT_CARD_ID = #{merchantCardId,jdbcType=VARCHAR},
       </if>
-      <if test="brandName != null">
-        BRAND_NAME = #{brandName,jdbcType=VARCHAR},
-      </if>
       <if test="brandLogo != null">
         BRAND_LOGO = #{brandLogo,jdbcType=VARCHAR},
+      </if>
+      <if test="brandName != null">
+        BRAND_NAME = #{brandName,jdbcType=VARCHAR},
       </if>
       <if test="cardName != null">
         CARD_NAME = #{cardName,jdbcType=VARCHAR},
@@ -125,6 +154,18 @@
       </if>
       <if test="cardBackColor != null">
         CARD_BACK_COLOR = #{cardBackColor,jdbcType=VARCHAR},
+      </if>
+      <if test="discount != null">
+        DISCOUNT = #{discount,jdbcType=INTEGER},
+      </if>
+      <if test="privilege != null">
+        PRIVILEGE = #{privilege,jdbcType=VARCHAR},
+      </if>
+      <if test="notice != null">
+        NOTICE = #{notice,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null">
+        DESCRIPTION = #{description,jdbcType=VARCHAR},
       </if>
       <if test="cardStatus != null">
         CARD_STATUS = #{cardStatus,jdbcType=INTEGER},

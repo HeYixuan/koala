@@ -3,6 +3,10 @@ package org.igetwell.merchant.card.entity;
 import java.io.Serializable;
 import java.util.Date;
 
+/**
+ * merchant_card
+ * @author 
+ */
 public class MerchantCard implements Serializable {
     /**
      * 商户卡ID
@@ -50,6 +54,26 @@ public class MerchantCard implements Serializable {
     private String cardBackColor;
 
     /**
+     * 折扣，该会员卡享受的折扣优惠,填10就是九折
+     */
+    private Integer discount;
+
+    /**
+     * 会员卡特权说明
+     */
+    private String privilege;
+
+    /**
+     * 会员卡提示：结账时出示会员卡
+     */
+    private String notice;
+
+    /**
+     * 会员卡使用说明：会员卡须先领卡再使用
+     */
+    private String description;
+
+    /**
      * 会员卡状态：-1删除 0正常 1失效
      */
     private Integer cardStatus;
@@ -58,6 +82,8 @@ public class MerchantCard implements Serializable {
      * 创建时间
      */
     private Date createTime;
+
+    private static final long serialVersionUID = 1L;
 
     public Long getId() {
         return id;
@@ -129,6 +155,38 @@ public class MerchantCard implements Serializable {
 
     public void setCardBackColor(String cardBackColor) {
         this.cardBackColor = cardBackColor;
+    }
+
+    public Integer getDiscount() {
+        return discount;
+    }
+
+    public void setDiscount(Integer discount) {
+        this.discount = discount;
+    }
+
+    public String getPrivilege() {
+        return privilege;
+    }
+
+    public void setPrivilege(String privilege) {
+        this.privilege = privilege;
+    }
+
+    public String getNotice() {
+        return notice;
+    }
+
+    public void setNotice(String notice) {
+        this.notice = notice;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public Integer getCardStatus() {

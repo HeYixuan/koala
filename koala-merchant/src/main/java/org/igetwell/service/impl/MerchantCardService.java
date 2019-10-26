@@ -2,12 +2,14 @@ package org.igetwell.service.impl;
 
 import org.igetwell.common.enums.*;
 import org.igetwell.common.uitls.CharacterUtils;
+import org.igetwell.common.uitls.GsonUtils;
 import org.igetwell.common.uitls.ResponseEntity;
 import org.igetwell.merchant.card.entity.MerchantCard;
-import org.igetwell.merchant.card.entity.MerchantCardExpand;
+import org.igetwell.merchant.card.entity.MerchantCardBasic;
 import org.igetwell.merchant.card.mapper.MerchantCardMapper;
 import org.igetwell.service.IMerchantCardService;
 import org.igetwell.wechat.sdk.card.bean.*;
+import org.igetwell.wechat.sdk.card.bean.create.WxCardCreate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -77,36 +79,45 @@ public class MerchantCardService implements IMerchantCardService {
      * 拷贝字段到微信会员卡字段里面
      *
      * @param card
-     * @param expand
+     * @param basicCard
      */
-    private void copyFieldToWxCard(MerchantCard card, MerchantCardExpand expand) {
-        WxMemberCard memberCard = new WxMemberCard();
+    private static String copyFieldToWxCard(MerchantCard card, MerchantCardBasic basicCard) {
+        WxMemberCard wxMemberCard = new WxMemberCard();
 
         if (!StringUtils.isEmpty(card.getCardBackUrl())) {
-            memberCard.setBackgroundPicUrl(card.getCardBackUrl());
+            wxMemberCard.setBackgroundPicUrl(card.getCardBackUrl());
         }
 
-        if (!StringUtils.isEmpty(expand.getCardPrivilege())) {
-            memberCard.setPrerogative(expand.getCardPrivilege()); //特权说明
+        if (!StringUtils.isEmpty(card.getPrivilege())) {
+            wxMemberCard.setPrerogative(card.getPrivilege()); //特权说明
         }
-        if (!StringUtils.isEmpty(expand.getCardDisplayField())) {
-            String[] displayField = CharacterUtils.toArray(expand.getCardDisplayField(), ",");
+
+        wxMemberCard.setSupplyBonus(basicCard.getSupplyBonus());
+        if (StringUtils.isEmpty(basicCard.getBonusUrl())){
+            wxMemberCard.setBonusUrl(basicCard.getBonusUrl());
+        }
+        wxMemberCard.setSupplyBalance(basicCard.getSupplyBalance());
+        if (StringUtils.isEmpty(basicCard.getBalanceUrl())){
+            wxMemberCard.setBonusUrl(basicCard.getBalanceUrl());
+        }
+        if (!StringUtils.isEmpty(basicCard.getDisplayField())) {
+            String[] displayField = CharacterUtils.toArray(basicCard.getDisplayField(), ",");
 
             for (int i = 0; i < displayField.length; i++) {
                 if (displayField[i].equalsIgnoreCase(CardNameField.FIELD_NAME_TYPE_SET_POINTS.getType())) {
-                    memberCard.setSupplyBonus(true); //显示积分
-                    memberCard.setBonusUrl("http://www.qq.com");
+                    wxMemberCard.setSupplyBonus(true); //显示积分
+                    wxMemberCard.setBonusUrl("http://www.qq.com");
                 }
                 if (displayField[i].equalsIgnoreCase(CardNameField.FIELD_NAME_TYPE_TIMS.getType())) {
-                    memberCard.setSupplyBalance(true);
-                    memberCard.setBalanceUrl("http://www.mi.com");
+                    wxMemberCard.setSupplyBalance(true);
+                    wxMemberCard.setBalanceUrl("http://www.mi.com");
                 }
                 if (displayField[i].equalsIgnoreCase(CardNameField.FIELD_NAME_TYPE_COUPON.getType())) {
                     WxCardClazzField customField1 = new WxCardClazzField();
                     customField1.setName(CardNameField.FIELD_NAME_TYPE_COUPON.getName());
                     customField1.setNameType(CardNameField.FIELD_NAME_TYPE_COUPON.getType());
                     customField1.setUrl("http://www.baidu.com");
-                    memberCard.setCustomField1(customField1);
+                    wxMemberCard.setCustomField1(customField1);
                 }
             }
         }
@@ -117,14 +128,14 @@ public class MerchantCardService implements IMerchantCardService {
         basis.setBrandName(card.getBrandName());
         basis.setTitle(card.getCardName());
         //如果卡背景图片是空,卡背景色不为空,则设置背景色
-        if (StringUtils.isEmpty(memberCard.getBackgroundPicUrl()) && !StringUtils.isEmpty(card.getCardBackColor())) {
+        if (StringUtils.isEmpty(wxMemberCard.getBackgroundPicUrl()) && !StringUtils.isEmpty(card.getCardBackColor())) {
             basis.setColor(card.getCardBackColor());
         }
-        if (!StringUtils.isEmpty(expand.getCardNotice())) {
-            basis.setNotice(expand.getCardNotice());
+        if (!StringUtils.isEmpty(card.getNotice())) {
+            basis.setNotice(card.getNotice());
         }
-        if (!StringUtils.isEmpty(expand.getCardDescription())) {
-            basis.setDescription(expand.getCardDescription());
+        if (!StringUtils.isEmpty(card.getDescription())) {
+            basis.setDescription(card.getDescription());
         }
 
         //设置卡SKU
@@ -134,85 +145,101 @@ public class MerchantCardService implements IMerchantCardService {
 
         //设置卡使用日期，有效期的信息
         WxCardDate dateInfo = new WxCardDate();
-        if (expand.getCardValidType() != null) {
+        if (basicCard.getValidType() != null) {
             //永久有效
-            if (expand.getCardValidType().intValue() == CardDateType.PERMANENT.getValue()) {
+            if (basicCard.getValidType().intValue() == CardDateType.PERMANENT.getValue()) {
                 dateInfo.setType(CardDateType.PERMANENT.getType());
             }
-            if (expand.getCardValidType().intValue() == CardDateType.FIX_DATE.getValue()) {
+            if (basicCard.getValidType().intValue() == CardDateType.FIX_DATE.getValue()) {
                 dateInfo.setType(CardDateType.FIX_DATE.getType());
-                dateInfo.setBeginTimestamp(expand.getCardBegin());
-                dateInfo.setEndTimestamp(expand.getCardEnd());
+                dateInfo.setBeginTimestamp(basicCard.getBeginTime());
+                dateInfo.setEndTimestamp(basicCard.getEndTime());
             }
-            if (expand.getCardValidType().intValue() == CardDateType.FIX_LONG_TIME.getValue()) {
+            if (basicCard.getValidType().intValue() == CardDateType.FIX_LONG_TIME.getValue()) {
                 dateInfo.setType(CardDateType.FIX_LONG_TIME.getType());
-                dateInfo.setFixedTerm(expand.getCardBegin());
-                dateInfo.setFixedBeginTerm(expand.getCardEnd());
+                dateInfo.setFixedTerm(basicCard.getBeginTime());
+                dateInfo.setFixedBeginTerm(basicCard.getEndTime());
             }
         }
 
         basis.setDateInfo(dateInfo);
 
 
-        if (expand.isSupportStore()) {
+        if (basicCard.supportStore()) {
             basis.setUseAllLocations(true);
         } else {
-            String[] arr = CharacterUtils.toArray(expand.getSupportStores(), ",");
+            String[] arr = CharacterUtils.toArray(basicCard.getSupportStores(), ",");
             Integer integer[] = CharacterUtils.toArray(arr);
             basis.setLocationIdList(integer);
         }
 
         //中部按钮类型不为空，且展示按钮，且文案不为空
-        if (expand.getCardCenterType() != null && expand.getCardCenterType() != CardButtonType.NO_DISPLAY.getValue() && !StringUtils.isEmpty(expand.getCardCenterButton())) {
-            if (expand.getCardCenterType().intValue() == CardButtonType.WECHAT_PAY.getValue()) {
-                basis.setCenterTitle(CardButtonType.MEMBER_PAY.getText());
-                basis.setCenterSubTitle(expand.getCardCenterButton());
-                basis.setCenterSubTitle("点击生成付款码");
+        if (basicCard.getCenterType() != null && basicCard.getCenterType() != CardButtonType.NO_DISPLAY.getValue() && !StringUtils.isEmpty(basicCard.getCenterText())) {
+            if (basicCard.getCenterType().intValue() == CardButtonType.MEMBER_PAY.getValue()) {
+                basis.setCenterTitle(CardButtonType.MEMBER_PAY.getText()); //basicCard.getCenterText();
+                basis.setCenterSubTitle("点击生成付款码"); //basicCard.getCenterSubText()
             }
-            if (expand.getCardCenterType().intValue() == CardButtonType.WECHAT_PAY.getValue()) {
+            if (basicCard.getCenterType().intValue() == CardButtonType.WECHAT_PAY.getValue()) {
                 basis.setCenterTitle(CardButtonType.WECHAT_PAY.getText());
             }
-            if (expand.getCardCenterType().intValue() == CardButtonType.CUSTOM_PAY.getValue()) {
-                basis.setCenterTitle(CardButtonType.CUSTOM_PAY.getText());
-                basis.setCenterSubTitle("买单立享9.00折，更有积分相送");
-                basis.setCenterUrl("http://www.mi.com");
+            if (basicCard.getCenterType().intValue() == CardButtonType.CUSTOM_PAY.getValue()) {
+                basis.setCenterTitle(CardButtonType.CUSTOM_PAY.getText()); //basicCard.getCenterText();
+                basis.setCenterSubTitle("买单立享9.00折，更有积分相送"); //basicCard.getCenterSubText()
+                basis.setCenterUrl("http://www.mi.com"); //basicCard.getCenterUrl();
             }
 
         }
 
-        if (expand.getCardDisplayBar() != null) {
-            if (expand.getCardDisplayBar().intValue() == CardCodeType.BARCODE.getType()) {
+        if (basicCard.getBarType() != null) {
+            if (basicCard.getBarType().intValue() == CardCodeType.BARCODE.getType()) {
                 basis.setCodeType(CardCodeType.BARCODE.getValue());
             }
-            if (expand.getCardDisplayBar().intValue() == CardCodeType.QRCODE.getType()) {
+            if (basicCard.getBarType().intValue() == CardCodeType.QRCODE.getType()) {
                 basis.setCodeType(CardCodeType.QRCODE.getValue());
             }
-            if (expand.getCardDisplayBar().intValue() == CardCodeType.TEXT.getType()) {
+            if (basicCard.getBarType().intValue() == CardCodeType.TEXT.getType()) {
                 basis.setCodeType(CardCodeType.TEXT.getValue());
             }
-            if (expand.getCardDisplayBar().intValue() == CardCodeType.ONLY_QRCODE.getType()) {
+            if (basicCard.getBarType().intValue() == CardCodeType.ONLY_QRCODE.getType()) {
                 basis.setCodeType(CardCodeType.ONLY_QRCODE.getValue());
             }
-            if (expand.getCardDisplayBar().intValue() == CardCodeType.ONLY_BARCODE.getType()) {
+            if (basicCard.getBarType().intValue() == CardCodeType.ONLY_BARCODE.getType()) {
                 basis.setCodeType(CardCodeType.ONLY_BARCODE.getValue());
             }
-            if (expand.getCardDisplayBar().intValue() == CardCodeType.NONE.getType()) {
+            if (basicCard.getBarType().intValue() == CardCodeType.NONE.getType()) {
                 basis.setCodeType(CardCodeType.NONE.getValue());
             }
         }
 
         //激活方式
-        if (expand.getActivateType() != null) {
-            if (expand.getActivateType() == ActivateType.AUTO.getValue()) {
-                memberCard.setAutoActivate(true);
+        if (basicCard.getActivateType() != null) {
+            if (basicCard.getActivateType() == ActivateType.AUTO.getValue()) {
+                wxMemberCard.setAutoActivate(true);
             }
-            if (expand.getActivateType() == ActivateType.WX_ACTIVATE.getValue()) {
-                memberCard.setWxActivate(true);
+            if (basicCard.getActivateType() == ActivateType.WX_ACTIVATE.getValue()) {
+                wxMemberCard.setWxActivate(true);
             }
-            if (expand.getActivateType() == ActivateType.CUSTOM_ACTIVATE.getValue()) {
-                memberCard.setActivateUrl("http://www.baidu.com");
+            if (basicCard.getActivateType() == ActivateType.CUSTOM_ACTIVATE.getValue()) {
+                wxMemberCard.setActivateUrl("http://www.baidu.com"); //basicCard.getActivateUrl();
             }
         }
-        memberCard.setBaseInfo(basis);
+
+        wxMemberCard.setBonusRules("积分规则");
+        wxMemberCard.setBalanceRules("储值规则");
+        wxMemberCard.setBonusCleared("清零规则");
+        wxMemberCard.setBaseInfo(basis);
+
+        WxCard wxCard = new WxCard();
+        wxCard.setCardType(CardType.MEMBER_CARD.toString());
+        wxCard.setMemberCard(wxMemberCard);
+
+        WxCardCreate<WxCard> wxCardCreate = new WxCardCreate<WxCard>();
+        wxCardCreate.setCard(wxCard);
+
+        return GsonUtils.toJson(wxCardCreate);
+    }
+
+    public static void main(String[] args) {
+        System.err.println(copyFieldToWxCard(null, null));
     }
 }

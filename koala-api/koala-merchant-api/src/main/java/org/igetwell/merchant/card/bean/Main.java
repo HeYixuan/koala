@@ -24,7 +24,7 @@ public class Main {
 
 
         WxCardDate cardDate = new WxCardDate();
-        cardDate.setType(CardDateType.DATE_TYPE_PERMANENT.toString()); //设置卡永久有效
+        cardDate.setType(CardDateType.PERMANENT.toString()); //设置卡永久有效
         basis.setDateInfo(cardDate);
 
         WxCardSku sku = new WxCardSku();

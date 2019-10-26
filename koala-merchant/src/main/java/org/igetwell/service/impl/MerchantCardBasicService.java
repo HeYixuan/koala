@@ -2,19 +2,19 @@ package org.igetwell.service.impl;
 
 import org.igetwell.common.enums.HttpStatus;
 import org.igetwell.common.uitls.ResponseEntity;
-import org.igetwell.merchant.card.entity.MerchantCardExpand;
-import org.igetwell.merchant.card.mapper.MerchantCardExpandMapper;
-import org.igetwell.service.IMerchantCardExpandService;
+import org.igetwell.merchant.card.entity.MerchantCardBasic;
+import org.igetwell.merchant.card.mapper.MerchantCardBasicMapper;
+import org.igetwell.service.IMerchantCardBasicService;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 
 @Service
-public class MerchantCardExpandService implements IMerchantCardExpandService {
+public class MerchantCardBasicService implements IMerchantCardBasicService {
 
     @Resource
-    private MerchantCardExpandMapper merchantCardExpandMapper;
+    private MerchantCardBasicMapper cardBasicMapper;
 
     /**
      * 根据会员卡ID查询
@@ -22,13 +22,13 @@ public class MerchantCardExpandService implements IMerchantCardExpandService {
      * @return
      */
     @Override
-    public MerchantCardExpand get(Long id) {
-        return merchantCardExpandMapper.get(id);
+    public MerchantCardBasic get(Long id) {
+        return cardBasicMapper.get(id);
     }
 
     @Override
     public ResponseEntity deleteById(Long id) {
-        int i = merchantCardExpandMapper.deleteById(id);
+        int i = cardBasicMapper.deleteById(id);
         if (i > 0){
             return ResponseEntity.ok();
         }
@@ -36,15 +36,15 @@ public class MerchantCardExpandService implements IMerchantCardExpandService {
     }
 
     @Override
-    public ResponseEntity insert(MerchantCardExpand cardExpand) {
-        if (!checkParam(cardExpand)){
+    public ResponseEntity insert(MerchantCardBasic cardBasic) {
+        if (!checkParam(cardBasic)){
             return ResponseEntity.error(HttpStatus.BAD_REQUEST, "会员卡ID不可为空!");
         }
-        MerchantCardExpand expand = get(cardExpand.getId());
-        if (!StringUtils.isEmpty(expand)){
+        MerchantCardBasic basic = get(cardBasic.getId());
+        if (!StringUtils.isEmpty(basic)){
             return ResponseEntity.error(HttpStatus.BAD_REQUEST, "此会员卡信息已存在!");
         }
-        int i = merchantCardExpandMapper.insert(cardExpand);
+        int i = cardBasicMapper.insert(cardBasic);
         if (i > 0){
             return ResponseEntity.ok();
         }
@@ -52,23 +52,23 @@ public class MerchantCardExpandService implements IMerchantCardExpandService {
     }
 
     @Override
-    public ResponseEntity update(MerchantCardExpand cardExpand) {
-        if (!checkParam(cardExpand)){
+    public ResponseEntity update(MerchantCardBasic cardBasic) {
+        if (!checkParam(cardBasic)){
             return ResponseEntity.error(HttpStatus.BAD_REQUEST, "会员卡ID不可为空!");
         }
-        MerchantCardExpand expand = get(cardExpand.getId());
-        if (StringUtils.isEmpty(expand)){
+        MerchantCardBasic basic = get(cardBasic.getId());
+        if (StringUtils.isEmpty(basic)){
             return ResponseEntity.error(HttpStatus.BAD_REQUEST, "此会员卡信息不存在!");
         }
-        int i = merchantCardExpandMapper.update(cardExpand);
+        int i = cardBasicMapper.update(cardBasic);
         if (i > 0){
             return ResponseEntity.ok();
         }
         return ResponseEntity.error();
     }
 
-    private boolean checkParam(MerchantCardExpand cardExpand){
-        if (StringUtils.isEmpty(cardExpand) || StringUtils.isEmpty(cardExpand.getMerchantCardId()) || !StringUtils.hasText(cardExpand.getMerchantNo())){
+    private boolean checkParam(MerchantCardBasic cardBasic){
+        if (StringUtils.isEmpty(cardBasic) || StringUtils.isEmpty(cardBasic.getMerchantCardId()) || !StringUtils.hasText(cardBasic.getMerchantNo())){
             return false;
         }
         return true;
