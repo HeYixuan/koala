@@ -6,6 +6,7 @@ import org.igetwell.common.uitls.GsonUtils;
 import org.igetwell.common.uitls.ResponseEntity;
 import org.igetwell.merchant.card.entity.MerchantCard;
 import org.igetwell.merchant.card.entity.MerchantCardBasic;
+import org.igetwell.merchant.card.mapper.MerchantCardBasicMapper;
 import org.igetwell.merchant.card.mapper.MerchantCardMapper;
 import org.igetwell.service.IMerchantCardService;
 import org.igetwell.wechat.sdk.card.bean.*;
@@ -20,6 +21,9 @@ public class MerchantCardService implements IMerchantCardService {
 
     @Resource
     private MerchantCardMapper merchantCardMapper;
+
+    @Resource
+    private MerchantCardBasicMapper cardBasicMapper;
 
     @Override
     public MerchantCard get(Long id) {
@@ -76,6 +80,29 @@ public class MerchantCardService implements IMerchantCardService {
 
 
     /**
+     * 同步微信会员卡
+     * @param cardId
+     * @return
+     */
+    public ResponseEntity syncWechat(Long cardId){
+        if (cardId == null){
+            return ResponseEntity.error(HttpStatus.BAD_REQUEST, "会员卡ID不可为空");
+        }
+        MerchantCard card = get(cardId);
+        if (StringUtils.isEmpty(card) && StringUtils.isEmpty(card.getMerchantCardId())) {
+            return ResponseEntity.error(HttpStatus.BAD_REQUEST, "此会员卡信息不存在!");
+        }
+        MerchantCardBasic basic = cardBasicMapper.get(card.getMerchantCardId());
+        if (StringUtils.isEmpty(basic) && StringUtils.isEmpty(basic.getMerchantCardId())){
+            return ResponseEntity.error(HttpStatus.BAD_REQUEST, "此会员卡信息不存在!");
+        }
+        String json = copyFieldToWxCard(card, basic);
+        //http请求微信开卡
+        return new ResponseEntity(json);
+    }
+
+
+    /**
      * 拷贝字段到微信会员卡字段里面
      *
      * @param card
@@ -92,6 +119,10 @@ public class MerchantCardService implements IMerchantCardService {
             wxMemberCard.setPrerogative(card.getPrivilege()); //特权说明
         }
 
+        //设置储值、积分、清零规则
+       /* wxMemberCard.setBonusRules("积分规则");
+        wxMemberCard.setBalanceRules("储值规则");*/
+        wxMemberCard.setBonusCleared("清零规则");
         wxMemberCard.setSupplyBonus(basicCard.getSupplyBonus());
         if (StringUtils.isEmpty(basicCard.getBonusUrl())){
             wxMemberCard.setBonusUrl(basicCard.getBonusUrl());
@@ -100,18 +131,20 @@ public class MerchantCardService implements IMerchantCardService {
         if (StringUtils.isEmpty(basicCard.getBalanceUrl())){
             wxMemberCard.setBonusUrl(basicCard.getBalanceUrl());
         }
+
+        //设置显示积分、余额、优惠券
         if (!StringUtils.isEmpty(basicCard.getDisplayField())) {
             String[] displayField = CharacterUtils.toArray(basicCard.getDisplayField(), ",");
 
             for (int i = 0; i < displayField.length; i++) {
-                if (displayField[i].equalsIgnoreCase(CardNameField.FIELD_NAME_TYPE_SET_POINTS.getType())) {
+               /* if (displayField[i].equalsIgnoreCase(CardNameField.FIELD_NAME_TYPE_SET_POINTS.getType())) {
                     wxMemberCard.setSupplyBonus(true); //显示积分
                     wxMemberCard.setBonusUrl("http://www.qq.com");
-                }
-                if (displayField[i].equalsIgnoreCase(CardNameField.FIELD_NAME_TYPE_TIMS.getType())) {
+                }*/
+                /*if (displayField[i].equalsIgnoreCase(CardNameField.FIELD_NAME_TYPE_TIMS.getType())) {
                     wxMemberCard.setSupplyBalance(true);
                     wxMemberCard.setBalanceUrl("http://www.mi.com");
-                }
+                }*/
                 if (displayField[i].equalsIgnoreCase(CardNameField.FIELD_NAME_TYPE_COUPON.getType())) {
                     WxCardClazzField customField1 = new WxCardClazzField();
                     customField1.setName(CardNameField.FIELD_NAME_TYPE_COUPON.getName());
@@ -137,6 +170,21 @@ public class MerchantCardService implements IMerchantCardService {
         if (!StringUtils.isEmpty(card.getDescription())) {
             basis.setDescription(card.getDescription());
         }
+
+        //设置营销入口
+        WxCardCustomerCell customerCell = new WxCardCustomerCell();
+        customerCell.setName("会员专享");
+        customerCell.setTips("会员有礼");
+        customerCell.setUrl("http://www.mi.com");
+        wxMemberCard.setCustomCell1(customerCell);
+
+        basis.setCustomUrlName("会员充值");
+        basis.setCustomUrlSubTitle("充值有礼");
+        basis.setCustomUrl("www.baidu.com");
+
+        basis.setPromotionUrlName("积分商城");
+        basis.setPromotionUrlSubTitle("营销入口");
+        basis.setPromotionUrl("www.qq.com");
 
         //设置卡SKU
         WxCardSku sku = new WxCardSku();
@@ -164,7 +212,7 @@ public class MerchantCardService implements IMerchantCardService {
 
         basis.setDateInfo(dateInfo);
 
-
+        //支持门店
         if (basicCard.supportStore()) {
             basis.setUseAllLocations(true);
         } else {
@@ -190,6 +238,7 @@ public class MerchantCardService implements IMerchantCardService {
 
         }
 
+        //展示条形码方式
         if (basicCard.getBarType() != null) {
             if (basicCard.getBarType().intValue() == CardCodeType.BARCODE.getType()) {
                 basis.setCodeType(CardCodeType.BARCODE.getValue());
@@ -223,10 +272,8 @@ public class MerchantCardService implements IMerchantCardService {
                 wxMemberCard.setActivateUrl("http://www.baidu.com"); //basicCard.getActivateUrl();
             }
         }
-
-        wxMemberCard.setBonusRules("积分规则");
-        wxMemberCard.setBalanceRules("储值规则");
-        wxMemberCard.setBonusCleared("清零规则");
+        //限领数量
+        basis.setGetLimit(basicCard.getCardLimit());
         wxMemberCard.setBaseInfo(basis);
 
         WxCard wxCard = new WxCard();

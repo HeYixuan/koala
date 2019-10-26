@@ -8,10 +8,10 @@ public interface IMerchantCardBasicService {
 
     /**
      * 根据会员卡ID查询
-     * @param id
+     * @param cardId
      * @return
      */
-    MerchantCardBasic get(Long id);
+    MerchantCardBasic get(String cardId);
 
     ResponseEntity deleteById(Long id);
 

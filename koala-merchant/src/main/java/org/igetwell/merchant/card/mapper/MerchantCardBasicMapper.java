@@ -10,10 +10,10 @@ public interface MerchantCardBasicMapper {
 
     /**
      * 根据会员卡ID查询
-     * @param id
+     * @param cardId
      * @return
      */
-    MerchantCardBasic get(Long id);
+    MerchantCardBasic get(String cardId);
 
     int update(MerchantCardBasic card);
 }

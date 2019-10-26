@@ -18,12 +18,12 @@ public class MerchantCardBasicService implements IMerchantCardBasicService {
 
     /**
      * 根据会员卡ID查询
-     * @param id
+     * @param cardId
      * @return
      */
     @Override
-    public MerchantCardBasic get(Long id) {
-        return cardBasicMapper.get(id);
+    public MerchantCardBasic get(String cardId) {
+        return cardBasicMapper.get(cardId);
     }
 
     @Override
@@ -40,7 +40,7 @@ public class MerchantCardBasicService implements IMerchantCardBasicService {
         if (!checkParam(cardBasic)){
             return ResponseEntity.error(HttpStatus.BAD_REQUEST, "会员卡ID不可为空!");
         }
-        MerchantCardBasic basic = get(cardBasic.getId());
+        MerchantCardBasic basic = get(cardBasic.getMerchantCardId());
         if (!StringUtils.isEmpty(basic)){
             return ResponseEntity.error(HttpStatus.BAD_REQUEST, "此会员卡信息已存在!");
         }
@@ -56,7 +56,7 @@ public class MerchantCardBasicService implements IMerchantCardBasicService {
         if (!checkParam(cardBasic)){
             return ResponseEntity.error(HttpStatus.BAD_REQUEST, "会员卡ID不可为空!");
         }
-        MerchantCardBasic basic = get(cardBasic.getId());
+        MerchantCardBasic basic = get(cardBasic.getMerchantCardId());
         if (StringUtils.isEmpty(basic)){
             return ResponseEntity.error(HttpStatus.BAD_REQUEST, "此会员卡信息不存在!");
         }

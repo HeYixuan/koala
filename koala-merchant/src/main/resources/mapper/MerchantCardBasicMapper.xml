@@ -37,11 +37,11 @@
     LIMIT_TIME, LIMIT_BEGIN, LIMIT_END, CARD_LIMIT, IS_SUPPORT_STORE, SUPPORT_STORES
   </sql>
 
-  <select id="get" parameterType="java.lang.Long" resultMap="baseMap">
+  <select id="get" parameterType="java.lang.String" resultMap="baseMap">
     SELECT
         <include refid="baseSql" />
     FROM MERCHANT_CARD_BASIC
-    where ID = #{id,jdbcType=BIGINT}
+    where MERCHANT_CARD_ID = #{id,jdbcType=VARCHAR}
   </select>
 
   <delete id="deleteById" parameterType="java.lang.Long">
