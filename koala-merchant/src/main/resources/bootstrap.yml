@@ -18,6 +18,11 @@ spring:
   main:
     allow-bean-definition-overriding: true
 
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+    default-property-inclusion: NON_EMPTY
+
 #logging:
 #  config: classpath:logback.xml
 
