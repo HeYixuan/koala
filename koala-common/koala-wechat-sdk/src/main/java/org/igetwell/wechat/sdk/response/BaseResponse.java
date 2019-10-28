@@ -1,15 +1,15 @@
 package org.igetwell.wechat.sdk.response;
 
-public class BaseResponseEntity {
+public class BaseResponse {
     private static final String SUCCESS_CODE = "0";
 
     private String errcode;
     private String errmsg;
 
-    public BaseResponseEntity() {
+    public BaseResponse() {
     }
 
-    public BaseResponseEntity(String errcode, String errmsg) {
+    public BaseResponse(String errcode, String errmsg) {
         this.errcode = errcode;
         this.errmsg = errmsg;
     }
