@@ -2,6 +2,8 @@ package org.igetwell.wechat.sdk.api;
 
 import org.igetwell.common.uitls.GsonUtils;
 import org.igetwell.common.uitls.HttpClientUtils;
+import org.igetwell.wechat.sdk.card.activate.ActivateSet;
+import org.igetwell.wechat.sdk.card.activate.CardActivate;
 import org.igetwell.wechat.sdk.card.bean.create.WxCardCreate;
 import org.igetwell.wechat.sdk.card.code.CodeGet;
 import org.igetwell.wechat.sdk.card.code.CodeGetResponse;
@@ -38,6 +40,10 @@ public class CardAPI extends API {
     static String CODE_CONSUME = "https://api.weixin.qq.com/card/code/consume?access_token=%s";
     //Code解码
     static String CODE_DECRYPT = "https://api.weixin.qq.com/card/code/decrypt?access_token=%s";
+    //接口激活
+    static String ACTIVATE = "https://api.weixin.qq.com/card/membercard/activate?access_token=%s";
+    //激活设置字段
+    static String ACTIVATE_SET = "https://api.weixin.qq.com/card/membercard/activateuserform/set?access_token=%s";
 
 
     /**
@@ -130,6 +136,28 @@ public class CardAPI extends API {
     public static CodeDecryptResponse codeDecrypt(String accessToken, CodeDecrypt codeDecrypt) {
         String response = HttpClientUtils.getInstance().sendHttpPost(String.format(CODE_DECRYPT, accessToken), GsonUtils.toJson(codeDecrypt));
         return GsonUtils.fromJson(response, CodeDecryptResponse.class);
+    }
+
+    /**
+     * 接口激活
+     * @param accessToken
+     * @param activate
+     * @return
+     */
+    public static BaseResponse activate(String accessToken, CardActivate activate) {
+        String response = HttpClientUtils.getInstance().sendHttpPost(String.format(ACTIVATE, accessToken), GsonUtils.toJson(activate));
+        return GsonUtils.fromJson(response, BaseResponse.class);
+    }
+
+    /**
+     * 激活设置字段
+     * @param accessToken
+     * @param activateSet
+     * @return
+     */
+    public static BaseResponse activateSet(String accessToken, ActivateSet activateSet) {
+        String response = HttpClientUtils.getInstance().sendHttpPost(String.format(ACTIVATE_SET, accessToken), GsonUtils.toJson(activateSet));
+        return GsonUtils.fromJson(response, BaseResponse.class);
     }
 
 }
