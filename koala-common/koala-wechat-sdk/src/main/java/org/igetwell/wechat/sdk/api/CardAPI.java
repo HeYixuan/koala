@@ -2,24 +2,24 @@ package org.igetwell.wechat.sdk.api;
 
 import org.igetwell.common.uitls.GsonUtils;
 import org.igetwell.common.uitls.HttpClientUtils;
-import org.igetwell.wechat.sdk.card.activate.ActivateSet;
-import org.igetwell.wechat.sdk.card.activate.CardActivate;
-import org.igetwell.wechat.sdk.card.bean.create.WxCardCreate;
-import org.igetwell.wechat.sdk.card.code.CodeGet;
-import org.igetwell.wechat.sdk.card.code.CodeGetResponse;
-import org.igetwell.wechat.sdk.card.code.consume.CodeConsume;
-import org.igetwell.wechat.sdk.card.code.consume.CodeConsumeResponse;
-import org.igetwell.wechat.sdk.card.code.decrypt.CodeDecrypt;
-import org.igetwell.wechat.sdk.card.code.decrypt.CodeDecryptResponse;
-import org.igetwell.wechat.sdk.card.mpNews.MpNews;
-import org.igetwell.wechat.sdk.card.mpNews.MpNewsResponse;
-import org.igetwell.wechat.sdk.card.qrcode.QrCodeCreate;
-import org.igetwell.wechat.sdk.card.storage.StorageCreate;
-import org.igetwell.wechat.sdk.card.storage.StorageCreateResponse;
-import org.igetwell.wechat.sdk.card.whitelist.TestWhiteList;
+import org.igetwell.wechat.sdk.bean.card.activate.ActivateSet;
+import org.igetwell.wechat.sdk.bean.card.activate.CardActivate;
+import org.igetwell.wechat.sdk.bean.card.create.WxCardCreate;
+import org.igetwell.wechat.sdk.bean.card.code.CodeGet;
+import org.igetwell.wechat.sdk.bean.card.code.CodeGetResponse;
+import org.igetwell.wechat.sdk.bean.card.code.consume.CodeConsume;
+import org.igetwell.wechat.sdk.bean.card.code.consume.CodeConsumeResponse;
+import org.igetwell.wechat.sdk.bean.card.code.decrypt.CodeDecrypt;
+import org.igetwell.wechat.sdk.bean.card.code.decrypt.CodeDecryptResponse;
+import org.igetwell.wechat.sdk.bean.card.mpNews.MpNews;
+import org.igetwell.wechat.sdk.bean.card.mpNews.MpNewsResponse;
+import org.igetwell.wechat.sdk.bean.card.qrcode.QrCodeCreate;
+import org.igetwell.wechat.sdk.bean.card.storage.StorageCreate;
+import org.igetwell.wechat.sdk.bean.card.storage.StorageCreateResponse;
+import org.igetwell.wechat.sdk.bean.card.whitelist.TestWhiteList;
 import org.igetwell.wechat.sdk.response.BaseResponse;
 import org.igetwell.wechat.sdk.response.CardResponse;
-import org.igetwell.wechat.sdk.card.qrcode.QrCodeCreateResponse;
+import org.igetwell.wechat.sdk.bean.card.qrcode.QrCodeCreateResponse;
 
 public class CardAPI extends API {
 

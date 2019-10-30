@@ -105,3 +105,5 @@ public static void main(String [] args){
         String appid = element.getAttribute("appid");
         System.err.println(appid);
     }
+    
+https://gitee.com/dendi.ke/weixin-service/blob/master/src/main/java/com/ld/tamp/web/controller/WeChatController.java

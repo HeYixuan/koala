@@ -23,15 +23,15 @@ public class MessageAPI extends API {
     /**
      * 消息发送
      *
-     * @param access_token access_token
+     * @param accessToken accessToken
      * @param message  message
      * @return BaseResult
      */
-    public static String messageCustomSend(String access_token, String message) {
+    public static String messageCustomSend(String accessToken, String message) {
         HttpUriRequest httpUriRequest = RequestBuilder.post()
                 .setHeader(APPLICATION_JSON)
                 .setUri(BASE_URI + "/cgi-bin/message/custom/send")
-                .addParameter(ACCESS_TOKEN, accessToken(access_token))
+                .addParameter(ACCESS_TOKEN, accessToken(accessToken))
                 .setEntity(new StringEntity(message, Charset.forName("UTF-8")))
                 .build();
         String response = HttpClientUtils.getInstance().sendHttpPost(httpUriRequest.getURI().toString());

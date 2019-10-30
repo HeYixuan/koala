@@ -165,7 +165,6 @@ public class WxOpenComponentService implements IWxOpenComponentService {
         }
         String xml = IOUtils.readData(request);
         log.info("第三方平台全网发布-----------------------原始 Xml={}", xml);
-        //String appId = getAuthorizerAppidFromXml(xml);// 此时加密的xml数据中ToUserName是非加密的，解析xml获取即可
         WXBizMsgCrypt pc = new WXBizMsgCrypt(componentToken, encodingAesKey, componentAppId);
         log.info("第三方平台全网发布-----------------------解密 WXBizMsgCrypt 成功.");
         xml = pc.DecryptMsg(msgSignature, timestamp, nonce, xml);

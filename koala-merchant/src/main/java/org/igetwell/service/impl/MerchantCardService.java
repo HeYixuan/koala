@@ -9,8 +9,8 @@ import org.igetwell.merchant.card.entity.MerchantCardBasic;
 import org.igetwell.merchant.card.mapper.MerchantCardBasicMapper;
 import org.igetwell.merchant.card.mapper.MerchantCardMapper;
 import org.igetwell.service.IMerchantCardService;
-import org.igetwell.wechat.sdk.card.bean.*;
-import org.igetwell.wechat.sdk.card.bean.create.WxCardCreate;
+import org.igetwell.wechat.sdk.bean.card.*;
+import org.igetwell.wechat.sdk.bean.card.create.WxCardCreate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 

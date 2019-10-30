@@ -11,6 +11,25 @@ import javax.crypto.spec.SecretKeySpec;
 
 public class SignUtils {
 
+
+    /**
+     * JsTicket签名算法(详见:https://pay.weixin.qq.com/wiki/doc/api/tools/cash_coupon.php?chapter=4_3)
+     * @param params  参数信息
+     * @return 签名字符串
+     */
+    public static String createJsTicketSign(final Map<String, String> params) {
+        SortedMap<String, String> sortedMap = new TreeMap<>(params);
+
+        StringBuilder toSign = new StringBuilder();
+        for (String key : sortedMap.keySet()) {
+            String value = params.get(key);
+            if (!StringUtils.isEmpty(value) && !"sign".equals(key) && !"key".equals(key)) {
+                toSign.append(key).append("=").append(params.get(key).trim()).append("&");
+            }
+        }
+        return DigestUtils.sha1Hex(toSign.toString()).toUpperCase();
+    }
+
     /**
      * 微信公众号支付签名算法(详见:https://pay.weixin.qq.com/wiki/doc/api/tools/cash_coupon.php?chapter=4_3)
      *
@@ -21,6 +40,7 @@ public class SignUtils {
     public static String createSign(Object xmlBean, String signKey) {
         return createSign(BeanUtils.xmlBean2Map(xmlBean), signKey);
     }
+
 
     /**
      * 微信公众号支付签名算法(详见:https://pay.weixin.qq.com/wiki/doc/api/tools/cash_coupon.php?chapter=4_3)
@@ -36,8 +56,7 @@ public class SignUtils {
         StringBuilder toSign = new StringBuilder();
         for (String key : sortedMap.keySet()) {
             String value = params.get(key);
-            if (StringUtils.hasText(value) && !"sign".equals(key) && !"key".equals(key)) {
-//                toSign.append(key + "=" + value + "&");
+            if (!StringUtils.isEmpty(value) && !"sign".equals(key) && !"key".equals(key)) {
                 toSign.append(key).append("=").append(params.get(key).trim()).append("&");
             }
         }
@@ -61,7 +80,7 @@ public class SignUtils {
         Arrays.sort(keyArray);
         StringBuilder sb = new StringBuilder();
         for (String k : keyArray) {
-            if (StringUtils.hasText(params.get(k)) && params.get(k).trim().length() > 0) // 参数值为空，则不参与签名
+            if (!StringUtils.isEmpty(params.get(k)) && params.get(k).trim().length() > 0) // 参数值为空，则不参与签名
                 sb.append(k).append("=").append(params.get(k).trim()).append("&");
         }
         sb.append("key=").append(key);
@@ -135,4 +154,5 @@ public class SignUtils {
         }
         return sb.toString().toUpperCase();
     }
+
 }
