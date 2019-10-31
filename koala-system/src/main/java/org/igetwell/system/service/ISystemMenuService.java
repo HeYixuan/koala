@@ -1,6 +1,5 @@
 package org.igetwell.system.service;
 
-import org.igetwell.common.uitls.Pagination;
 import org.igetwell.common.uitls.ResponseEntity;
 import org.igetwell.system.entity.SystemMenu;
 import org.igetwell.system.vo.MenuTree;
@@ -23,18 +22,16 @@ public interface ISystemMenuService {
     List<SystemMenu> loadUnbound();
 
     /**
-     * 获取菜单树
+     * 获取菜单
      * @return
      */
-    List<MenuTree> getMenuTree();
+    List<MenuTree> getMenu();
 
     /**
-     * 获取菜单树列表
+     * 获取所有菜单
      * @return
      */
     List<MenuTree> getMenus();
-
-    List<MenuTree> getMenus(Pagination pagination);
 
     SystemMenu get(String menuName);
 

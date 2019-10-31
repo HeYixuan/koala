@@ -1,6 +1,5 @@
 package org.igetwell.system.controller;
 
-import org.igetwell.common.uitls.Pagination;
 import org.igetwell.common.uitls.ResponseEntity;
 import org.igetwell.oauth.security.KoalaUser;
 import org.igetwell.oauth.security.SpringSecurityUtils;
@@ -48,24 +47,24 @@ public class SystemMenuController {
     }
 
     /**
-     * 获取菜单树
+     * 获取菜单(左侧菜单)
      * @return
      */
-    @PostMapping("/systemMenu/getMenuTree")
+    @PostMapping("/systemMenu/getMenu")
     public ResponseEntity getMenuTree(){
-        List<MenuTree> list = iSystemMenuService.getMenuTree();
-        List<MenuTree> nodeTree = TreeUtils.treeMenu(list);
+        List<MenuTree> list = iSystemMenuService.getMenu();
+        List<MenuTree> nodeTree = TreeUtils.buildMenu(list);
         return ResponseEntity.ok(nodeTree);
     }
 
     /**
-     * 获取菜单列表(获取左侧菜单列表)
+     * 获取所有菜单列表
      * @return
      */
-    @PostMapping("/systemMenu/getMenus")
+    @PostMapping("/systemMenu/getMenu")
     public ResponseEntity getMenus(){
         List<MenuTree> list = iSystemMenuService.getMenus();
-        List<MenuTree> nodeTree = TreeUtils.treeMenu(list);
+        List<MenuTree> nodeTree = TreeUtils.buildMenu(list);
         return ResponseEntity.ok(nodeTree);
     }
 
@@ -82,12 +81,6 @@ public class SystemMenuController {
     @PostMapping("/systemMenu/update")
     public ResponseEntity update(@RequestBody SystemMenu systemMenu){
         return iSystemMenuService.update(systemMenu);
-    }
-
-    @PostMapping("/systemMenu/testMenus")
-    public ResponseEntity testMenus(Pagination pagination){
-        iSystemMenuService.getMenus(pagination);
-        return ResponseEntity.ok(pagination);
     }
 
     @PostMapping("/systemMenu/setting")

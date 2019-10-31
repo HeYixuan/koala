@@ -1,7 +1,6 @@
 package org.igetwell.system.service.impl;
 
 import org.igetwell.common.enums.HttpStatus;
-import org.igetwell.common.uitls.Pagination;
 import org.igetwell.common.uitls.ResponseEntity;
 import org.igetwell.system.entity.SystemMenu;
 import org.igetwell.system.mapper.SystemMenuMapper;
@@ -30,8 +29,8 @@ public class SystemMenuService implements ISystemMenuService {
     }
 
     @Override
-    public List<MenuTree> getMenuTree() {
-        List<MenuTree> list = systemMenuMapper.getMenuTree();
+    public List<MenuTree> getMenu() {
+        List<MenuTree> list = systemMenuMapper.getMenu();
         return list;
     }
 
@@ -40,12 +39,6 @@ public class SystemMenuService implements ISystemMenuService {
         List<MenuTree> list = systemMenuMapper.getMenus();
         return list;
     }
-
-    @Override
-    public List<MenuTree> getMenus(Pagination pagination){
-        return systemMenuMapper.getMenus(pagination);
-    }
-
 
     @Override
     public SystemMenu get(String menuName){

@@ -15,6 +15,12 @@ public class Pagination<T> extends RowBounds {
     private int index = 0; //索引
 
     public Pagination() {
+        setOffset(1);
+        setLimit(10);
+    }
+
+    public Pagination(int offset, int limit) {
+        super(offset, limit);
     }
 
     public Pagination(List<T> rows) {

@@ -6,7 +6,7 @@ import java.util.List;
 
 public class TreeUtils {
 
-    public static List<MenuTree> treeMenu(List<MenuTree> menuList){
+    public static List<MenuTree> buildMenu(List<MenuTree> menuList){
         List<MenuTree> nodeList = new ArrayList<MenuTree>();
         for(MenuTree node1 : menuList){
             boolean mark = false;
