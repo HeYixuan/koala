@@ -8,7 +8,7 @@ package org.apache.ibatis.session;
 public class RowBounds {
 
   public static final int NO_ROW_OFFSET = 1;
-  public static final int NO_ROW_LIMIT = 10;
+  public static final int NO_ROW_LIMIT = 2147483647;
   public static final RowBounds DEFAULT = new RowBounds();
 
   private int offset;
@@ -16,7 +16,7 @@ public class RowBounds {
 
   public RowBounds() {
     this.offset = 1;
-    this.limit = 10;
+    this.limit = 2147483647;
   }
 
   public RowBounds(int offset, int limit) {
