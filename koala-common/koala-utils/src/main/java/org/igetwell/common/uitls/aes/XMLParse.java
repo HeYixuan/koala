@@ -8,15 +8,10 @@
 
 package org.igetwell.common.uitls.aes;
 
-import java.io.StringReader;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
+import org.dom4j.Element;
+import org.igetwell.common.uitls.XmlUtils;
 
 /**
  * XMLParse class
@@ -31,7 +26,7 @@ class XMLParse {
 	 * @return 提取出的加密消息字符串
 	 * @throws Exception
 	 */
-	public static Object[] extract(String xmltext) throws Exception     {
+	/*public static Object[] extract(String xmltext) throws Exception     {
 		Object[] result = new Object[3];
 		try {
 			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -46,6 +41,22 @@ class XMLParse {
 			result[0] = 0;
 			result[1] = nodelist1.item(0).getTextContent();
 			result[2] = nodelist2.item(0).getTextContent();
+			return result;
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new Exception("xml解析失败");
+		}
+	}*/
+
+	public static Object[] extract(String xml) throws Exception     {
+		Object[] result = new Object[3];
+		try {
+			Element element = XmlUtils.parseXml(xml);
+			String Encrypt = element.elementText("Encrypt");
+			String ToUserName = element.elementText("ToUserName");
+			result[0] = 0;
+			result[1] = element.elementText("Encrypt");
+			result[2] = element.elementText("ToUserName");
 			return result;
 		} catch (Exception e) {
 			e.printStackTrace();

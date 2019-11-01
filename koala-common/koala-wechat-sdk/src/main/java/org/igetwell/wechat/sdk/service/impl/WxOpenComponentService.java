@@ -53,30 +53,33 @@ public class WxOpenComponentService implements IWxOpenComponentService {
     }*/
 
     /**
-     * 是否强制获取微信第三方开放平台token
-     * @param forceRefresh
+     * 获取第三方平台access_token
      * @return
      * @throws Exception
      */
     @Override
-    public String getComponentAccessToken(boolean forceRefresh) throws Exception {
-        if (forceRefresh){
-            componentVerifyTicket = (String) redisUtils.get(RedisKey.COMPONENT_VERIFY_TICKET);
-            if(StringUtils.isEmpty(componentVerifyTicket)){
-                throw new Exception("获取微信开放平台验证票据失败");
-            }
-            Map<String, String> params = new ConcurrentHashMap<>();
-            params.put("component_appid", componentAppId);
-            params.put("component_appsecret", componentAppSecret);
-            params.put("component_verify_ticket", componentVerifyTicket);
-            String response = HttpClientUtils.getInstance().sendHttpPost(API_COMPONENT_TOKEN_URL, GsonUtils.toJson(params));
-            ComponentAccessToken componentAccessToken = GsonUtils.fromJson(response, ComponentAccessToken.class);
-            if (!StringUtils.isEmpty(componentAccessToken) || !StringUtils.isEmpty(componentAccessToken.getComponentAccessToken())){
-                redisUtils.set(RedisKey.COMPONENT_ACCESS_TOKEN, componentAccessToken.getComponentAccessToken(), componentAccessToken.getExpiresIn()); //写入redis
-                wxOpenConfigStorage.updateComponentAccessToken(componentAccessToken); //写入内存
-            }
+    public String getComponentAccessToken() throws Exception {
+        componentVerifyTicket = redisUtils.get(RedisKey.COMPONENT_VERIFY_TICKET);
+        if(StringUtils.isEmpty(componentVerifyTicket)){
+            throw new Exception("获取微信开放平台验证票据失败");
         }
-        return wxOpenConfigStorage.getComponentAccessToken();
+        boolean bool = redisUtils.exist(RedisKey.COMPONENT_ACCESS_TOKEN);
+        if (bool){
+            ComponentAccessToken componentAccessToken = (ComponentAccessToken) redisUtils.getObject(RedisKey.COMPONENT_ACCESS_TOKEN);
+            return componentAccessToken.getComponentAccessToken();
+        }
+        Map<String, String> params = new ConcurrentHashMap<>();
+        params.put("component_appid", componentAppId);
+        params.put("component_appsecret", componentAppSecret);
+        params.put("component_verify_ticket", componentVerifyTicket);
+        String response = HttpClientUtils.getInstance().sendHttpPost(API_COMPONENT_TOKEN_URL, GsonUtils.toJson(params));
+        ComponentAccessToken componentAccessToken = GsonUtils.fromJson(response, ComponentAccessToken.class);
+        if (!StringUtils.isEmpty(componentAccessToken) && !StringUtils.isEmpty(componentAccessToken.getComponentAccessToken())){
+            redisUtils.set(RedisKey.COMPONENT_ACCESS_TOKEN, componentAccessToken, componentAccessToken.getExpiresIn()); //写入redis
+            wxOpenConfigStorage.updateComponentAccessToken(componentAccessToken); //写入内存
+            return componentAccessToken.getComponentAccessToken();
+        }
+        return null;
     }
 
     @Override
@@ -132,12 +135,11 @@ public class WxOpenComponentService implements IWxOpenComponentService {
      * @return
      */
     private String createPreAuthUrl(String redirectURI, String authType, String bizAppid, boolean isMobile) throws Exception{
-
-        String preAuthCode = (String) redisUtils.get(RedisKey.COMPONENT_PRE_AUTH_CODE);
+        String preAuthCode = redisUtils.get(RedisKey.COMPONENT_PRE_AUTH_CODE);
         if (StringUtils.isEmpty(preAuthCode)){
             Map<String, String> params = new ConcurrentHashMap<>();
             params.put("component_appid", componentAppId); //这个AppId可以从缓存里面取
-            String response = HttpClientUtils.getInstance().sendHttpPost(String.format(API_CREATE_PREAUTHCODE_URL, wxOpenConfigStorage.getComponentAccessToken()), GsonUtils.toJson(params));
+            String response = HttpClientUtils.getInstance().sendHttpPost(String.format(API_CREATE_PREAUTHCODE_URL, getComponentAccessToken()), GsonUtils.toJson(params));
             PreAuthAuthorization preAuth = GsonUtils.fromJson(response, PreAuthAuthorization.class);
             redisUtils.set(RedisKey.COMPONENT_PRE_AUTH_CODE, preAuth.getPreAuthCode(), preAuth.getExpiresIn());
             preAuthCode = preAuth.getPreAuthCode();
@@ -167,7 +169,7 @@ public class WxOpenComponentService implements IWxOpenComponentService {
         log.info("第三方平台全网发布-----------------------原始 Xml={}", xml);
         WXBizMsgCrypt pc = new WXBizMsgCrypt(componentToken, encodingAesKey, componentAppId);
         log.info("第三方平台全网发布-----------------------解密 WXBizMsgCrypt 成功.");
-        xml = pc.DecryptMsg(msgSignature, timestamp, nonce, xml);
+        xml = pc.decryptMsg(msgSignature, timestamp, nonce, xml);
         log.info("第三方平台全网发布-----------------------解密后 Xml={}", xml);
         processAuthorizationEvent(xml);
 
@@ -189,7 +191,7 @@ public class WxOpenComponentService implements IWxOpenComponentService {
                 if(!StringUtils.isEmpty(ticket)){
                     //设置10分钟
                     redisUtils.set(RedisKey.COMPONENT_VERIFY_TICKET, ticket, RedisKey.COMPONENT_VERIFY_TICKET_EXPIRE);
-                    getComponentAccessToken(true);
+                    getComponentAccessToken();
                 }
             }
             //取消授权
@@ -223,7 +225,7 @@ public class WxOpenComponentService implements IWxOpenComponentService {
         String xml = IOUtils.readData(request);
         log.info("全网发布接入检测消息反馈开始--------nonce:{}-------timestamp:{}---------msgSignature:{}.");
         WXBizMsgCrypt pc = new WXBizMsgCrypt(componentToken, encodingAesKey, componentAppId);
-        xml = pc.DecryptMsg(msgSignature, timestamp, nonce, xml);
+        xml = pc.decryptMsg(msgSignature, timestamp, nonce, xml);
 
         Element element = XmlUtils.parseXml(xml);
         String msgType = XmlUtils.elementText(element, "MsgType");
@@ -317,7 +319,7 @@ public class WxOpenComponentService implements IWxOpenComponentService {
         sb.append("</xml>");
         try {
             WXBizMsgCrypt pc = new WXBizMsgCrypt(componentToken, encodingAesKey, componentAppId);
-            String text = pc.EncryptMsg(sb.toString(), createTime.toString(), "easemob");
+            String text = pc.encryptMsg(sb.toString(), createTime.toString(), "easemob");
             output(response, text);
         } catch (Exception e) {
             e.printStackTrace();

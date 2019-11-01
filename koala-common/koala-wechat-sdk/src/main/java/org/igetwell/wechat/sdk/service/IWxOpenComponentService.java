@@ -46,10 +46,10 @@ public interface IWxOpenComponentService {
 
     /**
      * 获取第三方平台access_token
-     * @param forceRefresh
      * @return
+     * @throws Exception
      */
-    String getComponentAccessToken(boolean forceRefresh) throws Exception;
+    String getComponentAccessToken() throws Exception;
 
     /**
      * 获取用户授权页URL（来路URL和成功跳转URL 的域名都需要为三方平台设置的 登录授权的发起页域名）

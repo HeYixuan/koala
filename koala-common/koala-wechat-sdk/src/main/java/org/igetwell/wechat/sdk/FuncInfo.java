@@ -1,6 +1,8 @@
 package org.igetwell.wechat.sdk;
 
-public class FuncInfo {
+import java.io.Serializable;
+
+public class FuncInfo implements Serializable {
 
     private FuncCategory funcscopeCategory;
 

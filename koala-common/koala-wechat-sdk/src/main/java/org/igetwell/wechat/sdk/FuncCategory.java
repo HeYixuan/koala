@@ -1,6 +1,8 @@
 package org.igetwell.wechat.sdk;
 
-public class FuncCategory {
+import java.io.Serializable;
+
+public class FuncCategory implements Serializable {
 
     private Integer id;
 

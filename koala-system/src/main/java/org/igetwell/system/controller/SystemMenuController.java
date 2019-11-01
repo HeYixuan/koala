@@ -51,7 +51,7 @@ public class SystemMenuController {
      * @return
      */
     @PostMapping("/systemMenu/getMenu")
-    public ResponseEntity getMenuTree(){
+    public ResponseEntity getMenu(){
         List<MenuTree> list = iSystemMenuService.getMenu();
         List<MenuTree> nodeTree = TreeUtils.buildMenu(list);
         return ResponseEntity.ok(nodeTree);
@@ -61,7 +61,7 @@ public class SystemMenuController {
      * 获取所有菜单列表
      * @return
      */
-    @PostMapping("/systemMenu/getMenu")
+    @PostMapping("/systemMenu/getMenus")
     public ResponseEntity getMenus(){
         List<MenuTree> list = iSystemMenuService.getMenus();
         List<MenuTree> nodeTree = TreeUtils.buildMenu(list);

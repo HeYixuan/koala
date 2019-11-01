@@ -1,7 +1,7 @@
 package org.igetwell.common.uitls;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
@@ -11,7 +11,7 @@ import java.util.concurrent.TimeUnit;
 public class RedisUtils {
 
     @Autowired
-    private StringRedisTemplate redisTemplate;
+    private RedisTemplate redisTemplate;
 
     /**
      * 指定缓存失效时间
@@ -40,23 +40,27 @@ public class RedisUtils {
         return redisTemplate.getExpire(key, TimeUnit.SECONDS);
     }
 
+    //============================String  Object=============================
+    /**
+     * 普通缓存获取
+     * @param key 键
+     * @return 值
+     */
+    public String get(String key){
+        return key == null ? null : (String) redisTemplate.opsForValue().get(key);
+    }
+
+    public Object getObject(String key){
+        return key == null ? null : redisTemplate.opsForValue().get(key);
+    }
+
     public void set(String key, String value, long expire){
         redisTemplate.opsForValue().set(key, value, expire, TimeUnit.SECONDS);
     }
 
-    /**
-     * 普通缓存获取
-     * @param key 键
-     * @return
-     */
-    public boolean getKey(String key){
-        String value = redisTemplate.opsForValue().get(key);
-        if (value == null){
-            return false;
-        }
-        return true;
+    public void set(String key, Object value, long expire){
+        redisTemplate.opsForValue().set(key, value, expire, TimeUnit.SECONDS);
     }
-
 
 
     /**
@@ -64,12 +68,8 @@ public class RedisUtils {
      * @param key 键
      * @return true 存在 false不存在
      */
-    public boolean hasKey(String key){
-        try {
-            return redisTemplate.hasKey(key);
-        } catch (Exception e) {
-            return false;
-        }
+    public boolean exist(String key){
+        return redisTemplate.hasKey(key);
     }
 
     /**
@@ -86,14 +86,6 @@ public class RedisUtils {
         }
     }
 
-    //============================String=============================
-    /**
-     * 普通缓存获取
-     * @param key 键
-     * @return 值
-     */
-    public Object get(String key){
-        return key == null ? null : redisTemplate.opsForValue().get(key);
-    }
+
 
 }

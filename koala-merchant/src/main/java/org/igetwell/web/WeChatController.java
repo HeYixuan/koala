@@ -73,7 +73,7 @@ public class WeChatController extends BaseController {
 
     @GetMapping("/getComponentAccessToken")
     public void getComponentAccessToken() throws Exception{
-        wxOpenComponentService.getComponentAccessToken(true);
+        wxOpenComponentService.getComponentAccessToken();
     }
 
     @GetMapping("/preAuth")

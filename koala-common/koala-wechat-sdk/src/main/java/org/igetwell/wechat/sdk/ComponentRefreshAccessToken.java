@@ -1,6 +1,8 @@
 package org.igetwell.wechat.sdk;
 
-public class ComponentRefreshAccessToken {
+import java.io.Serializable;
+
+public class ComponentRefreshAccessToken implements Serializable {
 
     /**
      * 授权方令牌
