@@ -1,6 +1,8 @@
 package org.igetwell.wechat.sdk;
 
-public class AuthorizationInfo {
+import java.io.Serializable;
+
+public class AuthorizationInfo implements Serializable {
 
     ComponentAuthorization authorizationInfo;
 

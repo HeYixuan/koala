@@ -107,11 +107,11 @@ public class WxOpenComponentService implements IWxOpenComponentService {
      * @param authorizationCode  授权code
      */
     @Override
-    public void getQueryAuth(String authorizationCode) {
+    public void getQueryAuth(String authorizationCode) throws Exception {
         Map<String, String> params = new ConcurrentHashMap<>();
         params.put("component_appid", componentAppId);
         params.put("authorization_code", authorizationCode);
-        String response = HttpClientUtils.getInstance().sendHttpPost(String.format(API_QUERY_AUTH_URL, wxOpenConfigStorage.getComponentAccessToken()), GsonUtils.toJson(params));
+        String response = HttpClientUtils.getInstance().sendHttpPost(String.format(API_QUERY_AUTH_URL, getComponentAccessToken()), GsonUtils.toJson(params));
         AuthorizationInfo authorizationInfo = GsonUtils.fromJson(response, AuthorizationInfo.class);
         if (StringUtils.isEmpty(authorizationInfo)){
             return;
@@ -257,7 +257,7 @@ public class WxOpenComponentService implements IWxOpenComponentService {
      * @param toUserName
      * @param fromUserName
      */
-    private void processTextMessage(HttpServletResponse response, String content, String toUserName, String fromUserName){
+    private void processTextMessage(HttpServletResponse response, String content, String toUserName, String fromUserName) throws Exception {
         if("TESTCOMPONENT_MSG_TYPE_TEXT".equals(content)){
             String returnContent = content+"_callback";
             replyTextMessage(response,returnContent, toUserName, fromUserName);
@@ -284,7 +284,7 @@ public class WxOpenComponentService implements IWxOpenComponentService {
 
 
 
-    private void replyApiTextMessage(String authorizationCode, String fromUserName) {
+    private void replyApiTextMessage(String authorizationCode, String fromUserName) throws Exception {
         // 得到微信授权成功的消息后，应该立刻进行处理！！相关信息只会在首次授权的时候推送过来
         log.info("------step.4----使用客服消息接口回复粉丝----逻辑开始-------------------------");
         getQueryAuth(authorizationCode);
@@ -296,6 +296,8 @@ public class WxOpenComponentService implements IWxOpenComponentService {
         text.put("content", msg);
         params.put("text", text);
         String response = HttpClientUtils.getInstance().sendHttpPost(String.format(API_SEND_MESSAGE_URL, wxOpenConfigStorage.getAuthorizerAccessToken()), GsonUtils.toJson(params));
+
+        log.info("api reply message to to wechat whole network test respose = "+ response);
         if (log.isDebugEnabled()){
             log.debug("api reply message to to wechat whole network test respose = "+ response);
         }

@@ -85,7 +85,7 @@ public interface IWxOpenComponentService {
      * 使用授权码换取公众号的授权信息
      * @param authorizationCode  授权code
      */
-    void getQueryAuth(String authorizationCode);
+    void getQueryAuth(String authorizationCode) throws Exception;
 
 
     /**
