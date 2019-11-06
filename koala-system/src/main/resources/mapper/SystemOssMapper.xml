@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.igetwell.system.mapper.SystemOssMapper">
+  <resultMap id="baseMap" type="org.igetwell.system.entity.SystemOss">
+    <id column="ID" jdbcType="BIGINT" property="id" />
+    <result column="TENANT_ID" jdbcType="VARCHAR" property="tenantId" />
+    <result column="BUCKET_NAME" jdbcType="VARCHAR" property="bucketName" />
+    <result column="ENDPOINT" jdbcType="VARCHAR" property="endpoint" />
+    <result column="ACCESS_KEY" jdbcType="VARCHAR" property="accessKey" />
+    <result column="SECRET_KEY" jdbcType="VARCHAR" property="secretKey" />
+    <result column="STATUS" jdbcType="INTEGER" property="status" />
+  </resultMap>
+
+  <sql id="baseSql">
+    ID, TENANT_ID, BUCKET_NAME, ENDPOINT, ACCESS_KEY, SECRET_KEY, `STATUS`
+  </sql>
+  <select id="get" resultMap="baseMap" parameterType="java.lang.Long" >
+    SELECT
+        <include refid="baseSql" />
+    FROM SYS_OSS
+    WHERE ID = #{id,jdbcType=BIGINT}
+  </select>
+
+  <select id="getList" resultMap="baseMap" parameterType="org.igetwell.system.dto.SystemUserPageDto">
+    SELECT
+        <include refid="baseSql" />
+    FROM SYS_OSS
+    <where>
+      <if test="tenantId !=null and tenantId != ''">
+        AND TENANT_ID = #{tenantId}
+      </if>
+      <if test="bucketName !=null and bucketName != ''">
+        AND BUCKET_NAME = #{bucketName}
+      </if>
+      <if test="accessKey !=null and accessKey != ''">
+        AND ACCESS_KEY = #{accessKey}
+      </if>
+      <if test="status !=null and status != ''">
+        AND `STATUS` = #{status}
+      </if>
+
+    </where>
+  </select>
+
+  <delete id="deleteById" parameterType="java.lang.Long">
+    DELETE FROM SYS_OSS
+    WHERE ID = #{id,jdbcType=BIGINT}
+  </delete>
+
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="org.igetwell.system.entity.SystemOss" useGeneratedKeys="true">
+    INSERT INTO SYS_OSS
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="tenantId != null and tenantId != ''">
+        TENANT_ID,
+      </if>
+      <if test="bucketName != null and bucketName != ''">
+        BUCKET_NAME,
+      </if>
+      <if test="endpoint != null and endpoint != ''">
+        ENDPOINT,
+      </if>
+      <if test="accessKey != null and accessKey != ''">
+        ACCESS_KEY,
+      </if>
+      <if test="secretKey != null and secretKey != ''">
+        SECRET_KEY,
+      </if>
+      <if test="status != null">
+        `STATUS`,
+      </if>
+    </trim>
+    <trim prefix="VALUES (" suffix=")" suffixOverrides=",">
+      <if test="tenantId != null and tenantId != ''">
+        #{tenantId,jdbcType=VARCHAR},
+      </if>
+      <if test="bucketName != null and bucketName != ''">
+        #{bucketName,jdbcType=VARCHAR},
+      </if>
+      <if test="endpoint != null and endpoint != ''">
+        #{endpoint,jdbcType=VARCHAR},
+      </if>
+      <if test="accessKey != null and accessKey != ''">
+        #{accessKey,jdbcType=VARCHAR},
+      </if>
+      <if test="secretKey != null and secretKey != ''">
+        #{secretKey,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+
+  <update id="update" parameterType="org.igetwell.system.entity.SystemOss">
+    UPDATE SYS_OSS
+    <set>
+      <if test="tenantId != null and tenantId != ''">
+        TENANT_ID = #{tenantId,jdbcType=VARCHAR},
+      </if>
+      <if test="bucketName != null and bucketName != ''">
+        BUCKET_NAME = #{bucketName,jdbcType=VARCHAR},
+      </if>
+      <if test="endpoint != null and endpoint != ''">
+        ENDPOINT = #{endpoint,jdbcType=VARCHAR},
+      </if>
+      <if test="accessKey != null and accessKey != ''">
+        ACCESS_KEY = #{accessKey,jdbcType=VARCHAR},
+      </if>
+      <if test="secretKey != null and secretKey != ''">
+        SECRET_KEY = #{secretKey,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        `STATUS` = #{status,jdbcType=INTEGER},
+      </if>
+    </set>
+    WHERE ID = #{id,jdbcType=BIGINT}
+  </update>
+
+</mapper>

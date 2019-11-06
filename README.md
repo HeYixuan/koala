@@ -107,3 +107,7 @@ public static void main(String [] args){
     }
     
 https://gitee.com/dendi.ke/weixin-service/blob/master/src/main/java/com/ld/tamp/web/controller/WeChatController.java
+
+Minio:
+Access Key:SMW1YMPP287R9UO8IVIV
+Secret Key:YdddvFSI2mdCgiG4c6Wy+HEXYIQmK2cF9yA4zAG+

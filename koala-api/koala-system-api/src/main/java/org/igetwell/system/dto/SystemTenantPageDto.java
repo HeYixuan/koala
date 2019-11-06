@@ -10,4 +10,7 @@ public class SystemTenantPageDto {
     private String tenantName;
 
 
+    private int pageNo = 1;
+    private int pageSize = 10;
+
 }
