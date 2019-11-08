@@ -2,7 +2,7 @@
 SQLyog Ultimate v12.2.6 (64 bit)
 MySQL - 8.0.17 : Database - koala
 *********************************************************************
-*/
+*/
 
 /*!40101 SET NAMES utf8 */;
 
@@ -25,7 +25,6 @@ CREATE TABLE `sys_dept` (
   `tenant_id` varchar(12) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '000000' COMMENT '租户ID',
   `parent_id` bigint(64) DEFAULT '0' COMMENT '父主键',
   `ancestors` varchar(2000) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '祖级列表',
-  `dept_category` int(2) DEFAULT NULL COMMENT '部门类型',
   `name` varchar(45) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '部门名称',
   `full_name` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '部门全称',
   `sort` int(11) DEFAULT NULL COMMENT '排序',
@@ -34,10 +33,10 @@ CREATE TABLE `sys_dept` (
 
 /*Data for the table `sys_dept` */
 
-insert  into `sys_dept`(`id`,`tenant_id`,`parent_id`,`ancestors`,`dept_category`,`name`,`full_name`,`sort`) values
-(1123598813738675201,'000000',0,'0',1,'刀锋科技','江苏刀锋科技有限公司',1),
-(1123598813738675202,'000000',1123598813738675201,'0,1123598813738675201',1,'常州刀锋','常州刀锋科技有限公司',1),
-(1123598813738675203,'000000',1123598813738675201,'0,1123598813738675201',1,'苏州刀锋','苏州刀锋科技有限公司',1);
+insert  into `sys_dept`(`id`,`tenant_id`,`parent_id`,`ancestors`,`name`,`full_name`,`sort`) values 
+(1123598813738675201,'000000',0,'0','刀锋科技','江苏刀锋科技有限公司',1),
+(1123598813738675202,'000000',1123598813738675201,'0,1123598813738675201','常州刀锋','常州刀锋科技有限公司',1),
+(1123598813738675203,'000000',1123598813738675201,'0,1123598813738675201','苏州刀锋','苏州刀锋科技有限公司',1);
 
 /*Table structure for table `sys_dept_relation` */
 
@@ -53,8 +52,8 @@ CREATE TABLE `sys_dept_relation` (
 
 /*Data for the table `sys_dept_relation` */
 
-insert  into `sys_dept_relation`(`parent`,`child`) values
-(1123598813738675201,1123598813738675202),
+insert  into `sys_dept_relation`(`parent`,`child`) values 
+(1123598813738675201,1123598813738675202),
 (1123598813738675201,1123598813738675203);
 
 /*Table structure for table `sys_dict` */
@@ -75,48 +74,48 @@ CREATE TABLE `sys_dict` (
 
 /*Data for the table `sys_dict` */
 
-insert  into `sys_dict`(`id`,`parent_id`,`code`,`dict_key`,`dict_value`,`sort`,`remark`,`is_deleted`) values
-(1123598814738675201,0,'sex',-1,'性别',1,NULL,0),
-(1123598814738675202,1123598814738675201,'sex',1,'男',1,NULL,0),
-(1123598814738675203,1123598814738675201,'sex',2,'女',2,NULL,0),
-(1123598814738675204,0,'notice',-1,'通知类型',2,NULL,0),
-(1123598814738675205,1123598814738675204,'notice',1,'发布通知',1,NULL,0),
-(1123598814738675206,1123598814738675204,'notice',2,'批转通知',2,NULL,0),
-(1123598814738675207,1123598814738675204,'notice',3,'转发通知',3,NULL,0),
-(1123598814738675208,1123598814738675204,'notice',4,'指示通知',4,NULL,0),
-(1123598814738675209,1123598814738675204,'notice',5,'任免通知',5,NULL,0),
-(1123598814738675210,1123598814738675204,'notice',6,'事务通知',6,NULL,0),
-(1123598814738675211,0,'menu_category',-1,'菜单类型',3,NULL,0),
-(1123598814738675212,1123598814738675211,'menu_category',1,'菜单',1,NULL,0),
-(1123598814738675213,1123598814738675211,'menu_category',2,'按钮',2,NULL,0),
-(1123598814738675214,0,'button_func',-1,'按钮功能',4,NULL,0),
-(1123598814738675215,1123598814738675214,'button_func',1,'工具栏',1,NULL,0),
-(1123598814738675216,1123598814738675214,'button_func',2,'操作栏',2,NULL,0),
-(1123598814738675217,1123598814738675214,'button_func',3,'工具操作栏',3,NULL,0),
-(1123598814738675218,0,'yes_no',-1,'是否',5,NULL,0),
-(1123598814738675219,1123598814738675218,'yes_no',1,'否',1,NULL,0),
-(1123598814738675220,1123598814738675218,'yes_no',2,'是',2,NULL,0),
-(1123598814738675221,0,'flow',-1,'流程类型',5,NULL,0),
-(1123598814738675222,1123598814738675221,'flow',1,'请假流程',1,'leave',0),
-(1123598814738675223,1123598814738675221,'flow',2,'报销流程',2,'expense',0),
-(1123598814738675224,0,'oss',-1,'对象存储类型',6,NULL,0),
-(1123598814738675225,1123598814738675224,'oss',1,'minio',1,NULL,0),
-(1123598814738675226,1123598814738675224,'oss',2,'qiniu',2,NULL,0),
-(1123598814738675227,0,'org_category',-1,'机构类型',7,NULL,0),
-(1123598814738675228,1123598814738675227,'org_category',1,'公司',1,NULL,0),
-(1123598814738675229,1123598814738675227,'org_category',2,'部门',2,NULL,0),
-(1123598814738675230,1123598814738675227,'org_category',3,'小组',3,NULL,0),
-(1123598814738675231,0,'data_scope_type',-1,'数据权限',8,NULL,0),
-(1123598814738675232,1123598814738675231,'data_scope_type',1,'全部可见',1,NULL,0),
-(1123598814738675233,1123598814738675231,'data_scope_type',2,'本人可见',2,NULL,0),
-(1123598814738675234,1123598814738675231,'data_scope_type',3,'所在机构可见',3,NULL,0),
-(1123598814738675235,1123598814738675231,'data_scope_type',4,'所在机构及子级可见',4,NULL,0),
-(1123598814738675236,1123598814738675231,'data_scope_type',5,'自定义',5,NULL,0),
-(1123598814738675237,0,'api_scope_type',-1,'接口权限',10,NULL,0),
-(1123598814738675238,1123598814738675237,'api_scope_type',1,'系统接口',1,NULL,0),
-(1123598814738675239,1123598814738675237,'api_scope_type',2,'业务接口',2,NULL,0),
-(1123598814738675240,0,'scope_category',-1,'权限类型',10,NULL,0),
-(1123598814738675241,1123598814738675240,'scope_category',1,'数据权限',1,NULL,0),
+insert  into `sys_dict`(`id`,`parent_id`,`code`,`dict_key`,`dict_value`,`sort`,`remark`,`is_deleted`) values 
+(1123598814738675201,0,'sex',-1,'性别',1,NULL,0),
+(1123598814738675202,1123598814738675201,'sex',1,'男',1,NULL,0),
+(1123598814738675203,1123598814738675201,'sex',2,'女',2,NULL,0),
+(1123598814738675204,0,'notice',-1,'通知类型',2,NULL,0),
+(1123598814738675205,1123598814738675204,'notice',1,'发布通知',1,NULL,0),
+(1123598814738675206,1123598814738675204,'notice',2,'批转通知',2,NULL,0),
+(1123598814738675207,1123598814738675204,'notice',3,'转发通知',3,NULL,0),
+(1123598814738675208,1123598814738675204,'notice',4,'指示通知',4,NULL,0),
+(1123598814738675209,1123598814738675204,'notice',5,'任免通知',5,NULL,0),
+(1123598814738675210,1123598814738675204,'notice',6,'事务通知',6,NULL,0),
+(1123598814738675211,0,'menu_category',-1,'菜单类型',3,NULL,0),
+(1123598814738675212,1123598814738675211,'menu_category',1,'菜单',1,NULL,0),
+(1123598814738675213,1123598814738675211,'menu_category',2,'按钮',2,NULL,0),
+(1123598814738675214,0,'button_func',-1,'按钮功能',4,NULL,0),
+(1123598814738675215,1123598814738675214,'button_func',1,'工具栏',1,NULL,0),
+(1123598814738675216,1123598814738675214,'button_func',2,'操作栏',2,NULL,0),
+(1123598814738675217,1123598814738675214,'button_func',3,'工具操作栏',3,NULL,0),
+(1123598814738675218,0,'yes_no',-1,'是否',5,NULL,0),
+(1123598814738675219,1123598814738675218,'yes_no',1,'否',1,NULL,0),
+(1123598814738675220,1123598814738675218,'yes_no',2,'是',2,NULL,0),
+(1123598814738675221,0,'flow',-1,'流程类型',5,NULL,0),
+(1123598814738675222,1123598814738675221,'flow',1,'请假流程',1,'leave',0),
+(1123598814738675223,1123598814738675221,'flow',2,'报销流程',2,'expense',0),
+(1123598814738675224,0,'oss',-1,'对象存储类型',6,NULL,0),
+(1123598814738675225,1123598814738675224,'oss',1,'minio',1,NULL,0),
+(1123598814738675226,1123598814738675224,'oss',2,'qiniu',2,NULL,0),
+(1123598814738675227,0,'org_category',-1,'机构类型',7,NULL,0),
+(1123598814738675228,1123598814738675227,'org_category',1,'公司',1,NULL,0),
+(1123598814738675229,1123598814738675227,'org_category',2,'部门',2,NULL,0),
+(1123598814738675230,1123598814738675227,'org_category',3,'小组',3,NULL,0),
+(1123598814738675231,0,'data_scope_type',-1,'数据权限',8,NULL,0),
+(1123598814738675232,1123598814738675231,'data_scope_type',1,'全部可见',1,NULL,0),
+(1123598814738675233,1123598814738675231,'data_scope_type',2,'本人可见',2,NULL,0),
+(1123598814738675234,1123598814738675231,'data_scope_type',3,'所在机构可见',3,NULL,0),
+(1123598814738675235,1123598814738675231,'data_scope_type',4,'所在机构及子级可见',4,NULL,0),
+(1123598814738675236,1123598814738675231,'data_scope_type',5,'自定义',5,NULL,0),
+(1123598814738675237,0,'api_scope_type',-1,'接口权限',10,NULL,0),
+(1123598814738675238,1123598814738675237,'api_scope_type',1,'系统接口',1,NULL,0),
+(1123598814738675239,1123598814738675237,'api_scope_type',2,'业务接口',2,NULL,0),
+(1123598814738675240,0,'scope_category',-1,'权限类型',10,NULL,0),
+(1123598814738675241,1123598814738675240,'scope_category',1,'数据权限',1,NULL,0),
 (1123598814738675242,1123598814738675240,'scope_category',2,'接口权限',2,NULL,0);
 
 /*Table structure for table `sys_gateway_route` */
@@ -138,9 +137,9 @@ CREATE TABLE `sys_gateway_route` (
 
 /*Data for the table `sys_gateway_route` */
 
-insert  into `sys_gateway_route`(`id`,`route_name`,`predicates`,`filters`,`uri`,`order`,`create_time`,`update_time`,`del_flag`) values
-('koala-merchant','商户中心','[{\"args\": {\"_genkey_0\": \"/merchant/**\"}, \"name\": \"Path\"}]','[]','lb://koala-merchant',0,'2019-09-12 06:16:40','2019-09-16 13:25:17','0'),
-('koala-oauth','认证中心','[{\"args\": {\"_genkey_0\": \"/oauth/**\"}, \"name\": \"Path\"}]','[{\"args\": {}, \"name\": \"ValidateCodeGatewayFilter\"}, {\"args\": {}, \"name\": \"PasswordDecoderFilter\"}]','lb://koala-oauth',0,'2019-09-12 15:35:18','2019-09-17 16:04:39','0'),
+insert  into `sys_gateway_route`(`id`,`route_name`,`predicates`,`filters`,`uri`,`order`,`create_time`,`update_time`,`del_flag`) values 
+('koala-merchant','商户中心','[{\"args\": {\"_genkey_0\": \"/merchant/**\"}, \"name\": \"Path\"}]','[]','lb://koala-merchant',0,'2019-09-12 06:16:40','2019-09-16 13:25:17','0'),
+('koala-oauth','认证中心','[{\"args\": {\"_genkey_0\": \"/oauth/**\"}, \"name\": \"Path\"}]','[{\"args\": {}, \"name\": \"ValidateCodeGatewayFilter\"}, {\"args\": {}, \"name\": \"PasswordDecoderFilter\"}]','lb://koala-oauth',0,'2019-09-12 15:35:18','2019-09-17 16:04:39','0'),
 ('koala-system','通用权限模块','[{\"args\": {\"_genkey_0\": \"/system/**\"}, \"name\": \"Path\"}]','[{\"args\": {\"key-resolver\": \"#{@remoteAddrKeyResolver}\", \"redis-rate-limiter.burstCapacity\": \"20\", \"redis-rate-limiter.replenishRate\": \"10\"}, \"name\": \"RequestRateLimiter\"}, {\"args\": {\"name\": \"default\", \"fallbackUri\": \"forward:/fallback\"}, \"name\": \"Hystrix\"}]','lb://koala-system',0,'2019-09-12 15:35:18','2019-09-20 14:53:21','0');
 
 /*Table structure for table `sys_menu` */
@@ -156,7 +155,7 @@ CREATE TABLE `sys_menu` (
   `icon_class` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '菜单图标',
   `uri` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '请求地址',
   `source` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '菜单资源',
-  `menu_type` int(2) DEFAULT NULL COMMENT '菜单类型',
+  `menu_type` int(2) DEFAULT '0' COMMENT '菜单类型: 0-菜单 1-按钮',
   `sort` int(2) DEFAULT NULL COMMENT '排序',
   `keep_alive` int(2) DEFAULT '1' COMMENT '0开启 1关闭',
   PRIMARY KEY (`id`) USING BTREE
@@ -164,21 +163,33 @@ CREATE TABLE `sys_menu` (
 
 /*Data for the table `sys_menu` */
 
-insert  into `sys_menu`(`id`,`parent_id`,`code`,`name`,`alias`,`icon_class`,`uri`,`source`,`menu_type`,`sort`,`keep_alive`) values
-(1123598815738675201,0,'desk','工作台','menu',NULL,'/desk','iconfont iconicon_airplay',1,1,1),
-(1123598815738675202,1123598815738675201,'notice','通知公告','menu',NULL,'/desk/notice','iconfont iconicon_sms',1,1,1),
-(1123598815738675203,0,'system','系统管理','menu',NULL,'/system','iconfont iconicon_setting',1,99,1),
-(1123598815738675204,1123598815738675203,'user','用户管理','menu',NULL,'/system/user','iconfont iconicon_principal',1,1,1),
-(1123598815738675205,1123598815738675203,'dept','机构管理','menu',NULL,'/system/dept','iconfont iconicon_group',1,2,1),
-(1123598815738675206,1123598815738675203,'dict','字典管理','menu',NULL,'/system/dict','iconfont iconicon_addresslist',1,3,1),
-(1123598815738675207,1123598815738675203,'menu','菜单管理','menu',NULL,'/system/menu','iconfont iconicon_subordinate',1,4,1),
-(1123598815738675209,1123598815738675203,'param','参数管理','menu',NULL,'/system/param','iconfont iconicon_community_line',1,6,1),
-(1123598815738675210,1123598815738675203,'role','角色管理','menu',NULL,'/system/role','iconfont iconicon_boss',1,1,1),
-(1123598815738675211,1123598815738675203,'tenant','租户管理','menu',NULL,'/system/tenant','iconfont icon-quanxian',1,7,1),
-(1123598815738675301,0,'memberCard','会员卡管理','menu',NULL,'/memberCard','iconfont icon-bofangqi-suoping',1,98,1),
-(1123598815738675302,1123598815738675301,'memberCardSetting','会员卡设置','menu',NULL,'/memberCard/setting','iconfont icon-shujuzhanshi2',1,2,1),
-(1123598815738675303,1123598815738675301,'wxCard','微信会员卡','menu',NULL,'/memberCard/wxCard','setting',2,1,1),
-(1123598815738675401,0,'monitor','系统监控','menu',NULL,'/monitor','iconfont icon-yanzhengma',1,3,1);
+insert  into `sys_menu`(`id`,`parent_id`,`code`,`name`,`alias`,`icon_class`,`uri`,`source`,`menu_type`,`sort`,`keep_alive`) values 
+(1123598815738675201,0,'desk','工作台','menu',NULL,'/desk','iconfont iconicon_airplay',1,1,1),
+(1123598815738675202,1123598815738675201,'notice','通知公告','menu',NULL,'/desk/notice','iconfont iconicon_sms',1,1,1),
+(1123598815738675203,0,'system','系统管理','menu',NULL,'/system','iconfont iconicon_setting',1,99,1),
+(1123598815738675204,1123598815738675203,'user','用户管理','menu',NULL,'/system/user','iconfont iconicon_principal',1,1,1),
+(1123598815738675205,1123598815738675203,'dept','机构管理','menu',NULL,'/system/dept','iconfont iconicon_group',1,2,1),
+(1123598815738675206,1123598815738675203,'dict','字典管理','menu',NULL,'/system/dict','iconfont iconicon_addresslist',1,3,1),
+(1123598815738675207,1123598815738675203,'menu','菜单管理','menu',NULL,'/system/menu','iconfont iconicon_subordinate',1,4,1),
+(1123598815738675209,1123598815738675203,'param','参数管理','menu',NULL,'/system/param','iconfont iconicon_community_line',1,6,1),
+(1123598815738675210,1123598815738675203,'role','角色管理','menu',NULL,'/system/role','iconfont iconicon_boss',1,1,1),
+(1123598815738675211,1123598815738675203,'tenant','租户管理','menu',NULL,'/system/tenant','iconfont icon-quanxian',1,7,1),
+(1123598815738675301,0,'memberCard','会员卡管理','menu',NULL,'/memberCard','iconfont icon-bofangqi-suoping',1,98,1),
+(1123598815738675302,1123598815738675301,'memberCardSetting','会员卡设置','menu',NULL,'/memberCard/setting','iconfont icon-shujuzhanshi2',1,2,1),
+(1123598815738675303,1123598815738675301,'wxCard','微信会员卡','menu',NULL,'/memberCard/wxCard','setting',2,1,1),
+(1123598815738675401,0,'monitor','系统监控','menu',NULL,'/monitor','iconfont icon-yanzhengma',1,3,1),
+(1123598815738675402,0,'oss','资源管理','menu',NULL,'/oss','',1,1,1),
+(1123598815738675403,0,'oss','对象存储','menu',NULL,'/oss/getList','',1,1,1),
+(1123598815738675404,0,'test2','系统设置2','menu',NULL,'/setting','',1,1,1),
+(1123598815738675405,0,'test3','系统设置3','menu',NULL,'/setting','',1,1,1),
+(1123598815738675406,0,'test4','系统设置4','menu',NULL,'/setting','',1,1,1),
+(1123598815738675407,0,'test5','系统设置5','menu',NULL,'/setting','',1,1,1),
+(1123598815738675408,0,'test6','系统设置6','menu',NULL,'/setting','',1,1,1),
+(1123598815738675409,0,'test7','系统设置7','menu',NULL,'/setting','',1,1,1),
+(1123598815738675410,0,'test8','系统设置8','menu',NULL,'/setting','',1,1,1),
+(1123598815738675411,0,'test9','系统设置9','menu',NULL,'/setting','',1,1,1),
+(1123598815738675412,0,'test10','系统设置10','menu',NULL,'/setting','',1,1,1),
+(1123598815738675413,0,'alipay','支付管理','alipay','icon-pay','/pay/pay/**','authorities',0,1,0);
 
 /*Table structure for table `sys_oauth_client_details` */
 
@@ -204,16 +215,37 @@ CREATE TABLE `sys_oauth_client_details` (
 
 /*Data for the table `sys_oauth_client_details` */
 
-insert  into `sys_oauth_client_details`(`id`,`client_id`,`client_secret`,`resource_ids`,`scope`,`authorized_grant_types`,`web_server_redirect_uri`,`authorities`,`access_token_validity`,`refresh_token_validity`,`additional_information`,`autoapprove`,`tenant_id`) values
-(1123598811738675201,'sword','sword_secret',NULL,'all','refresh_token,password,authorization_code','http://localhost:8888',NULL,3600,604800,NULL,'true','000000'),
-(1123598811738675202,'saber','saber_secret',NULL,'all','refresh_token,password,authorization_code','http://localhost:8080',NULL,3600,604800,NULL,'true','000000'),
-(1123598811738675203,'app','app',NULL,'server','password,refresh_token','http://localhost:8080',NULL,3600,604800,NULL,'true','111111'),
-(1123598811738675204,'daemon','daemon',NULL,'server','password,refresh_token',NULL,NULL,3600,604800,NULL,'true','111111'),
-(1123598811738675205,'gen','gen',NULL,'server','password,refresh_token',NULL,NULL,3600,604800,NULL,'true','111111'),
-(1123598811738675206,'mp','mp',NULL,'server','password,refresh_token',NULL,NULL,3600,604800,NULL,'true','000000'),
-(1123598811738675207,'pig','pig',NULL,'server','password,refresh_token,authorization_code,client_credentials','http://localhost:4040/sso1/login,http://localhost:4041/sso1/login',NULL,3600,604800,NULL,'true','000000'),
-(1123598811738675208,'test','test',NULL,'server','password,refresh_token,authorization_code,client_credentials','https://www.baidu.com/',NULL,3600,604800,NULL,'true','000000'),
-(1123598811738675209,'test2','test2',NULL,'all','password,refresh_token,authorization_code,client_credentials','https://www.baidu.com/',NULL,3600,604800,'{\r\n	\"website\": \"http://www.baidu.com\",\r\n	\"apiKey\": \"7gBZcbsC7kLIWCdELIl8nxcs\",\r\n	\"secretKey\": \"0osTIhce7uPvDKHz6aa67bhCukaKoYl4\",\r\n	\"appName\": \"平台用户认证服务器\",\r\n	\"updateTime\": 1562841065000,\r\n	\"isPersist\": 1,\r\n	\"appOs\": \"\",\r\n	\"appIcon\": \"\",\r\n	\"developerId\": 0,\r\n	\"createTime\": 1542016125000,\r\n	\"appType\": \"server\",\r\n	\"appDesc\": \"资源服务器\",\r\n	\"appId\": \"1552274783265\",\r\n	\"appNameEn\": \"open-cloud-uaa-admin-server\",\r\n	\"status\": 1\r\n}','false','000000');
+insert  into `sys_oauth_client_details`(`id`,`client_id`,`client_secret`,`resource_ids`,`scope`,`authorized_grant_types`,`web_server_redirect_uri`,`authorities`,`access_token_validity`,`refresh_token_validity`,`additional_information`,`autoapprove`,`tenant_id`) values 
+(1123598811738675201,'sword','sword_secret',NULL,'all','refresh_token,password,authorization_code','http://localhost:8888',NULL,3600,604800,NULL,'true','000000'),
+(1123598811738675202,'saber','saber_secret',NULL,'all','refresh_token,password,authorization_code','http://localhost:8080',NULL,3600,604800,NULL,'true','000000'),
+(1123598811738675203,'app','app',NULL,'server','password,refresh_token','http://localhost:8080',NULL,3600,604800,NULL,'true','111111'),
+(1123598811738675204,'daemon','daemon',NULL,'server','password,refresh_token',NULL,NULL,3600,604800,NULL,'true','111111'),
+(1123598811738675206,'mp','mp',NULL,'server','password,refresh_token',NULL,NULL,3600,604800,NULL,'true','000000'),
+(1123598811738675207,'pig','pig',NULL,'server','password,refresh_token,authorization_code,client_credentials','http://localhost:4040/sso1/login,http://localhost:4041/sso1/login',NULL,3600,604800,NULL,'true','000000'),
+(1123598811738675208,'test','test',NULL,'server','password,refresh_token,authorization_code,client_credentials','https://www.baidu.com/',NULL,3600,604800,NULL,'true','000000'),
+(1123598811738675209,'test2','test2',NULL,'all','password,refresh_token,authorization_code,client_credentials','https://www.baidu.com/',NULL,3600,604800,'{\r\n	\"website\": \"http://www.baidu.com\",\r\n	\"apiKey\": \"7gBZcbsC7kLIWCdELIl8nxcs\",\r\n	\"secretKey\": \"0osTIhce7uPvDKHz6aa67bhCukaKoYl4\",\r\n	\"appName\": \"平台用户认证服务器\",\r\n	\"updateTime\": 1562841065000,\r\n	\"isPersist\": 1,\r\n	\"appOs\": \"\",\r\n	\"appIcon\": \"\",\r\n	\"developerId\": 0,\r\n	\"createTime\": 1542016125000,\r\n	\"appType\": \"server\",\r\n	\"appDesc\": \"资源服务器\",\r\n	\"appId\": \"1552274783265\",\r\n	\"appNameEn\": \"open-cloud-uaa-admin-server\",\r\n	\"status\": 1\r\n}','false','000000'),
+(1123598820738675214,'222','222',NULL,'password,abc','password','http://www.baidu.com/','authorities',3600,7200,'{}','true','111111'),
+(1123598820738675215,'1015','1015',NULL,'password','password','http://www.baidu.com/','authorities',3600,7200,'{}','true','111111');
+
+/*Table structure for table `sys_oss` */
+
+DROP TABLE IF EXISTS `sys_oss`;
+
+CREATE TABLE `sys_oss` (
+  `id` bigint(64) NOT NULL COMMENT '主键',
+  `tenant_id` varchar(12) DEFAULT '000000' COMMENT '租户ID',
+  `bucket_name` varchar(255) DEFAULT NULL COMMENT '空间名',
+  `endpoint` varchar(255) DEFAULT NULL COMMENT '资源地址',
+  `access_key` varchar(255) DEFAULT NULL COMMENT 'accessKey',
+  `secret_key` varchar(255) DEFAULT NULL COMMENT 'secretKey',
+  `status` int(1) NOT NULL DEFAULT '1' COMMENT '状态：0停用 1正常',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='对象存储表';
+
+/*Data for the table `sys_oss` */
+
+insert  into `sys_oss`(`id`,`tenant_id`,`bucket_name`,`endpoint`,`access_key`,`secret_key`,`status`) values 
+(1,'000000','bucket','minio.igetwell.org','accessKey','secretKey',1);
 
 /*Table structure for table `sys_param` */
 
@@ -230,8 +262,8 @@ CREATE TABLE `sys_param` (
 
 /*Data for the table `sys_param` */
 
-insert  into `sys_param`(`id`,`param_name`,`param_key`,`param_value`,`remark`) values
-(1123598819738675201,'是否开启注册功能','account.registerUser','true','开启注册'),
+insert  into `sys_param`(`id`,`param_name`,`param_key`,`param_value`,`remark`) values 
+(1123598819738675201,'是否开启注册功能','account.registerUser','true','开启注册'),
 (1123598819738675202,'账号初始密码','account.initPassword','123456','初始密码');
 
 /*Table structure for table `sys_role` */
@@ -242,7 +274,7 @@ CREATE TABLE `sys_role` (
   `id` bigint(64) NOT NULL COMMENT '主键',
   `tenant_id` varchar(12) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '000000' COMMENT '租户ID',
   `parent_id` bigint(64) DEFAULT '0' COMMENT '父主键',
-  `role_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '角色名',
+  `name` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '角色名',
   `role_alias` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '角色别名',
   `ds_type` int(2) DEFAULT '2' COMMENT '数据权限类型：1全部 2本人可见 3所在机构本级可见 4所在机构本级及子级可见 5自定义',
   `ds_scope` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '数据权限范围',
@@ -251,11 +283,11 @@ CREATE TABLE `sys_role` (
 
 /*Data for the table `sys_role` */
 
-insert  into `sys_role`(`id`,`tenant_id`,`parent_id`,`role_name`,`role_alias`,`ds_type`,`ds_scope`) values
-(1123598816738675201,'000000',0,'超级管理员','ROLE_ADMINISTRATOR',3,NULL),
-(1123598816738675202,'000000',0,'用户','ROLE_USER',2,NULL),
-(1123598816738675203,'000000',1123598816738675202,'人事','ROLE_HR',2,NULL),
-(1123598816738675204,'000000',1123598816738675202,'经理','ROLE_MANAGER',2,NULL),
+insert  into `sys_role`(`id`,`tenant_id`,`parent_id`,`name`,`role_alias`,`ds_type`,`ds_scope`) values 
+(1123598816738675201,'000000',0,'超级管理员','ROLE_ADMINISTRATOR',3,NULL),
+(1123598816738675202,'000000',0,'用户','ROLE_USER',2,NULL),
+(1123598816738675203,'000000',1123598816738675202,'人事','ROLE_HR',2,NULL),
+(1123598816738675204,'000000',1123598816738675202,'经理','ROLE_MANAGER',2,NULL),
 (1123598816738675205,'000000',1123598816738675202,'老板','ROLE_BOSS',2,NULL);
 
 /*Table structure for table `sys_role_menu` */
@@ -271,23 +303,23 @@ CREATE TABLE `sys_role_menu` (
 
 /*Data for the table `sys_role_menu` */
 
-insert  into `sys_role_menu`(`id`,`menu_id`,`role_id`) values
-(1149888294028800003,1123598815738675201,1123598816738675201),
-(1149888294028800004,1123598815738675202,1123598816738675201),
-(1149888294028800005,1123598815738675203,1123598816738675201),
-(1149888294028800006,1123598815738675204,1123598816738675201),
-(1149888294028800007,1123598815738675205,1123598816738675201),
-(1149888294028800008,1123598815738675206,1123598816738675201),
-(1149888294028800009,1123598815738675207,1123598816738675201),
-(1149888294028800010,1123598815738675208,1123598816738675201),
-(1149888294028800011,1123598815738675209,1123598816738675201),
-(1149888294028800012,1123598815738675210,1123598816738675201),
-(1149888294028800013,1123598815738675256,1123598816738675201),
-(1149888294028800014,1123598815738675307,1123598816738675201),
-(1149888294028800015,1123598815738675308,1123598816738675201),
-(1149888294028800016,1123598815738675309,1123598816738675201),
-(1149888294028800017,1123598815738675310,1123598816738675201),
-(1149888294028800018,1123598815738675311,1123598816738675201),
+insert  into `sys_role_menu`(`id`,`menu_id`,`role_id`) values 
+(1149888294028800003,1123598815738675201,1123598816738675201),
+(1149888294028800004,1123598815738675202,1123598816738675201),
+(1149888294028800005,1123598815738675203,1123598816738675201),
+(1149888294028800006,1123598815738675204,1123598816738675201),
+(1149888294028800007,1123598815738675205,1123598816738675201),
+(1149888294028800008,1123598815738675206,1123598816738675201),
+(1149888294028800009,1123598815738675207,1123598816738675201),
+(1149888294028800010,1123598815738675208,1123598816738675201),
+(1149888294028800011,1123598815738675209,1123598816738675201),
+(1149888294028800012,1123598815738675210,1123598816738675201),
+(1149888294028800013,1123598815738675256,1123598816738675201),
+(1149888294028800014,1123598815738675307,1123598816738675201),
+(1149888294028800015,1123598815738675308,1123598816738675201),
+(1149888294028800016,1123598815738675309,1123598816738675201),
+(1149888294028800017,1123598815738675310,1123598816738675201),
+(1149888294028800018,1123598815738675311,1123598816738675201),
 (1149888294028800019,1123598815738675312,1123598816738675201);
 
 /*Table structure for table `sys_role_scope` */
@@ -378,9 +410,22 @@ CREATE TABLE `sys_tenant` (
 
 /*Data for the table `sys_tenant` */
 
-insert  into `sys_tenant`(`id`,`tenant_id`,`tenant_name`,`linkman`,`email`,`mobile`,`address`,`begin_time`,`end_time`,`status`,`create_time`,`update_time`,`is_deleted`) values
-(1123598820738675201,'000000','管理组','admin','xxxx@qq.com',' 15218725510','广东省深圳市',NULL,NULL,0,'2019-09-27 23:49:32','2019-09-27 23:49:31',0),
-(1123598820738675202,'111111','开发组','administrator','15517551511@126.com',' 15218725510','广东省深圳市',NULL,NULL,0,'2019-09-27 23:49:33','2019-09-27 23:49:29',0);
+insert  into `sys_tenant`(`id`,`tenant_id`,`tenant_name`,`linkman`,`email`,`mobile`,`address`,`begin_time`,`end_time`,`status`,`create_time`,`update_time`,`is_deleted`) values 
+(1123598820738675201,'000000','管理组','admin','xxxx@qq.com',' 15218725510','广东省深圳市',NULL,NULL,0,'2019-09-27 23:49:32','2019-09-27 23:49:31',0),
+(1123598820738675202,'111111','开发组','administrator','15517551511@126.com',' 15218725510','广东省深圳市',NULL,NULL,0,'2019-09-27 23:49:33','2019-09-27 23:49:29',0),
+(1123598820738675203,'22','开发组','administrator','15517551511@126.com',' 15218725510','广东省深圳市',NULL,NULL,0,'2019-09-27 23:49:33','2019-09-27 23:49:29',0),
+(1123598820738675204,'33','开发组','administrator','15517551511@126.com',' 15218725510','广东省深圳市',NULL,NULL,0,'2019-09-27 23:49:33','2019-09-27 23:49:29',0),
+(1123598820738675205,'44','开发组','administrator','15517551511@126.com',' 15218725510','广东省深圳市',NULL,NULL,0,'2019-09-27 23:49:33','2019-09-27 23:49:29',0),
+(1123598820738675206,'55','开发组','administrator','15517551511@126.com',' 15218725510','广东省深圳市',NULL,NULL,0,'2019-09-27 23:49:33','2019-09-27 23:49:29',0),
+(1123598820738675207,'66','开发组','administrator','15517551511@126.com',' 15218725510','广东省深圳市',NULL,NULL,0,'2019-09-27 23:49:33','2019-09-27 23:49:29',0),
+(1123598820738675208,'77','开发组','administrator','15517551511@126.com',' 15218725510','广东省深圳市',NULL,NULL,0,'2019-09-27 23:49:33','2019-09-27 23:49:29',0),
+(1123598820738675209,'88','开发组','administrator','15517551511@126.com',' 15218725510','广东省深圳市',NULL,NULL,0,'2019-09-27 23:49:33','2019-09-27 23:49:29',0),
+(1123598820738675210,'99','开发组','administrator','15517551511@126.com',' 15218725510','广东省深圳市',NULL,NULL,0,'2019-09-27 23:49:33','2019-09-27 23:49:29',0),
+(1123598820738675211,'101','开发组','administrator','15517551511@126.com',' 15218725510','广东省深圳市',NULL,NULL,0,'2019-09-27 23:49:33','2019-09-27 23:49:29',0),
+(1123598820738675212,'1012','开发组','administrator','15517551511@126.com',' 15218725510','广东省深圳市',NULL,NULL,0,'2019-09-27 23:49:33','2019-09-27 23:49:29',0),
+(1123598820738675213,'1013','开发组','administrator','15517551511@126.com',' 15218725510','广东省深圳市',NULL,NULL,0,'2019-09-27 23:49:33','2019-09-27 23:49:29',0),
+(1123598820738675214,'1014','测试组','minio.igetwell.org','9395@qq.com','15218725510','广东省深圳市',NULL,NULL,1,'2019-09-27 23:49:33','2019-09-27 23:49:29',0),
+(1123598820738675215,'1015','测试组','minio.igetwel','9395@qq.com','15218725510','dasdadadsa',NULL,NULL,1,NULL,NULL,0);
 
 /*Table structure for table `sys_user` */
 
@@ -413,12 +458,14 @@ CREATE TABLE `sys_user` (
 
 /*Data for the table `sys_user` */
 
-insert  into `sys_user`(`id`,`tenant_id`,`username`,`password`,`email`,`mobile`,`birthday`,`sex`,`role_id`,`dept_id`,`is_enabled`,`account_non_expired`,`account_non_locked`,`credentials_non_expired`,`last_login_time`,`create_user`,`create_dept`,`create_time`,`update_user`,`update_time`,`is_deleted`) values
-(1123598821738675201,'000000','admin','$2a$10$L4rfVQP7QL9p3bgE.8vZ3.gB2O2cj6NmymJ413EwfpV8dhEL/6n0S','admin@bladex.vip','123333333333','2018-08-08 00:00:00','M',1123598816738675201,1123598813738675201,1,1,1,1,NULL,1123598821738675201,1123598813738675201,'2018-08-08 00:00:00',1123598821738675201,'2018-08-08 00:00:00',0),
-(1123598821738675205,'000000','admin2','$2a$10$L4rfVQP7QL9p3bgE.8vZ3.gB2O2cj6NmymJ413EwfpV8dhEL/6n0S','admin@bladex.vip','123333333333','2018-08-08 00:00:00','N',1123598816738675201,1123598813738675201,1,1,1,1,NULL,1123598821738675201,1123598813738675201,'2018-08-08 00:00:00',1123598821738675201,'2018-08-08 00:00:00',0),
-(1123598821738675204,'000000','boss','abe57d23e18f7ad8ea99c86e430c90a05119a9d3','boss@bladex.vip','123333333333','2018-08-08 00:00:00','F',1123598816738675205,1123598813738675201,1,1,1,1,NULL,1123598821738675201,1123598813738675201,'2019-04-27 17:03:55',1123598821738675201,'2019-04-27 17:03:55',0),
-(1123598821738675206,'000000','HeYixuan','dfbaa3b61caa3a319f463cc165085aa8c822d2ce','15517551511@126.com','13288885138','2019-09-30 07:15:59','M',1123598816738675201,1123598813738675201,1,1,1,1,NULL,1123598821738675201,1123598813738675201,NULL,NULL,NULL,0),
-(1123598821738675202,'000000','hr','5e79b90f7bba52d54115f086e48f539016a27ec6','hr@bladex.vip','123333333333','2018-08-23 00:00:00','M',1123598816738675203,1123598813738675203,1,1,1,1,NULL,1123598821738675201,1123598813738675201,'2019-04-27 17:03:10',1123598821738675201,'2019-04-27 17:03:10',0),
+insert  into `sys_user`(`id`,`tenant_id`,`username`,`password`,`email`,`mobile`,`birthday`,`sex`,`role_id`,`dept_id`,`is_enabled`,`account_non_expired`,`account_non_locked`,`credentials_non_expired`,`last_login_time`,`create_user`,`create_dept`,`create_time`,`update_user`,`update_time`,`is_deleted`) values 
+(1123598821738675201,'000000','admin','$2a$10$L4rfVQP7QL9p3bgE.8vZ3.gB2O2cj6NmymJ413EwfpV8dhEL/6n0S','admin@bladex.vip','123333333333','2018-08-08 00:00:00','M',1123598816738675201,1123598813738675201,1,1,1,1,NULL,1123598821738675201,1123598813738675201,'2018-08-08 00:00:00',1123598821738675201,'2018-08-08 00:00:00',0),
+(1123598821738675205,'000000','admin2','$2a$10$L4rfVQP7QL9p3bgE.8vZ3.gB2O2cj6NmymJ413EwfpV8dhEL/6n0S','admin@bladex.vip','123333333333','2018-08-08 00:00:00','N',1123598816738675201,1123598813738675201,1,1,1,1,NULL,1123598821738675201,1123598813738675201,'2018-08-08 00:00:00',1123598821738675201,'2018-08-08 00:00:00',0),
+(1123598815738675413,'000000','alipay','gogo','939531410@qq.com','15218725510','2019-11-08 20:00:00','F',1,1,1,1,1,1,NULL,NULL,NULL,NULL,NULL,NULL,0),
+(1123598821738675204,'000000','boss','abe57d23e18f7ad8ea99c86e430c90a05119a9d3','boss@bladex.vip','123333333333','2018-08-08 00:00:00','F',1123598816738675205,1123598813738675201,1,1,1,1,NULL,1123598821738675201,1123598813738675201,'2019-04-27 17:03:55',1123598821738675201,'2019-04-27 17:03:55',0),
+(1123598815738675413,'000000','cc',NULL,'939531410@qq.com','15218725510','2019-11-08 20:00:00','M',1,1,1,1,1,1,NULL,NULL,NULL,NULL,NULL,NULL,0),
+(1123598821738675206,'000000','HeYixuan','dfbaa3b61caa3a319f463cc165085aa8c822d2ce','15517551511@126.com','13288885138','2019-09-30 07:15:59','M',1123598816738675201,1123598813738675201,1,1,1,1,NULL,1123598821738675201,1123598813738675201,NULL,NULL,NULL,0),
+(1123598821738675202,'000000','hr','5e79b90f7bba52d54115f086e48f539016a27ec6','hr@bladex.vip','123333333333','2018-08-23 00:00:00','M',1123598816738675203,1123598813738675203,1,1,1,1,NULL,1123598821738675201,1123598813738675201,'2019-04-27 17:03:10',1123598821738675201,'2019-04-27 17:03:10',0),
 (1123598821738675203,'000000','manager','dfbaa3b61caa3a319f463cc165085aa8c822d2ce','manager@bladex.vip','123333333333','2018-08-08 00:00:00','F',1123598816738675204,1123598813738675201,1,1,1,1,NULL,1123598821738675201,1123598813738675201,'2019-04-27 17:03:38',1123598821738675201,'2019-04-27 17:03:38',0);
 
 /*Table structure for table `sys_user_role` */
