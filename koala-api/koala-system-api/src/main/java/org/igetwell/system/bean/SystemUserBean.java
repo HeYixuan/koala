@@ -68,4 +68,13 @@ public class SystemUserBean {
      */
     private boolean isEnabled;
 
+    /**
+     * 账户是否过期：0过期 1未过期
+     */
+    private boolean accountNonExpired;
+
+    /**
+     * 账户是否锁定：0锁定 1未锁定
+     */
+    private boolean accountNonLocked;
 }

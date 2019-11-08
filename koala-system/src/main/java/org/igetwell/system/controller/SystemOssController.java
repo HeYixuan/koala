@@ -27,7 +27,7 @@ public class SystemOssController {
     public ResponseEntity getList(@RequestBody SystemOssDto oss){
         Pagination<SystemOss> pagination = new Pagination<SystemOss>();
         pagination.setOffset(oss.getPageNo());
-        pagination.setOffset(oss.getPageSize());
+        pagination.setLimit(oss.getPageSize());
         iSystemOssService.getList(pagination, oss);
         return ResponseEntity.ok(pagination);
     }
@@ -43,7 +43,7 @@ public class SystemOssController {
     }
 
     @PostMapping("/oss/update")
-    public ResponseEntity update(SystemOss oss){
+    public ResponseEntity update(@RequestBody SystemOss oss){
         return iSystemOssService.update(oss);
     }
 }

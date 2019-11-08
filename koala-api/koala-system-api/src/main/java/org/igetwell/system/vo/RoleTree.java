@@ -5,7 +5,7 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class DeptTree extends TreeNode {
+public class RoleTree extends TreeNode {
 
     /**
      * 租户ID
@@ -13,12 +13,7 @@ public class DeptTree extends TreeNode {
     private String tenantId;
 
     /**
-     * 部门全称
+     * 角色别名
      */
-    private String fullName;
-
-    /**
-     * 排序
-     */
-    private int sort;
+    private String roleAlias;
 }

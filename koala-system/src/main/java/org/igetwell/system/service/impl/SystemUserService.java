@@ -53,6 +53,12 @@ public class SystemUserService implements ISystemUserService {
     }
 
     @Override
+    public SystemUserBean get(Long id){
+        SystemUserBean systemUser = systemUserMapper.get(id);
+        return systemUser;
+    }
+
+    @Override
     public ResponseEntity insert(SystemUser systemUser){
         if (!checkParam(systemUser)){
             return ResponseEntity.error(HttpStatus.BAD_REQUEST, "用户名不可为空!");

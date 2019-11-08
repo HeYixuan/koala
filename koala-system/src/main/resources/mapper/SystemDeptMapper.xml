@@ -9,14 +9,35 @@
     <result column="TENANT_ID" jdbcType="VARCHAR" property="tenantId" />
     <result column="PARENT_ID" jdbcType="BIGINT" property="parentId" />
     <result column="ANCESTORS" jdbcType="VARCHAR" property="ancestors" />
-    <result column="DEPT_CATEGORY" jdbcType="INTEGER" property="deptCategory" />
     <result column="NAME" jdbcType="VARCHAR" property="name" />
     <result column="FULL_NAME" jdbcType="VARCHAR" property="fullName" />
     <result column="SORT" jdbcType="INTEGER" property="sort" />
   </resultMap>
+
+  <resultMap id="treeMap" type="org.igetwell.system.vo.DeptTree">
+    <id column="ID" jdbcType="BIGINT" property="id" />
+    <result column="PARENT_ID" jdbcType="BIGINT" property="parentId" />
+    <result column="TENANT_ID" jdbcType="VARCHAR" property="tenantId" />
+    <result column="NAME" jdbcType="VARCHAR" property="name" />
+    <result column="FULL_NAME" jdbcType="VARCHAR" property="fullName" />
+    <result column="SORT" jdbcType="INTEGER" property="sort" />
+  </resultMap>
+
   <sql id="baseSql">
-    ID, TENANT_ID, PARENT_ID, ANCESTORS, DEPT_CATEGORY, NAME, FULL_NAME, SORT
+    ID, TENANT_ID, PARENT_ID, ANCESTORS, NAME, FULL_NAME, SORT
   </sql>
+  <sql id="treeSql">
+    ID, TENANT_ID, PARENT_ID, NAME, FULL_NAME, SORT
+  </sql>
+
+  <select id="getList" resultMap="treeMap" parameterType="java.lang.String">
+    SELECT
+        <include refid="treeSql" />
+    FROM SYS_DEPT
+    <if test="tenantId != null and tenantId != ''">
+      TENANT_ID = #{tenantId,jdbcType=VARCHAR},
+    </if>
+  </select>
 
   <select id="getDeptAncestors" resultType="java.lang.Long" parameterType="java.lang.Long">
     SELECT ID FROM SYS_DEPT WHERE ANCESTORS LIKE CONCAT('%', #{deptId}, '%')
@@ -30,9 +51,12 @@
     DELETE FROM SYS_DEPT WHERE ID = #{id,jdbcType=BIGINT}
   </delete>
 
-  <insert id="insert" keyColumn="ID" keyProperty="id" parameterType="org.igetwell.system.entity.SystemDept" useGeneratedKeys="true">
+  <insert id="insert" parameterType="org.igetwell.system.entity.SystemDept">
     INSERT INTO SYS_DEPT
     <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
       <if test="tenantId != null and tenantId != ''">
         TENANT_ID,
       </if>
@@ -41,9 +65,6 @@
       </if>
       <if test="ancestors != null and ancestors != ''">
         ANCESTORS,
-      </if>
-      <if test="deptCategory != null">
-        DEPT_CATEGORY,
       </if>
       <if test="name != null and name !=''">
         NAME,
@@ -55,7 +76,10 @@
         SORT,
       </if>
     </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
+    <trim prefix="VALUES (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
       <if test="tenantId != null and tenantId != ''">
         #{tenantId,jdbcType=VARCHAR},
       </if>
@@ -64,9 +88,6 @@
       </if>
       <if test="ancestors != null and ancestors != ''">
         #{ancestors,jdbcType=VARCHAR},
-      </if>
-      <if test="deptCategory != null">
-        #{deptCategory,jdbcType=INTEGER},
       </if>
       <if test="name != null and name != ''">
         #{name,jdbcType=VARCHAR},
@@ -91,9 +112,6 @@
       </if>
       <if test="ancestors != null">
         ANCESTORS = #{ancestors,jdbcType=VARCHAR},
-      </if>
-      <if test="deptCategory != null">
-        DEPT_CATEGORY = #{deptCategory,jdbcType=INTEGER},
       </if>
       <if test="name != null and name != ''">
         NAME = #{name,jdbcType=VARCHAR},

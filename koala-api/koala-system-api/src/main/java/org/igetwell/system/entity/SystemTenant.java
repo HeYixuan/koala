@@ -1,27 +1,21 @@
 package org.igetwell.system.entity;
 
-import javax.persistence.*;
 import java.util.Date;
 
-@Table(name = "sys_tenant")
 public class SystemTenant {
     /**
      * 主键
      */
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     /**
      * 租户ID
      */
-    @Column(name = "tenant_id")
     private String tenantId;
 
     /**
      * 租户名称
      */
-    @Column(name = "tenant_name")
     private String tenantName;
 
     /**
@@ -47,13 +41,11 @@ public class SystemTenant {
     /**
      * 开始时间
      */
-    @Column(name = "begin_time")
     private Date beginTime;
 
     /**
      * 结束时间
      */
-    @Column(name = "end_time")
     private Date endTime;
 
     /**
@@ -64,19 +56,16 @@ public class SystemTenant {
     /**
      * 创建时间
      */
-    @Column(name = "create_time")
     private Date createTime;
 
     /**
      * 修改时间
      */
-    @Column(name = "update_time")
     private Date updateTime;
 
     /**
      * 是否已删除
      */
-    @Column(name = "is_deleted")
     private Integer isDeleted;
 
     /**

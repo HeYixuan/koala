@@ -32,6 +32,8 @@ public interface ISystemUserService {
      */
     List<SystemUserBean> getList(Pagination pagination, SystemUserPageDto dto);
 
+    SystemUserBean get(Long id);
+
     ResponseEntity insert(SystemUser systemUser);
 
     ResponseEntity deleteById(Long id);

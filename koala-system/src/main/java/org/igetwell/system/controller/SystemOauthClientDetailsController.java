@@ -42,7 +42,7 @@ public class SystemOauthClientDetailsController {
     }
 
     @PostMapping("/systemClient/update")
-    public ResponseEntity update(SystemOauthClientDetails oauthClientDetails){
+    public ResponseEntity update(@RequestBody SystemOauthClientDetails oauthClientDetails){
         return iSystemOauthClientDetailService.update(oauthClientDetails);
     }
 }

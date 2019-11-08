@@ -39,6 +39,8 @@
     <result column="ROLE_NAME" jdbcType="VARCHAR" property="roleName" />
     <result column="DEPT_NAME" jdbcType="VARCHAR" property="deptName" />
     <result column="IS_ENABLED" jdbcType="INTEGER" property="isEnabled" />
+    <result column="ACCOUNT_NON_EXPIRED" jdbcType="INTEGER" property="accountNonExpired" />
+    <result column="ACCOUNT_NON_LOCKED" jdbcType="INTEGER" property="accountNonLocked" />
   </resultMap>
 
   <sql id="baseSql">
@@ -58,9 +60,9 @@
   <sql id="baseListSql">
     ID, TENANT_ID, USERNAME, ROLE_ID, DEPT_ID, EMAIL, MOBILE, BIRTHDAY, SEX,
     (SELECT TENANT_NAME FROM SYS_TENANT WHERE TENANT_ID = SYS_USER.TENANT_ID) TENANT_NAME,
-    (SELECT ROLE_NAME FROM SYS_ROLE WHERE ID = ROLE_ID) ROLE_NAME,
+    (SELECT NAME FROM SYS_ROLE WHERE ID = ROLE_ID) ROLE_NAME,
     (SELECT NAME FROM SYS_DEPT WHERE ID = DEPT_ID) DEPT_NAME,
-    IS_ENABLED
+    IS_ENABLED, ACCOUNT_NON_EXPIRED, ACCOUNT_NON_LOCKED
   </sql>
 
   <select id="loadByUsername" resultMap="baseMap">
@@ -93,6 +95,13 @@
         AND MOBILE = #{mobile}
       </if>
     </where>
+  </select>
+
+  <select id="get" resultMap="baseListMap" parameterType="java.lang.Long">
+    SELECT
+    <include refid="baseListSql" />
+    FROM SYS_USER
+    WHERE ID = #{id,jdbcType=BIGINT}
   </select>
 
   <insert id="insert" parameterType="org.igetwell.system.entity.SystemUser">
@@ -297,6 +306,6 @@
         IS_DELETED = #{isDeleted,jdbcType=INTEGER},
       </if>
     </set>
-    WHERE ID = #{id,jdbcType=VARCHAR}
+    WHERE ID = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

@@ -30,7 +30,7 @@ public class SystemOssService implements ISystemOssService {
 
     @Override
     public List<SystemOss> getList(Pagination pagination, SystemOssDto oss) {
-        return systemOssMapper.getList(pagination, oss);
+        return systemOssMapper.pageList(pagination, oss);
     }
 
     @Override

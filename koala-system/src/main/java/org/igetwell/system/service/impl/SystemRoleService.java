@@ -4,6 +4,7 @@ import org.igetwell.common.uitls.ResponseEntity;
 import org.igetwell.system.entity.SystemRole;
 import org.igetwell.system.mapper.SystemRoleMapper;
 import org.igetwell.system.service.ISystemRoleService;
+import org.igetwell.system.vo.RoleTree;
 import org.igetwell.system.vo.SystemRoleVo;
 import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
@@ -18,6 +19,14 @@ public class SystemRoleService implements ISystemRoleService {
     @Override
     public List<SystemRole> getList() {
         return systemRoleMapper.getList();
+    }
+
+    /**
+     * 获取所有角色(树节点)
+     * @return
+     */
+    public List<RoleTree> getRoles(String tenantId){
+        return systemRoleMapper.getRoles(tenantId);
     }
 
     @Override

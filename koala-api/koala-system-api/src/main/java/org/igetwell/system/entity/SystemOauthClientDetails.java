@@ -1,32 +1,24 @@
 package org.igetwell.system.entity;
 
-import javax.persistence.*;
-
-@Table(name = "sys_oauth_client_details")
 public class SystemOauthClientDetails {
     /**
      * 主键
      */
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     /**
      * 客户端id
      */
-    @Column(name = "client_id")
     private String clientId;
 
     /**
      * 客户端密钥
      */
-    @Column(name = "client_secret")
     private String clientSecret;
 
     /**
      * 资源集合
      */
-    @Column(name = "resource_ids")
     private String resourceIds;
 
     /**
@@ -37,13 +29,11 @@ public class SystemOauthClientDetails {
     /**
      * 授权类型
      */
-    @Column(name = "authorized_grant_types")
     private String authorizedGrantTypes;
 
     /**
      * 回调地址
      */
-    @Column(name = "web_server_redirect_uri")
     private String webServerRedirectUri;
 
     /**
@@ -54,19 +44,16 @@ public class SystemOauthClientDetails {
     /**
      * 令牌过期秒数
      */
-    @Column(name = "access_token_validity")
     private Integer accessTokenValidity;
 
     /**
      * 刷新令牌过期秒数
      */
-    @Column(name = "refresh_token_validity")
     private Integer refreshTokenValidity;
 
     /**
      * 附加说明
      */
-    @Column(name = "additional_information")
     private String additionalInformation;
 
     /**
@@ -77,7 +64,6 @@ public class SystemOauthClientDetails {
     /**
      * 所属租户
      */
-    @Column(name = "tenant_id")
     private Integer tenantId;
 
     /**

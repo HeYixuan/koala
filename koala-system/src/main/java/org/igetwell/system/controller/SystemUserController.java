@@ -48,6 +48,12 @@ public class SystemUserController {
         return ResponseEntity.ok(pagination);
     }
 
+    @PostMapping("/systemUser/get/{id}")
+    public ResponseEntity getList(@PathVariable("id") Long id){
+        SystemUserBean systemUser = iSystemUserService.get(id);
+        return ResponseEntity.ok(systemUser);
+    }
+
     @PostMapping("/systemUser/add")
     public ResponseEntity insert(@RequestBody SystemUser systemUser){
         return iSystemUserService.insert(systemUser);

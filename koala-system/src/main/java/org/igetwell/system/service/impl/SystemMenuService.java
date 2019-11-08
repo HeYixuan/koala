@@ -41,8 +41,8 @@ public class SystemMenuService implements ISystemMenuService {
     }
 
     @Override
-    public SystemMenu get(String menuName){
-        return systemMenuMapper.get(menuName);
+    public SystemMenu get(Long id){
+        return systemMenuMapper.get(id);
     }
 
     @Override
@@ -59,10 +59,6 @@ public class SystemMenuService implements ISystemMenuService {
         if (!checkParam(systemMenu)){
             return ResponseEntity.error(HttpStatus.BAD_REQUEST, "菜单名称不可为空!");
         }
-        SystemMenu sysMenu = get(systemMenu.getName());
-        if (!StringUtils.isEmpty(sysMenu)){
-            return ResponseEntity.error(HttpStatus.BAD_REQUEST, "菜单信息已存在!");
-        }
         int i = systemMenuMapper.insert(systemMenu);
         if (i > 0){
             return ResponseEntity.ok();
@@ -75,7 +71,7 @@ public class SystemMenuService implements ISystemMenuService {
         if (!checkParam(systemMenu)){
             return ResponseEntity.error(HttpStatus.BAD_REQUEST, "菜单名称不可为空!");
         }
-        SystemMenu sysMenu = get(systemMenu.getName());
+        SystemMenu sysMenu = get(systemMenu.getId());
         if (StringUtils.isEmpty(sysMenu)){
             return ResponseEntity.error(HttpStatus.BAD_REQUEST, "菜单信息不存在!");
         }

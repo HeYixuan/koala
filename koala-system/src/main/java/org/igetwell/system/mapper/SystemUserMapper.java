@@ -31,6 +31,8 @@ public interface SystemUserMapper {
      */
     List<SystemUserBean> getList(Pagination pagination, SystemUserPageDto dto);
 
+    SystemUserBean get(Long id);
+
     int insert(SystemUser systemUser);
 
     int deleteById(Long id);

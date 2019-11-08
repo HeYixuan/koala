@@ -33,7 +33,7 @@ public interface ISystemMenuService {
      */
     List<MenuTree> getMenus();
 
-    SystemMenu get(String menuName);
+    SystemMenu get(Long id);
 
     ResponseEntity deleteById(Long id);
 

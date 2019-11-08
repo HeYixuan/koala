@@ -1,6 +1,7 @@
 package org.igetwell.system.mapper;
 
 import org.igetwell.system.entity.SystemRole;
+import org.igetwell.system.vo.RoleTree;
 import org.igetwell.system.vo.SystemRoleVo;
 
 import java.util.List;
@@ -12,6 +13,12 @@ public interface SystemRoleMapper {
      * @return
      */
     List<SystemRole> getList();
+
+    /**
+     * 获取所有角色(树节点)
+     * @return
+     */
+    List<RoleTree> getRoles(String tenantId);
 
     /**
      * 获取角色名

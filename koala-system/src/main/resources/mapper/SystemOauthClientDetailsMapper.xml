@@ -72,9 +72,12 @@
     DELETE FROM SYS_OAUTH_CLIENT_DETAILS WHERE CLIENT_ID = #{clientId,jdbcType=VARCHAR}
   </delete>
 
-  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="org.igetwell.system.entity.SystemOauthClientDetails" useGeneratedKeys="true">
+  <insert id="insert" parameterType="org.igetwell.system.entity.SystemOauthClientDetails">
     INSERT INTO SYS_OAUTH_CLIENT_DETAILS
     <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
       <if test="clientId != null and clientId != ''">
         CLIENT_ID,
       </if>
@@ -112,7 +115,10 @@
         TENANT_ID,
       </if>
     </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
+    <trim prefix="VALUES (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
       <if test="clientId != null and clientId !=''">
         #{clientId,jdbcType=VARCHAR},
       </if>

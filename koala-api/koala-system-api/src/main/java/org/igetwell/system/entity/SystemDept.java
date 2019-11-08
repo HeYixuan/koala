@@ -1,26 +1,19 @@
 package org.igetwell.system.entity;
 
-import javax.persistence.*;
-
-@Table(name = "sys_dept")
 public class SystemDept {
     /**
      * 主键
      */
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     /**
      * 租户ID
      */
-    @Column(name = "tenant_id")
     private String tenantId;
 
     /**
      * 父主键
      */
-    @Column(name = "parent_id")
     private Long parentId;
 
     /**
@@ -29,21 +22,13 @@ public class SystemDept {
     private String ancestors;
 
     /**
-     * 部门类型
-     */
-    @Column(name = "dept_category")
-    private Integer deptCategory;
-
-    /**
      * 部门名
      */
-    @Column(name = "name")
     private String name;
 
     /**
      * 部门全称
      */
-    @Column(name = "full_name")
     private String fullName;
 
     /**
@@ -121,24 +106,6 @@ public class SystemDept {
      */
     public void setAncestors(String ancestors) {
         this.ancestors = ancestors == null ? null : ancestors.trim();
-    }
-
-    /**
-     * 获取部门类型
-     *
-     * @return dept_category - 部门类型
-     */
-    public Integer getDeptCategory() {
-        return deptCategory;
-    }
-
-    /**
-     * 设置部门类型
-     *
-     * @param deptCategory 部门类型
-     */
-    public void setDeptCategory(Integer deptCategory) {
-        this.deptCategory = deptCategory;
     }
 
     /**

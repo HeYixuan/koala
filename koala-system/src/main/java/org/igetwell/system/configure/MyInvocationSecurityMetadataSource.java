@@ -53,7 +53,7 @@ public class MyInvocationSecurityMetadataSource implements FilterInvocationSecur
             Collection<SystemMenu> resources = iSystemMenuService.loadByRole(role.getId());
             //这里是循环所有角色,如果角色等于匿名用户,将数据库中未绑定的资源放在匿名角色里面,这样就会拦截
             //如果你一旦给匿名用户配置了这个URL 那么这个URL不会被拦截了,所以有一定的缺陷
-            if ("ROLE_ANON".equals(role.getRoleAlias())) {
+            if ("ROLE_ANON".equalsIgnoreCase(role.getRoleAlias())) {
                 Collection<SystemMenu> unbindResources = iSystemMenuService.loadUnbound();
                 unbindResources.forEach(e -> {
                     Collection<ConfigAttribute> attrs = new ArrayList<>();

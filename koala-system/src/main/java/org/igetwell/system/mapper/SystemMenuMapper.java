@@ -32,7 +32,7 @@ public interface SystemMenuMapper {
      */
     List<MenuTree> getMenus();
 
-    SystemMenu get(String menuName);
+    SystemMenu get(Long id);
 
     int deleteById(Long id);
 

@@ -1,38 +1,29 @@
 package org.igetwell.system.entity;
 
-import javax.persistence.*;
-
-@Table(name = "sys_role")
 public class SystemRole {
     /**
      * 主键
      */
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     /**
      * 租户ID
      */
-    @Column(name = "tenant_id")
     private String tenantId;
 
     /**
      * 父主键
      */
-    @Column(name = "parent_id")
     private Long parentId;
 
     /**
      * 角色名
      */
-    @Column(name = "role_name")
-    private String roleName;
+    private String name;
 
     /**
      * 角色别名
      */
-    @Column(name = "role_alias")
     private String roleAlias;
 
     /**
@@ -101,19 +92,19 @@ public class SystemRole {
     /**
      * 获取角色名
      *
-     * @return role_name - 角色名
+     * @return name - 角色名
      */
-    public String getRoleName() {
-        return roleName;
+    public String getName() {
+        return name;
     }
 
     /**
      * 设置角色名
      *
-     * @param roleName 角色名
+     * @param name 角色名
      */
-    public void setRoleName(String roleName) {
-        this.roleName = roleName == null ? null : roleName.trim();
+    public void setName(String name) {
+        this.name = name == null ? null : name.trim();
     }
 
     /**

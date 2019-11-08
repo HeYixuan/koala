@@ -11,7 +11,7 @@ public interface SystemOssMapper {
 
     SystemOss get(Long id);
 
-    List<SystemOss> getList(Pagination pagination, SystemOssDto oss);
+    List<SystemOss> pageList(Pagination pagination, SystemOssDto oss);
 
     int deleteById(Long id);
 

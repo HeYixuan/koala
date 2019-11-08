@@ -1,32 +1,26 @@
 package org.igetwell.system.entity;
 
-import javax.persistence.*;
 import java.util.Date;
 
-@Table(name = "sys_gateway_route")
 public class SystemGatewayRoute {
     /**
      * 路由ID
      */
-    @Id
     private String id;
 
     /**
      * 路由名称
      */
-    @Column(name = "route_name")
     private String routeName;
 
     /**
      * 断言
      */
-    @Column(name = "predicates")
     private String predicates;
 
     /**
      * 过滤器
      */
-    @Column(name = "filters")
     private String filters;
 
     /**
@@ -42,19 +36,16 @@ public class SystemGatewayRoute {
     /**
      * 创建时间
      */
-    @Column(name = "create_time")
     private Date createTime;
 
     /**
      * 修改时间
      */
-    @Column(name = "update_time")
     private Date updateTime;
 
     /**
      * 删除标记
      */
-    @Column(name = "del_flag")
     private String delFlag;
 
     /**

@@ -1,11 +1,19 @@
 package org.igetwell.system.mapper;
 
 import org.igetwell.system.entity.SystemDept;
+import org.igetwell.system.vo.DeptTree;
 
 import java.util.List;
 
 public interface SystemDeptMapper {
 
+
+    /**
+     * 查询所有部门(树形结构)
+     * @param tenantId
+     * @return
+     */
+    List<DeptTree> getList(String tenantId);
 
     /**
      * 获取部门子级

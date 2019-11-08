@@ -1,24 +1,21 @@
 package org.igetwell.system.entity;
 
-import javax.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.io.Serializable;
 import java.util.Date;
 
 
-@Table(name = "sys_user")
 public class SystemUser implements Serializable {
 
     /**
      * 主键
      */
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     /**
      * 租户ID
      */
-    @Column(name = "tenant_id")
     private String tenantId;
 
     /**
@@ -29,6 +26,7 @@ public class SystemUser implements Serializable {
     /**
      * 密码
      */
+    @JsonIgnore
     private String password;
 
     /**
@@ -54,79 +52,66 @@ public class SystemUser implements Serializable {
     /**
      * 角色id
      */
-    @Column(name = "role_id")
     private String roleId;
 
     /**
      * 部门id
      */
-    @Column(name = "dept_id")
     private String deptId;
 
     /**
      * 账户启用状态：0停用 1启用
      */
-    @Column(name = "is_enabled")
     private boolean isEnabled;
 
     /**
      * 账户是否过期：0过期 1未过期
      */
-    @Column(name = "account_non_expired")
     private boolean accountNonExpired;
 
     /**
      * 账户是否锁定：0锁定 1未锁定
      */
-    @Column(name = "account_non_locked")
     private boolean accountNonLocked;
 
     /**
      * 凭证是否过期：0过期 1未过期
      */
-    @Column(name = "credentials_non_expired")
     private boolean credentialsNonExpired;
 
     /**
      * 最后登录时间
      */
-    @Column(name = "last_login_time")
     private Date lastLoginTime;
 
     /**
      * 创建人
      */
-    @Column(name = "create_user")
     private Long createUser;
 
     /**
      * 创建部门
      */
-    @Column(name = "create_dept")
     private Long createDept;
 
     /**
      * 创建时间
      */
-    @Column(name = "create_time")
     private Date createTime;
 
     /**
      * 修改人
      */
-    @Column(name = "update_user")
     private Long updateUser;
 
     /**
      * 修改时间
      */
-    @Column(name = "update_time")
     private Date updateTime;
 
     /**
      * 是否已删除
      */
-    @Column(name = "is_deleted")
     private Integer isDeleted;
 
     /**

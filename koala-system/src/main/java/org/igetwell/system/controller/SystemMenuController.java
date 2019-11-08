@@ -68,6 +68,12 @@ public class SystemMenuController {
         return ResponseEntity.ok(nodeTree);
     }
 
+    @PostMapping("/systemMenu/get/{id}")
+    public ResponseEntity insert(@PathVariable("id") Long id){
+        SystemMenu menu = iSystemMenuService.get(id);
+        return ResponseEntity.ok(menu);
+    }
+
     @PostMapping("/systemMenu/add")
     public ResponseEntity insert(@RequestBody SystemMenu systemMenu){
         return iSystemMenuService.insert(systemMenu);

@@ -1,20 +1,14 @@
 package org.igetwell.system.entity;
 
-import javax.persistence.*;
-
-@Table(name = "sys_menu")
 public class SystemMenu {
     /**
      * 主键
      */
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     /**
      * 父级菜单
      */
-    @Column(name = "parent_id")
     private Long parentId;
 
     /**
@@ -35,7 +29,6 @@ public class SystemMenu {
     /**
      * 菜单图标
      */
-    @Column(name = "icon_class")
     private String iconClass;
 
     /**
@@ -51,13 +44,11 @@ public class SystemMenu {
     /**
      * 菜单类型: 0-菜单 1-按钮
      */
-    @Column(name = "menu_type")
     private Integer menuType;
 
     /**
-     * 0开启 1关闭
+     * 是否激活: 0开启 1关闭
      */
-    @Column(name = "keep_alive")
     private Integer keepAlive;
 
     /**

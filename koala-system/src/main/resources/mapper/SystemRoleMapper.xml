@@ -8,18 +8,30 @@
     <id column="ID" jdbcType="BIGINT" property="id" />
     <result column="TENANT_ID" jdbcType="VARCHAR" property="tenantId" />
     <result column="PARENT_ID" jdbcType="BIGINT" property="parentId" />
-    <result column="ROLE_NAME" jdbcType="VARCHAR" property="roleName" />
+    <result column="NAME" jdbcType="VARCHAR" property="name" />
     <result column="ROLE_ALIAS" jdbcType="VARCHAR" property="roleAlias" />
     <result column="DS_TYPE" jdbcType="INTEGER" property="dsType"/>
     <result column="DS_SCOPE" jdbcType="VARCHAR" property="dsScope"/>
   </resultMap>
 
+  <resultMap id="treeMap" type="org.igetwell.system.vo.RoleTree">
+    <id column="ID" jdbcType="BIGINT" property="id" />
+    <result column="PARENT_ID" jdbcType="BIGINT" property="parentId" />
+    <result column="TENANT_ID" jdbcType="VARCHAR" property="tenantId" />
+    <result column="NAME" jdbcType="VARCHAR" property="name" />
+    <result column="ROLE_ALIAS" jdbcType="VARCHAR" property="roleAlias" />
+  </resultMap>
+
   <sql id="baseSql">
-    ID, TENANT_ID, PARENT_ID, ROLE_NAME, ROLE_ALIAS, DS_TYPE, DS_SCOPE
+    ID, TENANT_ID, PARENT_ID, NAME, ROLE_ALIAS, DS_TYPE, DS_SCOPE
   </sql>
 
   <sql id="roleSql">
-    ROLE.ID AS id, ROLE.ROLE_NAME AS roleName, ROLE.ROLE_ALIAS AS roleAlias
+    ROLE.ID AS id, ROLE.NAME AS roleName, ROLE.ROLE_ALIAS AS roleAlias
+  </sql>
+
+  <sql id="treeSql">
+    ID, PARENT_ID, TENANT_ID, NAME, ROLE_ALIAS
   </sql>
 
   <select id="getList" resultMap="baseMap">
@@ -27,6 +39,16 @@
         <include refid="baseSql" />
     FROM SYS_ROLE
   </select>
+
+  <select id="getRoles" resultMap="treeMap">
+    SELECT
+    <include refid="treeSql" />
+    FROM SYS_ROLE
+    <if test="tenantId != null and tenantId !=''">
+      TENANT_ID = #{tenantId,jdbcType=VARCHAR}
+    </if>
+  </select>
+
 
   <select id="getRoleNames" resultType="org.igetwell.system.vo.SystemRoleVo">
     SELECT
@@ -70,17 +92,20 @@
     DELETE FROM SYS_ROLE WHERE ID = #{id,jdbcType=BIGINT}
   </delete>
 
-  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="org.igetwell.system.entity.SystemRole" useGeneratedKeys="true">
+  <insert id="insert" parameterType="org.igetwell.system.entity.SystemRole">
     INSERT INTO SYS_ROLE
     <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
       <if test="tenantId != null and tenantId !=''">
         TENANT_ID,
       </if>
       <if test="parentId != null">
         PARENT_ID,
       </if>
-      <if test="roleName != null and roleName !=''">
-        ROLE_NAME,
+      <if test="name != null and name !=''">
+        NAME,
       </if>
       <if test="roleAlias != null and roleAlias !=''">
         ROLE_ALIAS,
@@ -88,19 +113,22 @@
       <if test="dsType != null">
         DS_TYPE,
       </if>
-      <if test="dsScope != null">
+      <if test="dsScope != null and dsScope != ''">
         DS_SCOPE,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
       <if test="tenantId != null and tenantId !=''">
         #{tenantId,jdbcType=VARCHAR},
       </if>
       <if test="parentId != null">
         #{parentId,jdbcType=BIGINT},
       </if>
-      <if test="roleName != null and roleName !=''">
-        #{roleName,jdbcType=VARCHAR},
+      <if test="name != null and name !=''">
+        #{name,jdbcType=VARCHAR},
       </if>
       <if test="roleAlias != null and roleAlias !=''">
         #{roleAlias,jdbcType=VARCHAR},
@@ -108,7 +136,7 @@
       <if test="dsType != null">
         #{dsType,jdbcType=INTEGER},
       </if>
-      <if test="dsScope != null">
+      <if test="dsScope != null and dsScope != ''">
         #{dsScope,jdbcType=VARCHAR},
       </if>
     </trim>
@@ -123,8 +151,8 @@
       <if test="parentId != null">
         PARENT_ID = #{parentId,jdbcType=BIGINT},
       </if>
-      <if test="roleName != null and roleName !=''">
-        ROLE_NAME = #{roleName,jdbcType=VARCHAR},
+      <if test="name != null and name !=''">
+        NAME = #{name,jdbcType=VARCHAR},
       </if>
       <if test="roleAlias != null and roleAlias !=''">
         ROLE_ALIAS = #{roleAlias,jdbcType=VARCHAR},
@@ -132,7 +160,7 @@
       <if test="dsType != null">
         DS_TYPE = #{dsType,jdbcType=INTEGER},
       </if>
-      <if test="dsScope != null">
+      <if test="dsScope != null and dsScope != ''">
         DS_SCOPE = #{dsScope,jdbcType=VARCHAR},
       </if>
     </set>
