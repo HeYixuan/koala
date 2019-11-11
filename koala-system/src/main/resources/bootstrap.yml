@@ -21,4 +21,9 @@ spring:
     default-property-inclusion: NON_EMPTY
     date-format: yyyy-MM-dd HH:mm:ss
 
+sequence:
+  snowflake:
+    datacenterId: 16
+    workerId: 21
+
 

@@ -1,5 +1,6 @@
 package org.igetwell.system.service.impl;
 
+import org.igetwell.common.sequence.sequence.Sequence;
 import org.igetwell.common.uitls.ResponseEntity;
 import org.igetwell.system.entity.SystemDept;
 import org.igetwell.system.mapper.SystemDeptMapper;
@@ -12,6 +13,8 @@ import java.util.List;
 @Service
 public class SystemDeptService implements ISystemDeptService {
 
+    @Resource
+    private Sequence sequence;
     @Resource
     private SystemDeptMapper systemDeptMapper;
 
@@ -46,6 +49,7 @@ public class SystemDeptService implements ISystemDeptService {
 
     @Override
     public ResponseEntity insert(SystemDept systemDept) {
+        systemDept.setId(sequence.nextValue());
         int i = systemDeptMapper.insert(systemDept);
         if (i > 0){
             return ResponseEntity.ok();

@@ -1,6 +1,7 @@
 package org.igetwell.system.service.impl;
 
 import org.igetwell.common.enums.HttpStatus;
+import org.igetwell.common.sequence.sequence.Sequence;
 import org.igetwell.common.uitls.Pagination;
 import org.igetwell.common.uitls.ResponseEntity;
 import org.igetwell.system.bean.SystemUserBean;
@@ -16,6 +17,9 @@ import java.util.List;
 
 @Service
 public class SystemUserService implements ISystemUserService {
+
+    @Resource
+    private Sequence sequence;
 
     @Resource
     private SystemUserMapper systemUserMapper;
@@ -67,6 +71,7 @@ public class SystemUserService implements ISystemUserService {
         if (!StringUtils.isEmpty(sysUser)){
             return ResponseEntity.error(HttpStatus.BAD_REQUEST, "此用户已存在!");
         }
+        systemUser.setId(sequence.nextValue());
         int i = systemUserMapper.insert(systemUser);
         if (i > 0){
             return ResponseEntity.ok();

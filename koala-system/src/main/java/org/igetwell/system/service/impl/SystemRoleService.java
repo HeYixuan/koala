@@ -1,5 +1,6 @@
 package org.igetwell.system.service.impl;
 
+import org.igetwell.common.sequence.sequence.Sequence;
 import org.igetwell.common.uitls.ResponseEntity;
 import org.igetwell.system.entity.SystemRole;
 import org.igetwell.system.mapper.SystemRoleMapper;
@@ -13,6 +14,8 @@ import java.util.List;
 @Service
 public class SystemRoleService implements ISystemRoleService {
 
+    @Resource
+    private Sequence sequence;
     @Resource
     private SystemRoleMapper systemRoleMapper;
 
@@ -65,6 +68,7 @@ public class SystemRoleService implements ISystemRoleService {
 
     @Override
     public ResponseEntity insert(SystemRole systemRole) {
+        systemRole.setId(sequence.nextValue());
         int i = systemRoleMapper.insert(systemRole);
         if (i > 0){
             return ResponseEntity.ok();

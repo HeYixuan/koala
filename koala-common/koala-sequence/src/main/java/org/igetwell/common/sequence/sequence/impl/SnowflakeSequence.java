@@ -23,9 +23,9 @@ import org.igetwell.common.sequence.sequence.Sequence;
 public class SnowflakeSequence implements Sequence {
 
 	/**
-	 * 开始时间截 (2020-01-01)
+	 * 开始时间截 (2019-01-01)
 	 */
-	private final long twepoch = 1577808000000L;
+	private final long twepoch = 1546272000000L;
 
 	/**
 	 * 机器id所占的位数

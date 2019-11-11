@@ -33,7 +33,7 @@ public class MobileService implements IMobileService {
      * @return
      */
     @Override
-    public ResponseEntity sendSmsCode(String mobile) {
+    public ResponseEntity send(String mobile) {
         if (StringUtils.isEmpty(mobile) || !StringUtils.hasText(mobile)){
             return ResponseEntity.error(HttpStatus.BAD_REQUEST,"手机号不合法");
         }

@@ -1,6 +1,7 @@
 package org.igetwell.system.service.impl;
 
 import org.igetwell.common.enums.HttpStatus;
+import org.igetwell.common.sequence.sequence.Sequence;
 import org.igetwell.common.uitls.Pagination;
 import org.igetwell.common.uitls.ResponseEntity;
 import org.igetwell.system.dto.SystemTenantPageDto;
@@ -16,6 +17,8 @@ import java.util.List;
 @Service
 public class SystemTenantService implements ISystemTenantService {
 
+    @Resource
+    private Sequence sequence;
     @Resource
     private SystemTenantMapper systemTenantMapper;
 
@@ -47,6 +50,7 @@ public class SystemTenantService implements ISystemTenantService {
         if (!StringUtils.isEmpty(tenant)){
             return ResponseEntity.error(HttpStatus.BAD_REQUEST, "此租户号已存在!");
         }
+        systemTenant.setId(sequence.nextValue());
         int i = systemTenantMapper.insert(systemTenant);
         if (i > 0){
             return ResponseEntity.ok();

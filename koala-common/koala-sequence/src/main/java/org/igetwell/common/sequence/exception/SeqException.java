@@ -2,7 +2,6 @@ package org.igetwell.common.sequence.exception;
 
 /**
  * 序列号生成异常
- * @author xuan on 2018/1/10.
  */
 public class SeqException extends RuntimeException {
 

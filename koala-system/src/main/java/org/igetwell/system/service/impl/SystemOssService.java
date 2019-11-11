@@ -2,6 +2,7 @@ package org.igetwell.system.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.igetwell.common.enums.HttpStatus;
+import org.igetwell.common.sequence.sequence.Sequence;
 import org.igetwell.common.uitls.Pagination;
 import org.igetwell.common.uitls.ResponseEntity;
 import org.igetwell.system.dto.SystemOssDto;
@@ -20,6 +21,8 @@ import java.util.List;
 @Transactional(rollbackFor = Exception.class)
 public class SystemOssService implements ISystemOssService {
 
+    @Resource
+    private Sequence sequence;
     @Resource
     private SystemOssMapper systemOssMapper;
 
@@ -56,6 +59,7 @@ public class SystemOssService implements ISystemOssService {
         if (!checkParam(oss, oss.getSecretKey())){
             return ResponseEntity.error(HttpStatus.BAD_REQUEST, "secretKey不可为空!");
         }
+        oss.setId(sequence.nextValue());
         int i = systemOssMapper.insert(oss);
         if (i > 0){
             return ResponseEntity.ok();

@@ -1,6 +1,7 @@
 package org.igetwell.system.service.impl;
 
 import org.igetwell.common.enums.HttpStatus;
+import org.igetwell.common.sequence.sequence.Sequence;
 import org.igetwell.common.uitls.ResponseEntity;
 import org.igetwell.system.entity.SystemMenu;
 import org.igetwell.system.mapper.SystemMenuMapper;
@@ -15,6 +16,8 @@ import java.util.List;
 @Service
 public class SystemMenuService implements ISystemMenuService {
 
+    @Resource
+    private Sequence sequence;
     @Resource
     private SystemMenuMapper systemMenuMapper;
 
@@ -59,6 +62,7 @@ public class SystemMenuService implements ISystemMenuService {
         if (!checkParam(systemMenu)){
             return ResponseEntity.error(HttpStatus.BAD_REQUEST, "菜单名称不可为空!");
         }
+        systemMenu.setId(sequence.nextValue());
         int i = systemMenuMapper.insert(systemMenu);
         if (i > 0){
             return ResponseEntity.ok();

@@ -10,5 +10,5 @@ public interface IMobileService {
      * @param mobile
      * @return
      */
-    ResponseEntity sendSmsCode(String mobile);
+    ResponseEntity send(String mobile);
 }

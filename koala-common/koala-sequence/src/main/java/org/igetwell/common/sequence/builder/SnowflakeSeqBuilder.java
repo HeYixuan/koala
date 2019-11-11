@@ -11,7 +11,7 @@ public class SnowflakeSeqBuilder implements SeqBuilder {
 	/**
 	 * 数据中心ID，值的范围在[0,31]之间，一般可以设置机房的IDC[必选]
 	 */
-	private long datacenterId;
+	private long dataCenterId;
 	/**
 	 * 工作机器ID，值的范围在[0,31]之间，一般可以设置机器编号[必选]
 	 */
@@ -25,13 +25,13 @@ public class SnowflakeSeqBuilder implements SeqBuilder {
 	@Override
 	public Sequence build() {
 		SnowflakeSequence sequence = new SnowflakeSequence();
-		sequence.setDatacenterId(this.datacenterId);
+		sequence.setDatacenterId(this.dataCenterId);
 		sequence.setWorkerId(this.workerId);
 		return sequence;
 	}
 
-	public SnowflakeSeqBuilder datacenterId(long datacenterId) {
-		this.datacenterId = datacenterId;
+	public SnowflakeSeqBuilder dataCenterId(long dataCenterId) {
+		this.dataCenterId = dataCenterId;
 		return this;
 	}
 

@@ -1,6 +1,7 @@
 package org.igetwell.system.service.impl;
 
 import org.igetwell.common.enums.HttpStatus;
+import org.igetwell.common.sequence.sequence.Sequence;
 import org.igetwell.common.uitls.Pagination;
 import org.igetwell.common.uitls.ResponseEntity;
 import org.igetwell.system.bean.SystemOauthClientDetailsBean;
@@ -17,6 +18,8 @@ import java.util.List;
 @Service
 public class SystemOauthClientDetailService implements ISystemOauthClientDetailService {
 
+    @Resource
+    private Sequence sequence;
     @Resource
     private SystemOauthClientDetailsMapper systemOauthClientDetailsMapper;
 
@@ -48,6 +51,7 @@ public class SystemOauthClientDetailService implements ISystemOauthClientDetailS
         if (!StringUtils.isEmpty(oauthClientDetails)){
             return ResponseEntity.error(HttpStatus.BAD_REQUEST, "此应用ID已存在!");
         }
+        systemOauthClientDetails.setId(sequence.nextValue());
         int i = systemOauthClientDetailsMapper.insert(systemOauthClientDetails);
         if (i > 0){
             return ResponseEntity.ok();
