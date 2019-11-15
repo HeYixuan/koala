@@ -1,0 +1,53 @@
+server:
+  port: 8889
+
+spring:
+  application:
+    name: koala-system-usercenter
+
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.zaxxer.hikari.HikariDataSource
+    url: jdbc:mysql://localhost:3306/koala-merchant?autoReconnect=true&useUnicode=true&characterEncoding=UTF-8&allowMultiQueries=true&useSSL=false
+    username: root
+    password: 123456
+    hikari:
+      pool-name: DatebookHikariCP
+      minimum-idle: 5
+      maximum-pool-size: 15
+      idle-timeout: 30000
+      connection-timeout: 30000
+
+  main:
+    allow-bean-definition-overriding: true
+
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    password:
+
+mybatis:
+  mapper-locations: classpath:/mapper/*Mapper.xml
+
+  thymeleaf:
+    mode: LEGACYHTML5
+    prefix: classpath:/templates/
+    suffix: .html
+    encoding: UTF-8
+    cache: false
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+    default-property-inclusion: NON_EMPTY
+
+rocketmq:
+  producer:
+    group: pay-test
+    send-message-timeout: 300000
+    compress-message-body-threshold: 4096
+    max-message-size: 4194304
+    retry-times-when-send-async-failed: 0
+    retry-next-server: true
+    retry-times-when-send-failed: 2
+  name-server: 127.0.0.1:9876

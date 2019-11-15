@@ -1,4 +1,4 @@
-package org.igetwell.service.impl;
+package org.igetwell.merchant.card.service.impl;
 
 import org.igetwell.common.enums.*;
 import org.igetwell.common.uitls.CharacterUtils;
@@ -8,7 +8,7 @@ import org.igetwell.merchant.card.entity.MerchantCard;
 import org.igetwell.merchant.card.entity.MerchantCardBasic;
 import org.igetwell.merchant.card.mapper.MerchantCardBasicMapper;
 import org.igetwell.merchant.card.mapper.MerchantCardMapper;
-import org.igetwell.service.IMerchantCardService;
+import org.igetwell.merchant.card.service.IMerchantCardService;
 import org.igetwell.wechat.sdk.bean.card.*;
 import org.igetwell.wechat.sdk.bean.card.create.WxCardCreate;
 import org.springframework.stereotype.Service;

@@ -1,7 +1,7 @@
 package org.igetwell.web;
 
 import org.igetwell.common.uitls.ResponseEntity;
-import org.igetwell.service.ISystemUserService;
+import org.igetwell.merchant.card.service.ISystemUserService;
 import org.igetwell.system.dto.SystemUserPageDto;
 import org.igetwell.system.feign.SystemUserClient;
 import org.springframework.web.bind.annotation.PostMapping;

@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.igetwell.system.member.mapper.SeckillOrderMapper">
+  <resultMap id="baseMap" type="org.igetwell.order.entity.SeckillOrder">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="ORDER_NO" jdbcType="VARCHAR" property="orderNo" />
+    <result column="MOBILE" jdbcType="VARCHAR" property="mobile" />
+    <result column="PROD_ID" jdbcType="VARCHAR" property="prodId" />
+    <result column="PROD_NAME" jdbcType="VARCHAR" property="prodName" />
+    <result column="CHARGE_MONEY" jdbcType="DECIMAL" property="chargeMoney" />
+    <result column="CHARGE_TIME" jdbcType="TIMESTAMP" property="chargeTime" />
+    <result column="FINISH_TIME" jdbcType="TIMESTAMP" property="finishTime" />
+    <result column="ORDER_STATUS" jdbcType="TINYINT" property="orderStatus" />
+    <result column="RECORD_STATUS" jdbcType="TINYINT" property="recordStatus" />
+    <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+
+  <sql id="baseSql">
+    ID, ORDER_NO, MOBILE, PROD_ID, PROD_NAME, CHARGE_MONEY, CHARGE_TIME, FINISH_TIME,
+    ORDER_STATUS, RECORD_STATUS, CREATE_TIME, UPDATE_TIME
+  </sql>
+
+  <!--查询订单信息-->
+  <select id="selectByOrderNo" parameterType="java.lang.String" resultMap="baseMap">
+    SELECT
+        <include refid="baseSql" />
+    FROM T_SECKILL_ORDER
+    WHERE ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    AND RECORD_STATUS = 0
+  </select>
+
+  <!--查询订单信息-->
+  <select id="getOrder" resultMap="baseMap" parameterType="org.igetwell.order.dto.OrderDto">
+    SELECT
+        <include refid="baseSql"/>
+    FROM T_SECKILL_ORDER
+    WHERE RECORD_STATUS = 0
+    AND PROD_ID = #{prodId}
+    AND MOBILE = #{mobile}
+  </select>
+
+  <delete id="delete" parameterType="java.lang.Integer">
+    DELETE FROM T_SECKILL_ORDER
+    WHERE ID = #{id,jdbcType=INTEGER}
+  </delete>
+
+  <!--秒杀订单入库-->
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="org.igetwell.order.entity.SeckillOrder" useGeneratedKeys="true">
+    insert into t_seckill_order
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="orderNo != null">
+        ORDER_NO,
+      </if>
+      <if test="mobile != null">
+        MOBILE,
+      </if>
+      <if test="prodId != null">
+        PROD_ID,
+      </if>
+      <if test="prodName != null">
+        PROD_NAME,
+      </if>
+      <if test="chargeMoney != null">
+        CHARGE_MONEY,
+      </if>
+      <if test="chargeTime != null">
+        CHARGE_TIME,
+      </if>
+      <if test="finishTime != null">
+        FINISH_TIME,
+      </if>
+      <if test="orderStatus != null">
+        ORDER_STATUS,
+      </if>
+      <if test="recordStatus != null">
+        RECORD_STATUS,
+      </if>
+      <if test="createTime != null">
+        CREATE_TIME,
+      </if>
+      <if test="updateTime != null">
+        UPDATE_TIME,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="orderNo != null">
+        #{orderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="mobile != null">
+        #{mobile,jdbcType=VARCHAR},
+      </if>
+      <if test="prodId != null">
+        #{prodId,jdbcType=VARCHAR},
+      </if>
+      <if test="prodName != null">
+        #{prodName,jdbcType=VARCHAR},
+      </if>
+      <if test="chargeMoney != null">
+        #{chargeMoney,jdbcType=DECIMAL},
+      </if>
+      <if test="chargeTime != null">
+        #{chargeTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="finishTime != null">
+        #{finishTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="orderStatus != null">
+        #{orderStatus,jdbcType=TINYINT},
+      </if>
+      <if test="recordStatus != null">
+        #{recordStatus,jdbcType=TINYINT},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+
+  <update id="update" parameterType="org.igetwell.order.entity.SeckillOrder">
+    UPDATE T_SECKILL_ORDER
+    <set>
+      <if test="orderNo != null">
+        ORDER_NO = #{orderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="mobile != null">
+        MOBILE = #{mobile,jdbcType=VARCHAR},
+      </if>
+      <if test="prodId != null">
+        PROD_ID = #{prodId,jdbcType=VARCHAR},
+      </if>
+      <if test="prodName != null">
+        PROD_NAME = #{prodName,jdbcType=VARCHAR},
+      </if>
+      <if test="chargeMoney != null">
+        CHARGE_MONEY = #{chargeMoney,jdbcType=DECIMAL},
+      </if>
+      <if test="chargeTime != null">
+        CHARGE_TIME = #{chargeTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="finishTime != null">
+        FINISH_TIME = #{finishTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="orderStatus != null">
+        ORDER_STATUS = #{orderStatus,jdbcType=TINYINT},
+      </if>
+      <if test="recordStatus != null">
+        RECORD_STATUS = #{recordStatus,jdbcType=TINYINT},
+      </if>
+      <if test="createTime != null">
+        CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+</mapper>

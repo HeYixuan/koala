@@ -82,6 +82,7 @@ CREATE TABLE `merchant_card` (
   `MERCHANT_ID` bigint(64) NOT NULL COMMENT '商户ID',
   `MERCHANT_NO` varchar(50) NOT NULL COMMENT '商户编号',
   `MERCHANT_CARD_ID` varchar(64) NOT NULL COMMENT '会员卡ID',
+  `WX_CARD_ID` varchar(64) DEFAULT NULL COMMENT '微信会员卡ID,未同步时为空',
   `BRAND_LOGO` varchar(125) NOT NULL COMMENT '品牌LOGO',
   `BRAND_NAME` varchar(50) NOT NULL COMMENT '品牌名称',
   `CARD_NAME` varchar(50) NOT NULL COMMENT '会员卡名称',
@@ -98,8 +99,8 @@ CREATE TABLE `merchant_card` (
 
 /*Data for the table `merchant_card` */
 
-insert  into `merchant_card`(`ID`,`MERCHANT_ID`,`MERCHANT_NO`,`MERCHANT_CARD_ID`,`BRAND_LOGO`,`BRAND_NAME`,`CARD_NAME`,`CARD_BACK_URL`,`CARD_BACK_COLOR`,`DISCOUNT`,`PRIVILEGE`,`NOTICE`,`DESCRIPTION`,`CARD_STATUS`,`CREATE_TIME`) values 
-(1,1,'000000','2019102617110000','http://www.baidu.com','永辉超市','微信会员卡体验','http://www.mi.com','#Color10',1,'会员卡特权说明','会员卡提示：结账时出示会员卡','会员卡使用须知：须会员领卡后才能使用',0,'2019-10-26 17:19:14');
+insert  into `merchant_card`(`ID`,`MERCHANT_ID`,`MERCHANT_NO`,`MERCHANT_CARD_ID`,`WX_CARD_ID`,`BRAND_LOGO`,`BRAND_NAME`,`CARD_NAME`,`CARD_BACK_URL`,`CARD_BACK_COLOR`,`DISCOUNT`,`PRIVILEGE`,`NOTICE`,`DESCRIPTION`,`CARD_STATUS`,`CREATE_TIME`) values 
+(1,1,'000000','2019102617110000',NULL,'http://www.baidu.com','永辉超市','微信会员卡体验','http://www.mi.com','#Color10',1,'会员卡特权说明','会员卡提示：结账时出示会员卡','会员卡使用须知：须会员领卡后才能使用',0,'2019-10-26 17:19:14');
 
 /*Table structure for table `merchant_card_basic` */
 
@@ -248,6 +249,55 @@ CREATE TABLE `payment` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='支付记录表';
 
 /*Data for the table `payment` */
+
+/*Table structure for table `t_seckill_order` */
+
+DROP TABLE IF EXISTS `t_seckill_order`;
+
+CREATE TABLE `t_seckill_order` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `ORDER_NO` varchar(36) NOT NULL DEFAULT '-1' COMMENT '代理商订单号',
+  `MOBILE` varchar(36) NOT NULL DEFAULT '-1' COMMENT '用户手机号',
+  `PROD_ID` varchar(36) NOT NULL DEFAULT '-1' COMMENT '商品id',
+  `PROD_NAME` varchar(36) NOT NULL DEFAULT '-1' COMMENT '商品名称',
+  `CHARGE_MONEY` decimal(10,3) NOT NULL DEFAULT '0.000' COMMENT '交易金额',
+  `CHARGE_TIME` datetime DEFAULT NULL COMMENT '订单下单时间',
+  `FINISH_TIME` datetime DEFAULT NULL COMMENT '订单结束时间',
+  `ORDER_STATUS` tinyint(4) NOT NULL DEFAULT '1' COMMENT '订单状态，1 初始化 2 处理中 3 失败 0 成功',
+  `RECORD_STATUS` tinyint(4) NOT NULL DEFAULT '0' COMMENT '记录状态 0 正常 1 已删除',
+  `CREATE_TIME` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `UPDATE_TIME` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+
+/*Data for the table `t_seckill_order` */
+
+insert  into `t_seckill_order`(`id`,`ORDER_NO`,`MOBILE`,`PROD_ID`,`PROD_NAME`,`CHARGE_MONEY`,`CHARGE_TIME`,`FINISH_TIME`,`ORDER_STATUS`,`RECORD_STATUS`,`CREATE_TIME`,`UPDATE_TIME`) values 
+(1,'1e35bb07-87f6-4814-84ab-6717adc5822f','15218725510','pid_0001','iphoneX2019新款',5999.000,'2019-11-15 18:12:35',NULL,2,0,'2019-11-15 18:12:35','2019-11-15 18:12:35');
+
+/*Table structure for table `t_seckill_product` */
+
+DROP TABLE IF EXISTS `t_seckill_product`;
+
+CREATE TABLE `t_seckill_product` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `PROD_ID` varchar(36) NOT NULL DEFAULT '-1' COMMENT '商品id',
+  `PROD_NAME` varchar(36) NOT NULL DEFAULT '-1' COMMENT '商品名称',
+  `PROD_STATUS` int(1) NOT NULL DEFAULT '0' COMMENT '商品状态,0-上架，1-下架',
+  `PROD_STOCK` int(11) NOT NULL DEFAULT '0' COMMENT '商品库存',
+  `PROD_PRICE` decimal(10,3) NOT NULL DEFAULT '0.000' COMMENT '商品售价',
+  `CREATE_TIME` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `UPDATE_TIME` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `VERSION` int(11) NOT NULL DEFAULT '0' COMMENT '更新版本号',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+
+/*Data for the table `t_seckill_product` */
+
+insert  into `t_seckill_product`(`id`,`PROD_ID`,`PROD_NAME`,`PROD_STATUS`,`PROD_STOCK`,`PROD_PRICE`,`CREATE_TIME`,`UPDATE_TIME`,`VERSION`) values 
+(1,'pid_0001','iphoneX2019新款',0,95,5999.000,'2019-11-15 15:39:21','2019-11-15 15:39:21',0),
+(2,'pid_0002','小米9SE',0,300,1200.000,'2019-11-15 15:39:21','2019-11-15 15:39:21',0),
+(3,'pid_0003','华为MATE20',0,400,2000.000,'2019-11-15 15:39:21','2019-11-15 15:39:21',0);
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;

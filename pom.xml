@@ -46,6 +46,7 @@
 		<module>koala-oauth</module>
 		<module>koala-system</module>
 		<module>koala-merchant</module>
+		<module>koala-system-usercenter</module>
 		<module>koala-api</module>
 		<module>koala-common</module>
 	</modules>

@@ -26,6 +26,10 @@
         <module>koala-cache</module>
         <module>koala-security</module>
         <module>koala-data-scope</module>
+        <module>koala-minio</module>
+        <module>koala-sequence</module>
+        <module>apache-rocket</module>
+        <module>apache-rocket-message-protocol</module>
         <module>koala-wechat-sdk</module>
     </modules>
 

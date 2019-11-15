@@ -1,10 +1,10 @@
-package org.igetwell.service.impl;
+package org.igetwell.merchant.card.service.impl;
 
 import org.igetwell.common.enums.HttpStatus;
 import org.igetwell.common.uitls.ResponseEntity;
 import org.igetwell.merchant.card.entity.MerchantCardBasic;
 import org.igetwell.merchant.card.mapper.MerchantCardBasicMapper;
-import org.igetwell.service.IMerchantCardBasicService;
+import org.igetwell.merchant.card.service.IMerchantCardBasicService;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 

@@ -1,4 +1,4 @@
-package org.igetwell.service;
+package org.igetwell.merchant.card.service;
 
 import org.igetwell.common.uitls.ResponseEntity;
 import org.igetwell.merchant.card.entity.MerchantCardBasic;

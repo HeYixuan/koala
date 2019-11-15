@@ -1,7 +1,7 @@
 package org.igetwell.web;
 
 import org.igetwell.common.uitls.ResponseEntity;
-import org.igetwell.service.impl.MerchantCardService;
+import org.igetwell.merchant.card.service.impl.MerchantCardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
