@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.igetwell.system.order.mapper.GoodsMapper">
+  <resultMap id="baseMap" type="org.igetwell.system.order.entity.Goods">
+    <id column="ID" jdbcType="BIGINT" property="id" />
+    <result column="GOODS_NAME" jdbcType="VARCHAR" property="goodsName" />
+    <result column="STOCK" jdbcType="INTEGER" property="stock" />
+    <result column="STATUS" jdbcType="INTEGER" property="status" />
+    <result column="COST_PRICE" jdbcType="DECIMAL" property="costPrice" />
+    <result column="SALES_PRICE" jdbcType="DECIMAL" property="salesPrice" />
+    <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+
+  <sql id="baseSql">
+    ID, GOODS_NAME, STOCK, `STATUS`, COST_PRICE, SALES_PRICE, CREATE_TIME, UPDATE_TIME
+  </sql>
+
+  <select id="get" parameterType="java.lang.Long" resultMap="baseMap">
+    SELECT
+        <include refid="baseSql" />
+    FROM GOODS
+    WHERE ID = #{id,jdbcType=BIGINT}
+  </select>
+
+  <select id="getList" resultMap="baseMap">
+    SELECT
+        <include refid="baseSql" />
+    FROM GOODS
+    WHERE STATUS = 1
+  </select>
+
+  <delete id="deleteById" parameterType="java.lang.Long">
+    DELETE FROM GOODS
+    WHERE ID = #{id,jdbcType=BIGINT}
+  </delete>
+
+  <insert id="insert" parameterType="org.igetwell.system.order.entity.Goods">
+    insert into goods
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="goodsName != null and goodsName != ''">
+        GOODS_NAME,
+      </if>
+      <if test="stock != null">
+        STOCK,
+      </if>
+      <if test="status != null">
+        `STATUS`,
+      </if>
+      <if test="costPrice != null">
+        COST_PRICE,
+      </if>
+      <if test="salesPrice != null">
+        SALES_PRICE,
+      </if>
+      <if test="createTime != null">
+        CREATE_TIME,
+      </if>
+      <if test="updateTime != null">
+        UPDATE_TIME,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="goodsName != null and goodsName != ''">
+        #{goodsName,jdbcType=VARCHAR},
+      </if>
+      <if test="stock != null">
+        #{stock,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="costPrice != null">
+        #{costPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="salesPrice != null">
+        #{salesPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+
+  <update id="update" parameterType="org.igetwell.system.order.entity.Goods">
+    update goods
+    <set>
+      <if test="goodsName != null and goodsName != ''">
+        GOODS_NAME = #{goodsName,jdbcType=VARCHAR},
+      </if>
+      <if test="stock != null">
+        STOCK = #{stock,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        `STATUS` = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="costPrice != null">
+        COST_PRICE = #{costPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="salesPrice != null">
+        SALES_PRICE = #{salesPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="createTime != null">
+        CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=BIGINT}
+  </update>
+
+</mapper>
