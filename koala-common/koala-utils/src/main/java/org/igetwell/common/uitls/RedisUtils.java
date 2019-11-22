@@ -62,6 +62,14 @@ public class RedisUtils {
         redisTemplate.opsForValue().set(key, value, expire, TimeUnit.SECONDS);
     }
 
+    public void set(String key, Object value){
+        redisTemplate.opsForValue().set(key, value);
+    }
+
+    public void set(String key, String value){
+        redisTemplate.opsForValue().set(key, value);
+    }
+
 
     /**
      * 判断key是否存在
@@ -84,6 +92,40 @@ public class RedisUtils {
                 redisTemplate.delete(CollectionUtils.arrayToList(key));
             }
         }
+    }
+
+    /**
+     * 递增
+     * @param key 键
+     * @param delta 要增加几(大于0)
+     * @return
+     */
+    public long incr(String key, long delta){
+        if(delta < 0){
+            return redisTemplate.opsForValue().increment(key, 1);
+        }
+        return redisTemplate.opsForValue().increment(key, delta);
+    }
+
+    public long incr(String key){
+        return redisTemplate.opsForValue().increment(key);
+    }
+
+    /**
+     * 递减
+     * @param key 键
+     * @param delta 值
+     * @return
+     */
+    public long decr(String key, long delta){
+        if(delta < 0){
+            return redisTemplate.opsForValue().decrement(key, 1);
+        }
+        return redisTemplate.opsForValue().increment(key, delta);
+    }
+
+    public long decr(String key){
+        return redisTemplate.opsForValue().decrement(key);
     }
 
 

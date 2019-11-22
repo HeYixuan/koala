@@ -61,8 +61,9 @@ public class WxPayService implements IWxPayService {
                });
            }
 
-            //如果日志记录不为空,并且状态是订单失效,说明有下单但已经超时,需要记录一条退款记录,库存增加
-           if(order != null && order.getOrderStatus().intValue() == 2){
+            //如果日志记录不为空,并且状态是订单失效,说明有下单但已经超时,需要记录一条退款记录
+            //如果日志记录不为空,并且状态是订单已支付,说明有重复支付,需要记录一条退款记录
+           if(order != null && (order.getOrderStatus().intValue() == 2 || order.getOrderStatus().intValue() == 0)){
                //redisUtils.del(orderNo);
                rocketMQTemplate.getProducer().setProducerGroup("order-return-pay");
                rocketMQTemplate.asyncSend("order-return-pay:order-return-pay", MessageBuilder.withPayload(protocol).build(), new SendCallback() {
