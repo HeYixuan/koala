@@ -22,6 +22,9 @@ public interface ISecKillChargeService {
 
     int update(SeckillOrder order);
 
+    int updateOrder(SeckillOrder order);
+
+
     /**
      * 秒杀订单入库
      * @param mobile 手机号

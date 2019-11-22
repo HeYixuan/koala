@@ -60,12 +60,19 @@ public class SecKillChargeService implements ISecKillChargeService {
         return seckillOrderMapper.delete(id);
     }
 
+    @Transactional(rollbackFor = Exception.class)
     public int insert(SeckillOrder order){
         return seckillOrderMapper.insert(order);
     }
 
+    @Transactional(rollbackFor = Exception.class)
     public int update(SeckillOrder order){
         return seckillOrderMapper.update(order);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public int updateOrder(SeckillOrder order){
+        return seckillOrderMapper.updateOrder(order);
     }
 
 
@@ -87,14 +94,15 @@ public class SecKillChargeService implements ISecKillChargeService {
             return false;
         }
         // 设置产品名称
-        SeckillProduct product = secKillProductService.get(productId);
+        SeckillProduct product = secKillProductService.getCache(productId);
         SeckillOrder order = new SeckillOrder();
         order.setOrderNo(orderNo);
         order.setProdId(productId);
         order.setMobile(mobile);
         order.setChargeMoney(product.getProdPrice());
-        order.setOrderStatus(2);
+        order.setOrderStatus(0);
         order.setChargeTime(new Date());
+        order.setFinishTime(new Date());
         order.setProdName(product.getProdName());
         try {
             count = insert(order);

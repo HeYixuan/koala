@@ -14,11 +14,25 @@ public interface ISecKillProductService {
     List<SeckillProduct> getList();
 
     /**
-     * 根据产品id查询产品
+     * 从缓存获取商品信息
+     * @param id
+     * @return
+     */
+    SeckillProduct getCache(String id);
+
+    /**
+     * 从数据库获取商品信息
      * @param id
      * @return
      */
     SeckillProduct get(String id);
+
+    /**
+     * 减库存,基于缓存（虚拟）
+     * @param prodId
+     * @return
+     */
+    boolean reduceStockCache(String prodId);
 
     /**
      * 减库存,基于乐观锁

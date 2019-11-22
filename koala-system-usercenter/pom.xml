@@ -74,6 +74,13 @@
             <version>8.0.16</version>
         </dependency>
 
+        <!--<dependency>
+            <groupId>org.redisson</groupId>
+            <artifactId>redisson-spring-boot-starter</artifactId>
+            <version>3.11.5</version>
+        </dependency>-->
+
+
 
 
 

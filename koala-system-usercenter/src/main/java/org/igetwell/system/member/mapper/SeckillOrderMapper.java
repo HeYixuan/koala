@@ -21,4 +21,6 @@ public interface SeckillOrderMapper {
     int insert(SeckillOrder order);
 
     int update(SeckillOrder order);
+
+    int updateOrder(SeckillOrder order);
 }

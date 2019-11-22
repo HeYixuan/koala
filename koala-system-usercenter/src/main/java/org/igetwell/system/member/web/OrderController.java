@@ -7,6 +7,7 @@ import org.igetwell.common.uitls.ResponseEntity;
 import org.igetwell.order.entity.SeckillProduct;
 import org.igetwell.system.member.dto.request.ChargeOrderRequest;
 import org.igetwell.system.member.service.IMemberOrderService;
+import org.igetwell.system.member.service.IOrderService;
 import org.igetwell.system.member.service.ISecKillProductService;
 import org.igetwell.system.produce.MqProducer;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,9 @@ public class OrderController {
 
     @Autowired
     private IMemberOrderService iMemberOrderService;
+
+    @Autowired
+    private IOrderService iOrderService;
 
     @Autowired
     private ISecKillProductService secKillProductService;
@@ -63,7 +67,16 @@ public class OrderController {
     public ResponseEntity placeOrder(@RequestBody ChargeOrderRequest chargeOrderRequest){
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         String sessionId = attributes.getSessionId();
-        ResponseEntity responseEntity = iMemberOrderService.placeOrder(chargeOrderRequest);
+        ResponseEntity responseEntity = iMemberOrderService.createOrder(chargeOrderRequest);
+        return responseEntity;
+    }
+
+
+    @PostMapping("/api/order/crate")
+    public ResponseEntity createOrder(@RequestBody ChargeOrderRequest chargeOrderRequest){
+        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        String sessionId = attributes.getSessionId();
+        ResponseEntity responseEntity = iOrderService.createOrder(chargeOrderRequest);
         return responseEntity;
     }
 
@@ -76,7 +89,7 @@ public class OrderController {
 
     @PostMapping("/api/getProduct/{prodId}")
     public ResponseEntity getProduct(@PathVariable("prodId") String prodId){
-        SeckillProduct product = secKillProductService.get(prodId);
+        SeckillProduct product = secKillProductService.getCache(prodId);
         return ResponseEntity.ok(product);
     }
 

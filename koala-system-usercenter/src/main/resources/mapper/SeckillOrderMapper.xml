@@ -160,4 +160,41 @@
     where id = #{id,jdbcType=INTEGER}
   </update>
 
+  <update id="updateOrder" parameterType="org.igetwell.order.entity.SeckillOrder">
+    UPDATE T_SECKILL_ORDER
+    <set>
+      <if test="mobile != null">
+        MOBILE = #{mobile,jdbcType=VARCHAR},
+      </if>
+      <if test="prodId != null">
+        PROD_ID = #{prodId,jdbcType=VARCHAR},
+      </if>
+      <if test="prodName != null">
+        PROD_NAME = #{prodName,jdbcType=VARCHAR},
+      </if>
+      <if test="chargeMoney != null">
+        CHARGE_MONEY = #{chargeMoney,jdbcType=DECIMAL},
+      </if>
+      <if test="chargeTime != null">
+        CHARGE_TIME = #{chargeTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="finishTime != null">
+        FINISH_TIME = #{finishTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="orderStatus != null">
+        ORDER_STATUS = #{orderStatus,jdbcType=TINYINT},
+      </if>
+      <if test="recordStatus != null">
+        RECORD_STATUS = #{recordStatus,jdbcType=TINYINT},
+      </if>
+      <if test="createTime != null">
+        CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+  </update>
+
 </mapper>

@@ -18,6 +18,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import java.util.UUID;
 
+/**
+ * 订单服务：秒杀方案1
+ */
 @Service
 public class MemberOrderService implements IMemberOrderService{
 
@@ -39,32 +42,26 @@ public class MemberOrderService implements IMemberOrderService{
      * @return
      */
     @Override
-    public ResponseEntity placeOrder(ChargeOrderRequest chargeOrderRequest) {
-        boolean bool = preCheckParam(chargeOrderRequest);
+    public ResponseEntity createOrder(ChargeOrderRequest chargeOrderRequest) {
+        boolean bool = checkParam(chargeOrderRequest);
         if (!bool){
             return ResponseEntity.error(HttpStatus.BAD_REQUEST, "参数错误!");
         }
-
         // 前置商品校验
         String prodId = chargeOrderRequest.getProdId();
-        // 商品校验
-        SeckillProduct product = secKillProductService.get(prodId);
+        SeckillProduct product = this.check(prodId);
         if (product == null) {
-            LOGGER.info("prodId={},对应的商品信息不存在,返回下单失败", prodId);
             return ResponseEntity.error(HttpStatus.BAD_REQUEST, "商品信息不存在");
         }
-//        if (!preCheckProd(prodId)) {
-//            return ResponseEntity.error(HttpStatus.BAD_REQUEST, "商品信息不存在");
-//        }
         // 前置预减库存
-        if (!secKillProductService.preReduceProdStock(prodId)) {
+        if (!secKillProductService.reduceStockCache(prodId)) {
             return ResponseEntity.error(HttpStatus.BAD_REQUEST, "商品库存不足");
         }
         //设置金额,防止篡改金额
         chargeOrderRequest.setMoney(product.getProdPrice());
 
         // 秒杀订单入队
-       return this.secKillOrderEnqueue(chargeOrderRequest);
+       return this.createOrderQueue(chargeOrderRequest);
     }
 
     /**
@@ -73,21 +70,21 @@ public class MemberOrderService implements IMemberOrderService{
      * @return
      */
     @Override
-    public ResponseEntity secKillOrderEnqueue(ChargeOrderRequest chargeOrderRequest) {
+    public ResponseEntity createOrderQueue(ChargeOrderRequest chargeOrderRequest) {
         // 订单号生成,组装秒杀订单消息协议
         String orderNo = UUID.randomUUID().toString();
         String mobile = chargeOrderRequest.getMobile();
         try {
             SkillOrderMsgProtocol protocol = new SkillOrderMsgProtocol(orderNo, mobile, chargeOrderRequest.getProdId(), chargeOrderRequest.getMoney());
-            LOGGER.info("秒杀订单入队");
+            LOGGER.info("[秒杀订单消息投递开始], 开始入队.protocol={}", GsonUtils.toJson(protocol));
             rocketMQTemplate.convertAndSend(MessageProtocol.SECKILL_ORDER_TOPIC.getTopic(), protocol);
             ChargeOrderResponse response = new ChargeOrderResponse();
             BeanUtils.copyProperties(protocol, response);
-            LOGGER.info("秒杀订单消息投递成功,订单入队.response={},", GsonUtils.toJson(response));
+            LOGGER.info("[秒杀订单消息投递成功], 订单入队.response={},", GsonUtils.toJson(response));
             return ResponseEntity.ok(protocol);
         } catch (Exception e){
             int retryTimes = rocketMQTemplate.getProducer().getRetryTimesWhenSendFailed();
-            LOGGER.error("[秒杀订单消息投递异常, 手机号{}下单失败.正在重试第{}次", mobile, retryTimes, e);
+            LOGGER.error("[秒杀订单消息投递异常], 手机号{}下单失败.正在重试第{}次", mobile, retryTimes, e);
         }
         return ResponseEntity.error();
     }
@@ -98,7 +95,7 @@ public class MemberOrderService implements IMemberOrderService{
      * @param chargeOrderRequest
      * @return
      */
-    private boolean preCheckParam(ChargeOrderRequest chargeOrderRequest){
+    private boolean checkParam(ChargeOrderRequest chargeOrderRequest){
         if (StringUtils.isEmpty(chargeOrderRequest)){
             return false;
         }
@@ -120,14 +117,14 @@ public class MemberOrderService implements IMemberOrderService{
      * @param productId
      * @return
      */
-    private boolean preCheckProd(String productId){
+    private SeckillProduct check(String productId){
         // 商品校验
-        SeckillProduct product = secKillProductService.get(productId);
+        SeckillProduct product = secKillProductService.getCache(productId);
         if (product == null) {
             LOGGER.info("prodId={},对应的商品信息不存在,返回下单失败", productId);
-            return false;
+            return null;
         }
-        return true;
+        return product;
     }
 
 }

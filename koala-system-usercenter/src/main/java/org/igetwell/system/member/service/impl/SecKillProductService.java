@@ -9,13 +9,11 @@ import org.igetwell.system.member.service.ISecKillProductService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 /**
  * 秒杀商品服务实现
@@ -44,13 +42,19 @@ public class SecKillProductService implements ISecKillProductService {
         list.stream().forEach(( product -> {
             String prodId = product.getProdId();
             redisUtils.set(prodId, product, 86400);
+            redisUtils.set("stock_"+ prodId, product.getProdStock().intValue());
         }));
         LOGGER.info("[SecKillProductConfig]初始化秒杀配置完成,商品信息=[{}]", GsonUtils.toJson(list));
         return list;
     }
 
+    /**
+     * 从缓存获取商品信息
+     * @param id
+     * @return
+     */
     @Override
-    public SeckillProduct get(String id) {
+    public SeckillProduct getCache(String id) {
         // 查缓存
         SeckillProduct product = (SeckillProduct) redisUtils.getObject(id);
         LOGGER.info("根据prodId=[{}],从缓存中获取产品信息:[{}]", id, product);
@@ -62,16 +66,31 @@ public class SecKillProductService implements ISecKillProductService {
             redisUtils.set(id, product, 86400);
         }
         LOGGER.info("根据prodId=[{}],查询到产品信息为:[{}]", id, GsonUtils.toJson(product));
+        int stock = (int) redisUtils.getObject("stock_"+id);
+        System.err.println("当前库存："+ stock);
+        return product;
+    }
+
+    /**
+     * 从数据库获取商品信息
+     * @param id
+     * @return
+     */
+    @Override
+    public SeckillProduct get(String id) {
+        // 查缓存
+        SeckillProduct product = secKillProductMapper.get(id);
+        LOGGER.info("根据prodId=[{}],从数据库中查询，查询到产品信息为:[{}]", id, GsonUtils.toJson(product));
         return product;
     }
 
 
     /**
-     * 预减库存
+     * 从缓存预减库存
      * @param prodId
      * @return
      */
-    public boolean preReduceProdStock(String prodId) {
+    public boolean reduceStockCache(String prodId) {
         boolean bool = redisLock.lock("reduce_stock_"+prodId, "30");
          if(bool){
             SeckillProduct product = (SeckillProduct) redisUtils.getObject(prodId);
@@ -98,7 +117,7 @@ public class SecKillProductService implements ISecKillProductService {
 
 
     /**
-     * 减库存,基于乐观锁
+     * 从真实数据库减库存,基于乐观锁
      * @param prodId
      * @return
      */
@@ -107,7 +126,7 @@ public class SecKillProductService implements ISecKillProductService {
     public boolean reduceStock(String prodId) {
         LOGGER.info("[订单入库减库存]-减库存开始, 商品ID：{}", prodId);
         SeckillProduct product = get(prodId);
-        if (product ==null || product.getProdStock() <= 0) {
+        if (product == null || product.getProdStock() <= 0) {
             LOGGER.info("[订单入库减库存]-减库存失败. 商品信息：{}", GsonUtils.toJson(product));
             return false;
         }
@@ -128,7 +147,7 @@ public class SecKillProductService implements ISecKillProductService {
             String message = String.format("[订单入库减库存]商品ID：%s,商品减库存[失败],事务回滚", prodId);
             throw new RuntimeException(message);
         }
-        LOGGER.info("[订单入库]当前减库存[成功],prodId={},剩余库存={}", prodId, stock);
+        LOGGER.info("[订单入库]当前减库存成功,prodId={},剩余库存={}", prodId, stock);
         return true;
     }
 }

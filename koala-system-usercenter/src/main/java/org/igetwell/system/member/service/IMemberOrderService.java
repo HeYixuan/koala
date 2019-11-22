@@ -13,8 +13,8 @@ public interface IMemberOrderService {
      *  4.入队发送MQ消息
      * @return
      */
-    ResponseEntity placeOrder(ChargeOrderRequest chargeOrderRequest);
+    ResponseEntity createOrder(ChargeOrderRequest chargeOrderRequest);
 
-    ResponseEntity secKillOrderEnqueue(ChargeOrderRequest chargeOrderRequest);
+    ResponseEntity createOrderQueue(ChargeOrderRequest chargeOrderRequest);
 
 }
