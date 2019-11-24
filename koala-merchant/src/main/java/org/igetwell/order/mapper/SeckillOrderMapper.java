@@ -1,7 +1,6 @@
 package org.igetwell.order.mapper;
 
 import org.igetwell.order.dto.OrderDto;
-import org.igetwell.order.entity.SeckillOrder;
 
 
 public interface SeckillOrderMapper {

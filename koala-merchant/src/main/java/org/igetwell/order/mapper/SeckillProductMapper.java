@@ -1,7 +1,5 @@
 package org.igetwell.order.mapper;
 
-import org.igetwell.order.entity.SeckillProduct;
-
 import java.util.List;
 
 /**

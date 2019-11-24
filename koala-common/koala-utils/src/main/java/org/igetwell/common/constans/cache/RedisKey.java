@@ -43,4 +43,12 @@ public interface RedisKey {
      */
     public static final String COMPONENT_PRE_AUTH_CODE = "COMPONENT_PRE_AUTH_CODE";
 
+
+    /**
+     * 商品库存KEY
+     */
+    public static final String COMPONENT_STOCK = "COMPONENT_STOCK_%s";
+
+    public static final String DECR_STOCK_LOCK = "DECR_STOCK_LOCK_%s";
+
 }

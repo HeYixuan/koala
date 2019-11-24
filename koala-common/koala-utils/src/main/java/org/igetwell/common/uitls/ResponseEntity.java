@@ -58,6 +58,10 @@ public class ResponseEntity<T> implements Serializable {
         return new ResponseEntity().status(status.value()).message(status.getMessage()).exception(exception);
     }
 
+    public static ResponseEntity error(HttpStatus status) {
+        return new ResponseEntity().status(status.value()).message(status.getMessage());
+    }
+
     public ResponseEntity data(T data) {
         this.data = data;
         return this;
