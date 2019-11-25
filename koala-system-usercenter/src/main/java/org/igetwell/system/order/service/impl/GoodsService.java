@@ -14,6 +14,7 @@ import org.igetwell.system.order.entity.Orders;
 import org.igetwell.system.order.mapper.GoodsMapper;
 import org.igetwell.system.order.protocol.OrderProtocol;
 import org.igetwell.system.order.service.IGoodsService;
+import org.igetwell.system.order.service.IOrderService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,8 @@ public class GoodsService implements IGoodsService {
     private RocketMQTemplate rocketMQTemplate;
     @Resource
     private GoodsMapper goodsMapper;
+    @Autowired
+    private IOrderService iOrderService;
 
     @Autowired
     private RedisUtil redisUtil;
@@ -205,6 +208,11 @@ public class GoodsService implements IGoodsService {
         }
         Long goodsId = request.getGoodsId();
         Long mobile = request.getMobile();
+        String memberId = request.getMemberId();
+        if (!this.iOrderService.checkOrderPay(memberId, mobile, goodsId)) {
+            return ResponseEntity.error(HttpStatus.TOO_MANY_REQUESTS, "不能重复进行下单!");
+        }
+
         Goods goods = this.getCache(goodsId);
         if (!this.checkObject(goods)) {
             return ResponseEntity.error(HttpStatus.BAD_REQUEST, "商品信息不存在!");
@@ -214,7 +222,7 @@ public class GoodsService implements IGoodsService {
         }
         //防止篡改金额
         request.setMoney(goods.getSalesPrice());
-        return createOrderQueue(request);
+        return this.createOrderQueue(request);
     }
 
 

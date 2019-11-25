@@ -30,5 +30,7 @@ public interface IOrderService {
 
     boolean createOrder(String orderNo, Long mobile, Long goodsId);
 
+    boolean checkOrderPay(String memberId, Long mobile, Long goodsId);
+
 
 }

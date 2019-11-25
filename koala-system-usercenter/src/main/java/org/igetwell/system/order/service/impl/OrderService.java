@@ -132,4 +132,20 @@ public class OrderService implements IOrderService {
         }
     }
 
+
+    /**
+     * 检查是否有支付订单记录
+     * @param memberId
+     * @param mobile
+     * @param goodsId
+     * @return
+     */
+    public boolean checkOrderPay(String memberId, Long mobile, Long goodsId) {
+        Orders order = ordersMapper.getOrder(memberId, mobile, goodsId);
+        if (order == null) {
+            return true;
+        }
+        return false;
+    }
+
 }
