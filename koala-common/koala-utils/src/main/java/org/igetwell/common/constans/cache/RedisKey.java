@@ -49,6 +49,6 @@ public interface RedisKey {
      */
     public static final String COMPONENT_STOCK = "COMPONENT_STOCK_%s";
 
-    public static final String DECR_STOCK_LOCK = "DECR_STOCK_LOCK_%s";
+    public static final String STOCK_LOCK = "STOCK_LOCK_%s";
 
 }
