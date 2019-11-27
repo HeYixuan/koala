@@ -65,7 +65,7 @@ public class WxOpenComponentService implements IWxOpenComponentService {
         }
         boolean bool = redisUtils.exist(RedisKey.COMPONENT_ACCESS_TOKEN);
         if (bool){
-            ComponentAccessToken componentAccessToken = (ComponentAccessToken) redisUtils.getObject(RedisKey.COMPONENT_ACCESS_TOKEN);
+            ComponentAccessToken componentAccessToken = redisUtils.get(RedisKey.COMPONENT_ACCESS_TOKEN);
             return componentAccessToken.getComponentAccessToken();
         }
         Map<String, String> params = new ConcurrentHashMap<>();

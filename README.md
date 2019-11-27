@@ -111,3 +111,32 @@ https://gitee.com/dendi.ke/weixin-service/blob/master/src/main/java/com/ld/tamp/
 Minio:
 Access Key:SMW1YMPP287R9UO8IVIV
 Secret Key:YdddvFSI2mdCgiG4c6Wy+HEXYIQmK2cF9yA4zAG+
+
+
+
+> 由于本项目主要目的在于使用RocketMQ进行削峰填谷，因此对于部分秒杀场景的业务处理尚未优化，此处列出待优化的点，供读者参考
+
+1. 分布式减库存：使用Redis的decr进行分布式原子减库存
+2. 预热库存时候将库存适当调大，防止恶意刷库存导致正常用户不能进行正常的秒杀订单投递
+3. 【注意点】数据库侧的库存校验万万不能少，本demo已经加上了该校验
+4. 秒杀接口需要做防刷处理，可以在前端通过倒计时方式定时开放接口、增加验证码减少下单频率、增加下单前校验收货地址等方式
+
+
+## windows下单点RocketMQ搭建
+0. 解压rocketmq-all-4.4.0-bin-release.zip到C盘根目录，或者某个盘的根目录（我是C盘）
+
+        配置环境变量，增加环境变量
+        ROCKETMQ_HOME=C:\rocketmq-all-4.4.0-bin-release（不要出现空格和中文）
+
+1. 启动nameServer
+
+        mqnamesrv.cmd
+2. 启动broker
+
+        start mqbroker.cmd -n 127.0.0.1:9876 autoCreateTopicEnable=true
+3. 启动admin-console
+
+        java -jar -Drocketmq.config.namesrvAddr=127.0.0.1:9876 rocketmq-console-ng.jar
+
+[windows下RocketMQ安装部署](https://www.jianshu.com/p/4a275e779afa)
+
