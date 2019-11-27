@@ -5,7 +5,7 @@ import org.apache.rocketmq.client.producer.SendResult;
 import org.apache.rocketmq.spring.annotation.RocketMQMessageListener;
 import org.apache.rocketmq.spring.core.RocketMQListener;
 import org.apache.rocketmq.spring.core.RocketMQTemplate;
-import org.igetwell.common.uitls.RedisUtil;
+import org.igetwell.common.uitls.RedisUtils;
 import org.igetwell.system.order.entity.Orders;
 import org.igetwell.system.order.protocol.OrderProtocol;
 import org.slf4j.Logger;
@@ -24,7 +24,7 @@ public class OrderDelayConsumer implements RocketMQListener<OrderProtocol> {
     private static final Logger LOGGER = LoggerFactory.getLogger(OrderDelayConsumer.class);
 
     @Autowired
-    private RedisUtil redisUtil;
+    private RedisUtils redisUtils;
     @Autowired
     private RocketMQTemplate rocketMQTemplate;
 
@@ -33,7 +33,7 @@ public class OrderDelayConsumer implements RocketMQListener<OrderProtocol> {
         String orderNo = protocol.getOrderNo();
         try {
             LOGGER.info("[秒杀订单异步延迟消息消费者]-订单号={}, 商品ID={}, 手机号={}, 金额={}.", orderNo, protocol.getGoodsId(), protocol.getMobile(), protocol.getMoney().doubleValue());
-            Orders order = redisUtil.get(orderNo);
+            Orders order = redisUtils.get(orderNo);
             //如果日志记录存在并且是待支付,说明订单超时
             if (order != null && order.getPayStatus().intValue() == 0){
                 LOGGER.info("[秒杀订单异步延迟消息消费者]-订单超时, 开始投递超时订单记录消息, 订单号={}.", orderNo);

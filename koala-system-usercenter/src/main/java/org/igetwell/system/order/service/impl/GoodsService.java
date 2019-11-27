@@ -6,7 +6,7 @@ import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.igetwell.common.constans.cache.RedisKey;
 import org.igetwell.common.enums.HttpStatus;
 import org.igetwell.common.uitls.GsonUtils;
-import org.igetwell.common.uitls.RedisUtil;
+import org.igetwell.common.uitls.RedisUtils;
 import org.igetwell.common.uitls.ResponseEntity;
 import org.igetwell.system.order.dto.request.ChargeOrderRequest;
 import org.igetwell.system.order.entity.Goods;
@@ -15,6 +15,8 @@ import org.igetwell.system.order.mapper.GoodsMapper;
 import org.igetwell.system.order.protocol.OrderProtocol;
 import org.igetwell.system.order.service.IGoodsService;
 import org.igetwell.system.order.service.IOrderService;
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +29,7 @@ import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @Transactional(rollbackFor = Exception.class)
@@ -42,7 +45,10 @@ public class GoodsService implements IGoodsService {
     private IOrderService iOrderService;
 
     @Autowired
-    private RedisUtil redisUtil;
+    private RedisUtils redisUtils;
+
+    @Autowired
+    private RedissonClient redissonClient;
 
 
     public List<Goods> getList() {
@@ -50,10 +56,12 @@ public class GoodsService implements IGoodsService {
         List<Goods> goodsList = goodsMapper.getList();
         /*goodsList.forEach(goods -> {
 
-        });
+        });*/
         goodsList.stream().forEach((goods -> {
             Long goodsId = goods.getId();
-        }));*/
+            redisUtils.set(String.valueOf(goodsId), goods);
+            redisUtils.set(String.format(RedisKey.COMPONENT_STOCK, goodsId), goods.getStock());
+        }));
         LOGGER.info("[商品服务]-初始化秒杀的商品列表结束. 商品信息:{}.", GsonUtils.toJson(goodsList));
         return goodsList;
     }
@@ -69,7 +77,7 @@ public class GoodsService implements IGoodsService {
 
     @Override
     public Goods getCache(Long id) {
-        Goods goods = redisUtil.get(String.valueOf(id));
+        Goods goods = redisUtils.get(String.valueOf(id));
         LOGGER.info("[商品服务]-根据商品ID：{} 从缓存中查询商品信息: [{}].", id, GsonUtils.toJson(goods));
         if (goods == null) {
             LOGGER.info("[商品服务]-根据商品ID：{} 从缓存中查询商品信息为空. 开始查询数据库.", id);
@@ -86,10 +94,11 @@ public class GoodsService implements IGoodsService {
      * @return
      */
     public boolean reduceStock(Long goodsId) {
+        RLock lock = redissonClient.getLock(String.format(RedisKey.STOCK_LOCK, goodsId));
         try {
             LOGGER.info("[商品服务]-根据商品ID：{} 从缓存中开始预扣减库存.");
-            boolean bool = redisUtil.lock(String.format(RedisKey.DECR_STOCK_LOCK, goodsId), "10");
-            if (!bool) {
+            lock.lock(1, TimeUnit.SECONDS);
+            if (!lock.isLocked()) {
                 LOGGER.info("[商品服务]-排队人数太多，请稍后再试.");
                 return false;
             }
@@ -99,23 +108,23 @@ public class GoodsService implements IGoodsService {
                 return false;
             }
             int stock = goods.getStock();
-            int surplus = (stock - 1);
-            if (surplus < 0) {
+            if ((stock - 1) < 0) {
                 LOGGER.info("[商品服务]-根据商品ID：{} 从缓存中预扣减库存失败, 当前商品库存不足.", goodsId);
                 return false;
             }
-            redisUtil.set(String.format(RedisKey.COMPONENT_STOCK, goodsId), stock);
             // 预减库存成功,回写库存
-            goods.setStock(surplus);
-            redisUtil.set(String.valueOf(goodsId), goods, 86400);
-            redisUtil.set(String.valueOf(goodsId), goods, 86400);
-            redisUtil.decr(String.format(RedisKey.COMPONENT_STOCK, goodsId));
+            redisUtils.set(String.format(RedisKey.COMPONENT_STOCK, goodsId), stock);
+            long surplus = redisUtils.decr(String.format(RedisKey.COMPONENT_STOCK, goodsId));
+            goods.setStock((int) surplus);
+            redisUtils.set(String.valueOf(goodsId), goods, 86400);
             LOGGER.info("[商品服务]-根据商品ID：{} 从缓存中预扣减库存成功,当前扣除后剩余库存数:{}.", goodsId, surplus);
             return true;
         } catch (Exception e) {
-            redisUtil.unlock(String.format(RedisKey.DECR_STOCK_LOCK, goodsId));
-            return false;
+            e.printStackTrace();
+        } finally {
+            lock.unlock();
         }
+        return false;
 
     }
 
@@ -143,11 +152,11 @@ public class GoodsService implements IGoodsService {
             //减库存成功,回写库存
             goods.setStock(surplus);
             this.update(goods);
-            redisUtil.set(String.valueOf(goodsId), goods, 86400);
+            redisUtils.set(String.valueOf(goodsId), goods, 86400);
             LOGGER.info("[商品服务]-根据商品ID：{} 从数据库中扣减库存成功,当前扣除后剩余库存数:{}.", goodsId, surplus);
             return true;
         } catch (Exception e) {
-            redisUtil.incr(String.format(RedisKey.COMPONENT_STOCK, goodsId));
+            redisUtils.incr(String.format(RedisKey.COMPONENT_STOCK, goodsId));
             LOGGER.error("[商品服务]-商品ID：{},商品减库存失败, 发生异常, 事务执行回滚,e={}.", goodsId, e.getStackTrace());
             String message = String.format("[商品服务]商品ID：%s,商品减库存失败,发生异常,事务执行回滚.", goodsId);
             throw new RuntimeException(message, e);
@@ -260,7 +269,7 @@ public class GoodsService implements IGoodsService {
                     LOGGER.error("[秒杀订单异步延迟消息]:-投递延迟消息失败,异常信息：{}.", var);
                 }
 
-            }, 30000, 3);
+            }, 30000, 6);
 
             LOGGER.info("[秒杀订单异步延迟消息], 订单入队.response={}.", GsonUtils.toJson(protocol));
             return ResponseEntity.ok(protocol);
@@ -318,6 +327,6 @@ public class GoodsService implements IGoodsService {
         order.setPayAmount(money);
         order.setOrderTime(new Date());
         order.setPayStatus(0);
-        redisUtil.set(orderNo, order);
+        redisUtils.set(orderNo, order);
     }
 }

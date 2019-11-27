@@ -2,7 +2,7 @@ package org.igetwell.system.order.consumer;
 
 import org.apache.rocketmq.spring.annotation.RocketMQMessageListener;
 import org.apache.rocketmq.spring.core.RocketMQListener;
-import org.igetwell.common.uitls.RedisUtil;
+import org.igetwell.common.uitls.RedisUtils;
 import org.igetwell.system.order.entity.Orders;
 import org.igetwell.system.order.protocol.OrderProtocol;
 import org.igetwell.system.order.service.IOrderService;
@@ -24,7 +24,7 @@ public class OrderReturnPayConsumer implements RocketMQListener<OrderProtocol> {
     private IOrderService iOrderService;
 
     @Autowired
-    private RedisUtil redisUtil;
+    private RedisUtils redisUtils;
 
     /**
      * 微信支付成功回调,开始向MQ发送消息下单
@@ -39,7 +39,7 @@ public class OrderReturnPayConsumer implements RocketMQListener<OrderProtocol> {
         try {
             String orderNo = protocol.getOrderNo();
             LOGGER.info("[退款订单消费者：订单号={}, 商品ID={}, 手机号={}, 金额={}]", orderNo, protocol.getGoodsId(), protocol.getMobile(), protocol.getMoney().doubleValue());
-            Orders order = redisUtil.get(orderNo);
+            Orders order = redisUtils.get(orderNo);
 
             if (order == null) {
 

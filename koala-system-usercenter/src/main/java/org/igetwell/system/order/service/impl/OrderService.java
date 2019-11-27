@@ -1,7 +1,7 @@
 package org.igetwell.system.order.service.impl;
 
 import org.igetwell.common.uitls.GsonUtils;
-import org.igetwell.common.uitls.RedisUtil;
+import org.igetwell.common.uitls.RedisUtils;
 import org.igetwell.system.order.entity.Orders;
 import org.igetwell.system.order.mapper.OrdersMapper;
 import org.igetwell.system.order.service.IGoodsService;
@@ -27,7 +27,7 @@ public class OrderService implements IOrderService {
     private IGoodsService iGoodsService;
 
     @Autowired
-    private RedisUtil redisUtil;
+    private RedisUtils redisUtils;
 
     @Override
     public Orders getOrderNo(String orderNo) {
@@ -47,7 +47,7 @@ public class OrderService implements IOrderService {
 
     @Override
     public Orders getCache(String orderNo) {
-        Orders order = redisUtil.get(orderNo);
+        Orders order = redisUtils.get(orderNo);
         LOGGER.info("[订单服务]-根据订单号：{} 从缓存中查询订单信息: [{}].", orderNo, GsonUtils.toJson(order));
         if (order == null) {
             LOGGER.info("[订单服务]-根据订单号：{} 从缓存中查询订单信息为空. 开始查询数据库.");
@@ -115,7 +115,7 @@ public class OrderService implements IOrderService {
                 // TODO 此处可给用户发送通知，告知秒杀下单失败，原因：商品已售罄
                 return false;
             }
-            Orders order = redisUtil.get(orderNo);
+            Orders order = redisUtils.get(orderNo);
             //如果在支付成功回调里面没有写入订单数据,或者支付成功并没有改变支付成功状态,无法创建订单.
             if (order == null) {
                 LOGGER.info("[订单服务]-无法获取订单数据,创建订单失败.订单号：{}, 手机号：{}, 商品ID：{}.", orderNo, mobile, goodsId);

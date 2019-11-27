@@ -5,7 +5,7 @@ import org.apache.rocketmq.client.producer.SendResult;
 import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.igetwell.common.enums.HttpStatus;
 import org.igetwell.common.uitls.GsonUtils;
-import org.igetwell.common.uitls.RedisUtil;
+import org.igetwell.common.uitls.RedisUtils;
 import org.igetwell.common.uitls.ResponseEntity;
 import org.igetwell.system.order.dto.request.OrderPayRequest;
 import org.igetwell.system.order.entity.Orders;
@@ -27,7 +27,7 @@ public class WxPayService implements IWxPayService {
     private static final Logger LOGGER = LoggerFactory.getLogger(WxPayService.class);
 
     @Autowired
-    private RedisUtil redisUtil;
+    private RedisUtils redisUtils;
 
     @Autowired
     private IOrderService iOrderService;
@@ -57,7 +57,7 @@ public class WxPayService implements IWxPayService {
                 LOGGER.info("[微信支付回调]-当前用户：{}, 手机号：{}, 商品：{} 已存在订单记录,不需要重复支付, 订单号：{}.", memberId, mobile, goodsId, orderNo);
                 return ResponseEntity.error(HttpStatus.TOO_MANY_REQUESTS);
             }
-            order = redisUtil.get(orderNo);
+            order = redisUtils.get(orderNo);
             //这里用不用查数据库，存不存在订单记录
             //如果日志记录不为空,并且状态是待支付,说明有下单可以进行支付
             OrderProtocol protocol = new OrderProtocol(orderNo, memberId, mobile, goodsId, money);
@@ -98,7 +98,7 @@ public class WxPayService implements IWxPayService {
                         }
                     });
                 }
-                redisUtil.set(orderNo, order);
+                redisUtils.set(orderNo, order);
                 return ResponseEntity.ok();
             }
         } catch (Exception e){

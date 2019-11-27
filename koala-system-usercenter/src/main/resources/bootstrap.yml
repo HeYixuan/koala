@@ -26,6 +26,10 @@ spring:
     host: 127.0.0.1
     port: 6379
     password:
+    single:
+      address: 127.0.0.1:6379
+    redisson:
+      config: classpath:redisson.yml
 
 mybatis:
   mapper-locations: classpath:/mapper/*Mapper.xml
