@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-    org.igetwell.common.data.scope.mybatis.MybatisPlusConfig
+    org.igetwell.common.data.scope.mybatis.MybatisConfig

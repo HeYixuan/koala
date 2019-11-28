@@ -16,7 +16,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 @Configuration
 @AutoConfigureAfter(DataSourceAutoConfiguration.class)
 @EnableConfigurationProperties(DataScopeProperties.class)
-public class MybatisPlusConfig implements InitializingBean {
+public class MybatisConfig implements InitializingBean {
 
 	/**
 	 * 创建租户维护处理器对象
