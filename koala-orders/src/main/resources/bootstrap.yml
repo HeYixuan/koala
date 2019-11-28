@@ -1,5 +1,5 @@
 server:
-  port: 8880
+  port: 8881
 
 spring:
   application:
@@ -55,3 +55,10 @@ rocketmq:
     retry-next-server: true
     retry-times-when-send-failed: 2
   name-server: 127.0.0.1:9876
+
+
+sequence:
+  snowflake:
+    datacenter-id: 16
+    worker-id: 21
+

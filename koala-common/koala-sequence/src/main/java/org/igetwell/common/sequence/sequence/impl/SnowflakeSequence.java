@@ -18,7 +18,7 @@ import org.igetwell.common.sequence.sequence.Sequence;
  * （5）最后12位是毫秒内的计数（12位的计数顺序号支持每个节点每毫秒产生4096个ID序号）
  * <br>
  * 一共加起来刚好64位，为一个Long型。(转换成字符串长度为18)
- * @author xuan on 2018/5/9.
+ * 
  */
 public class SnowflakeSequence implements Sequence {
 

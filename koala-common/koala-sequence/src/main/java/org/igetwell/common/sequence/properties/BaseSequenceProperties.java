@@ -1,15 +1,9 @@
 package org.igetwell.common.sequence.properties;
 
-import lombok.Data;
-
 /**
- * @author lengleng
- * @date 2019-05-26
- * <p>
  * 发号器通用属性
  */
-@Data
-class BaseSequenceProperties {
+public class BaseSequenceProperties {
 	/**
 	 * 获取range步长[可选，默认：1000]
 	 */
@@ -23,5 +17,29 @@ class BaseSequenceProperties {
 	/**
 	 * 业务名称
 	 */
-	private String bizName = "pigx";
+	private String serviceName = "koala";
+
+	public int getStep() {
+		return step;
+	}
+
+	public void setStep(int step) {
+		this.step = step;
+	}
+
+	public long getStepStart() {
+		return stepStart;
+	}
+
+	public void setStepStart(long stepStart) {
+		this.stepStart = stepStart;
+	}
+
+	public String getServiceName() {
+		return serviceName;
+	}
+
+	public void setServiceName(String serviceName) {
+		this.serviceName = serviceName;
+	}
 }

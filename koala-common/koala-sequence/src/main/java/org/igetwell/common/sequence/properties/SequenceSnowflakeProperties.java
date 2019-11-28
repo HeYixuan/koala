@@ -1,16 +1,11 @@
 package org.igetwell.common.sequence.properties;
 
-import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 /**
- * @author lengleng
- * @date 2019-05-26
- * <p>
  * Snowflake 发号器属性
  */
-@Data
 @Component
 @ConfigurationProperties(prefix = "sequence.snowflake")
 public class SequenceSnowflakeProperties {
@@ -23,4 +18,20 @@ public class SequenceSnowflakeProperties {
 	 * 工作机器ID，值的范围在[0,31]之间，一般可以设置机器编号[必选]
 	 */
 	private long workerId;
+
+	public long getDatacenterId() {
+		return datacenterId;
+	}
+
+	public void setDatacenterId(long datacenterId) {
+		this.datacenterId = datacenterId;
+	}
+
+	public long getWorkerId() {
+		return workerId;
+	}
+
+	public void setWorkerId(long workerId) {
+		this.workerId = workerId;
+	}
 }
