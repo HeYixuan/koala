@@ -38,10 +38,22 @@ public class OrderService implements IOrderService {
     }
 
     @Override
-    public Orders getOrder(String memberId, Long mobile, Long goodsId) {
+    public Orders getOrder(Long memberId, Long mobile, Long goodsId) {
         LOGGER.info("[订单服务]-根据用户ID：{}, 手机号：{}, 商品ID：{} 查询订单开始.", memberId, mobile, goodsId);
         Orders orders = ordersMapper.getOrder(memberId, mobile, goodsId);
-        LOGGER.info("[订单服务]-根据用户ID：{}, 手机号：{}, 商品ID：{} 查询订单开始.", memberId, mobile, goodsId);
+        LOGGER.info("[订单服务]-根据用户ID：{}, 手机号：{}, 商品ID：{} 查询订单结束.", memberId, mobile, goodsId);
+        return orders;
+    }
+
+    /**
+     * 查询会员所有订单
+     * @param memberId
+     * @return
+     */
+    public Orders getMemberOrder(Long memberId) {
+        LOGGER.info("[订单服务]-根据用户ID：{} 查询订单开始.", memberId);
+        Orders orders = ordersMapper.getMemberOrder(memberId);
+        LOGGER.info("[订单服务]-根据用户ID：{} 查询订单结束.", memberId);
         return orders;
     }
 
@@ -140,7 +152,7 @@ public class OrderService implements IOrderService {
      * @param goodsId
      * @return
      */
-    public boolean checkOrderPay(String memberId, Long mobile, Long goodsId) {
+    public boolean checkOrderPay(Long memberId, Long mobile, Long goodsId) {
         Orders order = ordersMapper.getOrder(memberId, mobile, goodsId);
         if (order == null) {
             return true;

@@ -18,7 +18,14 @@ public interface OrdersMapper {
      * @param goodsId
      * @return
      */
-    Orders getOrder(String memberId, Long mobile, Long goodsId);
+    Orders getOrder(Long memberId, Long mobile, Long goodsId);
+
+    /**
+     * 查询会员所有订单
+     * @param memberId
+     * @return
+     */
+    Orders getMemberOrder(Long memberId);
 
     int insert(Orders order);
 

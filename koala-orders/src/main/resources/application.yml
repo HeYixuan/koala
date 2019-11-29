@@ -1,0 +1,86 @@
+spring:
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    password:
+#    single:
+#      address: 127.0.0.1:6379
+#    redisson:
+#      config: classpath:redisson.yml
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.zaxxer.hikari.HikariDataSource
+    url: jdbc:mysql://localhost:3306/koala-merchant?autoReconnect=true&useUnicode=true&characterEncoding=UTF-8&allowMultiQueries=true&useSSL=false
+    username: root
+    password: 123456
+    hikari:
+      pool-name: DatebookHikariCP
+      minimum-idle: 5
+      maximum-pool-size: 15
+      idle-timeout: 30000
+      connection-timeout: 30000
+
+sequence:
+  snowflake:
+    datacenter-id: 16
+    worker-id: 21
+
+mybatis:
+  mapper-locations: classpath:/mapper/*Mapper.xml
+
+  thymeleaf:
+    mode: LEGACYHTML5
+    prefix: classpath:/templates/
+    suffix: .html
+    encoding: UTF-8
+    cache: false
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+    default-property-inclusion: NON_EMPTY
+
+rocketmq:
+  producer:
+    group: pay-test
+    send-message-timeout: 300000
+    compress-message-body-threshold: 4096
+    max-message-size: 4194304
+    retry-times-when-send-async-failed: 0
+    retry-next-server: true
+    retry-times-when-send-failed: 2
+  name-server: 127.0.0.1:9876
+
+feign:
+  hystrix:
+    enabled: true
+  okhttp:
+    enabled: true
+  httpclient:
+    enabled: false
+  client:
+    config:
+      default:
+        connectTimeout: 10000
+        readTimeout: 10000
+  compression:
+    request:
+      enabled: true
+    response:
+      enabled: true
+# hystrix If you need to use ThreadLocal bound variables in your RequestInterceptor`s
+# you will need to either set the thread isolation strategy for Hystrix to `SEMAPHORE or disable Hystrix in Feign.
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          strategy: SEMAPHORE
+          thread:
+            timeoutInMilliseconds: 60000
+  shareSecurityContext: true
+
+
+ribbon:
+  ReadTimeout: 120000
+  ConnectTimeout: 30000

@@ -18,7 +18,14 @@ public interface IOrderService {
      * @param goodsId
      * @return
      */
-    Orders getOrder(String memberId, Long mobile, Long goodsId);
+    Orders getOrder(Long memberId, Long mobile, Long goodsId);
+
+    /**
+     * 查询会员所有订单
+     * @param memberId
+     * @return
+     */
+    Orders getMemberOrder(Long memberId);
 
     Orders getCache(String orderNo);
 
@@ -30,7 +37,7 @@ public interface IOrderService {
 
     boolean createOrder(String orderNo, Long mobile, Long goodsId);
 
-    boolean checkOrderPay(String memberId, Long mobile, Long goodsId);
+    boolean checkOrderPay(Long memberId, Long mobile, Long goodsId);
 
 
 }

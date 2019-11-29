@@ -11,7 +11,7 @@ public class OrderPayRequest implements Serializable {
     /**秒杀订单号*/
     private String orderNo;
     /**会员ID*/
-    private String memberId;
+    private Long memberId;
     /**用户下单手机号*/
     private Long mobile;
     /**商品ID*/
@@ -22,7 +22,7 @@ public class OrderPayRequest implements Serializable {
     public OrderPayRequest() {
     }
 
-    public OrderPayRequest(String orderNo, String memberId, Long mobile, Long goodsId, BigDecimal money) {
+    public OrderPayRequest(String orderNo, Long memberId, Long mobile, Long goodsId, BigDecimal money) {
         this.orderNo = orderNo;
         this.memberId = memberId;
         this.mobile = mobile;
@@ -38,11 +38,11 @@ public class OrderPayRequest implements Serializable {
         this.orderNo = orderNo;
     }
 
-    public String getMemberId() {
+    public Long getMemberId() {
         return memberId;
     }
 
-    public void setMemberId(String memberId) {
+    public void setMemberId(Long memberId) {
         this.memberId = memberId;
     }
 

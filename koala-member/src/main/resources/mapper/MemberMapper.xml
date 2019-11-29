@@ -24,7 +24,14 @@
     SELECT
         <include refid="baseSql" />
     FROM MEMBER
-    WHERE ID = #{id,jdbcType=BIGINT}
+    WHERE ID = #{id, jdbcType=BIGINT}
+  </select>
+
+  <select id="getMemberNo" parameterType="java.lang.Long" resultMap="baseMap">
+    SELECT
+    <include refid="baseSql" />
+    FROM MEMBER
+    WHERE MEMBER_NO = #{memberNo, jdbcType=VARCHAR}
   </select>
 
   <delete id="deleteById" parameterType="java.lang.Long">

@@ -46,7 +46,7 @@ public class WxPayService implements IWxPayService {
     public ResponseEntity createOrder(OrderPayRequest request) {
         LOGGER.info("[微信支付回调]-订单支付成功,开始微信回调,入参信息：{}.", GsonUtils.toJson(request));
         String orderNo = request.getOrderNo();
-        String memberId = request.getMemberId();
+        Long memberId = request.getMemberId();
         Long mobile = request.getMobile();
         Long goodsId = request.getGoodsId();
         BigDecimal money = request.getMoney();

@@ -1,14 +1,17 @@
 package org.igetwell.system.member.service;
 
+import org.igetwell.common.uitls.ResponseEntity;
 import org.igetwell.system.member.entity.Member;
 
 public interface IMemberService {
 
-    int deleteById(Long id);
+    void deleteById(Long id);
 
-    int insert(Member member);
+    ResponseEntity insert(Member member);
 
     Member get(Long id);
 
-    int update(Member member);
+    Member getMemberNo(String memberNo);
+
+    ResponseEntity update(Member member);
 }

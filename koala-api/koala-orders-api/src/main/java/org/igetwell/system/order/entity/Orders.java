@@ -15,7 +15,7 @@ public class Orders implements Serializable {
     /**
      * 用户ID
      */
-    private String memberId;
+    private Long memberId;
 
     /**
      * 手机号
@@ -80,11 +80,11 @@ public class Orders implements Serializable {
         this.orderNo = orderNo;
     }
 
-    public String getMemberId() {
+    public Long getMemberId() {
         return memberId;
     }
 
-    public void setMemberId(String memberId) {
+    public void setMemberId(Long memberId) {
         this.memberId = memberId;
     }
 

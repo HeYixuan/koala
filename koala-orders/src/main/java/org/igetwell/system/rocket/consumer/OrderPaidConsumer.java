@@ -30,7 +30,7 @@ public class OrderPaidConsumer implements RocketMQListener<OrderProtocol> {
     public void onMessage(OrderProtocol protocol) {
         try {
             String orderNo = protocol.getOrderNo();
-            String memberId = protocol.getMemberId();
+            Long memberId = protocol.getMemberId();
             Long goodsId= protocol.getGoodsId();
             Long mobile= protocol.getMobile();
             LOGGER.info("[订单支付成功消费者]-订单号={}, 商品ID={}, 手机号={}, 金额={}.", orderNo, goodsId, mobile, protocol.getMoney().doubleValue());

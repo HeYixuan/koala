@@ -10,5 +10,7 @@ public interface MemberMapper {
 
     Member get(Long id);
 
+    Member getMemberNo(String memberNo);
+
     int update(Member member);
 }

@@ -12,7 +12,7 @@ public class ChargeOrderRequest implements Serializable {
     /**
      * 会员ID
      */
-    private String memberId;
+    private Long memberId;
     /**手机号*/
     private Long mobile;
     /**金额*/
@@ -23,18 +23,18 @@ public class ChargeOrderRequest implements Serializable {
     public ChargeOrderRequest() {
     }
 
-    public ChargeOrderRequest(String memberId, Long mobile, BigDecimal money, Long goodsId) {
+    public ChargeOrderRequest(Long memberId, Long mobile, BigDecimal money, Long goodsId) {
         this.memberId = memberId;
         this.mobile = mobile;
         this.money = money;
         this.goodsId = goodsId;
     }
 
-    public String getMemberId() {
+    public Long getMemberId() {
         return memberId;
     }
 
-    public void setMemberId(String memberId) {
+    public void setMemberId(Long memberId) {
         this.memberId = memberId;
     }
 

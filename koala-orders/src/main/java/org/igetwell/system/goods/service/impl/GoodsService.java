@@ -217,7 +217,7 @@ public class GoodsService implements IGoodsService {
         }
         Long goodsId = request.getGoodsId();
         Long mobile = request.getMobile();
-        String memberId = request.getMemberId();
+        Long memberId = request.getMemberId();
         if (!this.iOrderService.checkOrderPay(memberId, mobile, goodsId)) {
             return ResponseEntity.error(HttpStatus.TOO_MANY_REQUESTS, "不能重复进行下单!");
         }
@@ -246,7 +246,7 @@ public class GoodsService implements IGoodsService {
         String orderNo = String.valueOf(System.nanoTime());
         Long mobile = request.getMobile();
         Long goodsId = request.getGoodsId();
-        String memberId = request.getMemberId();
+        Long memberId = request.getMemberId();
         BigDecimal money = request.getMoney();
         try {
 
@@ -293,7 +293,7 @@ public class GoodsService implements IGoodsService {
         }
         Long mobile = request.getMobile();
         Long goodsId = request.getGoodsId();
-        String memberId = request.getMemberId();
+        Long memberId = request.getMemberId();
         if (StringUtils.isEmpty(memberId) || StringUtils.isEmpty(mobile) || StringUtils.isEmpty(goodsId)) {
             LOGGER.info("[商品服务]-秒杀下单必要参数不可为空.");
             return false;
@@ -317,7 +317,7 @@ public class GoodsService implements IGoodsService {
      * @param goodsId
      * @param money
      */
-    private void writeCache(String memberId, String orderNo, Long mobile, Long goodsId, BigDecimal money) {
+    private void writeCache(Long memberId, String orderNo, Long mobile, Long goodsId, BigDecimal money) {
         Orders order = new Orders();
         order.setId(System.nanoTime());
         order.setMemberId(memberId);

@@ -3,8 +3,8 @@
 <mapper namespace="org.igetwell.system.order.mapper.OrdersMapper">
   <resultMap id="baseMap" type="org.igetwell.system.order.entity.Orders">
     <result column="ID" jdbcType="BIGINT" property="id" />
+    <result column="MEMBER_ID" jdbcType="BIGINT" property="memberId" />
     <result column="ORDER_NO" jdbcType="VARCHAR" property="orderNo" />
-    <result column="MEMBER_ID" jdbcType="VARCHAR" property="memberId" />
     <result column="MOBILE" jdbcType="BIGINT" property="mobile" />
     <result column="GOODS_ID" jdbcType="BIGINT" property="goodsId" />
     <result column="TRADE_NO" jdbcType="BIGINT" property="tradeNo" />
@@ -32,10 +32,17 @@
     SELECT
         <include refid="baseSql" />
     FROM ORDERS
-    WHERE MEMBER_ID = #{memberId, jdbcType=VARCHAR}
+    WHERE MEMBER_ID = #{memberId, jdbcType=BIGINT}
     AND MOBILE = #{mobile, jdbcType=BIGINT}
     AND GOODS_ID = #{goodsId, jdbcType=BIGINT}
     AND PAY_STATUS = 1
+  </select>
+
+  <select id="getMemberOrder" resultMap="baseMap">
+    SELECT
+    <include refid="baseSql" />
+    FROM ORDERS
+    WHERE MEMBER_ID = #{memberId, jdbcType=BIGINT}
   </select>
 
   <delete id="deleteById">
@@ -49,11 +56,11 @@
       <if test="id != null">
         ID,
       </if>
-      <if test="orderNo != null and orderNo != ''">
-        ORDER_NO,
-      </if>
       <if test="memberId != null and memberId != ''">
         MEMBER_ID,
+      </if>
+      <if test="orderNo != null and orderNo != ''">
+        ORDER_NO,
       </if>
       <if test="mobile != null">
         MOBILE,
@@ -87,11 +94,11 @@
       <if test="id != null">
         #{id,jdbcType=BIGINT},
       </if>
+      <if test="memberId != null">
+        #{memberId,jdbcType=BIGINT},
+      </if>
       <if test="orderNo != null and orderNo != ''">
         #{orderNo,jdbcType=VARCHAR},
-      </if>
-      <if test="memberId != null and memberId != ''">
-        #{memberId,jdbcType=VARCHAR},
       </if>
       <if test="mobile != null">
         #{mobile,jdbcType=BIGINT},
@@ -127,11 +134,11 @@
   <update id="update" parameterType="org.igetwell.system.order.entity.Orders">
     UPDATE ORDERS
     <set>
+      <if test="memberId != null">
+        MEMBER_ID = #{memberId,jdbcType=BIGINT},
+      </if>
       <if test="orderNo != null and orderNo != ''">
         ORDER_NO = #{orderNo,jdbcType=VARCHAR},
-      </if>
-      <if test="memberId != null and memberId != ''">
-        MEMBER_ID = #{memberId,jdbcType=VARCHAR},
       </if>
       <if test="mobile != null">
         MOBILE = #{mobile,jdbcType=BIGINT},

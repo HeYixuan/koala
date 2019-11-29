@@ -11,7 +11,7 @@ public class ChargeOrderResponse implements Serializable {
     /**秒杀订单号*/
     private String orderNo;
     /**会员ID*/
-    private String memberId;
+    private Long memberId;
     /**用户下单手机号*/
     private Integer mobile;
     /**商品ID*/
@@ -22,7 +22,7 @@ public class ChargeOrderResponse implements Serializable {
     public ChargeOrderResponse() {
     }
 
-    public ChargeOrderResponse(String orderNo, String memberId, Integer mobile, Long goodsId, BigDecimal money) {
+    public ChargeOrderResponse(String orderNo, Long memberId, Integer mobile, Long goodsId, BigDecimal money) {
         this.orderNo = orderNo;
         this.memberId = memberId;
         this.mobile = mobile;
@@ -38,11 +38,11 @@ public class ChargeOrderResponse implements Serializable {
         this.orderNo = orderNo;
     }
 
-    public String getMemberId() {
+    public Long getMemberId() {
         return memberId;
     }
 
-    public void setMemberId(String memberId) {
+    public void setMemberId(Long memberId) {
         this.memberId = memberId;
     }
 
