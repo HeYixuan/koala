@@ -34,12 +34,8 @@ public class SystemOauthClientDetailService implements ISystemOauthClientDetailS
     }
 
     @Override
-    public ResponseEntity deleteById(String clientId) {
-        int i = systemOauthClientDetailsMapper.deleteById(clientId);
-        if (i > 0){
-            return ResponseEntity.ok();
-        }
-        return ResponseEntity.error();
+    public void deleteById(String clientId) {
+        systemOauthClientDetailsMapper.deleteById(clientId);
     }
 
     @Override

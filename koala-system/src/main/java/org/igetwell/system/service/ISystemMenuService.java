@@ -35,7 +35,7 @@ public interface ISystemMenuService {
 
     SystemMenu get(Long id);
 
-    ResponseEntity deleteById(Long id);
+    void deleteById(Long id);
 
     ResponseEntity insert(SystemMenu systemMenu);
 

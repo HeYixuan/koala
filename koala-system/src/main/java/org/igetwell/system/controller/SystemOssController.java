@@ -39,7 +39,8 @@ public class SystemOssController {
 
     @PostMapping("/oss/deleteById/{id}")
     public ResponseEntity deleteById(@PathVariable("id") Long id){
-        return iSystemOssService.deleteById(id);
+        iSystemOssService.deleteById(id);
+        return ResponseEntity.ok();
     }
 
     @PostMapping("/oss/update")

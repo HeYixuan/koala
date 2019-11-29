@@ -59,7 +59,7 @@ public interface ISystemRoleService {
      */
     Integer getDataScopeType(String tenant, Long id);
 
-    ResponseEntity deleteById(Long id);
+    void deleteById(Long id);
 
     ResponseEntity insert(SystemRole systemRole);
 

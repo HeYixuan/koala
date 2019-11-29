@@ -13,7 +13,7 @@ public interface ISystemOssService {
 
     List<SystemOss> getList(Pagination pagination, SystemOssDto oss);
 
-    ResponseEntity deleteById(Long id);
+    void deleteById(Long id);
 
     ResponseEntity insert(SystemOss oss);
 

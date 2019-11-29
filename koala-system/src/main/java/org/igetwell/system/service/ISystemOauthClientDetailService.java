@@ -25,7 +25,7 @@ public interface ISystemOauthClientDetailService {
      */
     List<SystemOauthClientDetailsBean> getList(Pagination pagination, SystemOauthClientDetailsPageDto dto);
 
-    ResponseEntity deleteById(String clientId);
+    void deleteById(String clientId);
 
     ResponseEntity insert(SystemOauthClientDetails systemOauthClientDetails);
 

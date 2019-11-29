@@ -38,7 +38,8 @@ public class SystemDeptController {
 
     @PostMapping("/systemDept/deleteById/{id}")
     public ResponseEntity deleteById(@PathVariable("id") Long id){
-        return iSystemDeptService.deleteById(id);
+        iSystemDeptService.deleteById(id);
+        return ResponseEntity.ok();
     }
 
     @PostMapping("/systemDept/add")

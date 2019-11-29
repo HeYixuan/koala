@@ -80,8 +80,8 @@ public class SystemUserService implements ISystemUserService {
     }
 
     @Override
-    public ResponseEntity deleteById(Long id){
-        return ResponseEntity.ok();
+    public void deleteById(Long id){
+        systemUserMapper.deleteById(id);
     }
 
     @Override

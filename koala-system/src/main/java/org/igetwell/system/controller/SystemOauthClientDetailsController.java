@@ -38,7 +38,8 @@ public class SystemOauthClientDetailsController {
 
     @PostMapping("/systemClient/deleteById/{clientId}")
     public ResponseEntity deleteById(@PathVariable("clientId") String clientId){
-        return iSystemOauthClientDetailService.deleteById(clientId);
+        iSystemOauthClientDetailService.deleteById(clientId);
+        return ResponseEntity.ok();
     }
 
     @PostMapping("/systemClient/update")

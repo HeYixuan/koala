@@ -37,12 +37,8 @@ public class SystemOssService implements ISystemOssService {
     }
 
     @Override
-    public ResponseEntity deleteById(Long id) {
-        int i = systemOssMapper.deleteById(id);
-        if (i > 0){
-            return ResponseEntity.ok();
-        }
-        return ResponseEntity.error();
+    public void deleteById(Long id) {
+        systemOssMapper.deleteById(id);
     }
 
     @Override

@@ -24,7 +24,7 @@ public interface ISystemTenantService {
      */
     List<SystemTenant> getList(Pagination pagination, SystemTenantPageDto dto);
 
-    ResponseEntity deleteById(Long id);
+    void deleteById(Long id);
 
     ResponseEntity insert(SystemTenant systemTenant);
 

@@ -87,7 +87,8 @@ public class SystemRoleController {
 
     @PostMapping("/systemRole/deleteById/{id}")
     public ResponseEntity deleteById(@PathVariable("id") Long id){
-        return iSystemRoleService.deleteById(id);
+        iSystemRoleService.deleteById(id);
+        return ResponseEntity.ok();
     }
 
     @PostMapping("/systemRole/update")

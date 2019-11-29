@@ -31,7 +31,7 @@ public interface ISystemDeptService {
      */
     List<Long> getAncestors(Long deptId);
 
-    ResponseEntity deleteById(Long id);
+    void deleteById(Long id);
 
     ResponseEntity insert(SystemDept systemDept);
 

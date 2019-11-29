@@ -36,7 +36,7 @@ public interface ISystemUserService {
 
     ResponseEntity insert(SystemUser systemUser);
 
-    ResponseEntity deleteById(Long id);
+    void deleteById(Long id);
 
     ResponseEntity update(SystemUser systemUser);
 

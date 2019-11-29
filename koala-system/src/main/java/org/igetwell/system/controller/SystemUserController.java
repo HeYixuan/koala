@@ -61,7 +61,8 @@ public class SystemUserController {
 
     @PostMapping("/systemUser/deleteById/{id}")
     public ResponseEntity deleteById(@PathVariable("id") Long id){
-        return iSystemUserService.deleteById(id);
+        iSystemUserService.deleteById(id);
+        return ResponseEntity.ok();
     }
 
     @PostMapping("/systemUser/update")

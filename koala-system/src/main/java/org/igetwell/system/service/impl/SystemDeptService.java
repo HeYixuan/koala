@@ -39,12 +39,8 @@ public class SystemDeptService implements ISystemDeptService {
     }
 
     @Override
-    public ResponseEntity deleteById(Long id) {
-        int i = systemDeptMapper.deleteById(id);
-        if (i > 0){
-            return ResponseEntity.ok();
-        }
-        return ResponseEntity.error();
+    public void deleteById(Long id) {
+        systemDeptMapper.deleteById(id);
     }
 
     @Override

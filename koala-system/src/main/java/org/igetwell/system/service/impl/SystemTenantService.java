@@ -33,12 +33,8 @@ public class SystemTenantService implements ISystemTenantService {
     }
 
     @Override
-    public ResponseEntity deleteById(Long id) {
-        int i = systemTenantMapper.deleteById(id);
-        if (i > 0){
-            return ResponseEntity.ok();
-        }
-        return ResponseEntity.error();
+    public void deleteById(Long id) {
+        systemTenantMapper.deleteById(id);
     }
 
     @Override

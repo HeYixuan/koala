@@ -81,7 +81,8 @@ public class SystemMenuController {
 
     @PostMapping("/systemMenu/deleteById/{id}")
     public ResponseEntity deleteById(@PathVariable("id") Long id){
-        return iSystemMenuService.deleteById(id);
+        iSystemMenuService.deleteById(id);
+        return ResponseEntity.ok();
     }
 
     @PostMapping("/systemMenu/update")

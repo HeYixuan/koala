@@ -37,7 +37,8 @@ public class SystemTenantController {
 
     @PostMapping("/systemTenant/deleteById/{id}")
     public ResponseEntity deleteById(@PathVariable("id") Long id){
-        return iSystemTenantService.deleteById(id);
+        iSystemTenantService.deleteById(id);
+        return ResponseEntity.ok();
     }
 
     @PostMapping("/systemTenant/update")
