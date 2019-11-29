@@ -1,6 +1,5 @@
 server:
   port: 8885
-
 spring:
   application:
     name: koala-member
@@ -8,7 +7,7 @@ spring:
   cloud:
     nacos:
       discovery:
-        server-addr: ${NACOS-HOST:koala-register}:${NACOS-PORT:8848}
+        server-addr: ${NACOS-HOST:pigx-register}:${NACOS-PORT:8848}
       config:
         server-addr: ${spring.cloud.nacos.discovery.server-addr}
         file-extension: yml
@@ -18,8 +17,8 @@ spring:
 
   main:
     allow-bean-definition-overriding: true
+
   jackson:
     time-zone: GMT+8
     default-property-inclusion: NON_EMPTY
     date-format: yyyy-MM-dd HH:mm:ss
-

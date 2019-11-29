@@ -186,11 +186,11 @@
 
 
 	<repositories>
-		<repository>
+		<!--<repository>
 			<id>release</id>
 			<name>Release Repository</name>
 			<url>http://nexus.gitee.ltd/repository/maven-releases/</url>
-		</repository>
+		</repository>-->
 		<repository>
 			<id>aliyun-repos</id>
 			<url>http://maven.aliyun.com/nexus/content/groups/public/</url>

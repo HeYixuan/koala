@@ -46,12 +46,14 @@ public class KoalaResourceServerConfigurerAdapter extends ResourceServerConfigur
     private AuthenticationAccessDeniedHandler authenticationAccessDeniedHandler;
 
 
+    /*@Autowired
+    private LettuceConnectionFactory lettuceConnectionFactory;*/
     @Autowired
-    private LettuceConnectionFactory lettuceConnectionFactory;
+    private RedisConnectionFactory redisConnectionFactory;
 
     @Bean
     public RedisTokenStore redisTokenStore() {
-        return new RedisTokenStore(lettuceConnectionFactory);
+        return new RedisTokenStore(redisConnectionFactory);
     }
 
     private BearerTokenExtractor tokenExtractor = new BearerTokenExtractor();

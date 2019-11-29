@@ -15,9 +15,13 @@ spring:
         shared-dataids: ${spring.application.name}-${spring.profiles.active}.${spring.cloud.nacos.config.file-extension}
   profiles:
     active: dev
+
   main:
     allow-bean-definition-overriding: true
-
+  jackson:
+    time-zone: GMT+8
+    default-property-inclusion: NON_EMPTY
+    date-format: yyyy-MM-dd HH:mm:ss
 feign:
   hystrix:
     enabled: true

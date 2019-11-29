@@ -1,7 +1,7 @@
 spring:
   redis:
-    host: 127.0.0.1
     port: 6379
+    host: ${REDIS-HOST:localhost}
     password:
 #    single:
 #      address: 127.0.0.1:6379
@@ -21,6 +21,9 @@ spring:
       idle-timeout: 30000
       connection-timeout: 30000
 
+  main:
+    allow-bean-definition-overriding: true
+
 sequence:
   snowflake:
     datacenter-id: 16
@@ -29,12 +32,7 @@ sequence:
 mybatis:
   mapper-locations: classpath:/mapper/*Mapper.xml
 
-  thymeleaf:
-    mode: LEGACYHTML5
-    prefix: classpath:/templates/
-    suffix: .html
-    encoding: UTF-8
-    cache: false
+
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8

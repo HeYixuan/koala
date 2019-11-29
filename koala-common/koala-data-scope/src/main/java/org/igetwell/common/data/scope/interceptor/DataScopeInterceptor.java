@@ -77,7 +77,7 @@ public class DataScopeInterceptor implements Interceptor {
 		String className = mapperId.substring(0, mapperId.lastIndexOf("."));
 		String mapperName = ClassUtils.getShortName(className);
 		String methodName = mapperId.substring(mapperId.lastIndexOf(".") + 1);
-		boolean mapperSkip = dataScopeProperties.getMapperKey().stream().anyMatch(methodName::contains)
+		boolean mapperSkip = dataScopeProperties.getMapperKey().stream().noneMatch(methodName::contains)
 				|| dataScopeProperties.getMapperExclude().stream().anyMatch(mapperName::contains);
 		if (mapperSkip) {
 			//获取请求时的参数
