@@ -44,64 +44,64 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-	public static final String AUTHORIZATION_HEADER = "Authorization";
+    public static final String AUTHORIZATION_HEADER = "Authorization";
 
-	public static final String AUTHORIZATION_TOKEN = "access_token";
+    public static final String AUTHORIZATION_TOKEN = "access_token";
 
-	public static final String SECURITY_IGNORE_URLS_SPILT_CHAR = ",";
+    public static final String SECURITY_IGNORE_URLS_SPILT_CHAR = ",";
 
-	@Autowired
-	private CustomUserDetailsServiceImpl userDetailsService;
+    @Autowired
+    private CustomUserDetailsServiceImpl userDetailsService;
 
-	@Autowired
-	private JwtAuthenticationEntryPoint unauthorizedHandler;
+    @Autowired
+    private JwtAuthenticationEntryPoint unauthorizedHandler;
 
-	@Autowired
-	private JwtTokenUtils tokenProvider;
+    @Autowired
+    private JwtTokenUtils tokenProvider;
 
-	@Autowired
-	private Environment env;
+    @Autowired
+    private Environment env;
 
-	@Bean(name = BeanIds.AUTHENTICATION_MANAGER)
-	@Override
-	public AuthenticationManager authenticationManagerBean() throws Exception {
-		return super.authenticationManagerBean();
-	}
+    @Bean(name = BeanIds.AUTHENTICATION_MANAGER)
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
+    }
 
-	@Override
-	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
-	}
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+    }
 
-	@Override
-	public void configure(WebSecurity web) {
-		String ignoreUrls = env.getProperty("nacos.security.ignore.urls", "/**");
-		for (String ignoreUrl : ignoreUrls.trim().split(SECURITY_IGNORE_URLS_SPILT_CHAR)) {
-			web.ignoring().antMatchers(ignoreUrl.trim());
-		}
-	}
+    @Override
+    public void configure(WebSecurity web) {
+        String ignoreURLs = env.getProperty("nacos.security.ignore.urls", "/**");
+        for (String ignoreURL : ignoreURLs.trim().split(SECURITY_IGNORE_URLS_SPILT_CHAR)) {
+            web.ignoring().antMatchers(ignoreURL.trim());
+        }
+    }
 
-	@Override
-	protected void configure(HttpSecurity http) throws Exception {
-		http
-				.authorizeRequests()
-				.anyRequest().authenticated().and()
-				// custom token authorize exception handler
-				.exceptionHandling()
-				.authenticationEntryPoint(unauthorizedHandler).and()
-				// since we use jwt, session is not necessary
-				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-				// since we use jwt, csrf is not necessary
-				.csrf().disable();
-		http.addFilterBefore(new JwtAuthenticationTokenFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class);
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http
+            .authorizeRequests()
+            .anyRequest().authenticated().and()
+            // custom token authorize exception handler
+            .exceptionHandling()
+            .authenticationEntryPoint(unauthorizedHandler).and()
+            // since we use jwt, session is not necessary
+            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+            // since we use jwt, csrf is not necessary
+            .csrf().disable();
+        http.addFilterBefore(new JwtAuthenticationTokenFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class);
 
-		// disable cache
-		http.headers().cacheControl();
-	}
+        // disable cache
+        http.headers().cacheControl();
+    }
 
-	@Bean
-	public PasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder();
-	}
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
 }

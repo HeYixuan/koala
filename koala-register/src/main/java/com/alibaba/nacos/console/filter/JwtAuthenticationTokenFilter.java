@@ -35,46 +35,46 @@ import java.io.IOException;
  */
 public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
 
-	private static final String TOKEN_PREFIX = "Bearer ";
+    private static final String TOKEN_PREFIX = "Bearer ";
 
-	private JwtTokenUtils tokenProvider;
+    private JwtTokenUtils tokenProvider;
 
-	public JwtAuthenticationTokenFilter(JwtTokenUtils tokenProvider) {
-		this.tokenProvider = tokenProvider;
-	}
+    public JwtAuthenticationTokenFilter(JwtTokenUtils tokenProvider) {
+        this.tokenProvider = tokenProvider;
+    }
 
-	@Override
-	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
-		String jwt = resolveToken(request);
+    @Override
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
+        String jwt = resolveToken(request);
 
-		if (jwt != null && !"".equals(jwt.trim()) && SecurityContextHolder.getContext().getAuthentication() == null) {
-			if (this.tokenProvider.validateToken(jwt)) {
-				/**
-				 * get auth info
-				 */
-				Authentication authentication = this.tokenProvider.getAuthentication(jwt);
-				/**
-				 * save user info to securityContext
-				 */
-				SecurityContextHolder.getContext().setAuthentication(authentication);
-			}
-		}
+        if (jwt != null && !"".equals(jwt.trim()) && SecurityContextHolder.getContext().getAuthentication() == null) {
+            if (this.tokenProvider.validateToken(jwt)) {
+                /**
+                 * get auth info
+                 */
+                Authentication authentication = this.tokenProvider.getAuthentication(jwt);
+                /**
+                 * save user info to securityContext
+                 */
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            }
+        }
 
-		chain.doFilter(request, response);
-	}
+        chain.doFilter(request, response);
+    }
 
-	/**
-	 * Get token from header
-	 */
-	private String resolveToken(HttpServletRequest request) {
-		String bearerToken = request.getHeader(WebSecurityConfig.AUTHORIZATION_HEADER);
-		if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(TOKEN_PREFIX)) {
-			return bearerToken.substring(7);
-		}
-		String jwt = request.getParameter(WebSecurityConfig.AUTHORIZATION_TOKEN);
-		if (StringUtils.hasText(jwt)) {
-			return jwt;
-		}
-		return null;
-	}
+    /**
+     * Get token from header
+     */
+    private String resolveToken(HttpServletRequest request) {
+        String bearerToken = request.getHeader(WebSecurityConfig.AUTHORIZATION_HEADER);
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(TOKEN_PREFIX)) {
+            return bearerToken.substring(7, bearerToken.length());
+        }
+        String jwt = request.getParameter(WebSecurityConfig.AUTHORIZATION_TOKEN);
+        if (StringUtils.hasText(jwt)) {
+            return jwt;
+        }
+        return null;
+    }
 }
