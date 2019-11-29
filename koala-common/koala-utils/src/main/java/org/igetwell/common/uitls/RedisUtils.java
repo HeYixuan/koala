@@ -4,11 +4,9 @@ import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -17,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 public class RedisUtils {
 
     @Autowired
-    private RedisTemplate<String, Object> redisTemplate;
+    private RedisTemplate redisTemplate;
 
     private final static long LOCK_EXPIRE = 30 * 1000L;
 
@@ -365,7 +363,7 @@ public class RedisUtils {
     // 解锁脚本
     private static final String SCRIPT_UNLOCK = "if redis.call('get', KEYS[1]) == ARGV[1] then return redis.call('del', KEYS[1]) else return 0 end";
 
-    public boolean tryLock(String key, int expire) {
+    /*public boolean tryLock(String key, int expire) {
         DefaultRedisScript<Long> script = new DefaultRedisScript<>(SCRIPT_LOCK, Long.class);
         Long val = redisTemplate.execute(script, Collections.singletonList(key), String.valueOf(expire));
         return val == 1;
@@ -375,7 +373,7 @@ public class RedisUtils {
         DefaultRedisScript<Long> script = new DefaultRedisScript<>(SCRIPT_UNLOCK, Long.class);
         Long val = redisTemplate.execute(script, Collections.singletonList(key));
         return val == 1;
-    }
+    }*/
 
 
     public static void main(String[] args) {

@@ -47,8 +47,8 @@ public class RedisCacheAutoConfiguration {
 	}
 
 	@Bean
-	public RedisCacheManager cacheManager(RedisConnectionFactory connectionFactory, ResourceLoader resourceLoader) {
-		DefaultRedisCacheWriter redisCacheWriter = new DefaultRedisCacheWriter(connectionFactory);
+	public RedisCacheManager cacheManager(RedisConnectionFactory redisConnectionFactory, ResourceLoader resourceLoader) {
+		DefaultRedisCacheWriter redisCacheWriter = new DefaultRedisCacheWriter(redisConnectionFactory);
 		RedisCacheConfiguration cacheConfiguration = this.determineConfiguration(resourceLoader.getClassLoader());
 		List<String> cacheNames = this.cacheProperties.getCacheNames();
 		Map<String, RedisCacheConfiguration> initialCaches = new LinkedHashMap<>();
