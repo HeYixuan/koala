@@ -1,5 +1,7 @@
 package org.igetwell.wechat.sdk.service;
 
+import org.igetwell.wechat.sdk.WechatUser;
+
 public interface IWxOpenComponentWebService {
 
 
@@ -28,6 +30,6 @@ public interface IWxOpenComponentWebService {
      * @param accessToken
      * @param openId
      */
-    void getUser(String accessToken, String openId);
+    WechatUser getUser(String accessToken, String openId);
 
 }
