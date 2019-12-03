@@ -3,10 +3,15 @@ package org.igetwell.common.uitls;
 import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.script.DefaultRedisScript;
+import org.springframework.scripting.ScriptSource;
+import org.springframework.scripting.support.ResourceScriptSource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -315,7 +320,7 @@ public class RedisUtils {
      * @param expire 过期时间 当前时间+超时时间
      * @return 锁住返回true
      */
-    public boolean lock(String key,String expire){
+    /*public boolean lock(String key,String expire){
         boolean bool = redisTemplate.opsForValue().setIfAbsent(key, expire);
         if(bool){//setNX 返回boolean
             return true;
@@ -331,7 +336,7 @@ public class RedisUtils {
             }
         }
         return false;
-    }
+    }*/
 
     /***
      * 解锁
@@ -339,7 +344,7 @@ public class RedisUtils {
      * @param value
      * @return
      */
-    public void unlock(String key, String value){
+    /*public void unlock(String key, String value){
         try {
             String currentValue = this.get(key);
             if (!StringUtils.isEmpty(currentValue) && currentValue.equals(value)) {//如果不为空,就删除锁
@@ -348,7 +353,7 @@ public class RedisUtils {
         }catch (Exception e){
             log.error("[redis分布式锁] 解锁失败!", e);
         }
-    }
+    }*/
 
     /**
      * 解锁
@@ -358,28 +363,105 @@ public class RedisUtils {
         this.del(key);
     }
 
-    //加锁脚本
-    private static final String SCRIPT_LOCK = "if redis.call('setnx', KEYS[1], ARGV[1]) == 1 then redis.call('pexpire', KEYS[1], ARGV[2]) return 1 else return 0 end";
-    // 解锁脚本
-    private static final String SCRIPT_UNLOCK = "if redis.call('get', KEYS[1]) == ARGV[1] then return redis.call('del', KEYS[1]) else return 0 end";
+    //定义获取锁的lua脚本
+    private final static DefaultRedisScript<Boolean> LOCK_LUA_SCRIPT = new DefaultRedisScript<>(
+            "if redis.call('setnx', KEYS[1], ARGV[1]) == 1 then return redis.call('pexpire', KEYS[1], ARGV[2]) else return 0 end"
+            , Boolean.class
+    );
 
-    /*public boolean tryLock(String key, int expire) {
-        DefaultRedisScript<Long> script = new DefaultRedisScript<>(SCRIPT_LOCK, Long.class);
-        Long val = redisTemplate.execute(script, Collections.singletonList(key), String.valueOf(expire));
-        return val == 1;
+    //定义释放锁的lua脚本
+    private final static DefaultRedisScript<Boolean> UNLOCK_LUA_SCRIPT = new DefaultRedisScript<>(
+            "if redis.call('get',KEYS[1]) == ARGV[1] then return redis.call('del',KEYS[1]) else return 0 end"
+            , Boolean.class
+    );
+
+    /**
+     * 加锁
+     * @param key redis键值对 的 key
+     * @param value redis键值对 的 value  随机串作为值
+     * @param timeout redis键值对 的 过期时间   pexpire 以毫秒为单位
+     * @param retryTimes 重试次数   即加锁失败之后的重试次数，根据业务设置大小
+     * @return
+     */
+    public boolean lock(String key, Object value, long timeout, int retryTimes) {
+        try {
+            log.info("加锁信息：lock :::: redisKey = " + key + " request_id = " + value);
+            //组装lua脚本参数
+            List<String> keys = Arrays.asList(key);
+            //执行脚本
+            boolean bool = (boolean) redisTemplate.execute(LOCK_LUA_SCRIPT, keys, value, timeout);
+            //存储本地变量
+            if(bool) {
+                log.info("成功加锁：success to acquire lock:" + Thread.currentThread().getName());
+                return true;
+            } else if (retryTimes == 0) {
+                //重试次数为0直接返回失败
+                return false;
+            } else {
+                //重试获取锁
+                log.info("重试加锁：retry to acquire lock:" + Thread.currentThread().getName());
+                int count = 0;
+                while(true) {
+                    try {
+                        //休眠一定时间后再获取锁，这里时间可以通过外部设置
+                        Thread.sleep(100);
+                        bool = (boolean) redisTemplate.execute(LOCK_LUA_SCRIPT, keys, value, timeout);
+                        if(bool) {
+                            log.info("成功加锁：success to acquire lock:" + Thread.currentThread().getName());
+                            return true;
+                        } else {
+                            count++;
+                            if (retryTimes == count) {
+                                log.info("加锁失败：fail to acquire lock for " + Thread.currentThread().getName());
+                                return false;
+                            } else {
+                                log.warn(count + " times try to acquire lock for " + Thread.currentThread().getName());
+                                continue;
+                            }
+                        }
+                    } catch (Exception e) {
+                        log.error("加锁异常：acquire redis occured an exception:" + Thread.currentThread().getName(), e);
+                        break;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            log.error("加锁异常：acquire redis occured an exception:" + Thread.currentThread().getName(), e);
+        }
+        return false;
     }
 
-    public boolean releaseLock(String key) {
-        DefaultRedisScript<Long> script = new DefaultRedisScript<>(SCRIPT_UNLOCK, Long.class);
-        Long val = redisTemplate.execute(script, Collections.singletonList(key));
-        return val == 1;
-    }*/
+    /**
+     * 释放KEY
+     * @param key   释放本请求对应的锁的key
+     * @param value 释放本请求对应的锁的value  是不重复随即串 用于比较，以免释放别的线程的锁
+     * @return
+     */
+    public boolean unlock(String key, Object value) {
+        try {
+            //组装lua脚本参数
+            List<String> keys = Arrays.asList(key);
+            log.info("解锁信息：unlock :::: redisKey = " + key + " request_id = " + value);
+            // 使用lua脚本删除redis中匹配value的key，可以避免由于方法执行时间过长而redis锁自动过期失效的时候误删其他线程的锁
+            boolean bool = (boolean) redisTemplate.execute(UNLOCK_LUA_SCRIPT, keys, value);
+            //如果这里抛异常，后续锁无法释放
+            if (bool) {
+                log.info("解锁成功：release lock success:" + Thread.currentThread().getName());
+                return true;
+            } else {
+                //其他情况，一般是删除KEY失败，返回0
+                log.error("解锁失败：release lock failed:" + Thread.currentThread().getName());
+            }
+        } catch (Exception e) {
+            log.error("解锁异常：release lock occured an exception", e);
+        }
 
+        return false;
+    }
 
     public static void main(String[] args) {
         RedisUtils redisUtils = new RedisUtils();
         String a = redisUtils.get("a");
-
         Gson o = redisUtils.get("a");
     }
 }

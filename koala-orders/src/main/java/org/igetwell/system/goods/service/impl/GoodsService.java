@@ -15,8 +15,6 @@ import org.igetwell.system.goods.mapper.GoodsMapper;
 import org.igetwell.system.order.protocol.OrderProtocol;
 import org.igetwell.system.goods.service.IGoodsService;
 import org.igetwell.system.order.service.IOrderService;
-import org.redisson.api.RLock;
-import org.redisson.api.RedissonClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +27,6 @@ import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 @Service
 @Transactional(rollbackFor = Exception.class)
@@ -46,10 +43,6 @@ public class GoodsService implements IGoodsService {
 
     @Autowired
     private RedisUtils redisUtils;
-
-    @Autowired
-    private RedissonClient redissonClient;
-
 
     public List<Goods> getList() {
         LOGGER.info("[商品服务]-初始化秒杀的商品列表开始.");
@@ -94,11 +87,10 @@ public class GoodsService implements IGoodsService {
      * @return
      */
     public boolean reduceStock(Long goodsId) {
-        RLock lock = redissonClient.getLock(String.format(RedisKey.STOCK_LOCK, goodsId));
         try {
             LOGGER.info("[商品服务]-根据商品ID：{} 从缓存中开始预扣减库存.");
-            lock.lock(1, TimeUnit.SECONDS);
-            if (!lock.isLocked()) {
+            boolean bool = redisUtils.lock(String.format(RedisKey.STOCK_LOCK, goodsId), goodsId, 500, 3);
+            if (!bool) {
                 LOGGER.info("[商品服务]-排队人数太多，请稍后再试.");
                 return false;
             }
@@ -122,7 +114,7 @@ public class GoodsService implements IGoodsService {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            lock.unlock();
+            redisUtils.unlock(String.format(RedisKey.STOCK_LOCK, goodsId), goodsId);
         }
         return false;
 

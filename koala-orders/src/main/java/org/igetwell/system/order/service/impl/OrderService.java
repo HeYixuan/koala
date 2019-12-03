@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 
-@Service(value = "ordersService")
+@Service
 @Transactional(rollbackFor = Exception.class)
 public class OrderService implements IOrderService {
 

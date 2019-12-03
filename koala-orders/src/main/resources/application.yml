@@ -3,10 +3,6 @@ spring:
     host: 127.0.0.1
     port: 6379
     password:
-#    single:
-#      address: 127.0.0.1:6379
-#    redisson:
-#      config: classpath:redisson.yml
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver

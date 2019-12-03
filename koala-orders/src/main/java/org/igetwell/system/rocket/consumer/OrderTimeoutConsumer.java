@@ -9,14 +9,10 @@ import org.igetwell.system.order.entity.Orders;
 import org.igetwell.system.order.protocol.OrderProtocol;
 import org.igetwell.system.goods.service.IGoodsService;
 import org.igetwell.system.order.service.IOrderService;
-import org.redisson.api.RLock;
-import org.redisson.api.RedissonClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.concurrent.TimeUnit;
 
 /**
  * 订单超时队列
@@ -34,8 +30,6 @@ public class OrderTimeoutConsumer implements RocketMQListener<OrderProtocol> {
 
     @Autowired
     private RedisUtils redisUtils;
-    @Autowired
-    private RedissonClient redissonClient;
 
     /**
      * 订单超时,回滚库存
@@ -47,9 +41,8 @@ public class OrderTimeoutConsumer implements RocketMQListener<OrderProtocol> {
         String orderNo = protocol.getOrderNo();
         Long goodsId= protocol.getGoodsId();
         Long mobile= protocol.getMobile();
-        RLock lock = redissonClient.getLock(String.format(RedisKey.STOCK_LOCK, goodsId));
         try {
-            lock.lock(1, TimeUnit.SECONDS);
+            redisUtils.lock(String.format(RedisKey.STOCK_LOCK, goodsId), goodsId, 500, 3);
             LOGGER.info("[订单超时消费者]-订单号={}, 商品ID={}, 手机号={}, 金额={}.", orderNo, goodsId, mobile, protocol.getMoney().doubleValue());
             Orders order = iOrderService.getOrderNo(orderNo);
             if (order != null){
@@ -86,7 +79,7 @@ public class OrderTimeoutConsumer implements RocketMQListener<OrderProtocol> {
             String message = String.format("[订单超时消费者]-秒杀订单入库失败，正在重试, 订单号：%s.", orderNo);
             throw new RuntimeException(message, e);
         } finally {
-            lock.unlock();
+            redisUtils.unlock(String.format(RedisKey.STOCK_LOCK, goodsId), goodsId);
         }
     }
 }

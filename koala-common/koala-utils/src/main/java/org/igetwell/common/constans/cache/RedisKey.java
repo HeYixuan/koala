@@ -45,6 +45,12 @@ public interface RedisKey {
 
 
     /**
+     * 网站应用获取用户信息
+     */
+    public static final String WECHAT_WEB_USER = "WECHAT_WEB_USER_%s";
+
+
+    /**
      * 商品库存KEY
      */
     public static final String COMPONENT_STOCK = "COMPONENT_STOCK_%s";

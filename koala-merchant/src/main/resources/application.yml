@@ -35,3 +35,7 @@ componentAppId: wx81aa03f442e8d692
 componentAppSecret: dd8063fc89b412d9f88d1f3cb2c8a1d3
 componentToken: fsrtyuiopfghjksadfe3232a
 encodingAesKey: sdfaererit3423828343jeriooweqwqqwq22wwwfdgs
+
+wechat:
+  appId:
+  secret:
