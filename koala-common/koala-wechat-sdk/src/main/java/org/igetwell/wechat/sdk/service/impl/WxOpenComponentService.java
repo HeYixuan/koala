@@ -60,7 +60,7 @@ public class WxOpenComponentService implements IWxOpenComponentService {
     @Override
     public String getComponentAccessToken() throws Exception {
         componentVerifyTicket = redisUtils.get(RedisKey.COMPONENT_VERIFY_TICKET);
-        if(StringUtils.isEmpty(componentVerifyTicket)){
+         if(StringUtils.isEmpty(componentVerifyTicket)){
             throw new Exception("获取微信开放平台验证票据失败");
         }
         boolean bool = redisUtils.exist(RedisKey.COMPONENT_ACCESS_TOKEN);

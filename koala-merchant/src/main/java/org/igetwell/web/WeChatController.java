@@ -2,10 +2,13 @@ package org.igetwell.web;
 
 import lombok.extern.slf4j.Slf4j;
 import org.igetwell.common.uitls.CheckSignature;
+import org.igetwell.common.uitls.ResponseEntity;
+import org.igetwell.wechat.sdk.service.IWxAppService;
 import org.igetwell.wechat.sdk.service.IWxOpenComponentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,6 +22,9 @@ public class WeChatController extends BaseController {
     @Autowired
     private IWxOpenComponentService wxOpenComponentService;
 
+    @Autowired
+    private IWxAppService iWxAppService;
+
 
 
     //de1ac07e2182f698
@@ -30,7 +36,7 @@ public class WeChatController extends BaseController {
      * @param timestamp
      * @param nonce
      */
-    @PostMapping("/callback")
+    @GetMapping("/callback")
     public void callback(String signature, String echostr, String timestamp, String nonce) {
         if (StringUtils.isEmpty(signature) || StringUtils.isEmpty(echostr) || StringUtils.isEmpty(timestamp) || StringUtils.isEmpty(nonce)){
             return;
@@ -39,6 +45,16 @@ public class WeChatController extends BaseController {
         if (bool){
             render(echostr);
         }
+    }
+
+    @PostMapping("/getAccessToken")
+    public void getAccessToken(){
+        iWxAppService.getAccessToken("wx2ffe2417c6b42f78", "2c3b915dd8360206d7a0688c0b59a234");
+    }
+
+    @PostMapping("/uploadLogo")
+    public ResponseEntity uploadLogo(MultipartFile file){
+        return iWxAppService.uploadLogo(file);
     }
 
 

@@ -3,10 +3,6 @@ package org.igetwell.merchant.card.entity;
 import java.io.Serializable;
 import java.util.Date;
 
-/**
- * merchant_card
- * @author 
- */
 public class MerchantCard implements Serializable {
     /**
      * 商户卡ID

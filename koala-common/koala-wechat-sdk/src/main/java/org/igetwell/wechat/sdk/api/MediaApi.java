@@ -88,7 +88,7 @@ public class MediaApi extends API {
      * @param media media
      * @return UploadimgResult
      */
-    public static UploadImgResponse mediaUploadLogo(String accessToken, File media){
+    public static UploadImgResponse logo(String accessToken, File media){
         HttpPost httpPost = new HttpPost(BASE_URI+"/cgi-bin/media/uploadimg");
         FileBody bin = new FileBody(media);
         HttpEntity reqEntity = MultipartEntityBuilder.create()
@@ -96,7 +96,7 @@ public class MediaApi extends API {
                 .addTextBody(ACCESS_TOKEN, API.accessToken(accessToken))
                 .build();
         httpPost.setEntity(reqEntity);
-        return HttpClients.execute(httpPost,UploadImgResponse.class);
+        return HttpClients.execute(httpPost, UploadImgResponse.class);
     }
 
 
@@ -115,7 +115,7 @@ public class MediaApi extends API {
                 .addTextBody(ACCESS_TOKEN, API.accessToken(accessToken))
                 .build();
         httpPost.setEntity(reqEntity);
-        return HttpClients.execute(httpPost,UploadImgResponse.class);
+        return HttpClients.execute(httpPost, UploadImgResponse.class);
     }
 
     /**

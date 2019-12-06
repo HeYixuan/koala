@@ -6,7 +6,7 @@ import org.igetwell.wechat.sdk.response.BaseResponse;
 
 @Getter
 @Setter
-public class UploadImgResponse extends BaseResponse {
+public class UploadImgResponse {
 
     private String url;
 

@@ -395,7 +395,7 @@ public class RedisUtils {
                 //重试获取锁
                 log.info("重试加锁：retry to acquire lock:" + Thread.currentThread().getName());
                 int count = 0;
-                while(true) {
+                for (; ;){
                     try {
                         //休眠一定时间后再获取锁，这里时间可以通过外部设置
                         Thread.sleep(100);
