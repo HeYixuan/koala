@@ -1,4 +1,4 @@
-package org.igetwell.wechat.sdk.poi;
+package org.igetwell.wechat.sdk.bean.poi;
 
 import lombok.Getter;
 import lombok.Setter;

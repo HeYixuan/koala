@@ -1,4 +1,4 @@
-package org.igetwell.wechat.sdk.shorturl;
+package org.igetwell.wechat.sdk.bean.shorturl;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -12,7 +12,7 @@ public class ComponentAuthorization implements Serializable {
 
     private String authorizerAppid;
     private String authorizerAccessToken;
-    private long expiresIn;
+    private Long expiresIn;
     private String authorizerRefreshToken;
     private List<FuncInfo> funcInfo;
 }

@@ -20,5 +20,5 @@ public class PreAuthAuthorization implements Serializable {
     /**
      * 有效期
      */
-    private long expiresIn = -1;
+    private Long expiresIn;
 }

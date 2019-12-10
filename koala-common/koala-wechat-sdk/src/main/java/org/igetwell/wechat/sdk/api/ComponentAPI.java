@@ -6,10 +6,7 @@ import org.apache.http.entity.StringEntity;
 import org.igetwell.common.uitls.GsonUtils;
 import org.igetwell.common.uitls.HttpClientUtils;
 import org.igetwell.common.uitls.ParamMap;
-import org.igetwell.wechat.sdk.ComponentAccessToken;
-import org.igetwell.wechat.sdk.ComponentAuthorization;
-import org.igetwell.wechat.sdk.ComponentRefreshAccessToken;
-import org.igetwell.wechat.sdk.PreAuthAuthorization;
+import org.igetwell.wechat.sdk.bean.component.*;
 
 import java.nio.charset.Charset;
 import java.util.Map;
@@ -21,13 +18,13 @@ public class ComponentAPI extends API {
 
 
     /**
-     * 获取令牌
+     * 第三方开放平台获取令牌
      * @param componentAppId
      * @param componentAppSecret
      * @param componentVerifyTicket
      * @return
      */
-    public ComponentAccessToken oauthToken(String componentAppId, String componentAppSecret, String componentVerifyTicket){
+    public static ComponentAccessToken oauthToken(String componentAppId, String componentAppSecret, String componentVerifyTicket){
         Map<String, String> param = ParamMap.create("component_appid", componentAppId)
                 .put("component_appsecret", componentAppSecret)
                 .put("component_verify_ticket", componentVerifyTicket).getData();
@@ -42,12 +39,12 @@ public class ComponentAPI extends API {
     }
 
     /**
-     * 获取预授权码
+     * 第三方开放平台获取预授权码
      * @param accessToken
      * @param componentAppId
      * @return
      */
-    public PreAuthAuthorization preAuthAuthorization(String accessToken, String componentAppId){
+    public static PreAuthAuthorization preAuthCode(String accessToken, String componentAppId){
         Map<String, String> param = ParamMap.create("component_appid", componentAppId).getData();
         HttpUriRequest httpUriRequest = RequestBuilder
                 .post()
@@ -66,7 +63,7 @@ public class ComponentAPI extends API {
      * @param authorizationCode
      * @return
      */
-    public ComponentAuthorization authorize(String accessToken, String componentAppId, String authorizationCode){
+    public static Authorization authorize(String accessToken, String componentAppId, String authorizationCode){
         Map<String, String> param = ParamMap.create("component_appid", componentAppId)
                 .put("authorization_code", authorizationCode).getData();
         HttpUriRequest httpUriRequest = RequestBuilder
@@ -77,7 +74,7 @@ public class ComponentAPI extends API {
                 .setEntity(new StringEntity(GsonUtils.toJson(param), Charset.forName("UTF-8")))
                 .build();
         String response = HttpClientUtils.getInstance().sendHttpPost(httpUriRequest.getURI().toString());
-        return GsonUtils.fromJson(response, ComponentAuthorization.class);
+        return GsonUtils.fromJson(response, Authorization.class);
     }
 
     /**
@@ -88,7 +85,7 @@ public class ComponentAPI extends API {
      * @param refreshToken
      * @return
      */
-    public ComponentRefreshAccessToken refreshToken(String accessToken, String componentAppId, String appId, String refreshToken){
+    public static ComponentRefreshAccessToken refreshToken(String accessToken, String componentAppId, String appId, String refreshToken){
         Map<String, String> param = ParamMap.create("component_appid", componentAppId)
                 .put("authorizer_appid", appId)
                 .put("authorizer_refresh_token", refreshToken).getData();
@@ -108,7 +105,7 @@ public class ComponentAPI extends API {
      * @param accessToken
      * @param appId
      */
-    public void create(String accessToken, String appId){
+    public static void create(String accessToken, String appId){
         Map<String, String> param = ParamMap.create("appid", appId).getData();
         HttpUriRequest httpUriRequest = RequestBuilder
                 .post()
@@ -126,7 +123,7 @@ public class ComponentAPI extends API {
      * @param componentAppId
      * @param appId
      */
-    public void bind(String accessToken, String componentAppId, String appId){
+    public static void bind(String accessToken, String componentAppId, String appId){
         Map<String, String> param = ParamMap.create("appid", appId).put("open_appid", componentAppId).getData();
         HttpUriRequest httpUriRequest = RequestBuilder
                 .post()
@@ -144,7 +141,7 @@ public class ComponentAPI extends API {
      * @param componentAppId
      * @param appId
      */
-    public void unbind(String accessToken, String componentAppId, String appId){
+    public static void unbind(String accessToken, String componentAppId, String appId){
         Map<String, String> param = ParamMap.create("appid", appId).put("open_appid", componentAppId).getData();
         HttpUriRequest httpUriRequest = RequestBuilder
                 .post()
@@ -161,7 +158,7 @@ public class ComponentAPI extends API {
      * @param accessToken
      * @param appId
      */
-    public void get(String accessToken, String appId){
+    public static void get(String accessToken, String appId){
         Map<String, String> param = ParamMap.create("appid", appId).getData();
         HttpUriRequest httpUriRequest = RequestBuilder
                 .post()
@@ -171,6 +168,51 @@ public class ComponentAPI extends API {
                 .setEntity(new StringEntity(GsonUtils.toJson(param), Charset.forName("UTF-8")))
                 .build();
         String response = HttpClientUtils.getInstance().sendHttpPost(httpUriRequest.getURI().toString());
+    }
+
+
+    /**
+     * 第三方开放平台代公众号授权获取令牌
+     * @param componentAppId
+     * @param accessToken
+     * @param appId
+     * @param code
+     * @return
+     */
+    public static ComponentAppAccessToken oauthAppToken(String accessToken, String componentAppId, String appId, String code){
+        HttpUriRequest httpUriRequest = RequestBuilder
+                .post()
+                .setUri(BASE_URI + "/sns/oauth2/component/access_token")
+                .addParameter("component_appid", componentAppId)
+                .addParameter(COMPONENT_ACCESS_TOKEN, accessToken(accessToken))
+                .addParameter("grant_type", "authorization_code")
+                .addParameter("code", code)
+                .addParameter("appid", appId)
+                .build();
+        String response = HttpClientUtils.getInstance().sendHttpPost(httpUriRequest.getURI().toString());
+        return GsonUtils.fromJson(response, ComponentAppAccessToken.class);
+    }
+
+    /**
+     * 第三方开放平台代公众号授权刷新令牌
+     * @param componentAppId
+     * @param accessToken
+     * @param appId
+     * @param refreshToken
+     * @return
+     */
+    public static ComponentAppAccessToken refreshAppToken(String accessToken, String componentAppId, String appId, String refreshToken){
+        HttpUriRequest httpUriRequest = RequestBuilder
+                .post()
+                .setUri(BASE_URI + "/sns/oauth2/component/refresh_token")
+                .addParameter("component_appid", componentAppId)
+                .addParameter(COMPONENT_ACCESS_TOKEN, accessToken(accessToken))
+                .addParameter("grant_type", "refresh_token")
+                .addParameter("refresh_token", refreshToken)
+                .addParameter("appid", appId)
+                .build();
+        String response = HttpClientUtils.getInstance().sendHttpPost(httpUriRequest.getURI().toString());
+        return GsonUtils.fromJson(response, ComponentAppAccessToken.class);
     }
 
 }

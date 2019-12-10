@@ -17,7 +17,7 @@ public class ComponentWebAccessToken implements Serializable {
     /**
      * 接口调用凭证超时时间，单位（秒）
      */
-    private long expiresIn = -1;
+    private Long expiresIn;
 
     /**
      * 用户刷新access_token

@@ -1,22 +1,23 @@
-package org.igetwell.wechat.sdk;
+package org.igetwell.wechat.sdk.bean.component;
 
 import java.io.Serializable;
+import java.util.List;
 
-public class ComponentRefreshAccessToken implements Serializable {
+public class ComponentAuthorization implements Serializable {
 
-    /**
-     * 授权方令牌
-     */
+    private String authorizerAppid;
     private String authorizerAccessToken;
-    /**
-     * 有效期
-     */
     private Long expiresIn;
-
-    /**
-     * 刷新令牌
-     */
     private String authorizerRefreshToken;
+    private List<FuncInfo> funcInfo;
+
+    public String getAuthorizerAppid() {
+        return authorizerAppid;
+    }
+
+    public void setAuthorizerAppid(String authorizerAppid) {
+        this.authorizerAppid = authorizerAppid;
+    }
 
     public String getAuthorizerAccessToken() {
         return authorizerAccessToken;
@@ -40,5 +41,13 @@ public class ComponentRefreshAccessToken implements Serializable {
 
     public void setAuthorizerRefreshToken(String authorizerRefreshToken) {
         this.authorizerRefreshToken = authorizerRefreshToken;
+    }
+
+    public List<FuncInfo> getFuncInfo() {
+        return funcInfo;
+    }
+
+    public void setFuncInfo(List<FuncInfo> funcInfo) {
+        this.funcInfo = funcInfo;
     }
 }

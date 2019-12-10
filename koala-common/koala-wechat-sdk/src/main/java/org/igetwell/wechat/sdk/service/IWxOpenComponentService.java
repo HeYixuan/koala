@@ -1,5 +1,7 @@
 package org.igetwell.wechat.sdk.service;
 
+import org.igetwell.wechat.sdk.ComponentRefreshAccessToken;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 public interface IWxOpenComponentService {
@@ -7,10 +9,10 @@ public interface IWxOpenComponentService {
     String API_COMPONENT_TOKEN_URL = "https://api.weixin.qq.com/cgi-bin/component/api_component_token";
     String API_CREATE_PREAUTHCODE_URL = "https://api.weixin.qq.com/cgi-bin/component/api_create_preauthcode?component_access_token=%s";
     String API_QUERY_AUTH_URL = "https://api.weixin.qq.com/cgi-bin/component/api_query_auth?component_access_token=%s";
-    String API_AUTHORIZER_TOKEN_URL = "https://api.weixin.qq.com/cgi-bin/component/api_authorizer_token";
-    String API_GET_AUTHORIZER_INFO_URL = "https://api.weixin.qq.com/cgi-bin/component/api_get_authorizer_info";
-    String API_GET_AUTHORIZER_OPTION_URL = "https://api.weixin.qq.com/cgi-bin/component/api_get_authorizer_option";
-    String API_SET_AUTHORIZER_OPTION_URL = "https://api.weixin.qq.com/cgi-bin/component/api_set_authorizer_option";
+    String API_AUTHORIZER_TOKEN_URL = "https://api.weixin.qq.com/cgi-bin/component/api_authorizer_token?component_access_token=%s";
+    String API_GET_AUTHORIZED_INFO_URL = "https://api.weixin.qq.com/cgi-bin/component/api_get_authorizer_info?component_access_token=%s";
+    String API_GET_AUTHORIZED_OPTION_URL = "https://api.weixin.qq.com/cgi-bin/component/api_get_authorizer_option";
+    String API_SET_AUTHORIZED_OPTION_URL = "https://api.weixin.qq.com/cgi-bin/component/api_set_authorizer_option";
 
     String COMPONENT_LOGIN_PAGE_URL = "https://mp.weixin.qq.com/cgi-bin/componentloginpage?component_appid=%s&pre_auth_code=%s&redirect_uri=%s&auth_type=%s&biz_appid=%s";
 
@@ -100,7 +102,28 @@ public interface IWxOpenComponentService {
     /**
      * 全网发布接入检测消息
      * @param request
-     *
+     * @param response
+     * @param nonce
+     * @param timestamp
+     * @param msgSignature
+     * @throws Exception
      */
     void checkWechatAllNetwork(HttpServletRequest request, HttpServletResponse response, String nonce, String timestamp, String msgSignature) throws Exception;
+
+
+    /**
+     * 获取/刷新接口调用令牌
+     * @param componentAppId
+     * @param appId
+     * @param refreshToken
+     * @return
+     */
+    void refreshToken(String componentAppId, String appId, String refreshToken) throws Exception;
+
+    /**
+     * 获取授权方的帐号基本信息
+     * @param componentAppId
+     * @param appId
+     */
+    void getAuthorized(String componentAppId, String appId) throws Exception;
 }

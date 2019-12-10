@@ -1,4 +1,4 @@
-package org.igetwell.wechat.sdk;
+package org.igetwell.wechat.sdk.bean.component;
 
 import java.io.Serializable;
 

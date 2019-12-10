@@ -1,10 +1,10 @@
 package org.igetwell.common.uitls;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class ParamMap {
-    private Map<String, String> data = new HashMap();
+    private Map<String, String> data = new ConcurrentHashMap<String, String>();
 
     private ParamMap() {
     }

@@ -27,8 +27,6 @@ public class WeChatController extends BaseController {
 
 
 
-    //de1ac07e2182f698
-    //http://insdate.free.ngrok.cc
     /**
      * 校验微信服务器回调
      * @param signature
@@ -38,7 +36,7 @@ public class WeChatController extends BaseController {
      */
     @GetMapping("/callback")
     public void callback(String signature, String echostr, String timestamp, String nonce) {
-        if (StringUtils.isEmpty(signature) || StringUtils.isEmpty(echostr) || StringUtils.isEmpty(timestamp) || StringUtils.isEmpty(nonce)){
+        if (StringUtils.isEmpty(signature.trim()) || StringUtils.isEmpty(echostr.trim()) || StringUtils.isEmpty(timestamp.trim()) || StringUtils.isEmpty(nonce.trim())){
             return;
         }
         boolean bool = CheckSignature.checkSignature(signature, timestamp, nonce);
@@ -90,6 +88,16 @@ public class WeChatController extends BaseController {
     @GetMapping("/getComponentAccessToken")
     public void getComponentAccessToken() throws Exception{
         wxOpenComponentService.getComponentAccessToken();
+    }
+
+    @GetMapping("/refreshToken")
+    public void refreshToken() throws Exception{
+        wxOpenComponentService.refreshToken("wx9a6700dcfc8867aa", "wx570bc396a51b8ff8", "refreshtoken@@@l0_OcQQWx71St66F2crOzAWW6w77Ha6uKG3Ic7ZuVuM");
+    }
+
+    @GetMapping("/getAuthorized")
+    public void getAuthorized() throws Exception{
+        wxOpenComponentService.getAuthorized("wx9a6700dcfc8867aa", "wx570bc396a51b8ff8");
     }
 
     @GetMapping("/preAuth")

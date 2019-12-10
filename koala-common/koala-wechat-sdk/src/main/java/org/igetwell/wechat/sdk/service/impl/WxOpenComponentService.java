@@ -118,8 +118,9 @@ public class WxOpenComponentService implements IWxOpenComponentService {
         }
 
         if (!StringUtils.isEmpty(authorizationInfo.getAuthorizationInfo().getAuthorizerAccessToken()) && !StringUtils.isEmpty(authorizationInfo.getAuthorizationInfo().getAuthorizerRefreshToken())) {
-            redisUtils.set(RedisKey.COMPONENT_AUTHORIZATION + authorizationInfo.getAuthorizationInfo().getAuthorizerAppid(), GsonUtils.toJson(authorizationInfo.getAuthorizationInfo()), authorizationInfo.getAuthorizationInfo().getExpiresIn());
+            redisUtils.set(String.format(RedisKey.COMPONENT_AUTHORIZED_ACCESS_TOKEN, authorizationInfo.getAuthorizationInfo().getAuthorizerAppid()), GsonUtils.toJson(authorizationInfo.getAuthorizationInfo()), authorizationInfo.getAuthorizationInfo().getExpiresIn());
             wxOpenConfigStorage.updateComponentAuthorization(authorizationInfo.getAuthorizationInfo()); //写入内存
+            //refreshToken(componentAppId, authorizationInfo.getAuthorizationInfo().getAuthorizerAppid(), authorizationInfo.getAuthorizationInfo().getAuthorizerRefreshToken());
         }
 
     }
@@ -144,7 +145,6 @@ public class WxOpenComponentService implements IWxOpenComponentService {
             redisUtils.set(RedisKey.COMPONENT_PRE_AUTH_CODE, preAuth.getPreAuthCode(), preAuth.getExpiresIn());
             preAuthCode = preAuth.getPreAuthCode();
         }
-
         String preAuthUrl;
         if (isMobile){
             preAuthUrl = String.format(COMPONENT_MOBILE_LOGIN_PAGE_URL, componentAppId, preAuthCode, URLEncoder.encode(redirectURI, "UTF-8"), authType, bizAppid);
@@ -172,7 +172,6 @@ public class WxOpenComponentService implements IWxOpenComponentService {
         xml = pc.decryptMsg(msgSignature, timestamp, nonce, xml);
         log.info("第三方平台全网发布-----------------------解密后 Xml={}", xml);
         processAuthorizationEvent(xml);
-
     }
 
     /**
@@ -199,7 +198,7 @@ public class WxOpenComponentService implements IWxOpenComponentService {
 
             }
             //授权成功或更新授权
-            if (infoType.equalsIgnoreCase("authorized") ||infoType.equalsIgnoreCase("updateauthorized")){
+            if (infoType.equalsIgnoreCase("authorized") || infoType.equalsIgnoreCase("updateauthorized")){
                 String authorizationCode = XmlUtils.elementText(element, "AuthorizationCode");
                 String preAuthCode = XmlUtils.elementText(element, "PreAuthCode");
                 long expired =  Long.valueOf(XmlUtils.elementText(element, "AuthorizationCodeExpiredTime"));
@@ -266,7 +265,7 @@ public class WxOpenComponentService implements IWxOpenComponentService {
             output(response, "");
             //接下来客服API再回复一次消息
             //此时 content字符的内容为是 QUERY_AUTH_CODE:adsg5qe4q35
-            replyApiTextMessage(content.split(":")[1], toUserName);
+            replyApiTextMessage(content.split(":")[1], fromUserName);
         }
     }
 
@@ -277,7 +276,7 @@ public class WxOpenComponentService implements IWxOpenComponentService {
      * @param toUserName  发送接收人
      * @param fromUserName  发送人
      */
-    public void replyEventMessage(HttpServletResponse response, String event, String toUserName, String fromUserName) {
+    private void replyEventMessage(HttpServletResponse response, String event, String toUserName, String fromUserName) {
         String content = event + "from_callback";
         replyTextMessage(response,content, toUserName, fromUserName);
     }
@@ -340,8 +339,81 @@ public class WxOpenComponentService implements IWxOpenComponentService {
         }
     }
 
+    /**
+     * 刷新接口调用令牌
+     * @param refreshToken
+     */
+    /**
+     * 获取/刷新接口调用令牌
+     * @param componentAppId
+     * @param appId
+     * @param refreshToken
+     * @return
+     */
+    public void refreshToken(String componentAppId, String appId, String refreshToken) throws Exception {
+        if (componentAppId.trim().isEmpty() || appId.trim().isEmpty() || refreshToken.trim().isEmpty()){
+            throw new Exception("微信开放平台刷新接口调用令牌失败, 参数不可为空.");
+        }
+        boolean bool = redisUtils.exist(RedisKey.COMPONENT_ACCESS_TOKEN);
+        if (!bool){
+            throw new Exception("微信开放平台刷新接口调用令牌失败, 开放平台COMPONENT_ACCESS_TOKEN不存在.");
+        }
+        ComponentAccessToken componentAccessToken = redisUtils.get(RedisKey.COMPONENT_ACCESS_TOKEN);
+        if (componentAccessToken == null) {
+            throw new Exception("微信开放平台刷新接口调用令牌失败, 获取开放平台COMPONENT_ACCESS_TOKEN失败.");
+        }
+
+        Map<String, String> params = new ConcurrentHashMap<>();
+        params.put("component_appid", componentAppId);
+        params.put("authorizer_appid", appId);
+        params.put("authorizer_refresh_token", refreshToken);
+        String response = HttpClientUtils.getInstance().sendHttpPost(String.format(API_AUTHORIZER_TOKEN_URL, componentAccessToken.getComponentAccessToken()), GsonUtils.toJson(params));
+        ComponentRefreshAccessToken refreshAccessToken = GsonUtils.fromJson(response, ComponentRefreshAccessToken.class);
+        if (refreshAccessToken == null) {
+            throw new Exception("微信开放平台刷新接口调用令牌失败, 结果不符合预期值.");
+        }
+        redisUtils.set(String.format(RedisKey.COMPONENT_AUTHORIZED_REFRESH_TOKEN, appId), refreshAccessToken);
+    }
+
+    /**
+     * 获取授权方的帐号基本信息
+     * @param componentAppId
+     * @param appId
+     */
+    public void getAuthorized(String componentAppId, String appId) throws Exception{
+        if (componentAppId.trim().isEmpty() || appId.trim().isEmpty()){
+            throw new Exception("微信开放平台获取授权方的帐号基本信息失败, 参数不可为空.");
+        }
+        boolean bool = redisUtils.exist(RedisKey.COMPONENT_ACCESS_TOKEN);
+        if (!bool){
+            throw new Exception("微信开放平台获取授权方的帐号基本信息失败, 开放平台COMPONENT_ACCESS_TOKEN不存在.");
+        }
+        ComponentAccessToken componentAccessToken = redisUtils.get(RedisKey.COMPONENT_ACCESS_TOKEN);
+        if (componentAccessToken == null) {
+            throw new Exception("微信开放平台获取授权方的帐号基本信息失败, 获取开放平台COMPONENT_ACCESS_TOKEN失败.");
+        }
+
+
+
+        Map<String, String> params = new ConcurrentHashMap<>();
+        params.put("component_appid", componentAppId);
+        params.put("authorizer_appid", appId);
+        String response = HttpClientUtils.getInstance().sendHttpPost(String.format(API_GET_AUTHORIZED_INFO_URL, componentAccessToken.getComponentAccessToken()), GsonUtils.toJson(params));
+        System.err.println(response);
+        //ComponentRefreshAccessToken refreshAccessToken = GsonUtils.fromJson(response, ComponentRefreshAccessToken.class);
+    }
+
 
     public static void main(String [] args) throws Exception {
+
+        String a = "";
+        String b = "1 ";
+        if (a.trim().isEmpty() || b.trim().isEmpty()){
+            System.err.println("true");
+            return;
+        }
+        System.err.println("false");
+
 
         /*ComponentAuthorization authorization = new ComponentAuthorization();
         authorization.setAuthorizerAccessToken("1231311sa");

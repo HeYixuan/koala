@@ -28,10 +28,29 @@ public interface RedisKey {
     public static final String COMPONENT_ACCESS_TOKEN = "COMPONENT_ACCESS_TOKEN";
 
     /**
-     * 第三方平台使用授权码换取公众号的授权信息
+     * 第三方平台使用授权码换取公众号(授权方)的授权信息
      */
-    public static final String COMPONENT_AUTHORIZATION = "COMPONENT_AUTHORIZATION";
+    public static final String COMPONENT_AUTHORIZED_ACCESS_TOKEN = "COMPONENT_AUTHORIZED_ACCESS_TOKEN:%s";
 
+    /**
+     * 第三方平台刷新公众号(授权方)的ACCESS_TOKEN refresh
+     */
+    public static final String COMPONENT_AUTHORIZED_REFRESH_TOKEN = "COMPONENT_AUTHORIZED_REFRESH_TOKEN:%s";
+
+    /**
+     * 第三方平台代公众号授权ACCESS_TOKEN
+     */
+    public static final String COMPONENT_APP_ACCESS_TOKEN = "COMPONENT_APP_ACCESS_TOKEN:%s";
+
+    /**
+     * 第三方平台代公众号授权ACCESS_TOKEN
+     */
+    public static final String COMPONENT_APP_REFRESH_TOKEN = "COMPONENT_APP_REFRESH_TOKEN:%s";
+
+    /**
+     * 第三方平台代公众号授权令牌STATE标志
+     */
+    public static final String COMPONENT_APP_STATE = "COMPONENT_%s_STATE";
 
     /**
      * 第三方平台授权码
