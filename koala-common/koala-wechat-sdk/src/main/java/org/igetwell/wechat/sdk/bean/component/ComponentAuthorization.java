@@ -9,7 +9,6 @@ public class ComponentAuthorization implements Serializable {
     private String authorizerAccessToken;
     private Long expiresIn;
     private String authorizerRefreshToken;
-    private List<FuncInfo> funcInfo;
 
     public String getAuthorizerAppid() {
         return authorizerAppid;
@@ -41,13 +40,5 @@ public class ComponentAuthorization implements Serializable {
 
     public void setAuthorizerRefreshToken(String authorizerRefreshToken) {
         this.authorizerRefreshToken = authorizerRefreshToken;
-    }
-
-    public List<FuncInfo> getFuncInfo() {
-        return funcInfo;
-    }
-
-    public void setFuncInfo(List<FuncInfo> funcInfo) {
-        this.funcInfo = funcInfo;
     }
 }

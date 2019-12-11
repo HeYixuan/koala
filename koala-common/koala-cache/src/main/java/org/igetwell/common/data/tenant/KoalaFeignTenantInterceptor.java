@@ -3,7 +3,6 @@ package org.igetwell.common.data.tenant;
 import feign.RequestInterceptor;
 import feign.RequestTemplate;
 import lombok.extern.slf4j.Slf4j;
-import org.igetwell.common.constans.TenantConstants;
 import org.springframework.util.StringUtils;
 
 
@@ -15,6 +14,6 @@ public class KoalaFeignTenantInterceptor implements RequestInterceptor {
 			log.error("TTL 中的 租户ID为空，feign拦截器 >> 增强失败");
 			return;
 		}
-		requestTemplate.header(TenantConstants.TENANT_ID, TenantContextHolder.getTenantId().toString());
+		requestTemplate.header(Tenant.TENANT_ID, TenantContextHolder.getTenantId().toString());
 	}
 }

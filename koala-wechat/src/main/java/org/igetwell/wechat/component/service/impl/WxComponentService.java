@@ -20,7 +20,6 @@ import org.springframework.util.StringUtils;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
-import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -47,6 +46,12 @@ public class WxComponentService implements IWxComponentService {
     @Autowired
     private RedisUtils redisUtils;
 
+    /**
+     * 获取第三方平台令牌
+     * @return
+     * @throws Exception
+     */
+    @Override
     public String getComponentAccessToken() throws Exception {
         ComponentAccessToken componentAccessToken = redisUtils.get(RedisKey.COMPONENT_ACCESS_TOKEN);
         if (StringUtils.isEmpty(componentAccessToken) || StringUtils.isEmpty(componentAccessToken.getComponentAccessToken())) {
@@ -56,37 +61,47 @@ public class WxComponentService implements IWxComponentService {
         return componentAccessToken.getComponentAccessToken();
     }
 
-
+    /**
+     * 是否强制获取第三方平台令牌
+     * @param forceRefresh
+     * @return
+     * @throws Exception
+     */
     @Override
     public void getComponentAccessToken(boolean forceRefresh) throws Exception {
-        if(StringUtils.isEmpty(componentAppId)){
-            logger.error("[微信开放平台]-获取微信开放平台验证票据失败.未获取到componentAppId.");
-            throw new Exception("[微信开放平台]-获取微信开放平台验证票据失败.未获取到componentAppId.");
-        }
         String componentVerifyTicket = redisUtils.get(RedisKey.COMPONENT_VERIFY_TICKET);
         if(StringUtils.isEmpty(componentVerifyTicket)){
             logger.error("[微信开放平台]-获取微信开放平台验证票据失败.未获取到componentVerifyTicket.");
             throw new Exception("[微信开放平台]-获取微信开放平台验证票据失败.未获取到componentVerifyTicket.");
         }
         if (forceRefresh){
-            ComponentAccessToken componentAccessToken = ComponentAPI.oauthToken(componentAppId, componentAppSecret, componentVerifyTicket);
-            if (StringUtils.isEmpty(componentAccessToken) || StringUtils.isEmpty(componentAccessToken.getComponentAccessToken())) {
-                logger.error("[微信开放平台]-获取微信开放平台ComponentAccessToken失败.");
-                throw new Exception("[微信开放平台]-获取微信开放平台ComponentAccessToken失败.");
-            }
-            redisUtils.set(RedisKey.COMPONENT_ACCESS_TOKEN, componentAccessToken, componentAccessToken.getExpiresIn());
+            oauthToken(componentVerifyTicket);
             return;
         }
         boolean bool = redisUtils.exist(RedisKey.COMPONENT_ACCESS_TOKEN);
         if (!bool){
-            ComponentAccessToken componentAccessToken = ComponentAPI.oauthToken(componentAppId, componentAppSecret, componentVerifyTicket);
-            if (StringUtils.isEmpty(componentAccessToken) || StringUtils.isEmpty(componentAccessToken.getComponentAccessToken())) {
-                logger.error("[微信开放平台]-获取微信开放平台ComponentAccessToken失败.");
-                throw new Exception("[微信开放平台]-获取微信开放平台ComponentAccessToken失败.");
-            }
-            redisUtils.set(RedisKey.COMPONENT_ACCESS_TOKEN, componentAccessToken, componentAccessToken.getExpiresIn());
+            oauthToken(componentVerifyTicket);
             return;
         }
+    }
+
+    /**
+     * 根据凭证获取第三方平台令牌
+     * @param componentVerifyTicket
+     * @throws Exception
+     */
+    private void oauthToken(String componentVerifyTicket) throws Exception {
+        if(StringUtils.isEmpty(componentAppId) || StringUtils.isEmpty(componentAppSecret)){
+            logger.error("[微信开放平台]-获取微信开放平台令牌失败.未获取到componentAppId.");
+            throw new Exception("[微信开放平台]-获取微信开放平台令牌失败.未获取到componentAppId.");
+        }
+        ComponentAccessToken componentAccessToken = ComponentAPI.oauthToken(componentAppId, componentAppSecret, componentVerifyTicket);
+        if (StringUtils.isEmpty(componentAccessToken) || StringUtils.isEmpty(componentAccessToken.getComponentAccessToken())) {
+            logger.error("[微信开放平台]-获取微信开放平台ComponentAccessToken失败. {}", GsonUtils.toJson(componentAccessToken));
+            throw new Exception("[微信开放平台]-获取微信开放平台ComponentAccessToken失败.");
+        }
+        redisUtils.set(RedisKey.COMPONENT_ACCESS_TOKEN, componentAccessToken, componentAccessToken.getExpiresIn());
+        return;
     }
 
     /**
@@ -152,7 +167,7 @@ public class WxComponentService implements IWxComponentService {
                 if(!StringUtils.isEmpty(ticket)){
                     //设置10分钟
                     redisUtils.set(RedisKey.COMPONENT_VERIFY_TICKET, ticket, RedisKey.COMPONENT_VERIFY_TICKET_EXPIRE);
-                    getComponentAccessToken();
+                    getComponentAccessToken(false);
                 }
             }
             //取消授权
@@ -245,7 +260,6 @@ public class WxComponentService implements IWxComponentService {
         Map<String, Object> text = new HashMap<>();
         text.put("content", msg);
         params.put("text", text);
-        //String response = HttpClientUtils.getInstance().sendHttpPost(String.format(API_SEND_MESSAGE_URL, authorizedToken), GsonUtils.toJson(params));
         String response = MessageAPI.send(authorizedToken, GsonUtils.toJson(params));
         logger.info("api reply message to to wechat whole network test respose = "+ response);
         if (logger.isDebugEnabled()){
@@ -284,7 +298,7 @@ public class WxComponentService implements IWxComponentService {
             logger.error("[微信开放平台]-根据授权码获取微信公众号的授权信息失败. 未获取到authorizationCode.");
             throw new Exception("[微信开放平台]-根据授权码获取微信公众号的授权信息失败. 未获取到authorizationCode.");
         }
-        Authorization authorization = ComponentAPI.authorize("accessToken", "appid", authorizationCode);
+        Authorization authorization = ComponentAPI.authorize(getComponentAccessToken(), componentAppId, authorizationCode);
         if (authorization == null || StringUtils.isEmpty(authorization.getAuthorizationInfo().getAuthorizerAccessToken()) || StringUtils.isEmpty(authorization.getAuthorizationInfo().getAuthorizerRefreshToken())){
             logger.error("[微信开放平台]-根据授权码获取微信公众号的授权信息失败.");
             throw new Exception("[微信开放平台]-根据授权码获取微信公众号的授权信息失败.");
@@ -382,14 +396,11 @@ public class WxComponentService implements IWxComponentService {
      * @throws Exception
      */
     private String createPreAuthUrl(String redirectUri, String authType, String bizAppid, boolean isMobile) throws Exception{
-        String preAuthCode = getPreAuthCode();
-        String preAuthUrl;
         if (isMobile){
-            preAuthUrl = String.format(COMPONENT_MOBILE_LOGIN_PAGE_URL, componentAppId, preAuthCode, URLEncoder.encode(redirectUri, "UTF-8"), authType, bizAppid);
+            return ComponentAPI.createPreAuthUrl(componentAppId, bizAppid, getPreAuthCode(), authType, false, redirectUri);
         } else {
-            preAuthUrl = String.format(COMPONENT_LOGIN_PAGE_URL, componentAppId, preAuthCode, URLEncoder.encode(redirectUri, "UTF-8"), authType, bizAppid);
+            return ComponentAPI.createPreAuthUrl(componentAppId, bizAppid, getPreAuthCode(), authType, true, redirectUri);
         }
-        return preAuthUrl;
     }
 
 

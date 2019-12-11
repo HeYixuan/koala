@@ -4,8 +4,7 @@ import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.methods.RequestBuilder;
 import org.apache.http.entity.StringEntity;
 import org.igetwell.common.uitls.GsonUtils;
-import org.igetwell.common.uitls.HttpClientUtils;
-import org.igetwell.wechat.sdk.bean.Message;
+import org.igetwell.common.uitls.HttpClients;
 
 import java.nio.charset.Charset;
 import java.util.Map;
@@ -36,8 +35,8 @@ public class MessageAPI extends API {
                 .addParameter(ACCESS_TOKEN, accessToken(accessToken))
                 .setEntity(new StringEntity(message, Charset.forName("UTF-8")))
                 .build();
-        String response = HttpClientUtils.getInstance().sendHttpPost(httpUriRequest.getURI().toString());
-        return response;
+        Object response = HttpClients.execute(httpUriRequest, Object.class);
+        return response.toString();
     }
 
     public static String send(String accessToken, Map<String, Object> message) {
@@ -47,7 +46,7 @@ public class MessageAPI extends API {
                 .addParameter(ACCESS_TOKEN, accessToken(accessToken))
                 .setEntity(new StringEntity(GsonUtils.toJson(message), Charset.forName("UTF-8")))
                 .build();
-        String response = HttpClientUtils.getInstance().sendHttpPost(httpUriRequest.getURI().toString());
-        return response;
+        Object response = HttpClients.execute(httpUriRequest, Object.class);
+        return response.toString();
     }
 }

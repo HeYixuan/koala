@@ -1,0 +1,20 @@
+spring:
+  main:
+    allow-bean-definition-overriding: true
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+    default-property-inclusion: NON_EMPTY
+
+
+#微信开放平台
+#componentAppId: wx9a6700dcfc8867aa
+#componentAppSecret: b6fb9b952f581df671b7dcc42231dc83
+componentAppId: wx81aa03f442e8d692
+componentAppSecret: dd8063fc89b412d9f88d1f3cb2c8a1d3
+componentToken: fsrtyuiopfghjksadfe3232a
+encodingAesKey: sdfaererit3423828343jeriooweqwqqwq22wwwfdgs
+
+wechat:
+  appId: wx2ffe2417c6b42f78
+  secret: 2c3b915dd8360206d7a0688c0b59a234

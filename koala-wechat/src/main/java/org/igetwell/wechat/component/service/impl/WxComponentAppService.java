@@ -28,7 +28,7 @@ public class WxComponentAppService implements IWxComponentAppService {
     @Value("${componentAppId}")
     private String componentAppId;
 
-    @Value("${appId}")
+    @Value("${wechat.appId}")
     private String appId;
 
     @Autowired
