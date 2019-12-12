@@ -1,4 +1,4 @@
-package org.igetwell.wechat.sdk.bean.card.storage;
+package org.igetwell.wechat.sdk.bean.card.shelves;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -9,7 +9,7 @@ import org.igetwell.wechat.sdk.response.BaseResponse;
  */
 @Getter
 @Setter
-public class StorageCreateResponse extends BaseResponse {
+public class ShelvesResponse extends BaseResponse {
 
     /**
      * 货架链接。

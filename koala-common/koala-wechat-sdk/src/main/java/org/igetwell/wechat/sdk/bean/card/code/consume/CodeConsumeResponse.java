@@ -11,7 +11,7 @@ import org.igetwell.wechat.sdk.response.BaseResponse;
 @Setter
 public class CodeConsumeResponse extends BaseResponse {
 
-    private CodeConsumeResponseCard card;
+    private CodeConsumeCard card;
 
     /**
      * 用户在该公众号内的唯一身份标识。

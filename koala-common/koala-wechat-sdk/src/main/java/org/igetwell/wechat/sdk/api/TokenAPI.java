@@ -9,13 +9,14 @@ import org.igetwell.wechat.sdk.bean.token.Token;
  * ACCESS_TOKEN API
  */
 public class TokenAPI extends API {
+
     /**
-     * 获取access_token
+     * 获取公众号令牌
      * @param appId appId
      * @param secret secret
      * @return Token
      */
-    public static Token token(String appId, String secret){
+    public static Token oauthToken(String appId, String secret){
         HttpUriRequest httpUriRequest = RequestBuilder.get()
                 .setUri(BASE_URI + "/cgi-bin/token")
                 .addParameter("grant_type","client_credential")

@@ -1,4 +1,4 @@
-package org.igetwell.wechat.sdk.bean.card.storage;
+package org.igetwell.wechat.sdk.bean.card.shelves;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -10,7 +10,7 @@ import java.util.List;
  */
 @Getter
 @Setter
-public class StorageCreate {
+public class Shelves{
 
     /**
      * 页面的banner图片链接，须调用，建议尺寸为640*300。<br>
@@ -47,6 +47,6 @@ public class StorageCreate {
      * 卡券列表<br>
      * 必填：是
      */
-    private List<StoragePageCreateCard> cardList;
+    private List<ShelvesCard> cardList;
 
 }

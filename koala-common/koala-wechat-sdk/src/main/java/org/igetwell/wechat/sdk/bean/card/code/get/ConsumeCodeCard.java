@@ -1,4 +1,4 @@
-package org.igetwell.wechat.sdk.bean.card.code;
+package org.igetwell.wechat.sdk.bean.card.code.get;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -8,7 +8,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class CodeGetResponseCard {
+public class ConsumeCodeCard {
 
     /**
      * 卡券ID

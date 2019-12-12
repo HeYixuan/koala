@@ -37,6 +37,16 @@ public class WxCardBasis {
     private String codeType;
 
     /**
+     * 是否支持点击微信支付弹出付款码界面
+     */
+    private WxCardSupplyPay payInfo;
+
+    /**
+     * 是否设置该会员卡中部的按钮同时支持微信支付刷卡和会员卡二维码
+     */
+    private Boolean isPayAndQrcode;
+
+    /**
      * 卡券名，字数上限为9个汉字。(建议涵盖卡券属性、服务及金额)。<br>
      * 添加必填
      */
@@ -131,41 +141,49 @@ public class WxCardBasis {
 
     /**
      * 卡券顶部居中的按钮，如“立即使用”，仅在卡券状态正常(可以核销)时显示
+     * 注：卡券创建流程中，“自定义入口”与“卡券详情>立即使用跳转”不再支持跳转至网页配置,请填写centerAppBrandUserName字段,会员卡原有能力暂时不变
      */
     private String centerTitle;
 
     /**
      * 显示在入口下方的提示语，如“立即享受优惠”，仅在卡券状态正常(可以核销)时显示。
+     * 注：卡券创建流程中，“自定义入口”与“卡券详情>立即使用跳转”不再支持跳转至网页配置,请填写centerAppBrandUserName字段,会员卡原有能力暂时不变
      */
     private String centerSubTitle;
 
     /**
      * 顶部居中的url，仅在卡券状态正常(可以核销)时显示。
+     * 注：卡券创建流程中，“自定义入口”与“卡券详情>立即使用跳转”不再支持跳转至网页配置,请填写centerAppBrandUserName字段,会员卡原有能力暂时不变
      */
     private String centerUrl;
 
     /**
      * 自定义跳转外链的入口名字， 如“立即使用”。详情见活用自定义入口
+     * 注：卡券创建流程中，“自定义入口”与“卡券详情>立即使用跳转”不再支持跳转至网页配置,请填写centerAppBrandUserName字段,会员卡原有能力暂时不变
      */
     private String customUrlName;
 
     /**
      * 自定义跳转的URL。
+     * 注：卡券创建流程中，“自定义入口”与“卡券详情>立即使用跳转”不再支持跳转至网页配置,请填写centerAppBrandUserName字段,会员卡原有能力暂时不变
      */
     private String customUrl;
 
     /**
      * 显示在入口右侧的提示语。如“更多惊喜”。
+     * 注：卡券创建流程中，“自定义入口”与“卡券详情>立即使用跳转”不再支持跳转至网页配置,请填写centerAppBrandUserName字段,会员卡原有能力暂时不变
      */
     private String customUrlSubTitle;
 
     /**
      * 营销场景的自定义入口名称。如，“产品介绍”。
+     * 注：卡券创建流程中，“自定义入口”与“卡券详情>立即使用跳转”不再支持跳转至网页配置,请填写centerAppBrandUserName字段,会员卡原有能力暂时不变
      */
     private String promotionUrlName;
 
     /**
      * 入口跳转外链的地址链接。
+     * 注：卡券创建流程中，“自定义入口”与“卡券详情>立即使用跳转”不再支持跳转至网页配置,请填写centerAppBrandUserName字段,会员卡原有能力暂时不变
      */
     private String promotionUrl;
 
@@ -173,6 +191,20 @@ public class WxCardBasis {
      * 显示在营销入口右侧的提示语。如，“卖场大优惠。”。
      */
     private String promotionUrlSubTitle;
+
+    /**
+     * 卡券跳转的小程序的user_name，仅可跳转该 公众号绑定的小程序
+     * 注：卡券创建流程中，“自定义入口”与“卡券详情>立即使用跳转”不再支持跳转至网页配置,请填写此字段,会员卡原有能力暂时不变
+     * 例：gh_86a091e50ad4@app
+     */
+    private String centerAppBrandUserName;
+
+    /**
+     * 卡券跳转的小程序的path
+     * 注：卡券创建流程中，“自定义入口”与“卡券详情>立即使用跳转”不再支持跳转至网页配置,请填写此字段,会员卡原有能力暂时不变
+     * 例：pages/index/index
+     */
+    private String centerAppBrandPass;
 
     /**
      * 第三方来源名，例如同程旅游、大众点评。<br>
@@ -189,11 +221,5 @@ public class WxCardBasis {
      * 填写true为用户点击进入会员卡时推送事件，默认为false。详情见 进入会员卡事件推送
      */
     private Boolean needPushOnView;
-
-    /**
-     * 是否设置该会员卡中部的按钮同时支持微信支付刷卡和会员卡二维码
-     */
-    private Boolean isPayAndQrcode;
-
 
 }

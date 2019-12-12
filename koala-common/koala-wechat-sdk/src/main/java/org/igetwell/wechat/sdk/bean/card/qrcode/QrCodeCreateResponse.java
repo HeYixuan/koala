@@ -4,12 +4,14 @@ import lombok.Getter;
 import lombok.Setter;
 import org.igetwell.wechat.sdk.response.BaseResponse;
 
+import java.io.Serializable;
+
 /**
  * 卡券投放－创建二维码（ticket）－响应参数
  */
 @Getter
 @Setter
-public class QrCodeCreateResponse extends BaseResponse {
+public class QrCodeCreateResponse implements Serializable {
 
     /**
      * 获取的二维码ticket，凭借此ticket调用通过ticket换取二维码接口可以在有效时间内换取二维码。
@@ -19,7 +21,7 @@ public class QrCodeCreateResponse extends BaseResponse {
     /**
      * 二维码的有效时间，范围是60 ~ 1800秒。不填默认为365天有效
      */
-    private Integer expireSeconds;
+    private Long expireSeconds;
 
     /**
      * 二维码图片解析后的地址，开发者可根据该地址自行生成需要的二维码图片

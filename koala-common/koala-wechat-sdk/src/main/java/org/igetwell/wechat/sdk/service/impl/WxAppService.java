@@ -12,13 +12,11 @@ import org.igetwell.wechat.sdk.api.MediaApi;
 import org.igetwell.wechat.sdk.bean.media.UploadImgResponse;
 import org.igetwell.wechat.sdk.service.IWxAppService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
 
-@Service
 public class WxAppService implements IWxAppService {
 
     String ACCESS_TOKEN_URL = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=%s&secret=%s";

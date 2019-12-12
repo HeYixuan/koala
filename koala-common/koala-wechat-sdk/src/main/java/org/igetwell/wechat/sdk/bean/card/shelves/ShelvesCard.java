@@ -1,11 +1,11 @@
-package org.igetwell.wechat.sdk.bean.card.storage;
+package org.igetwell.wechat.sdk.bean.card.shelves;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class StoragePageCreateCard {
+public class ShelvesCard {
 
     /**
      * 所要在页面投放的card_id<br>

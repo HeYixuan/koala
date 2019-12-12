@@ -14,8 +14,17 @@ public class TicketAPI extends API {
      * @param accessToken access_token
      * @return ticket
      */
-    public static JsTicket getTicket(String accessToken){
+    public static JsTicket getJsApiTicket(String accessToken){
         return getTicket(accessToken,"jsapi");
+    }
+
+    /**
+     * 获取 wx_card_ticket
+     * @param accessToken access_token
+     * @return ticket
+     */
+    public static JsTicket getWxCardTicket(String accessToken){
+        return getTicket(accessToken,"wx_card");
     }
 
     /**

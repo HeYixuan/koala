@@ -55,8 +55,8 @@ public class WxComponentService implements IWxComponentService {
     public String getComponentAccessToken() throws Exception {
         ComponentAccessToken componentAccessToken = redisUtils.get(RedisKey.COMPONENT_ACCESS_TOKEN);
         if (StringUtils.isEmpty(componentAccessToken) || StringUtils.isEmpty(componentAccessToken.getComponentAccessToken())) {
-            logger.error("[微信开放平台]-获取微信开放平台ComponentAccessToken失败.");
-            throw new Exception("[微信开放平台]-获取微信开放平台ComponentAccessToken失败.");
+            logger.error("[微信开放平台]-从缓存中获取微信开放平台ComponentAccessToken失败.");
+            throw new Exception("[微信开放平台]-从缓存中获取微信开放平台ComponentAccessToken失败.");
         }
         return componentAccessToken.getComponentAccessToken();
     }
@@ -69,28 +69,27 @@ public class WxComponentService implements IWxComponentService {
      */
     @Override
     public void getComponentAccessToken(boolean forceRefresh) throws Exception {
-        String componentVerifyTicket = redisUtils.get(RedisKey.COMPONENT_VERIFY_TICKET);
-        if(StringUtils.isEmpty(componentVerifyTicket)){
-            logger.error("[微信开放平台]-获取微信开放平台验证票据失败.未获取到componentVerifyTicket.");
-            throw new Exception("[微信开放平台]-获取微信开放平台验证票据失败.未获取到componentVerifyTicket.");
-        }
         if (forceRefresh){
-            oauthToken(componentVerifyTicket);
+            oauthToken();
             return;
         }
         boolean bool = redisUtils.exist(RedisKey.COMPONENT_ACCESS_TOKEN);
         if (!bool){
-            oauthToken(componentVerifyTicket);
+            oauthToken();
             return;
         }
     }
 
     /**
      * 根据凭证获取第三方平台令牌
-     * @param componentVerifyTicket
      * @throws Exception
      */
-    private void oauthToken(String componentVerifyTicket) throws Exception {
+    private void oauthToken() throws Exception {
+        String componentVerifyTicket = redisUtils.get(RedisKey.COMPONENT_VERIFY_TICKET);
+        if(StringUtils.isEmpty(componentVerifyTicket)){
+            logger.error("[微信开放平台]-获取微信开放平台验证票据失败.未获取到componentVerifyTicket.");
+            throw new Exception("[微信开放平台]-获取微信开放平台验证票据失败.未获取到componentVerifyTicket.");
+        }
         if(StringUtils.isEmpty(componentAppId) || StringUtils.isEmpty(componentAppSecret)){
             logger.error("[微信开放平台]-获取微信开放平台令牌失败.未获取到componentAppId.");
             throw new Exception("[微信开放平台]-获取微信开放平台令牌失败.未获取到componentAppId.");
@@ -298,7 +297,7 @@ public class WxComponentService implements IWxComponentService {
             logger.error("[微信开放平台]-根据授权码获取微信公众号的授权信息失败. 未获取到authorizationCode.");
             throw new Exception("[微信开放平台]-根据授权码获取微信公众号的授权信息失败. 未获取到authorizationCode.");
         }
-        Authorization authorization = ComponentAPI.authorize(getComponentAccessToken(), componentAppId, authorizationCode);
+        Authorization authorization = ComponentAPI.authorized(getComponentAccessToken(), componentAppId, authorizationCode);
         if (authorization == null || StringUtils.isEmpty(authorization.getAuthorizationInfo().getAuthorizerAccessToken()) || StringUtils.isEmpty(authorization.getAuthorizationInfo().getAuthorizerRefreshToken())){
             logger.error("[微信开放平台]-根据授权码获取微信公众号的授权信息失败.");
             throw new Exception("[微信开放平台]-根据授权码获取微信公众号的授权信息失败.");

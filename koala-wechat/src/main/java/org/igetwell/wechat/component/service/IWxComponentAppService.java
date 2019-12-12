@@ -13,7 +13,7 @@ public interface IWxComponentAppService {
      * @return
      * @throws Exception
      */
-    String getAuthorized(String redirectUri) throws Exception;
+    String authorized(String redirectUri) throws Exception;
 
     /**
      * 第三方开放平台代公众号通过授权码换取令牌

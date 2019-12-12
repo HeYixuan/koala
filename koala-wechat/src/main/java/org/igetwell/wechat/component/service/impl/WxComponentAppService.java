@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 /**
- * 第三方平台代公众号授权业务
+ * 第三方平台代公众号发起网页授权业务
  */
 @Service
 public class WxComponentAppService implements IWxComponentAppService {
@@ -38,25 +38,26 @@ public class WxComponentAppService implements IWxComponentAppService {
     private IWxComponentService iWxComponentService;
 
     /**
-     * 第三方开放平台代公众号授权获取授权码
+     * 第三方开放平台代公众号发起网页授权获取授权码
      * @param redirectUri
      * @return
      * @throws Exception
      */
-    public String getAuthorized(String redirectUri) throws Exception {
-        logger.info("[微信开放平台]-代公众号授权获取授权码开始, appId={}.", appId);
+    public String authorized(String redirectUri) throws Exception {
+        logger.info("[微信开放平台]-代公众号发起网页授权获取授权码开始, appId={}.", appId);
         if (StringUtils.isEmpty(componentAppId) || StringUtils.isEmpty(appId) || StringUtils.isEmpty(redirectUri)) {
-            logger.error("[微信开放平台]-代公众号授权获取授权码失败.请求参数为空.");
-            throw new Exception("[微信开放平台]-代公众号授权获取授权码失败.请求参数为空.");
+            logger.error("[微信开放平台]-代公众号发起网页授权获取授权码失败.请求参数为空.");
+            throw new Exception("[微信开放平台]-代公众号发起网页授权获取授权码失败.请求参数为空.");
         }
         Long state = System.nanoTime();
         redisUtils.set(String.format(RedisKey.COMPONENT_APP_STATE, appId), state, 120);
-        logger.info("[微信开放平台]-代公众号授权获取授权码结束.");
-        return String.format(AUTHORIZED_URL, appId, redirectUri, "snsapi_userinfo", state, componentAppId);
+        redirectUri = ComponentAPI.authorized(componentAppId, appId, "snsapi_userinfo", state, redirectUri);
+        logger.info("[微信开放平台]-代公众号发起网页授权获取授权码结束.");
+        return redirectUri;
     }
 
     /**
-     * 第三方开放平台代公众号通过授权码换取令牌
+     * 第三方开放平台代公众号发起网页授权通过授权码换取令牌
      * @param appId
      * @param authorizedCode
      * @param state
@@ -64,23 +65,23 @@ public class WxComponentAppService implements IWxComponentAppService {
      * @throws Exception
      */
     public void getAccessToken(String appId, String authorizedCode, Long state) throws Exception {
-        logger.info("[微信开放平台]-代公众号授权通过授权码换取令牌开始, appId={}.", appId);
+        logger.info("[微信开放平台]-代公众号发起网页授权通过授权码换取令牌开始, appId={}.", appId);
         if (StringUtils.isEmpty(appId) || StringUtils.isEmpty(authorizedCode) || StringUtils.isEmpty(state)) {
-            logger.error("[微信开放平台]-代公众号授权通过授权码换取令牌失败.请求参数为空.");
-            throw new Exception("[微信开放平台]-代公众号授权通过授权码换取令牌失败.请求参数为空.");
+            logger.error("[微信开放平台]-代公众号发起网页授权通过授权码换取令牌失败.请求参数为空.");
+            throw new Exception("[微信开放平台]-代公众号发起网页授权通过授权码换取令牌失败.请求参数为空.");
         }
         Long stateCache = redisUtils.get(String.format(RedisKey.COMPONENT_APP_STATE, appId));
         if (stateCache == null || stateCache != state) {
-            logger.info("[微信开放平台]-代公众号授权通过授权码换取令牌失败.请求失效.");
-            throw new Exception("[微信开放平台]-代公众号授权通过授权码换取令牌失败.请求失效.");
+            logger.info("[微信开放平台]-代公众号发起网页授权通过授权码换取令牌失败.请求失效.");
+            throw new Exception("[微信开放平台]-代公众号发起网页授权通过授权码换取令牌失败.请求失效.");
         }
         ComponentAppAccessToken accessToken = ComponentAPI.oauthAppToken(iWxComponentService.getComponentAccessToken(), componentAppId, appId, authorizedCode);
         if (accessToken == null || StringUtils.isEmpty(accessToken.getAccessToken()) || StringUtils.isEmpty(accessToken.getRefreshToken())) {
-            logger.error("[微信开放平台]-代公众号授权通过授权码换取令牌失败.");
-            throw new Exception("[微信开放平台]-代公众号授权通过授权码换取令牌失败.");
+            logger.error("[微信开放平台]-代公众号发起网页授权通过授权码换取令牌失败.");
+            throw new Exception("[微信开放平台]-代公众号发起网页授权通过授权码换取令牌失败.");
         }
         redisUtils.set(RedisKey.COMPONENT_APP_ACCESS_TOKEN, accessToken);
-        logger.info("[微信开放平台]-代公众号授权通过授权码换取令牌结束.");
+        logger.info("[微信开放平台]-代公众号发起网页授权通过授权码换取令牌结束.");
     }
 
     /**

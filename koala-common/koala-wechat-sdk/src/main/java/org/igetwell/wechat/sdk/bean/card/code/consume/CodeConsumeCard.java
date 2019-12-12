@@ -8,7 +8,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class CodeConsumeResponseCard {
+public class CodeConsumeCard {
 
     private String cardId;
 }

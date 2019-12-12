@@ -62,6 +62,10 @@ public interface RedisKey {
      */
     public static final String COMPONENT_PRE_AUTH_CODE = "COMPONENT_PRE_AUTH_CODE";
 
+    /**
+     * 微信公众号令牌
+     */
+    public static final String WX_APP_ACCESS_TOKEN = "WX_APP_ACCESS_TOKEN:%s";
 
     /**
      * 网站应用获取用户信息

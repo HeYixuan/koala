@@ -1,12 +1,15 @@
 package org.igetwell.wechat.sdk.api;
 
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.client.methods.RequestBuilder;
+import org.apache.http.entity.StringEntity;
 import org.igetwell.common.uitls.GsonUtils;
-import org.igetwell.common.uitls.HttpClientUtils;
+import org.igetwell.common.uitls.HttpClients;
 import org.igetwell.wechat.sdk.bean.card.activate.ActivateSet;
 import org.igetwell.wechat.sdk.bean.card.activate.CardActivate;
+import org.igetwell.wechat.sdk.bean.card.code.get.ConsumeCode;
+import org.igetwell.wechat.sdk.bean.card.code.get.ConsumeCodeResponse;
 import org.igetwell.wechat.sdk.bean.card.create.WxCardCreate;
-import org.igetwell.wechat.sdk.bean.card.code.CodeGet;
-import org.igetwell.wechat.sdk.bean.card.code.CodeGetResponse;
 import org.igetwell.wechat.sdk.bean.card.code.consume.CodeConsume;
 import org.igetwell.wechat.sdk.bean.card.code.consume.CodeConsumeResponse;
 import org.igetwell.wechat.sdk.bean.card.code.decrypt.CodeDecrypt;
@@ -14,37 +17,16 @@ import org.igetwell.wechat.sdk.bean.card.code.decrypt.CodeDecryptResponse;
 import org.igetwell.wechat.sdk.bean.card.mpNews.MpNews;
 import org.igetwell.wechat.sdk.bean.card.mpNews.MpNewsResponse;
 import org.igetwell.wechat.sdk.bean.card.qrcode.QrCodeCreate;
-import org.igetwell.wechat.sdk.bean.card.storage.StorageCreate;
-import org.igetwell.wechat.sdk.bean.card.storage.StorageCreateResponse;
-import org.igetwell.wechat.sdk.bean.card.whitelist.TestWhiteList;
+import org.igetwell.wechat.sdk.bean.card.shelves.Shelves;
+import org.igetwell.wechat.sdk.bean.card.shelves.ShelvesResponse;
+import org.igetwell.wechat.sdk.bean.card.white.White;
 import org.igetwell.wechat.sdk.response.BaseResponse;
-import org.igetwell.wechat.sdk.response.CardResponse;
+import org.igetwell.wechat.sdk.response.Card;
 import org.igetwell.wechat.sdk.bean.card.qrcode.QrCodeCreateResponse;
 
+import java.nio.charset.Charset;
+
 public class CardAPI extends API {
-
-
-    //创建卡券接口
-    static String CREATE = "https://api.weixin.qq.com/card/create?access_token=%s";
-    //创建二维码接口
-    static String CREATE_QR_CODE = "https://api.weixin.qq.com/card/qrcode/create?access_token=%s";
-    //创建货架接口
-    static String CREATE_SHELF = "https://api.weixin.qq.com/card/landingpage/create?access_token=%s";
-    //图文消息群发卡券
-    static String MP_NEWS = "https://api.weixin.qq.com/card/mpnews/gethtml?access_token=%s";
-    //设置测试白名单
-    static String WHITE_LIST = "https://api.weixin.qq.com/card/testwhitelist/set?access_token=%s";
-    //查询CODE
-    static String CODE_GET = "https://api.weixin.qq.com/card/code/get?access_token=%s";
-    //查询CODE
-    static String CODE_CONSUME = "https://api.weixin.qq.com/card/code/consume?access_token=%s";
-    //Code解码
-    static String CODE_DECRYPT = "https://api.weixin.qq.com/card/code/decrypt?access_token=%s";
-    //接口激活
-    static String ACTIVATE = "https://api.weixin.qq.com/card/membercard/activate?access_token=%s";
-    //激活设置字段
-    static String ACTIVATE_SET = "https://api.weixin.qq.com/card/membercard/activateuserform/set?access_token=%s";
-
 
     /**
      * 创建卡券
@@ -52,75 +34,169 @@ public class CardAPI extends API {
      * @param card
      * @return
      */
-    public static CardResponse create(String accessToken, WxCardCreate<?> card) {
-        String response = HttpClientUtils.getInstance().sendHttpPost(String.format(CREATE, accessToken), GsonUtils.toJson(card));
-        return GsonUtils.fromJson(response, CardResponse.class);
+    public static Card create(String accessToken, WxCardCreate<?> card) {
+        HttpUriRequest httpUriRequest = RequestBuilder
+                .post()
+                .setHeader(APPLICATION_JSON)
+                .setUri(BASE_URI + "/card/create")
+                .addParameter(ACCESS_TOKEN, accessToken(accessToken))
+                .setEntity(new StringEntity(GsonUtils.toJson(card), Charset.forName("UTF-8")))
+                .build();
+        return HttpClients.execute(httpUriRequest, Card.class);
     }
 
     /**
-     * 创建领取卡券二维码
+     * 创建卡券
+     * @param accessToken
+     * @param card
+     * @return
+     */
+    public static Card create(String accessToken, String card) {
+        HttpUriRequest httpUriRequest = RequestBuilder
+                .post()
+                .setHeader(APPLICATION_JSON)
+                .setUri(BASE_URI + "/card/create")
+                .addParameter(ACCESS_TOKEN, accessToken(accessToken))
+                .setEntity(new StringEntity(card, Charset.forName("UTF-8")))
+                .build();
+        return HttpClients.execute(httpUriRequest, Card.class);
+    }
+
+    /**
+     * 创建投放(领取)卡券二维码
      * @param accessToken
      * @param create
      * @return
      */
     public static QrCodeCreateResponse createQrCode(String accessToken, QrCodeCreate create) {
-        String response = HttpClientUtils.getInstance().sendHttpPost(String.format(CREATE_QR_CODE, accessToken), GsonUtils.toJson(create));
-        return GsonUtils.fromJson(response, QrCodeCreateResponse.class);
+        HttpUriRequest httpUriRequest = RequestBuilder
+                .post()
+                .setHeader(APPLICATION_JSON)
+                .setUri(BASE_URI + "/card/qrcode/create")
+                .addParameter(ACCESS_TOKEN, accessToken(accessToken))
+                .setEntity(new StringEntity(GsonUtils.toJson(create), Charset.forName("UTF-8")))
+                .build();
+        return HttpClients.execute(httpUriRequest, QrCodeCreateResponse.class);
     }
 
     /**
-     * 创建货架
+     * 创建投放(领取)卡券二维码
      * @param accessToken
      * @param create
      * @return
      */
-    public static StorageCreateResponse createShelf(String accessToken, StorageCreate create) {
-        String response = HttpClientUtils.getInstance().sendHttpPost(String.format(CREATE_SHELF, accessToken), GsonUtils.toJson(create));
-        return GsonUtils.fromJson(response, StorageCreateResponse.class);
+    public static QrCodeCreateResponse createQrCode(String accessToken, String create) {
+        HttpUriRequest httpUriRequest = RequestBuilder
+                .post()
+                .setHeader(APPLICATION_JSON)
+                .setUri(BASE_URI + "/card/qrcode/create")
+                .addParameter(ACCESS_TOKEN, accessToken(accessToken))
+                .setEntity(new StringEntity(create, Charset.forName("UTF-8")))
+                .build();
+        return HttpClients.execute(httpUriRequest, QrCodeCreateResponse.class);
     }
 
+
     /**
-     * 图文消息群发卡券
+     * 设置测试白名单
      * @param accessToken
-     * @param create
+     * @param white
      * @return
      */
-    public static MpNewsResponse mpNewsGetHtml(String accessToken, MpNews create){
-        String response = HttpClientUtils.getInstance().sendHttpPost(String.format(MP_NEWS, accessToken), GsonUtils.toJson(create));
-        return GsonUtils.fromJson(response, MpNewsResponse.class);
+    public static BaseResponse white(String accessToken, White white){
+        HttpUriRequest httpUriRequest = RequestBuilder
+                .post()
+                .setHeader(APPLICATION_JSON)
+                .setUri(BASE_URI + "/card/testwhitelist/set")
+                .addParameter(ACCESS_TOKEN, accessToken(accessToken))
+                .setEntity(new StringEntity(GsonUtils.toJson(white), Charset.forName("UTF-8")))
+                .build();
+        return HttpClients.execute(httpUriRequest, BaseResponse.class);
     }
 
     /**
      * 设置测试白名单
      * @param accessToken
-     * @param whiteList
+     * @param white
      * @return
      */
-    public static BaseResponse testWhiteListSet(String accessToken, TestWhiteList whiteList){
-        String response = HttpClientUtils.getInstance().sendHttpPost(String.format(WHITE_LIST, accessToken), GsonUtils.toJson(whiteList));
-        return GsonUtils.fromJson(response, BaseResponse.class);
+    public static BaseResponse white(String accessToken, String white){
+        HttpUriRequest httpUriRequest = RequestBuilder
+                .post()
+                .setHeader(APPLICATION_JSON)
+                .setUri(BASE_URI + "/card/testwhitelist/set")
+                .addParameter(ACCESS_TOKEN, accessToken(accessToken))
+                .setEntity(new StringEntity(white, Charset.forName("UTF-8")))
+                .build();
+        return HttpClients.execute(httpUriRequest, BaseResponse.class);
     }
 
     /**
-     * 查询Code
-     * @param accessToken accessToken
-     * @param codeGet codeGet
-     * @return result
-     */
-    public static CodeGetResponse codeGet(String accessToken, CodeGet codeGet) {
-        String response = HttpClientUtils.getInstance().sendHttpPost(String.format(CODE_GET, accessToken), GsonUtils.toJson(codeGet));
-        return GsonUtils.fromJson(response, CodeGetResponse.class);
-    }
-
-    /**
-     * 核销Code
+     * 线下核销卡券Code
      * @param accessToken accessToken
      * @param codeConsume codeConsume
      * @return result
      */
     public static CodeConsumeResponse codeConsume(String accessToken, CodeConsume codeConsume) {
-        String response = HttpClientUtils.getInstance().sendHttpPost(String.format(CODE_CONSUME, accessToken), GsonUtils.toJson(codeConsume));
-        return GsonUtils.fromJson(response, CodeConsumeResponse.class);
+        HttpUriRequest httpUriRequest = RequestBuilder
+                .post()
+                .setHeader(APPLICATION_JSON)
+                .setUri(BASE_URI + "/card/code/consume")
+                .addParameter(ACCESS_TOKEN, accessToken(accessToken))
+                .setEntity(new StringEntity(GsonUtils.toJson(codeConsume), Charset.forName("UTF-8")))
+                .build();
+        return HttpClients.execute(httpUriRequest, CodeConsumeResponse.class);
+    }
+
+    /**
+     * 线下核销卡券Code
+     * @param accessToken accessToken
+     * @param codeConsume codeConsume
+     * @return result
+     */
+    public static CodeConsumeResponse codeConsume(String accessToken, String codeConsume) {
+        HttpUriRequest httpUriRequest = RequestBuilder
+                .post()
+                .setHeader(APPLICATION_JSON)
+                .setUri(BASE_URI + "/card/code/consume")
+                .addParameter(ACCESS_TOKEN, accessToken(accessToken))
+                .setEntity(new StringEntity(codeConsume, Charset.forName("UTF-8")))
+                .build();
+        return HttpClients.execute(httpUriRequest, CodeConsumeResponse.class);
+    }
+
+    /**
+     * 查询核销卡券Code
+     * @param accessToken accessToken
+     * @param consumeCode consumeCode
+     * @return result
+     */
+    public static ConsumeCodeResponse getConsumeCode(String accessToken, ConsumeCode consumeCode) {
+        HttpUriRequest httpUriRequest = RequestBuilder
+                .post()
+                .setHeader(APPLICATION_JSON)
+                .setUri(BASE_URI + "/card/code/get")
+                .addParameter(ACCESS_TOKEN, accessToken(accessToken))
+                .setEntity(new StringEntity(GsonUtils.toJson(consumeCode), Charset.forName("UTF-8")))
+                .build();
+        return HttpClients.execute(httpUriRequest, ConsumeCodeResponse.class);
+    }
+
+    /**
+     * 查询核销卡券Code
+     * @param accessToken accessToken
+     * @param consumeCode consumeCode
+     * @return result
+     */
+    public static ConsumeCodeResponse getConsumeCode(String accessToken, String consumeCode) {
+        HttpUriRequest httpUriRequest = RequestBuilder
+                .post()
+                .setHeader(APPLICATION_JSON)
+                .setUri(BASE_URI + "/card/code/get")
+                .addParameter(ACCESS_TOKEN, accessToken(accessToken))
+                .setEntity(new StringEntity(consumeCode, Charset.forName("UTF-8")))
+                .build();
+        return HttpClients.execute(httpUriRequest, ConsumeCodeResponse.class);
     }
 
     /**
@@ -134,9 +210,83 @@ public class CardAPI extends API {
      * @return result
      */
     public static CodeDecryptResponse codeDecrypt(String accessToken, CodeDecrypt codeDecrypt) {
-        String response = HttpClientUtils.getInstance().sendHttpPost(String.format(CODE_DECRYPT, accessToken), GsonUtils.toJson(codeDecrypt));
-        return GsonUtils.fromJson(response, CodeDecryptResponse.class);
+        HttpUriRequest httpUriRequest = RequestBuilder
+                .post()
+                .setHeader(APPLICATION_JSON)
+                .setUri(BASE_URI + "/card/code/get")
+                .addParameter(ACCESS_TOKEN, accessToken(accessToken))
+                .setEntity(new StringEntity(GsonUtils.toJson(codeDecrypt), Charset.forName("UTF-8")))
+                .build();
+        return HttpClients.execute(httpUriRequest, CodeDecryptResponse.class);
     }
+
+    /**
+     * Code解码<br>
+     * 1.只能解码本公众号卡券获取的加密code。 <br>
+     * 2.开发者若从url上获取到加密code,请注意先进行urldecode，否则报错。<br>
+     * 3.encrypt_code是卡券的code码经过加密处理得到的加密code码，与code一一对应。<br>
+     * 4.开发者只能解密本公众号的加密code，否则报错。
+     * @param accessToken accessToken
+     * @param codeDecrypt codeDecrypt
+     * @return result
+     */
+    public static CodeDecryptResponse codeDecrypt(String accessToken, String codeDecrypt) {
+        HttpUriRequest httpUriRequest = RequestBuilder
+                .post()
+                .setHeader(APPLICATION_JSON)
+                .setUri(BASE_URI + "/card/code/decrypt")
+                .addParameter(ACCESS_TOKEN, accessToken(accessToken))
+                .setEntity(new StringEntity(codeDecrypt, Charset.forName("UTF-8")))
+                .build();
+        return HttpClients.execute(httpUriRequest, CodeDecryptResponse.class);
+    }
+
+
+
+    /**
+     * 创建货架投放接口
+     * @param accessToken
+     * @param shelves
+     * @return
+     */
+    public static ShelvesResponse createShelves(String accessToken, Shelves shelves) {
+        HttpUriRequest httpUriRequest = RequestBuilder
+                .post()
+                .setHeader(APPLICATION_JSON)
+                .setUri(BASE_URI + "/card/code/decrypt")
+                .addParameter(ACCESS_TOKEN, accessToken(accessToken))
+                .setEntity(new StringEntity(GsonUtils.toJson(shelves), Charset.forName("UTF-8")))
+                .build();
+        return HttpClients.execute(httpUriRequest, ShelvesResponse.class);
+    }
+
+    /**
+     * 创建货架投放接口
+     * @param accessToken
+     * @param shelves
+     * @return
+     */
+    public static ShelvesResponse createShelves(String accessToken, String shelves) {
+        HttpUriRequest httpUriRequest = RequestBuilder
+                .post()
+                .setHeader(APPLICATION_JSON)
+                .setUri(BASE_URI + "/card/code/decrypt")
+                .addParameter(ACCESS_TOKEN, accessToken(accessToken))
+                .setEntity(new StringEntity(shelves, Charset.forName("UTF-8")))
+                .build();
+        return HttpClients.execute(httpUriRequest, ShelvesResponse.class);
+    }
+
+    /**
+     * 图文消息群发卡券
+     * @param accessToken
+     * @param create
+     * @return
+     */
+    public static MpNewsResponse mpNewsGetHtml(String accessToken, MpNews create){
+        return null;
+    }
+
 
     /**
      * 接口激活
@@ -145,8 +295,7 @@ public class CardAPI extends API {
      * @return
      */
     public static BaseResponse activate(String accessToken, CardActivate activate) {
-        String response = HttpClientUtils.getInstance().sendHttpPost(String.format(ACTIVATE, accessToken), GsonUtils.toJson(activate));
-        return GsonUtils.fromJson(response, BaseResponse.class);
+        return null;
     }
 
     /**
@@ -156,8 +305,7 @@ public class CardAPI extends API {
      * @return
      */
     public static BaseResponse activateSet(String accessToken, ActivateSet activateSet) {
-        String response = HttpClientUtils.getInstance().sendHttpPost(String.format(ACTIVATE_SET, accessToken), GsonUtils.toJson(activateSet));
-        return GsonUtils.fromJson(response, BaseResponse.class);
+        return null;
     }
 
 }

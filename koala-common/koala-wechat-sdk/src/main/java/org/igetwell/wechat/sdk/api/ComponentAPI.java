@@ -64,7 +64,7 @@ public class ComponentAPI extends API {
      * @param authorizationCode
      * @return
      */
-    public static Authorization authorize(String componentAccessToken, String componentAppId, String authorizationCode){
+    public static Authorization authorized(String componentAccessToken, String componentAppId, String authorizationCode){
         Map<String, String> param = ParamMap.create("component_appid", componentAppId)
                 .put("authorization_code", authorizationCode).getData();
         HttpUriRequest httpUriRequest = RequestBuilder
@@ -246,8 +246,8 @@ public class ComponentAPI extends API {
         StringBuilder stringBuilder = new StringBuilder();
         try {
             stringBuilder.append(MP_URI)
-                    .append("/cgi-bin/componentloginpage?")
-                    .append("component_appid=").append(componentAppId)
+                    .append("/cgi-bin/componentloginpage?component_appid=")
+                    .append(componentAppId)
                     .append("&pre_auth_code=").append(preAuthCode)
                     .append("&redirect_uri=").append(URLEncoder.encode(redirectUri, "UTF-8"));
             if (StringUtils.isEmpty(authType.trim())) {
@@ -290,6 +290,36 @@ public class ComponentAPI extends API {
                 stringBuilder.append("&auth_type=").append(authType);
             }
             stringBuilder.append("#wechat_redirect");
+            return stringBuilder.toString();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            throw new RuntimeException();
+        } finally {
+            stringBuilder.setLength(0);
+        }
+    }
+
+    /**
+     * 第三方开放平台代公众号发起网页授权
+     * @param componentAppId
+     * @param appId
+     * @param scope
+     * @param state
+     * @param redirectUri
+     * @return
+     */
+    public static String authorized(String componentAppId, String appId, String scope, Long state, String redirectUri) {
+        StringBuilder stringBuilder = new StringBuilder();
+        try {
+            stringBuilder.append(OPEN_URI)
+                    .append("/connect/oauth2/authorize?component_appid=")
+                    .append(componentAppId)
+                    .append("&appid=").append(appId)
+                    .append("&state=").append(state)
+                    .append("&response_type=code")
+                    .append("&scope=").append(scope)
+                    .append("&redirect_uri=").append(URLEncoder.encode(redirectUri, "UTF-8"))
+                    .append("#wechat_redirect");
             return stringBuilder.toString();
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();

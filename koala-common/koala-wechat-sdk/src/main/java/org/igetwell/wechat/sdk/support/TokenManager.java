@@ -100,12 +100,11 @@ public class TokenManager {
 
     private static void doRun(final String appid, final String secret) {
         try {
-            Token token = TokenAPI.token(appid, secret);
+            Token token = TokenAPI.oauthToken(appid, secret);
             tokenMap.put(appid, token.getAccessToken());
             log.info("ACCESS_TOKEN refurbish with appid:{}",appid);
         } catch (Exception e) {
-            log.error("ACCESS_TOKEN refurbish error with appid:{}",appid);
-            log.error("", e);
+            log.error("ACCESS_TOKEN refurbish error with appid:{}",appid , e);
         }
     }
 

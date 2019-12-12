@@ -1,4 +1,4 @@
-package org.igetwell.wechat.sdk.bean.card.code;
+package org.igetwell.wechat.sdk.bean.card.code.get;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -9,12 +9,12 @@ import org.igetwell.wechat.sdk.response.BaseResponse;
  */
 @Getter
 @Setter
-public class CodeGetResponse extends BaseResponse {
+public class ConsumeCodeResponse extends BaseResponse {
 
     /**
      * 卡券信息
      */
-    private CodeGetResponseCard card;
+    private ConsumeCodeCard card;
 
     /**
      * 用户openid

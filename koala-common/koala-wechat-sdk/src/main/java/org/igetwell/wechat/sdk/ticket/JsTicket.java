@@ -6,9 +6,9 @@ import org.igetwell.wechat.sdk.response.BaseResponse;
 
 @Getter
 @Setter
-public class JsTicket extends BaseResponse {
+public class JsTicket {
 
     private String ticket;
 
-    private int expiresIn = -1;
+    private Long expiresIn;
 }

@@ -1,5 +1,6 @@
 package org.igetwell.common.handle;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.ResponseHandler;
@@ -8,6 +9,7 @@ import org.igetwell.common.uitls.GsonUtils;
 
 import java.io.IOException;
 
+@Slf4j
 public class JsonResponseHandler {
 
     public static <T> ResponseHandler<T> createResponseHandler(final Class<T> clazz){
@@ -27,7 +29,7 @@ public class JsonResponseHandler {
             int status = response.getStatusLine().getStatusCode();
             if (status >= 200 && status < 300) {
                 String str = EntityUtils.toString(response.getEntity(),"UTF-8");
-                //log.info("URI[{}] RESPONSE DATA:{}", str);
+                log.info("URI[{}] RESPONSE DATA:{}", str);
                 return GsonUtils.fromJson(str, clazz);
             } else {
                 throw new ClientProtocolException("Unexpected response status: " + status);

@@ -1,7 +1,6 @@
 package org.igetwell.wechat.sdk.bean.component;
 
 import java.io.Serializable;
-import java.util.List;
 
 public class ComponentAuthorization implements Serializable {
 
