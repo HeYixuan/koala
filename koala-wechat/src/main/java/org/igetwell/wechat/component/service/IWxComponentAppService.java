@@ -1,14 +1,14 @@
 package org.igetwell.wechat.component.service;
 
-import org.igetwell.wechat.sdk.WechatUser;
+import org.igetwell.wechat.sdk.bean.component.WechatUser;
 
 /**
- * 第三方平台代公众号授权业务
+ * 第三方平台代公众号授权业务(目前无法测试成功)
  */
 public interface IWxComponentAppService {
 
     /**
-     * 第三方开放平台代公众号授权获取授权码
+     * 第三方开放平台代公众号发起网页授权获取授权码
      * @param redirectUri
      * @return
      * @throws Exception
@@ -16,7 +16,7 @@ public interface IWxComponentAppService {
     String authorized(String redirectUri) throws Exception;
 
     /**
-     * 第三方开放平台代公众号通过授权码换取令牌
+     * 第三方开放平台代公众号发起网页授权通过授权码换取令牌
      * @param appId
      * @param authorizedCode
      * @param state
@@ -26,7 +26,7 @@ public interface IWxComponentAppService {
     void getAccessToken(String appId, String authorizedCode, Long state) throws Exception;
 
     /**
-     * 第三方开放平台代公众号刷新令牌
+     * 第三方开放平台代公众号发起网页授权刷新令牌
      * @param appId
      * @param refreshToken
      * @throws Exception
@@ -34,7 +34,7 @@ public interface IWxComponentAppService {
     void refreshToken(String appId, String refreshToken) throws Exception;
 
     /**
-     * 第三方开放平台代公众号授权获取用户基本信息
+     * 第三方开放平台代公众号发起网页授权获取用户基本信息
      * @param accessToken
      * @param openId
      * @return

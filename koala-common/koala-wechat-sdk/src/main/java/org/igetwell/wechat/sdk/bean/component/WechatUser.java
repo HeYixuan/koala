@@ -1,4 +1,4 @@
-package org.igetwell.wechat.sdk;
+package org.igetwell.wechat.sdk.bean.component;
 
 public class WechatUser {
     /**

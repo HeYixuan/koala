@@ -3,6 +3,7 @@ package org.igetwell.wechat.sdk.bean.card;
 import lombok.Getter;
 import lombok.Setter;
 import org.igetwell.common.uitls.GsonUtils;
+import org.igetwell.wechat.sdk.bean.card.create.WxCardCreate;
 
 /**
  * 会员卡
@@ -37,7 +38,10 @@ public class MemberCard extends AbstractCard {
         MemberCard card = new MemberCard();
         card.setCardType("MEMBER_CARD");
         card.setMemberCard(memberCard);
+        WxCardCreate create = new WxCardCreate();
+        create.setCard(card);
 
         System.err.println(GsonUtils.toJson(card));
+        //System.err.println(GsonUtils.toJson(create));
     }
 }

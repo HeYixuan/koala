@@ -4,8 +4,7 @@ import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.methods.RequestBuilder;
 import org.igetwell.common.uitls.GsonUtils;
 import org.igetwell.common.uitls.HttpClientUtils;
-import org.igetwell.wechat.sdk.WechatUser;
-import org.igetwell.wechat.sdk.bean.component.ComponentAppAccessToken;
+import org.igetwell.wechat.sdk.bean.component.WechatUser;
 
 /**
  * 第三方开放平台代公众号授权获取用户基本信息

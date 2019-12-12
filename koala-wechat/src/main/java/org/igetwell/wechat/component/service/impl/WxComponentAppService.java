@@ -4,7 +4,7 @@ import org.igetwell.common.constans.cache.RedisKey;
 import org.igetwell.common.uitls.RedisUtils;
 import org.igetwell.wechat.component.service.IWxComponentAppService;
 import org.igetwell.wechat.component.service.IWxComponentService;
-import org.igetwell.wechat.sdk.WechatUser;
+import org.igetwell.wechat.sdk.bean.component.WechatUser;
 import org.igetwell.wechat.sdk.api.ComponentAPI;
 import org.igetwell.wechat.sdk.api.WechatUserAPI;
 import org.igetwell.wechat.sdk.bean.component.ComponentAppAccessToken;
@@ -85,7 +85,7 @@ public class WxComponentAppService implements IWxComponentAppService {
     }
 
     /**
-     * 第三方开放平台代公众号刷新令牌
+     * 第三方开放平台代公众号发起网页授权刷新令牌
      * @param appId
      * @param refreshToken
      * @throws Exception
@@ -93,38 +93,38 @@ public class WxComponentAppService implements IWxComponentAppService {
     public void refreshToken(String appId, String refreshToken) throws Exception {
         logger.info("[微信开放平台]-代公众号授权刷新令牌开始，appId={}.", appId);
         if (StringUtils.isEmpty(componentAppId) || StringUtils.isEmpty(appId) || StringUtils.isEmpty(refreshToken)) {
-            logger.error("[微信开放平台]-代公众号授权刷新令牌失败.请求参数为空.");
-            throw new Exception("[微信开放平台]-代公众号授权刷新令牌失败.请求参数为空.");
+            logger.error("[微信开放平台]-代公众号发起网页授权刷新令牌失败.请求参数为空.");
+            throw new Exception("[微信开放平台]-代公众号发起网页授权刷新令牌失败.请求参数为空.");
         }
         ComponentAppAccessToken accessToken = ComponentAPI.refreshAppToken(iWxComponentService.getComponentAccessToken(), componentAppId, appId, refreshToken);
         if (accessToken == null || StringUtils.isEmpty(accessToken.getAccessToken()) || StringUtils.isEmpty(accessToken.getRefreshToken())) {
-            logger.info("[微信开放平台]-代公众号授权刷新令牌失败.");
-            throw new Exception("[微信开放平台]-代公众号授权刷新令牌失败.");
+            logger.info("[微信开放平台]-代公众号发起网页授权刷新令牌失败.");
+            throw new Exception("[微信开放平台]-代公众号发起网页授权刷新令牌失败.");
         }
         redisUtils.set(RedisKey.COMPONENT_APP_REFRESH_TOKEN, accessToken);
-        logger.info("[微信开放平台]-代公众号授权刷新令牌结束.");
+        logger.info("[微信开放平台]-代公众号发起网页授权刷新令牌结束.");
     }
 
     /**
-     * 第三方开放平台代公众号授权获取用户基本信息
+     * 第三方开放平台代公众号发起网页授权获取用户基本信息
      * @param accessToken
      * @param openId
      * @return
      * @throws Exception
      */
     public WechatUser getWxUser(String accessToken, String openId) throws Exception {
-        logger.info("[微信开放平台]-代公众号授权权获取用户基本信息开始，appId={}.", appId);
+        logger.info("[微信开放平台]-代公众号发起网页授权获取用户基本信息开始，appId={}.", appId);
         if (StringUtils.isEmpty(accessToken) || StringUtils.isEmpty(openId)) {
-            logger.error("[微信开放平台]-代公众号授权通过令牌获取微信用户基本信息失败.请求参数为空");
-            throw new Exception("[微信开放平台]-代公众号授权通过令牌获取微信用户基本信息失败.请求参数为空");
+            logger.error("[微信开放平台]-代公众号发起网页授权通过令牌获取微信用户基本信息失败.请求参数为空");
+            throw new Exception("[微信开放平台]-代公众号发起网页授权通过令牌获取微信用户基本信息失败.请求参数为空");
         }
         WechatUser wxUser = WechatUserAPI.getWxUser(accessToken, openId);
         if (wxUser == null || StringUtils.isEmpty(wxUser.getOpenId()) || StringUtils.isEmpty(wxUser.getUnionid())){
-            logger.error("[微信开放平台]-代公众号授权通过令牌获取微信用户基本信息失败.");
-            throw new Exception("[微信开放平台]-代公众号授权通过令牌获取微信用户基本信息失败.");
+            logger.error("[微信开放平台]-代公众号发起网页授权通过令牌获取微信用户基本信息失败.");
+            throw new Exception("[微信开放平台]-代公众号发起网页授权通过令牌获取微信用户基本信息失败.");
         }
         redisUtils.set(openId, wxUser);
-        logger.info("[微信开放平台]-代公众号授权权获取用户基本信息结束.");
+        logger.info("[微信开放平台]-代公众号发起网页授权获取用户基本信息结束.");
         return wxUser;
     }
 }

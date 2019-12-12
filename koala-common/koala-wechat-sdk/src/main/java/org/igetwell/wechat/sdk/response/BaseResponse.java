@@ -31,7 +31,7 @@ public class BaseResponse {
     }
 
     public boolean isSuccess() {
-        return errcode == null || errcode.isEmpty() || errcode.equals(SUCCESS_CODE);
+        return errcode != null && !errcode.isEmpty() && errcode.equals(SUCCESS_CODE);
     }
 
 }

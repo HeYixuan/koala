@@ -1,0 +1,46 @@
+/*优惠券json数据*/
+{
+  "card": {
+    "card_type": "GROUPON",
+    "groupon": {
+      "base_info": {
+        "logo_url": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/wNibQUiaFLUcKnsibicJ4ibtR2kIaqZM3SIdYfzMJicG9HoDXynwc36Ylwq1jyD1PbOlXwzHUfSRaWMP6hI7ycLwEx2Q/0",
+        "brand_name": "海底捞",
+        "code_type": "CODE_TYPE_QRCODE",
+        "pay_info":{
+          "swipe_card":{
+            "is_swipe_card":true
+          }
+        },
+        "title": "132元双人火锅套餐",
+        "sub_title": "周末狂欢必备",
+        "color": "Color010",
+        "notice": "使用时向服务员出示此券",
+        "service_phone": "020-88888888",
+        "description": "不可与其他优惠同享如需团购券发票， 请在消费时向商户提出店内均可使用， 仅限堂食 ",
+        "date_info": {
+          "type": "DATE_TYPE_FIX_TERM",
+          "fixed_term": 15,
+          "fixed_begin_term": 0
+        },
+        "sku": {
+          "quantity": 500000
+        },
+        "get_limit": 3,
+        "use_custom_code": false,
+        "bind_openid": false,
+        "can_share": true,
+        "can_give_friend": true,
+        "location_id_list": [
+          123,
+          12321,
+          345345
+        ],
+        "need_push_on_view": true,
+        "center_app_brand_user_name": "gh_e1eb37436e0a@app",
+        "center_app_brand_pass": "pages/index/index"
+      },
+      "deal_detail": "以下锅底2选1（有菌王锅、麻辣锅、大骨锅、番茄锅、清补凉锅、酸 菜鱼锅可选）：大锅1份 12 元小锅2份 16 元 "
+    }
+  }
+}
