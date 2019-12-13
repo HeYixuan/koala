@@ -44,5 +44,5 @@ public class WxCardHigh {
     /**
      * 使用时段限制
      */
-    private WxCardHightTimeLimit timeLimit;
+    private List<WxCardHightTimeLimit> timeLimit;
 }

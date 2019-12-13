@@ -1,0 +1,103 @@
+{
+  "backgroundPicUrl": "https://mmbiz.qlogo.cn/mmbiz/",
+  "baseInfo": {
+    "logoUrl": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/wNibQUiaFLUcKnsibicJ4ibtR2kIaqZM3SIdYfzMJicG9HoDXynwc36Ylwq1jyD1PbOlXwzHUfSRaWMP6hI7ycLwEx2Q/0",
+    "brandName": "海底捞",
+    "codeType": "CODE_TYPE_QRCODE",
+    "payInfo": {
+      "swipeCard": {
+        "isSwipeCard": true
+      }
+    },
+    "title": "海底捞会员卡",
+    "color": "Color020",
+    "notice": "结账时出示会员卡",
+    "service_phone": "020-88888888",
+    "description": "不可与其他优惠同享",
+    "dateInfo": {
+      "type": "DATE_TYPE_PERMANENT"
+    },
+    "sku": {
+      "quantity": 50000000
+    },
+    "getLimit": 3,
+    "useCustomCode": false,
+    "canGiveFriend": true,
+    "locationIdList": [
+      123,
+      12321
+    ],
+    "customUrlName": "立即使用",
+    "customUrl": "http://weixin.qq.com",
+    "customUrlSub_title": "6个汉字tips",
+    "promotionUrlName": "营销入口1",
+    "promotionUrl": "http://www.qq.com",
+    "needPushOnView": true
+  },
+  "advancedInfo": {
+    "useCondition": {
+      "acceptCategory": "鞋类",
+      "rejectCategory": "阿迪达斯",
+      "canUseWith_otherDiscount": true
+    },
+    "abstract": {
+      "abstract": "微信餐厅推出多种新季菜品，期待您的光临",
+      "iconUrlList": [
+        "http://mmbiz.qpic.cn/mmbiz/p98FjXy8LacgHxp3sJ3vn97bGLz0ib0Sfz1bjiaoOYA027iasqSG0sjpiby4vce3AtaPu6cIhBHkt6IjlkY9YnDsfw / 0"
+      ]
+    },
+    "textImageList": [
+      {
+        "imageUrl": "http://mmbiz.qpic.cn/mmbiz/p98FjXy8LacgHxp3sJ3vn97bGLz0ib0Sfz1bjiaoOYA027iasqSG0sjpiby4vce3AtaPu6cIhBHkt6IjlkY9YnDsfw/0",
+        "text": "此菜品精选食材，以独特的烹饪方法，最大程度地刺激食 客的味蕾"
+      },
+      {
+        "imageUrl": "http://mmbiz.qpic.cn/mmbiz/p98FjXy8LacgHxp3sJ3vn97bGLz0ib0Sfz1bjiaoOYA027iasqSG0sjpiby4vce3AtaPu6cIhBHkt6IjlkY9YnDsfw/0",
+        "text": "此菜品迎合大众口味，老少皆宜，营养均衡"
+      }
+    ],
+    "timeLimit": [
+      {
+        "type": "MONDAY",
+        "beginHour": 0,
+        "endHour": 10,
+        "beginMinute": 10,
+        "endMinute": 59
+      },
+      {
+        "type": "HOLIDAY"
+      }
+    ],
+    "businessService": [
+      "BIZ_SERVICE_FREE_WIFI",
+      "BIZ_SERVICE_WITH_PET",
+      "BIZ_SERVICE_FREE_PARK",
+      "BIZ_SERVICE_DELIVER"
+    ]
+  },
+  "supplyBonus": true,
+  "supplyBalance": true,
+  "prerogative": "test_prerogative",
+  "autoActivate": true,
+  "customField1": {
+    "nameType": "FIELD_NAME_TYPE_COUPON",
+    "url": "http://www.qq.com"
+  },
+  "activateUrl": "http://www.qq.com",
+  "customCell1": {
+    "name": "使用入口2",
+    "tips": "激活后显示",
+    "url": "http://www.qq.com"
+  },
+  "bonusRule": {
+    "costMoneyUnit": 100,
+    "increaseBonus": 1,
+    "maxIncrease_bonus": 200,
+    "initIncrease_bonus": 10,
+    "costBonus_unit": 5,
+    "reduceMoney": 100,
+    "leastMoneyToUseBonus": 1000,
+    "maxReduceBonus": 50
+  },
+  "discount": 10
+}

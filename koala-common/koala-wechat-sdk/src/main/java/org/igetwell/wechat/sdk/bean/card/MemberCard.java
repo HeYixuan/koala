@@ -12,10 +12,10 @@ import org.igetwell.wechat.sdk.bean.card.create.WxCardCreate;
 @Setter
 public class MemberCard extends AbstractCard {
 
-    private AbstractMemberCard memberCard;
+    private WxMemberCard memberCard;
 
     public static void main(String[] args) {
-        AbstractMemberCard memberCard = new AbstractMemberCard();
+        WxMemberCard memberCard = new WxMemberCard();
         memberCard.setBackgroundPicUrl("http://www.baidu.com");
         memberCard.setPrerogative("特权说明");
         WxCardBasis basis = new WxCardBasis();
@@ -28,6 +28,12 @@ public class MemberCard extends AbstractCard {
         basis.setServicePhone("020-88888888");
         basis.setDescription("不可与其他优惠同享");
         basis.setGetLimit(1);
+        WxCardSupplyPay supplyPay = new WxCardSupplyPay();
+        WxSwipeCard swipeCard = new WxSwipeCard();
+        swipeCard.setIsSwipeCard(true);
+        supplyPay.setSwipeCard(swipeCard);
+        basis.setPayInfo(supplyPay);
+
         WxCardHigh high = new WxCardHigh();
 
         memberCard.setBaseInfo(basis);
@@ -41,7 +47,9 @@ public class MemberCard extends AbstractCard {
         WxCardCreate create = new WxCardCreate();
         create.setCard(card);
 
-        System.err.println(GsonUtils.toJson(card));
+        //System.err.println(GsonUtils.toJson(card));
         //System.err.println(GsonUtils.toJson(create));
+
+        System.err.println(GsonUtils.toJson(memberCard));
     }
 }

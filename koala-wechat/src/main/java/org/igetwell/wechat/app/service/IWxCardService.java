@@ -14,17 +14,39 @@ public interface IWxCardService {
     /**
      * 创建微信会员卡
      */
-    String createCard(WxCardCreate<MemberCard> create) throws Exception;
+    String createCard(WxCardCreate<MemberCard> card) throws Exception;
 
     /**
      * 创建微信会员卡
      */
-    String createCard(String create) throws Exception;
+    String createCard(String card) throws Exception;
 
     /**
      * 创建团购券
      */
     String createGroup(String group) throws Exception;
+
+    /**
+     * 创建代金券
+     * @param cash
+     * @return
+     */
+    String createCash(String cash) throws Exception;
+
+    /**
+     * 创建折扣券
+     * @param discount
+     * @return
+     */
+    String createDiscount(String discount) throws Exception;
+
+    /**
+     * 创建兑换券
+     * @param gift
+     * @return
+     * @throws Exception
+     */
+    String createGift(String gift) throws Exception;
 
     /**
      * 创建投放卡券二维码

@@ -13,6 +13,11 @@ public enum CardType {
      * 代金券
      */
     CASH,
+
+    /**
+     * 兑换券
+     */
+    GIFT,
     /**
      * 折扣券
      */
@@ -22,7 +27,7 @@ public enum CardType {
      */
     GROUPON,
     /**
-     * 通用券
+     * 优惠券
      */
     GENERAL_COUPON,
     /**

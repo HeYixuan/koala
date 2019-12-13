@@ -7,6 +7,8 @@ import org.igetwell.common.uitls.GsonUtils;
 import org.igetwell.common.uitls.HttpClients;
 import org.igetwell.wechat.sdk.bean.card.activate.ActivateSet;
 import org.igetwell.wechat.sdk.bean.card.activate.CardActivate;
+import org.igetwell.wechat.sdk.bean.card.code.consume.SelfConsume;
+import org.igetwell.wechat.sdk.bean.card.code.consume.SetPayOrder;
 import org.igetwell.wechat.sdk.bean.card.code.get.ConsumeCode;
 import org.igetwell.wechat.sdk.bean.card.code.get.ConsumeCodeResponse;
 import org.igetwell.wechat.sdk.bean.card.create.WxCardCreate;
@@ -273,6 +275,40 @@ public class CardAPI extends API {
                 .setUri(BASE_URI + "/card/code/decrypt")
                 .addParameter(ACCESS_TOKEN, accessToken(accessToken))
                 .setEntity(new StringEntity(shelves, Charset.forName("UTF-8")))
+                .build();
+        return HttpClients.execute(httpUriRequest, ShelvesResponse.class);
+    }
+
+    /**
+     * 设置买单接口
+     * @param accessToken
+     * @param setPayOrder
+     * @return
+     */
+    public static BaseResponse setPay(String accessToken, SetPayOrder setPayOrder) {
+        HttpUriRequest httpUriRequest = RequestBuilder
+                .post()
+                .setHeader(APPLICATION_JSON)
+                .setUri(BASE_URI + "/card/paycell/set")
+                .addParameter(ACCESS_TOKEN, accessToken(accessToken))
+                .setEntity(new StringEntity(GsonUtils.toJson(setPayOrder), Charset.forName("UTF-8")))
+                .build();
+        return HttpClients.execute(httpUriRequest, ShelvesResponse.class);
+    }
+
+    /**
+     * 设置自助核销
+     * @param accessToken
+     * @param selfConsume
+     * @return
+     */
+    public static BaseResponse selfConsume(String accessToken, SelfConsume selfConsume) {
+        HttpUriRequest httpUriRequest = RequestBuilder
+                .post()
+                .setHeader(APPLICATION_JSON)
+                .setUri(BASE_URI + "/card/selfconsumecell/set")
+                .addParameter(ACCESS_TOKEN, accessToken(accessToken))
+                .setEntity(new StringEntity(GsonUtils.toJson(selfConsume), Charset.forName("UTF-8")))
                 .build();
         return HttpClients.execute(httpUriRequest, ShelvesResponse.class);
     }

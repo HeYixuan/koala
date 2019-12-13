@@ -14,6 +14,9 @@
         },
         "title": "132元双人火锅套餐",
         "sub_title": "周末狂欢必备",
+        "center_title": "立即使用",  //可不填
+        "center_url": "https://www.mi.com", //可不填
+        "center_sub_title": "点击生成付款码", //可不填
         "color": "Color010",
         "notice": "使用时向服务员出示此券",
         "service_phone": "020-88888888",
@@ -37,8 +40,8 @@
           345345
         ],
         "need_push_on_view": true,
-        "center_app_brand_user_name": "gh_e1eb37436e0a@app",
-        "center_app_brand_pass": "pages/index/index"
+        "center_app_brand_user_name": "gh_e1eb37436e0a@app",//可不填
+        "center_app_brand_pass": "pages/index/index"  //可不填
       },
       "deal_detail": "以下锅底2选1（有菌王锅、麻辣锅、大骨锅、番茄锅、清补凉锅、酸 菜鱼锅可选）：大锅1份 12 元小锅2份 16 元 "
     }

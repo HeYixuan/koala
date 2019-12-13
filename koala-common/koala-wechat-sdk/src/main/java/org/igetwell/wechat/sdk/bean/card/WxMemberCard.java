@@ -3,25 +3,18 @@ package org.igetwell.wechat.sdk.bean.card;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * 会员卡
+ */
 @Getter
 @Setter
-public class WxMemberCard {
+public class WxMemberCard extends Discount {
 
     /**
      * 商家自定义会员卡背景图，须 先调用 上传图片接口 将背景图上传至CDN，否则报错，
      * 卡面设计请遵循 微信会员卡自定义背景设计规范 ,像素大小控制在 1000像素*600像素以下
      */
     private String backgroundPicUrl;
-
-    /**
-     * 卡券基础信息
-     */
-    private WxCardBasis baseInfo;
-
-    /**
-     * 卡券高级信息
-     */
-    private WxCardHigh advancedInfo;
 
     /**
      * 会员卡特权说明,限制1024汉字。
@@ -122,8 +115,4 @@ public class WxMemberCard {
      */
     private WxCardBoundRule bonusRule;
 
-    /**
-     * 折扣，该会员卡享受的折扣优惠,填10就是九折。
-     */
-    private Integer discount;
 }

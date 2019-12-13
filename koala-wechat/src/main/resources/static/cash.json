@@ -1,0 +1,68 @@
+{
+  "baseInfo": {
+    "logoUrl": "http://mmbiz.qpic.cn/sz_mmbiz_jpg/wNibQUiaFLUcKnsibicJ4ibtR2kIaqZM3SIdYfzMJicG9HoDXynwc36Ylwq1jyD1PbOlXwzHUfSRaWMP6hI7ycLwEx2Q/0",
+    "brandName": "海底捞",
+    "codeType": "CODE_TYPE_QRCODE",
+    "isPayAndQrcode": true,
+    "title": "7折优惠券",
+    "subTitle": "周末狂欢必备",
+    "color": "Color010",
+    "notice": "使用时向服务员出示此券",
+    "servicePhone": "020-88888888",
+    "description": "不可与其他优惠同享如需团购券发票， 请在消费时向商户提出店内均可使用， 仅限堂食 ",
+    "dateInfo": {
+      "type": "DATE_TYPE_FIX_TERM",
+      "fixedTerm": 15,
+      "fixedBeginTerm": 1
+    },
+    "sku": {
+      "quantity": 500000
+    },
+    "getLimit": 3,
+    "useCustomCode": false,
+    "bindOpenid": false,
+    "canShare": true,
+    "canGiveFriend": true,
+    "locationIdList": [
+      123,
+      12321,
+      345345
+    ],
+    "needPushOnView": true,
+    "centerAppBrandUserName": "gh_e1eb37436e0a@app",
+    "centerAppBrandPass": "pages/index/index"
+  },
+  "leastCost": 10000,
+  "reduceCost": 5000
+}
+
+
+{
+  "advancedInfo": {},
+  "leastCost": 22,
+  "reduceCost": 100,
+  "baseInfo": {
+    "color": "Color010",
+    "logoUrl": "https://img.yzcdn.cn/upload_files/2019/08/11/FgskAQRSKQHlh-AKBt302-JM5pcB.png",
+    "centerTitle": "立即使用",
+    "canShare": true,
+    "description": "tx测试",
+    "brandName": "起码运动馆",
+    "canGiveFriend": true,
+    "title": "sasa1",
+    "useCustomCode": false,
+    "servicePhone": "400-100-1123",
+    "dateInfo": {
+      "beginTimestamp": 1510839816,
+      "endTimestamp": 1596807816,
+      "type": "DATE_TYPE_FIX_TIME_RANGE"
+    },
+    "sku": {
+      "quantity": 100
+    },
+    "codeType": "CODE_TYPE_QRCODE",
+    "notice": "请在店铺购物时使用",
+    "centerAppBrandUserName": "gh_e1eb37436e0a@app",
+    "centerAppBrandPass": "pages/index/index"
+  }
+}

@@ -56,17 +56,9 @@ public class WxCardService implements IWxCardService {
      */
     public String createCard(String create) throws Exception {
         logger.info("[微信会员卡服务]-创建微信会员卡开始. {}", create);
-        if (StringUtils.isEmpty(create)) {
-            logger.error("[微信会员卡服务]-创建微信会员卡失败, 请求参数为空.");
-            throw new IllegalArgumentException("[微信会员卡服务]-创建微信会员卡失败, 请求参数错误.");
-        }
-        Card card = CardAPI.create(iWxAppService.getAccessToken(), create);
-        if (StringUtils.isEmpty(card) || StringUtils.isEmpty(card.getCardId())) {
-            logger.error("[微信会员卡服务]-创建微信会员卡失败.");
-            throw new RuntimeException("[微信会员卡服务]-创建微信会员卡失败.");
-        }
-        logger.info("[微信会员卡服务]-创建微信会员卡结束. {}", card.getCardId());
-        return card.getCardId();
+        String cardId = createCoupon(create);
+        logger.info("[微信会员卡服务]-创建微信会员卡结束. {}", cardId);
+        return cardId;
     }
 
     /**
@@ -74,18 +66,68 @@ public class WxCardService implements IWxCardService {
      */
     public String createGroup(String group) throws Exception {
         logger.info("[微信会员卡服务]-创建微信团购券开始. {}", group);
-        if (StringUtils.isEmpty(group)) {
-            logger.error("[微信会员卡服务]-创建微信会员卡失败, 请求参数为空.");
-            throw new IllegalArgumentException("[微信会员卡服务]-创建微信会员卡失败, 请求参数错误.");
+        String cardId = createCoupon(group);
+        logger.info("[微信会员卡服务]-创建微信团购券结束. {}", cardId);
+        return cardId;
+    }
+
+
+    /**
+     * 创建代金券
+     * @param cash
+     * @return
+     */
+    public String createCash(String cash) throws Exception {
+        logger.info("[微信会员卡服务]-创建微信代金券开始. {}", cash);
+        String cardId = createCoupon(cash);
+        logger.info("[微信会员卡服务]-创建微信代金券结束. {}", cardId);
+        return cardId;
+    }
+
+    /**
+     * 创建折扣券
+     * @param discount
+     * @return
+     */
+    public String createDiscount(String discount) throws Exception {
+        logger.info("[微信会员卡服务]-创建微信折扣券开始. {}", discount);
+        String cardId = createCoupon(discount);
+        logger.info("[微信会员卡服务]-创建微信折扣券结束. {}", cardId);
+        return cardId;
+    }
+
+    /**
+     * 创建兑换券
+     * @param gift
+     * @return
+     * @throws Exception
+     */
+    public String createGift(String gift) throws Exception {
+        logger.info("[微信会员卡服务]-创建微信兑换券开始. {}", gift);
+        String cardId = createCoupon(gift);
+        logger.info("[微信会员卡服务]-创建微信兑换券结束. {}", cardId);
+        return cardId;
+    }
+
+    /**
+     * 创建卡券
+     * @param coupon
+     * @return
+     * @throws Exception
+     */
+    private String createCoupon(String coupon) throws Exception {
+        if (StringUtils.isEmpty(coupon) || StringUtils.isEmpty(coupon.trim())) {
+            logger.error("[微信会员卡服务]-创建微信卡券失败, 请求参数为空.");
+            throw new IllegalArgumentException("[微信会员卡服务]-创建微信卡券失败, 请求参数错误.");
         }
-        Card card = CardAPI.create(iWxAppService.getAccessToken(), group);
+        Card card = CardAPI.create(iWxAppService.getAccessToken(), coupon);
         if (StringUtils.isEmpty(card) || StringUtils.isEmpty(card.getCardId())) {
-            logger.error("[微信会员卡服务]-创建微信会员卡失败.");
-            throw new RuntimeException("[微信会员卡服务]-创建微信会员卡失败.");
+            logger.error("[微信会员卡服务]-创建微信卡券失败.");
+            throw new RuntimeException("[微信会员卡服务]-创建微信卡券失败.");
         }
-        logger.info("[微信会员卡服务]-创建微信会员卡结束. {}", card.getCardId());
         return card.getCardId();
     }
+
 
     /**
      * 创建投放卡券二维码

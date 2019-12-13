@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.EventListener;
 import org.springframework.core.annotation.Order;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.util.StringUtils;
 
 /**
  * 容器启动后保存配置文件里面的路由信息到Redis
@@ -22,6 +23,11 @@ public class AppAccessTokenInitRunner {
 	@Order
 	@EventListener({WebServerInitializedEvent.class})
 	public void initRoute() throws Exception {
-		//iWxAppService.getAccessToken(true);
+
+		iWxAppService.getAccessToken(true);
+//		String accessToken = iWxAppService.getAccessToken();
+//		if (accessToken == null || StringUtils.isEmpty(accessToken.trim())){
+//			iWxAppService.getAccessToken(true);
+//		}
 	}
 }
