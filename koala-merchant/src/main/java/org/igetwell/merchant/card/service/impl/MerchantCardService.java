@@ -276,11 +276,11 @@ public class MerchantCardService implements IMerchantCardService {
         basis.setGetLimit(basicCard.getCardLimit());
         wxMemberCard.setBaseInfo(basis);
 
-        WxCard wxCard = new WxCard();
+        MemberCard wxCard = new MemberCard();
         wxCard.setCardType(CardType.MEMBER_CARD.toString());
         wxCard.setMemberCard(wxMemberCard);
 
-        WxCardCreate<WxCard> wxCardCreate = new WxCardCreate<WxCard>();
+        WxCardCreate<MemberCard> wxCardCreate = new WxCardCreate<MemberCard>();
         wxCardCreate.setCard(wxCard);
 
         return GsonUtils.toJson(wxCardCreate);

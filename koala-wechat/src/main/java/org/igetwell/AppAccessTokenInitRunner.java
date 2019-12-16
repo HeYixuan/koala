@@ -24,7 +24,7 @@ public class AppAccessTokenInitRunner {
 	@EventListener({WebServerInitializedEvent.class})
 	public void initRoute() throws Exception {
 
-		iWxAppService.getAccessToken(true);
+//		iWxAppService.getAccessToken(true);
 //		String accessToken = iWxAppService.getAccessToken();
 //		if (accessToken == null || StringUtils.isEmpty(accessToken.trim())){
 //			iWxAppService.getAccessToken(true);

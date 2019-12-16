@@ -1,6 +1,14 @@
 spring:
   main:
     allow-bean-definition-overriding: true
+
+  thymeleaf:
+    mode: LEGACYHTML5
+    prefix: classpath:/templates/
+    suffix: .html
+    encoding: UTF-8
+    cache: false
+
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8
@@ -8,10 +16,10 @@ spring:
 
 
 #微信开放平台
-#componentAppId: wx9a6700dcfc8867aa
-#componentAppSecret: b6fb9b952f581df671b7dcc42231dc83
-componentAppId: wx81aa03f442e8d692
-componentAppSecret: dd8063fc89b412d9f88d1f3cb2c8a1d3
+componentAppId: wx9a6700dcfc8867aa
+componentAppSecret: b6fb9b952f581df671b7dcc42231dc83
+#componentAppId: wx81aa03f442e8d692
+#componentAppSecret: dd8063fc89b412d9f88d1f3cb2c8a1d3
 componentToken: fsrtyuiopfghjksadfe3232a
 encodingAesKey: sdfaererit3423828343jeriooweqwqqwq22wwwfdgs
 

@@ -1,13 +1,17 @@
 package org.igetwell.wechat.sdk.api;
 
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.methods.RequestBuilder;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.util.EntityUtils;
 import org.igetwell.common.uitls.GsonUtils;
 import org.igetwell.common.uitls.HttpClients;
 import org.igetwell.common.uitls.ParamMap;
 import org.igetwell.wechat.sdk.bean.component.*;
 import org.springframework.util.StringUtils;
+
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
@@ -98,6 +102,8 @@ public class ComponentAPI extends API {
                 .build();
         return HttpClients.execute(httpUriRequest, ComponentRefreshAccessToken.class);
     }
+
+
 
     /**
      * 创建开放平台帐号并绑定公众号/小程序
@@ -250,10 +256,10 @@ public class ComponentAPI extends API {
                     .append(componentAppId)
                     .append("&pre_auth_code=").append(preAuthCode)
                     .append("&redirect_uri=").append(URLEncoder.encode(redirectUri, "UTF-8"));
-            if (StringUtils.isEmpty(authType.trim())) {
+            if (StringUtils.isEmpty(authType)) {
                 stringBuilder.append("&biz_appid=").append(bizAppid);
             }
-            if (StringUtils.isEmpty(bizAppid.trim())) {
+            if (StringUtils.isEmpty(bizAppid)) {
                 stringBuilder.append("&auth_type=").append(authType);
             }
             return stringBuilder.toString();
@@ -283,10 +289,10 @@ public class ComponentAPI extends API {
                     .append("&component_appid=").append(componentAppId)
                     .append("&pre_auth_code=").append(preAuthCode)
                     .append("&redirect_uri=").append(URLEncoder.encode(redirectUri, "UTF-8"));
-            if (StringUtils.isEmpty(authType.trim())) {
+            if (StringUtils.isEmpty(authType)) {
                 stringBuilder.append("&biz_appid=").append(bizAppid);
             }
-            if (StringUtils.isEmpty(bizAppid.trim())) {
+            if (StringUtils.isEmpty(bizAppid)) {
                 stringBuilder.append("&auth_type=").append(authType);
             }
             stringBuilder.append("#wechat_redirect");
@@ -298,6 +304,29 @@ public class ComponentAPI extends API {
             stringBuilder.setLength(0);
         }
     }
+
+    /**
+     * 获取授权方的帐号基本信息
+     * @param componentAccessToken
+     * @param componentAppId
+     * @param appId 授权方appId
+     * @return
+     */
+    public static String getAuthorized(String componentAccessToken, String componentAppId, String appId) throws IOException {
+        Map<String, String> param = ParamMap.create("component_appid", componentAppId)
+                .put("authorizer_appid", appId).getData();
+        HttpUriRequest httpUriRequest = RequestBuilder
+                .post()
+                .setHeader(APPLICATION_JSON)
+                .setUri(BASE_URI + "/cgi-bin/component/api_get_authorizer_info")
+                .addParameter(COMPONENT_ACCESS_TOKEN, componentAccessToken(componentAccessToken))
+                .setEntity(new StringEntity(GsonUtils.toJson(param), Charset.forName("UTF-8")))
+                .build();
+        CloseableHttpResponse response = HttpClients.execute(httpUriRequest);
+        String str = EntityUtils.toString(response.getEntity(),"UTF-8");
+        return str;
+    }
+
 
     /**
      * 第三方开放平台代公众号发起网页授权

@@ -176,9 +176,9 @@ public class WxComponentService implements IWxComponentService {
             if (infoType.equalsIgnoreCase("authorized") || infoType.equalsIgnoreCase("updateauthorized")){
                 String authorizationCode = XmlUtils.elementText(element, "AuthorizationCode");
                 String preAuthCode = XmlUtils.elementText(element, "PreAuthCode");
-                long expired =  Long.valueOf(XmlUtils.elementText(element, "AuthorizationCodeExpiredTime"));
-                redisUtils.set(RedisKey.COMPONENT_AUTHORIZATION_CODE, authorizationCode, expired);
-                redisUtils.set(RedisKey.COMPONENT_PRE_AUTH_CODE, preAuthCode, expired);
+                //long expired =  Long.valueOf(XmlUtils.elementText(element, "AuthorizationCodeExpiredTime"));
+                redisUtils.set(RedisKey.COMPONENT_AUTHORIZATION_CODE, authorizationCode, 600);
+                redisUtils.set(RedisKey.COMPONENT_PRE_AUTH_CODE, preAuthCode, 600);
 
             }
         }
@@ -288,7 +288,7 @@ public class WxComponentService implements IWxComponentService {
     }
 
     /**
-     * 使用授权码换取公众号的授权信息
+     * 使用授权码换取授权方的授权信息
      * @param authorizationCode  授权code
      */
     @Override
@@ -308,7 +308,7 @@ public class WxComponentService implements IWxComponentService {
     }
 
     /**
-     * 获取/刷新微信公众号接口调用令牌
+     * 获取/刷新授权方接口调用令牌
      * @param appId 授权方appId
      * @param refreshToken
      * @return
@@ -329,12 +329,16 @@ public class WxComponentService implements IWxComponentService {
 
     /**
      * 获取授权方的帐号基本信息
-     * @param componentAppId
-     * @param appId
+     * @param appId 授权方appId
      */
     @Override
-    public void getAuthorized(String componentAppId, String appId) throws Exception {
-
+    public void getAuthorized(String appId) throws Exception {
+        if (StringUtils.isEmpty(componentAppId) || StringUtils.isEmpty(appId)) {
+            logger.error("[微信开放平台]-获取授权方的帐号基本信息失败.请求参数为空.");
+            throw new Exception("[微信开放平台]-获取授权方的帐号基本信息失败.请求参数为空.");
+        }
+        String str = ComponentAPI.getAuthorized(getComponentAccessToken(), componentAppId, appId);
+        System.err.println(str);
     }
 
     /**
@@ -365,7 +369,7 @@ public class WxComponentService implements IWxComponentService {
      * 注：auth_type、biz_appid两个字段互斥。
      */
     @Override
-    public String getMobilePreAuthUrl(String redirectUri) throws Exception {
+    public String createMobilePreAuthUrl(String redirectUri) throws Exception {
         return createPreAuthUrl(redirectUri, null, null, true);
     }
 
@@ -379,7 +383,7 @@ public class WxComponentService implements IWxComponentService {
      * @return
      */
     @Override
-    public String getMobilePreAuthUrl(String redirectUri, String authType, String bizAppid) throws Exception {
+    public String createMobilePreAuthUrl(String redirectUri, String authType, String bizAppid) throws Exception {
         return createPreAuthUrl(redirectUri, authType, bizAppid, true);
     }
 
@@ -396,9 +400,9 @@ public class WxComponentService implements IWxComponentService {
      */
     private String createPreAuthUrl(String redirectUri, String authType, String bizAppid, boolean isMobile) throws Exception{
         if (isMobile){
-            return ComponentAPI.createPreAuthUrl(componentAppId, bizAppid, getPreAuthCode(), authType, false, redirectUri);
-        } else {
             return ComponentAPI.createPreAuthUrl(componentAppId, bizAppid, getPreAuthCode(), authType, true, redirectUri);
+        } else {
+            return ComponentAPI.createPreAuthUrl(componentAppId, bizAppid, getPreAuthCode(), authType, false, redirectUri);
         }
     }
 

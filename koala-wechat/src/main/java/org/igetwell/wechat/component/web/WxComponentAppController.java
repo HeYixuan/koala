@@ -19,6 +19,6 @@ public class WxComponentAppController extends BaseController {
 
     @PostMapping("/authorized")
     public String authorized() throws Exception {
-        return iWxComponentAppService.authorized("https://www.baidu.com");
+        return iWxComponentAppService.authorized("https://open.easy.echosite.cn");
     }
 }
