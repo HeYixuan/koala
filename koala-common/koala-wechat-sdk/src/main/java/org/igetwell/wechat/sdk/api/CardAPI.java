@@ -8,7 +8,7 @@ import org.igetwell.common.uitls.HttpClients;
 import org.igetwell.wechat.sdk.bean.card.activate.ActivateSet;
 import org.igetwell.wechat.sdk.bean.card.activate.CardActivate;
 import org.igetwell.wechat.sdk.bean.card.code.consume.SelfConsume;
-import org.igetwell.wechat.sdk.bean.card.code.consume.SetPayOrder;
+import org.igetwell.wechat.sdk.bean.card.code.consume.SupplyPay;
 import org.igetwell.wechat.sdk.bean.card.code.get.ConsumeCode;
 import org.igetwell.wechat.sdk.bean.card.code.get.ConsumeCodeResponse;
 import org.igetwell.wechat.sdk.bean.card.create.WxCardCreate;
@@ -21,6 +21,7 @@ import org.igetwell.wechat.sdk.bean.card.mpNews.MpNewsResponse;
 import org.igetwell.wechat.sdk.bean.card.qrcode.QrCodeCreate;
 import org.igetwell.wechat.sdk.bean.card.shelves.Shelves;
 import org.igetwell.wechat.sdk.bean.card.shelves.ShelvesResponse;
+import org.igetwell.wechat.sdk.bean.card.stock.CardStock;
 import org.igetwell.wechat.sdk.bean.card.white.White;
 import org.igetwell.wechat.sdk.response.BaseResponse;
 import org.igetwell.wechat.sdk.response.Card;
@@ -280,37 +281,54 @@ public class CardAPI extends API {
     }
 
     /**
-     * 设置买单接口
+     * 设置支持微信买单接口
      * @param accessToken
-     * @param setPayOrder
+     * @param supplyPay
      * @return
      */
-    public static BaseResponse setPay(String accessToken, SetPayOrder setPayOrder) {
+    public static BaseResponse supplyPay(String accessToken, SupplyPay supplyPay) {
         HttpUriRequest httpUriRequest = RequestBuilder
                 .post()
                 .setHeader(APPLICATION_JSON)
                 .setUri(BASE_URI + "/card/paycell/set")
                 .addParameter(ACCESS_TOKEN, accessToken(accessToken))
-                .setEntity(new StringEntity(GsonUtils.toJson(setPayOrder), Charset.forName("UTF-8")))
+                .setEntity(new StringEntity(GsonUtils.toJson(supplyPay), Charset.forName("UTF-8")))
                 .build();
-        return HttpClients.execute(httpUriRequest, ShelvesResponse.class);
+        return HttpClients.execute(httpUriRequest, BaseResponse.class);
     }
 
     /**
      * 设置自助核销
      * @param accessToken
-     * @param selfConsume
+     * @param consume
      * @return
      */
-    public static BaseResponse selfConsume(String accessToken, SelfConsume selfConsume) {
+    public static BaseResponse selfConsume(String accessToken, SelfConsume consume) {
         HttpUriRequest httpUriRequest = RequestBuilder
                 .post()
                 .setHeader(APPLICATION_JSON)
                 .setUri(BASE_URI + "/card/selfconsumecell/set")
                 .addParameter(ACCESS_TOKEN, accessToken(accessToken))
-                .setEntity(new StringEntity(GsonUtils.toJson(selfConsume), Charset.forName("UTF-8")))
+                .setEntity(new StringEntity(GsonUtils.toJson(consume), Charset.forName("UTF-8")))
                 .build();
-        return HttpClients.execute(httpUriRequest, ShelvesResponse.class);
+        return HttpClients.execute(httpUriRequest, BaseResponse.class);
+    }
+
+    /**
+     * 修改库存
+     * @param accessToken
+     * @param stock
+     * @return
+     */
+    public static BaseResponse stock(String accessToken, CardStock stock) {
+        HttpUriRequest httpUriRequest = RequestBuilder
+                .post()
+                .setHeader(APPLICATION_JSON)
+                .setUri(BASE_URI + "/card/modifystock")
+                .addParameter(ACCESS_TOKEN, accessToken(accessToken))
+                .setEntity(new StringEntity(GsonUtils.toJson(stock), Charset.forName("UTF-8")))
+                .build();
+        return HttpClients.execute(httpUriRequest, BaseResponse.class);
     }
 
     /**
