@@ -71,7 +71,7 @@ public class WxComponentAppService implements IWxComponentAppService {
             throw new Exception("[微信开放平台]-代公众号发起网页授权通过授权码换取令牌失败.请求参数为空.");
         }
         Long stateCache = redisUtils.get(String.format(RedisKey.COMPONENT_APP_STATE, appId));
-        if (stateCache == null || stateCache != state) {
+        if (stateCache == null && stateCache != state) {
             logger.info("[微信开放平台]-代公众号发起网页授权通过授权码换取令牌失败.请求失效.");
             throw new Exception("[微信开放平台]-代公众号发起网页授权通过授权码换取令牌失败.请求失效.");
         }
@@ -80,8 +80,28 @@ public class WxComponentAppService implements IWxComponentAppService {
             logger.error("[微信开放平台]-代公众号发起网页授权通过授权码换取令牌失败.");
             throw new Exception("[微信开放平台]-代公众号发起网页授权通过授权码换取令牌失败.");
         }
-        redisUtils.set(RedisKey.COMPONENT_APP_ACCESS_TOKEN, accessToken);
+        redisUtils.set(String.format(RedisKey.COMPONENT_APP_ACCESS_TOKEN, appId), accessToken);
         logger.info("[微信开放平台]-代公众号发起网页授权通过授权码换取令牌结束.");
+    }
+
+    /**
+     * 从缓存中获取令牌
+     * @param appId
+     * @return
+     */
+    public String getAccessToken(String appId) throws Exception {
+        logger.info("[微信开放平台]-代公众号发起网页授权从缓存中获取令牌开始.");
+        if (StringUtils.isEmpty(appId)) {
+            logger.error("[微信开放平台]-代公众号发起网页授权从缓存中获取令牌失败. 请求参数appId为空.");
+            throw new Exception("[微信开放平台]-代公众号发起网页授权从缓存中获取令牌失败. 请求参数appId为空.");
+        }
+        ComponentAppAccessToken accessToken = redisUtils.get(String.format(RedisKey.COMPONENT_APP_ACCESS_TOKEN, appId));
+        if (accessToken == null || StringUtils.isEmpty(accessToken.getAccessToken()) || StringUtils.isEmpty(accessToken.getRefreshToken())) {
+            logger.error("[微信开放平台]-代公众号发起网页授权从缓存中获取令牌失败.");
+            throw new Exception("[微信开放平台]-代公众号发起网页授权从缓存中获取令牌失败.");
+        }
+        logger.info("[微信开放平台]-代公众号发起网页授权从缓存中获取令牌结束.");
+        return accessToken.getAccessToken();
     }
 
     /**
@@ -107,19 +127,14 @@ public class WxComponentAppService implements IWxComponentAppService {
 
     /**
      * 第三方开放平台代公众号发起网页授权获取用户基本信息
-     * @param accessToken
      * @param openId
      * @return
      * @throws Exception
      */
-    public WechatUser getWxUser(String accessToken, String openId) throws Exception {
+    public WechatUser getWxUser(String appId, String openId) throws Exception {
         logger.info("[微信开放平台]-代公众号发起网页授权获取用户基本信息开始，appId={}.", appId);
-        if (StringUtils.isEmpty(accessToken) || StringUtils.isEmpty(openId)) {
-            logger.error("[微信开放平台]-代公众号发起网页授权通过令牌获取微信用户基本信息失败.请求参数为空");
-            throw new Exception("[微信开放平台]-代公众号发起网页授权通过令牌获取微信用户基本信息失败.请求参数为空");
-        }
-        WechatUser wxUser = WechatUserAPI.getWxUser(accessToken, openId);
-        if (wxUser == null || StringUtils.isEmpty(wxUser.getOpenId()) || StringUtils.isEmpty(wxUser.getUnionid())){
+        WechatUser wxUser = WechatUserAPI.getWxUser(getAccessToken(appId), openId);
+        if (wxUser == null || StringUtils.isEmpty(wxUser.getOpenid()) && StringUtils.isEmpty(wxUser.getUnionid())){
             logger.error("[微信开放平台]-代公众号发起网页授权通过令牌获取微信用户基本信息失败.");
             throw new Exception("[微信开放平台]-代公众号发起网页授权通过令牌获取微信用户基本信息失败.");
         }

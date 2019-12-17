@@ -4,7 +4,7 @@ public class WechatUser {
     /**
      * 普通用户的标识
      */
-    private String openId;
+    private String openid;
     /**
      * 普通用户昵称
      */
@@ -18,12 +18,11 @@ public class WechatUser {
      */
     private String unionid;
 
-    public String getOpenId() {
-        return openId;
+    public String getOpenid() {
+        return openid;
     }
-
-    public void setOpenId(String openId) {
-        this.openId = openId;
+    public void setOpenid(String openid) {
+        this.openid = openid;
     }
 
     public String getNickname() {

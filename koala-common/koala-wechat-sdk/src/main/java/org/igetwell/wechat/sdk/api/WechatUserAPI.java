@@ -2,8 +2,7 @@ package org.igetwell.wechat.sdk.api;
 
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.methods.RequestBuilder;
-import org.igetwell.common.uitls.GsonUtils;
-import org.igetwell.common.uitls.HttpClientUtils;
+import org.igetwell.common.uitls.HttpClients;
 import org.igetwell.wechat.sdk.bean.component.WechatUser;
 
 /**
@@ -25,7 +24,6 @@ public class WechatUserAPI extends API {
                 .addParameter("openid", openId)
                 .addParameter("lang", "zh_CN")
                 .build();
-        String response = HttpClientUtils.getInstance().sendHttpPost(httpUriRequest.getURI().toString());
-        return GsonUtils.fromJson(response, WechatUser.class);
+        return HttpClients.execute(httpUriRequest, WechatUser.class);
     }
 }

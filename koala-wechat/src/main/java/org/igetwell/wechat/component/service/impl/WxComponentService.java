@@ -7,10 +7,8 @@ import org.igetwell.common.uitls.aes.WXBizMsgCrypt;
 import org.igetwell.wechat.component.service.IWxComponentService;
 import org.igetwell.wechat.sdk.api.ComponentAPI;
 import org.igetwell.wechat.sdk.api.MessageAPI;
-import org.igetwell.wechat.sdk.bean.component.Authorization;
-import org.igetwell.wechat.sdk.bean.component.ComponentAccessToken;
-import org.igetwell.wechat.sdk.bean.component.ComponentRefreshAccessToken;
-import org.igetwell.wechat.sdk.bean.component.PreAuthAuthorization;
+import org.igetwell.wechat.sdk.bean.component.*;
+import org.igetwell.wechat.sdk.response.BaseResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -272,23 +270,50 @@ public class WxComponentService implements IWxComponentService {
      * @throws Exception
      */
     public String getPreAuthCode() throws Exception{
-        logger.info("[微信开放平台]-获取预授权码开始.");
+        logger.info("[微信开放平台]-从缓存中获取预授权码开始.");
         String preAuthCode = redisUtils.get(RedisKey.COMPONENT_PRE_AUTH_CODE);
         if (StringUtils.isEmpty(preAuthCode)) {
             PreAuthAuthorization preAuth = ComponentAPI.preAuthCode(getComponentAccessToken(), componentAppId);
             if (preAuth == null || StringUtils.isEmpty(preAuth.getPreAuthCode())) {
-                logger.error("[微信开放平台]-获取预授权码失败.");
-                throw new Exception("[微信开放平台]-获取预授权码失败.");
+                logger.error("[微信开放平台]-从缓存中获取预授权码失败.");
+                throw new Exception("[微信开放平台]-从缓存中获取预授权码失败.");
             }
             redisUtils.set(RedisKey.COMPONENT_PRE_AUTH_CODE, preAuth.getPreAuthCode(), preAuth.getExpiresIn());
             preAuthCode = preAuth.getPreAuthCode();
         }
-        logger.info("[微信开放平台]-获取预授权码结束. preAuthCode={}.", preAuthCode);
+        logger.info("[微信开放平台]-从缓存中获取预授权码结束. preAuthCode={}.", preAuthCode);
         return preAuthCode;
     }
 
     /**
-     * 使用授权码换取授权方的授权信息
+     * 授权后回调URI,获取授权码
+     */
+    public void setAuthCode(String authorizationCode, Long expiresIn) throws Exception {
+        logger.info("[微信开放平台]-授权后回调URI, 获取授权码开始.{}", authorizationCode);
+        if (StringUtils.isEmpty(authorizationCode) || StringUtils.isEmpty(expiresIn)){
+            logger.error("[微信开放平台]-授权后回调URI, 获取授权码失败. 未获取到authorizationCode.");
+            throw new Exception("[微信开放平台]-授权后回调URI, 获取授权码失败. 未获取到authorizationCode.");
+        }
+        redisUtils.set(RedisKey.COMPONENT_AUTHORIZATION_CODE, authorizationCode, expiresIn);
+        logger.info("[微信开放平台]-授权后回调URI,获取授权码结束.{}");
+    }
+
+    /**
+     * 从缓存中获取授权后回调URI的授权码
+     */
+    public String getAuthCode() throws Exception {
+        logger.info("[微信开放平台]-从缓存中获取授权后回调URI的授权码开始.");
+        String authorizationCode = redisUtils.get(RedisKey.COMPONENT_AUTHORIZATION_CODE);
+        if (StringUtils.isEmpty(authorizationCode)){
+            logger.error("[微信开放平台]-从缓存中获取授权后回调URI的授权码失败.");
+            throw new Exception("[微信开放平台]-从缓存中获取授权后回调URI的授权码失败.");
+        }
+        logger.info("[微信开放平台]-从缓存中获取授权后回调URI的授权码结束. authorizationCode={}.", authorizationCode);
+        return authorizationCode;
+    }
+
+    /**
+     * 使用授权码换取授权方令牌
      * @param authorizationCode  授权code
      */
     @Override
@@ -302,7 +327,7 @@ public class WxComponentService implements IWxComponentService {
             logger.error("[微信开放平台]-根据授权码获取微信公众号的授权信息失败.");
             throw new Exception("[微信开放平台]-根据授权码获取微信公众号的授权信息失败.");
         }
-        redisUtils.set(String.format(RedisKey.COMPONENT_AUTHORIZED_ACCESS_TOKEN, authorization.getAuthorizationInfo().getAuthorizerAppid()), GsonUtils.toJson(authorization.getAuthorizationInfo()), authorization.getAuthorizationInfo().getExpiresIn());
+        redisUtils.set(String.format(RedisKey.COMPONENT_AUTHORIZED_ACCESS_TOKEN, authorization.getAuthorizationInfo().getAuthorizerAppid()), authorization.getAuthorizationInfo(), authorization.getAuthorizationInfo().getExpiresIn());
         //refreshToken(componentAppId, authorizationInfo.getAuthorizationInfo().getAuthorizerAppid(), authorizationInfo.getAuthorizationInfo().getAuthorizerRefreshToken());
         return authorization.getAuthorizationInfo().getAuthorizerAccessToken();
     }
@@ -325,6 +350,26 @@ public class WxComponentService implements IWxComponentService {
             throw new Exception("[微信开放平台]-获取/刷新微信公众号接口调用令牌失败.");
         }
         redisUtils.set(String.format(RedisKey.COMPONENT_AUTHORIZED_REFRESH_TOKEN, appId), refreshAccessToken);
+    }
+
+    /**
+     * 从缓存中获取授权方令牌
+     * @param appId
+     * @return
+     */
+    public String getAccessToken(String appId) throws Exception {
+        logger.info("[微信开放平台]-从缓存中获取微信公众号接口调用令牌开始.");
+        if (StringUtils.isEmpty(appId)) {
+            logger.error("[微信开放平台]-从缓存中获取微信公众号接口调用令牌失败. 请求参数appId为空.");
+            throw new Exception("[微信开放平台]-从缓存中获取微信公众号接口调用令牌失败. 请求参数appId为空.");
+        }
+        ComponentAuthorization componentAuthorization = redisUtils.get(String.format(RedisKey.COMPONENT_AUTHORIZED_ACCESS_TOKEN, appId));
+        if (componentAuthorization == null || StringUtils.isEmpty(componentAuthorization.getAuthorizerAccessToken()) || StringUtils.isEmpty(componentAuthorization.getAuthorizerRefreshToken())){
+            logger.error("[微信开放平台]-从缓存中获取微信公众号接口调用令牌失败.");
+            throw new Exception("[微信开放平台]-从缓存中获取微信公众号接口调用令牌失败.");
+        }
+        logger.info("[微信开放平台]-从缓存中获取微信公众号接口调用令牌结束.");
+        return componentAuthorization.getAuthorizerAccessToken();
     }
 
     /**
@@ -385,6 +430,40 @@ public class WxComponentService implements IWxComponentService {
     @Override
     public String createMobilePreAuthUrl(String redirectUri, String authType, String bizAppid) throws Exception {
         return createPreAuthUrl(redirectUri, authType, bizAppid, true);
+    }
+
+    /**
+     * 将公众号/小程序绑定到开放平台帐号下
+     */
+    public boolean bind(String appId) throws Exception {
+        logger.info("[微信开放平台]-将公众号/小程序绑定到开放平台帐号开始.");
+        if (StringUtils.isEmpty(componentAppId) || StringUtils.isEmpty(appId)) {
+            logger.error("[微信开放平台]-将公众号/小程序绑定到开放平台帐号失败. 请求参数appId为空.");
+            throw new Exception("[微信开放平台]-将公众号/小程序绑定到开放平台帐号失败. 请求参数appId为空.");
+        }
+        BaseResponse response = ComponentAPI.bind(getAccessToken(appId), componentAppId, appId);
+        if (!response.isSuccess()) {
+            throw new Exception("[微信开放平台]-将公众号/小程序绑定到开放平台帐号失败.");
+        }
+        logger.info("[微信开放平台]-将公众号/小程序绑定到开放平台帐号结束.");
+        return true;
+    }
+
+    /**
+     * 将公众号/小程序从开放平台帐号下解绑
+     */
+    public boolean unbind(String appId) throws Exception {
+        logger.info("[微信开放平台]-将公众号/小程序从开放平台帐号解绑开始.");
+        if (StringUtils.isEmpty(componentAppId) || StringUtils.isEmpty(appId)) {
+            logger.error("[微信开放平台]-将公众号/小程序从开放平台帐号下解绑失败. 请求参数appId为空.");
+            throw new Exception("[微信开放平台]-将公众号/小程序从开放平台帐号解绑失败. 请求参数appId为空.");
+        }
+        BaseResponse response = ComponentAPI.unbind(getAccessToken(appId), componentAppId, appId);
+        if (!response.isSuccess()) {
+            throw new Exception("[微信开放平台]-将公众号/小程序从开放平台帐号解绑失败.");
+        }
+        logger.info("[微信开放平台]-将公众号/小程序从开放平台帐号解绑结束.");
+        return true;
     }
 
     /**

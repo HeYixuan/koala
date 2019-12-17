@@ -49,8 +49,19 @@ public interface IWxComponentService {
      * @throws Exception
      */
     String getPreAuthCode() throws Exception;
+
     /**
-     * 使用授权码换取授权方的授权信息
+     * 授权后回调URI,获取授权码
+     */
+    void setAuthCode(String authorizationCode, Long expiresIn) throws Exception;
+
+    /**
+     * 从缓存中获取授权后回调URI的授权码
+     */
+    String getAuthCode() throws Exception;
+
+    /**
+     * 使用授权码换取授权方令牌
      * @param authorizationCode  授权code
      */
     String authorize(String authorizationCode) throws Exception;
@@ -63,6 +74,13 @@ public interface IWxComponentService {
      * @return
      */
     void refreshToken(String appId, String refreshToken) throws Exception;
+
+    /**
+     * 从缓存中获取授权方令牌
+     * @param appId
+     * @return
+     */
+    String getAccessToken(String appId) throws Exception;
 
     /**
      * 获取授权方的帐号基本信息
@@ -104,4 +122,14 @@ public interface IWxComponentService {
      * @return
      */
     String createMobilePreAuthUrl(String redirectUri, String authType, String bizAppid) throws Exception;
+
+    /**
+     * 将公众号/小程序绑定到开放平台帐号下
+     */
+    boolean bind(String appId) throws Exception;
+
+    /**
+     * 将公众号/小程序从开放平台帐号下解绑
+     */
+    boolean unbind(String appId) throws Exception;
 }

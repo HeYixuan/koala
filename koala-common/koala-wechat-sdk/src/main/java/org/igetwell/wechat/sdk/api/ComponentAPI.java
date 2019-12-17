@@ -9,6 +9,7 @@ import org.igetwell.common.uitls.GsonUtils;
 import org.igetwell.common.uitls.HttpClients;
 import org.igetwell.common.uitls.ParamMap;
 import org.igetwell.wechat.sdk.bean.component.*;
+import org.igetwell.wechat.sdk.response.BaseResponse;
 import org.springframework.util.StringUtils;
 
 import java.io.IOException;
@@ -128,7 +129,7 @@ public class ComponentAPI extends API {
      * @param componentAppId
      * @param appId
      */
-    public static void bind(String accessToken, String componentAppId, String appId){
+    public static BaseResponse bind(String accessToken, String componentAppId, String appId){
         Map<String, String> param = ParamMap.create("appid", appId).put("open_appid", componentAppId).getData();
         HttpUriRequest httpUriRequest = RequestBuilder
                 .post()
@@ -137,7 +138,7 @@ public class ComponentAPI extends API {
                 .addParameter(ACCESS_TOKEN, accessToken(accessToken))
                 .setEntity(new StringEntity(GsonUtils.toJson(param), Charset.forName("UTF-8")))
                 .build();
-        HttpClients.execute(httpUriRequest);
+        return HttpClients.execute(httpUriRequest, BaseResponse.class);
     }
 
     /**
@@ -146,7 +147,7 @@ public class ComponentAPI extends API {
      * @param componentAppId
      * @param appId
      */
-    public static void unbind(String accessToken, String componentAppId, String appId){
+    public static BaseResponse unbind(String accessToken, String componentAppId, String appId){
         Map<String, String> param = ParamMap.create("appid", appId).put("open_appid", componentAppId).getData();
         HttpUriRequest httpUriRequest = RequestBuilder
                 .post()
@@ -155,7 +156,7 @@ public class ComponentAPI extends API {
                 .addParameter(ACCESS_TOKEN, accessToken(accessToken))
                 .setEntity(new StringEntity(GsonUtils.toJson(param), Charset.forName("UTF-8")))
                 .build();
-        HttpClients.execute(httpUriRequest);
+        return HttpClients.execute(httpUriRequest, BaseResponse.class);
     }
 
     /**
