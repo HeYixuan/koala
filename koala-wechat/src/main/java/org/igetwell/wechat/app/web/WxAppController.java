@@ -5,6 +5,7 @@ import org.igetwell.wechat.app.service.IWxAppService;
 import org.igetwell.wechat.BaseController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,7 +25,7 @@ public class WxAppController extends BaseController {
      * @param timestamp
      * @param nonce
      */
-    @PostMapping("/callback")
+    @GetMapping("/callback")
     public void callback(String signature, String echostr, String timestamp, String nonce) {
         if (StringUtils.isEmpty(signature) || StringUtils.isEmpty(echostr) || StringUtils.isEmpty(timestamp) || StringUtils.isEmpty(nonce)){
             return;
