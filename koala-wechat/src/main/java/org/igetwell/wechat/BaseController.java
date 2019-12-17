@@ -1,4 +1,4 @@
-package org.igetwell.wechat.component.web;
+package org.igetwell.wechat;
 
 import org.springframework.web.bind.annotation.ModelAttribute;
 import javax.servlet.http.HttpServletRequest;

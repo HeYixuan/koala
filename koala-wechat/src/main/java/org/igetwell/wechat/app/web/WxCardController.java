@@ -11,6 +11,9 @@ import org.igetwell.wechat.sdk.bean.card.white.White;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * 微信卡券
+ */
 @RestController
 @RequestMapping("/wx/card")
 public class WxCardController {
