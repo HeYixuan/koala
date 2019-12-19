@@ -84,6 +84,23 @@ public class XmlUtils {
         return allAttrMap;
     }
 
+    /**
+     * 获取指定节点下所有子节点的属性集合
+     * @param element
+     * @return
+     */
+    public static Map<String, String> getAttr(Element element){
+        Map<String, String> allAttrMap = new HashMap<String, String>();
+        if(element == null)
+            return null;
+        List<Element> list = element.elements();
+        for (int i = 0; i < list.size(); ++i) {
+            Element node = list.get(i);
+            allAttrMap.put(node.getName(), node.getText());
+        }
+        return allAttrMap;
+    }
+
 
     public static void main(String [] args) throws DocumentException {
         //https://blog.csdn.net/progammer10086/article/details/94737570

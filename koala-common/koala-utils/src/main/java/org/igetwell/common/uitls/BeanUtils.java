@@ -4,9 +4,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 import java.lang.reflect.Field;
 import java.util.*;
-
 import org.dom4j.Element;
-import org.springframework.util.StringUtils;
 
 public class BeanUtils {
 
@@ -56,7 +54,7 @@ public class BeanUtils {
             Map.Entry<String, String> entry = (Map.Entry)var2.next();
             String key = (String)entry.getKey();
             String value = (String)entry.getValue();
-            if (!StringUtils.hasText(value)) {
+            if (CharacterUtils.isNotBlank(value)) {
                 xml.append("<").append(key).append(">");
                 xml.append((String)entry.getValue());
                 xml.append("</").append(key).append(">");
@@ -76,6 +74,13 @@ public class BeanUtils {
     public static Map<String, Object> xmlBean2Map(String xmlStr) {
         Element root = XmlUtils.parseXml(xmlStr);
         Map<String, Object> params = XmlUtils.getAttrMap(root);
+        params.remove("#text");
+        return params;
+    }
+
+    public static Map<String, String> xml2Map(String xmlStr) {
+        Element root = XmlUtils.parseXml(xmlStr);
+        Map<String, String> params = XmlUtils.getAttr(root);
         params.remove("#text");
         return params;
     }

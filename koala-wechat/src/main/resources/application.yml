@@ -29,3 +29,30 @@ encodingAesKey: sdfaererit3423828343jeriooweqwqqwq22wwwfdgs
 wechat:
   appId: wx2681cc8716638f35
   secret: 1c986340bbf0056ae319555b63f494b4
+  mchId: 1569458631
+  paterKey: 7bkxZxx2ULEvLG0hjEwAjVi5OD0E4AU1
+  cert: C://Users//Admin//Downloads//WXCertUtil//cert//1569458631_20191218_cert//apiclient_cert.p12
+  attach: stg
+  payNotify: https://open.easy.echosite.cn/wx/pay/payNotify
+  refundNotify: https://open.easy.echosite.cn/wx/pay/refundNotify
+
+#wechat:
+#  appId: wx097eb9f69920db49
+#  secret: 123fdsaJHYUTREWQOKLJGCCBNM654389
+#  cert: /User/Document/cert.p12k
+#  mchId: 1503679961
+#  attach: stg
+#  domain: https://open.easy.echosite.cn
+
+#微信支付
+defaultAppId: wx097eb9f69920db49
+paterKey: 123fdsaJHYUTREWQOKLJGCCBNM654389
+mchId: 1503679961
+attach: stg
+domain: https://open.easy.echosite.cn
+
+
+sequence:
+  snowflake:
+    datacenterId: 16
+    workerId: 21

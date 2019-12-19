@@ -80,6 +80,80 @@ public class HttpClientUtils {
     /**
      * 发送 post请求
      * @param httpUrl 地址
+     * @param params 参数(格式:key1=value1&key2=value2)
+     */
+    public String sendHttpPost(String httpUrl, String params,String charset) {
+        HttpPost httpPost = new HttpPost(httpUrl);// 创建httpPost
+        try {
+            //设置参数
+            StringEntity stringEntity = new StringEntity(params, "UTF-8");
+            stringEntity.setContentType("application/x-www-form-urlencoded");
+            httpPost.setEntity(stringEntity);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return sendHttpPost(httpPost,charset);
+    }
+
+    /**
+     * 发送 post请求
+     * @param httpUrl 地址
+     * @param maps 参数
+     */
+    public String sendHttpPost(String httpUrl, Map<String, String> maps, String charset) {
+        HttpPost httpPost = new HttpPost(httpUrl);// 创建httpPost
+        // 创建参数队列
+        List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+        for (String key : maps.keySet()) {
+            nameValuePairs.add(new BasicNameValuePair(key, maps.get(key)));
+        }
+        try {
+            httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs, "UTF-8"));
+        } catch (Exception e) {
+            log.error("sendHttpPost请求失败：", e);
+        }
+        return sendHttpPost(httpPost,charset);
+    }
+
+    /**
+     * 发送Post请求
+     * @param httpPost
+     * @return
+     */
+    private String sendHttpPost(HttpPost httpPost,String charset) {
+        CloseableHttpClient httpClient = null;
+        CloseableHttpResponse response = null;
+        HttpEntity entity = null;
+        String responseContent = null;
+        try {
+            // 创建默认的httpClient实例.
+            httpClient = HttpClients.createDefault();
+            httpPost.setConfig(requestConfig);
+            // 执行请求
+            response = httpClient.execute(httpPost);
+            entity = response.getEntity();
+            responseContent = EntityUtils.toString(entity,charset);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                // 关闭连接,释放资源
+                if (response != null) {
+                    response.close();
+                }
+                if (httpClient != null) {
+                    httpClient.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return responseContent;
+    }
+
+    /**
+     * 发送 post请求
+     * @param httpUrl 地址
      * @param params json参数(格式:{"key":"value"})
      */
     public String sendHttpPost(String httpUrl, String params) {

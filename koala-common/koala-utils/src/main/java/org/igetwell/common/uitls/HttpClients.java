@@ -11,6 +11,12 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.message.BasicHeader;
 import org.igetwell.common.handle.HttpClientFactory;
 import org.igetwell.common.handle.JsonResponseHandler;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.security.KeyStore;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -31,6 +37,49 @@ public class HttpClients {
         httpUriRequest.addHeader(USER_AGENT);
     }
 
+
+    /**
+     * 初始化   MCH HttpClient KeyStore
+     * @param mchId mch_id
+     * @param keyStoreFilePath keyStoreFilePath
+     */
+    public static void initMchKeyStore(String mchId,String keyStoreFilePath){
+        try {
+            initMchKeyStore(mchId, new FileInputStream(new File(keyStoreFilePath)));
+        } catch (FileNotFoundException e) {
+            log.error("init error", e);
+        }
+    }
+
+    /**
+     * 初始化   MCH HttpClient KeyStore
+     * @since 2.8.7
+     * @param mchId mchId
+     * @param inputStream p12 文件流
+     */
+    public static void initMchKeyStore(String mchId, InputStream inputStream) {
+        try {
+            KeyStore keyStore = KeyStore.getInstance("PKCS12");
+            keyStore.load(inputStream, mchId.toCharArray());
+            inputStream.close();
+            CloseableHttpClient httpClient = HttpClientFactory.createKeyMaterialHttpClient(keyStore, mchId, timeout, retryExecutionCount);
+            MCH_KEY_STORE.put(mchId, httpClient);
+        } catch (Exception e) {
+            log.error("init mch error", e);
+        }
+    }
+    public static CloseableHttpResponse keyStoreExecute(String mchId, HttpUriRequest request){
+        setUserAgent(request);
+        try {
+            return MCH_KEY_STORE.get(mchId).execute(request);
+        } catch (Exception e) {
+            log.error("execute error", e);
+        }
+        return null;
+    }
+
+
+
     public static <T> T execute(HttpUriRequest request, ResponseHandler<T> responseHandler){
         setUserAgent(request);
         try {
@@ -42,6 +91,7 @@ public class HttpClients {
         return null;
     }
 
+
     /**
      * 数据返回自动JSON对象解析
      * @param request request
@@ -51,6 +101,16 @@ public class HttpClients {
      */
     public static <T> T execute(HttpUriRequest request, Class<T> clazz){
         return execute(request, JsonResponseHandler.createResponseHandler(clazz));
+    }
+
+    public static <T> T keyStoreExecute(String mchId, HttpUriRequest request, ResponseHandler<T> responseHandler){
+        try {
+            T t = keyStoreExecute(mchId, request, responseHandler);
+            return t;
+        } catch (Exception e) {
+            log.error("execute error", e);
+        }
+        return null;
     }
 
     public static CloseableHttpResponse execute(HttpUriRequest request){

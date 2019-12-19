@@ -1,5 +1,6 @@
 package org.igetwell.wechat.app.web;
 
+import org.igetwell.common.uitls.CheckSignature;
 import org.igetwell.common.uitls.ResponseEntity;
 import org.igetwell.wechat.app.service.IWxAppService;
 import org.igetwell.wechat.BaseController;
@@ -27,9 +28,10 @@ public class WxAppController extends BaseController {
      */
     @GetMapping("/callback")
     public void callback(String signature, String echostr, String timestamp, String nonce) {
-        if (StringUtils.isEmpty(signature) || StringUtils.isEmpty(echostr) || StringUtils.isEmpty(timestamp) || StringUtils.isEmpty(nonce)){
-            return;
-        }
+//        boolean bool = CheckSignature.checkSignature(signature, timestamp, nonce);
+//        if (StringUtils.isEmpty(signature) || StringUtils.isEmpty(echostr) || StringUtils.isEmpty(timestamp) || StringUtils.isEmpty(nonce)){
+//            return;
+//        }
         render(echostr);
     }
 
