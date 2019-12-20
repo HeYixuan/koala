@@ -5,6 +5,7 @@ import org.igetwell.common.enums.SignType;
 import org.igetwell.common.enums.TradeType;
 import org.igetwell.common.sequence.sequence.Sequence;
 import org.igetwell.common.uitls.*;
+import org.igetwell.wechat.component.service.ILocalPayService;
 import org.igetwell.wechat.sdk.api.MchPayAPI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Component
-public class LocalPayService {
+public class LocalPayService implements ILocalPayService {
 
     private static final Logger logger = LoggerFactory.getLogger(LocalPayService.class);
 

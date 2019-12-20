@@ -105,8 +105,9 @@ public class OrderService implements IOrderService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void deleteById(Long id) {
-        LOGGER.info("[订单服务]-删除订单数据,订单ID: {}", id);
+        LOGGER.info("[订单服务]-删除订单数据,订单ID: {}.", id);
         ordersMapper.deleteById(id);
     }
 

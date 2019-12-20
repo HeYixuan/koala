@@ -23,7 +23,7 @@ public class OrderController {
     @Autowired
     private Sequence sequence;
 
-    @PostMapping("/getNo")
+    @PostMapping("/orders/getNo")
     public String getNextNo(){
         System.err.println(sequence.nextValue());
         System.err.println(sequence.nextNo());

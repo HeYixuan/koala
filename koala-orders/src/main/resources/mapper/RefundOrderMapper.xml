@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.igetwell.system.order.mapper.RefundOrderMapper">
+  <resultMap id="baseMap" type="org.igetwell.system.order.entity.RefundOrder">
+    <id column="ID" jdbcType="BIGINT" property="id" />
+    <result column="OUT_NO" jdbcType="VARCHAR" property="outNo" />
+    <result column="TRADE_NO" jdbcType="VARCHAR" property="tradeNo" />
+    <result column="TRANSACTION_ID" jdbcType="VARCHAR" property="transactionId" />
+    <result column="OUT_REFUND_NO" jdbcType="VARCHAR" property="outRefundNo" />
+    <result column="REFUND_ACCOUNT" jdbcType="VARCHAR" property="refundAccount" />
+    <result column="TOTAL_FEE" jdbcType="DECIMAL" property="totalFee" />
+    <result column="SETTLE_TOTAL_FEE" jdbcType="DECIMAL" property="settleTotalFee" />
+    <result column="REFUND_FEE" jdbcType="DECIMAL" property="refundFee" />
+    <result column="SETTLE_FEE" jdbcType="DECIMAL" property="settleFee" />
+    <result column="MERCHANT_ID" jdbcType="BIGINT" property="merchantId" />
+    <result column="MERCHANT_NO" jdbcType="VARCHAR" property="merchantNo" />
+    <result column="MEMBER_ID" jdbcType="BIGINT" property="memberId" />
+    <result column="MEMBER_NO" jdbcType="VARCHAR" property="memberNo" />
+    <result column="REFUND_TIME" jdbcType="VARCHAR" property="refundTime" />
+    <result column="STATUS" jdbcType="INTEGER" property="status" />
+    <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+
+  <sql id="baseSql">
+    ID, OUT_NO, TRADE_NO, TRANSACTION_ID, OUT_REFUND_NO, REFUND_ACCOUNT, TOTAL_FEE, SETTLE_TOTAL_FEE, 
+    REFUND_FEE, SETTLE_FEE, MERCHANT_ID, MERCHANT_NO, MEMBER_ID, MEMBER_NO, REFUND_TIME, 
+    `STATUS`, CREATE_TIME
+  </sql>
+  <select id="get" parameterType="java.lang.Long" resultMap="baseMap">
+    SELECT
+        <include refid="baseSql" />
+    FROM REFUND_ORDER
+    WHERE ID = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteById" parameterType="java.lang.Long">
+    DELETE FROM REFUND_ORDER WHERE ID = #{id,jdbcType=BIGINT}
+  </delete>
+
+  <insert id="insert" parameterType="org.igetwell.system.order.entity.RefundOrder">
+    INSERT INTO REFUND_ORDER
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="outNo != null and outNo != ''">
+        OUT_NO,
+      </if>
+      <if test="tradeNo != null and tradeNo != ''">
+        TRADE_NO,
+      </if>
+      <if test="transactionId != null and transactionId != ''">
+        TRANSACTION_ID,
+      </if>
+      <if test="outRefundNo != null and outRefundNo != ''">
+        OUT_REFUND_NO,
+      </if>
+      <if test="refundAccount != null and refundAccount != ''">
+        REFUND_ACCOUNT,
+      </if>
+      <if test="totalFee != null">
+        TOTAL_FEE,
+      </if>
+      <if test="settleTotalFee != null">
+        SETTLE_TOTAL_FEE,
+      </if>
+      <if test="refundFee != null">
+        REFUND_FEE,
+      </if>
+      <if test="settleFee != null">
+        SETTLE_FEE,
+      </if>
+      <if test="merchantId != null">
+        MERCHANT_ID,
+      </if>
+      <if test="merchantNo != null and merchantNo != ''">
+        MERCHANT_NO,
+      </if>
+      <if test="memberId != null">
+        MEMBER_ID,
+      </if>
+      <if test="memberNo != null and memberNo != ''">
+        MEMBER_NO,
+      </if>
+      <if test="refundTime != null and refundTime != ''">
+        REFUND_TIME,
+      </if>
+      <if test="status != null">
+        `STATUS`,
+      </if>
+      <if test="createTime != null">
+        CREATE_TIME,
+      </if>
+    </trim>
+    <trim prefix="VALUES (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="outNo != null and outNo != ''">
+        #{outNo,jdbcType=VARCHAR},
+      </if>
+      <if test="tradeNo != null and tradeNo != ''">
+        #{tradeNo,jdbcType=VARCHAR},
+      </if>
+      <if test="transactionId != null and transactionId != ''">
+        #{transactionId,jdbcType=VARCHAR},
+      </if>
+      <if test="outRefundNo != null and outRefundNo != ''">
+        #{outRefundNo,jdbcType=VARCHAR},
+      </if>
+      <if test="refundAccount != null and refundAccount != ''">
+        #{refundAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="totalFee != null">
+        #{totalFee,jdbcType=DECIMAL},
+      </if>
+      <if test="settleTotalFee != null">
+        #{settleTotalFee,jdbcType=DECIMAL},
+      </if>
+      <if test="refundFee != null">
+        #{refundFee,jdbcType=DECIMAL},
+      </if>
+      <if test="settleFee != null">
+        #{settleFee,jdbcType=DECIMAL},
+      </if>
+      <if test="merchantId != null">
+        #{merchantId,jdbcType=BIGINT},
+      </if>
+      <if test="merchantNo != null and merchantNo != ''">
+        #{merchantNo,jdbcType=VARCHAR},
+      </if>
+      <if test="memberId != null">
+        #{memberId,jdbcType=BIGINT},
+      </if>
+      <if test="memberNo != null and memberNo != ''">
+        #{memberNo,jdbcType=VARCHAR},
+      </if>
+      <if test="refundTime != null and refundTime != ''">
+        #{refundTime,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+
+  <update id="update" parameterType="org.igetwell.system.order.entity.RefundOrder">
+    UPDATE REFUND_ORDER
+    <set>
+      <if test="outNo != null and outNo != ''">
+        OUT_NO = #{outNo,jdbcType=VARCHAR},
+      </if>
+      <if test="tradeNo != null and tradeNo != ''">
+        TRADE_NO = #{tradeNo,jdbcType=VARCHAR},
+      </if>
+      <if test="transactionId != null and transactionId != ''">
+        TRANSACTION_ID = #{transactionId,jdbcType=VARCHAR},
+      </if>
+      <if test="outRefundNo != null and outRefundNo != ''">
+        OUT_REFUND_NO = #{outRefundNo,jdbcType=VARCHAR},
+      </if>
+      <if test="refundAccount != null and refundAccount != ''">
+        REFUND_ACCOUNT = #{refundAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="totalFee != null">
+        TOTAL_FEE = #{totalFee,jdbcType=DECIMAL},
+      </if>
+      <if test="settleTotalFee != null">
+        SETTLE_TOTAL_FEE = #{settleTotalFee,jdbcType=DECIMAL},
+      </if>
+      <if test="refundFee != null">
+        REFUND_FEE = #{refundFee,jdbcType=DECIMAL},
+      </if>
+      <if test="settleFee != null">
+        SETTLE_FEE = #{settleFee,jdbcType=DECIMAL},
+      </if>
+      <if test="merchantId != null">
+        MERCHANT_ID = #{merchantId,jdbcType=BIGINT},
+      </if>
+      <if test="merchantNo != null and merchantNo != ''">
+        MERCHANT_NO = #{merchantNo,jdbcType=VARCHAR},
+      </if>
+      <if test="memberId != null">
+        MEMBER_ID = #{memberId,jdbcType=BIGINT},
+      </if>
+      <if test="memberNo != null and memberNo != ''">
+        MEMBER_NO = #{memberNo,jdbcType=VARCHAR},
+      </if>
+      <if test="refundTime != null and refundTime != ''">
+        REFUND_TIME = #{refundTime,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        `STATUS` = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    WHERE ID = #{id,jdbcType=BIGINT}
+  </update>
+
+  <select id="getTrade" resultMap="baseMap">
+    SELECT
+        <include refid="baseSql" />
+    FROM REFUND_ORDER
+    WHERE TRANSACTION_ID = #{param1} AND TRADE_NO = #{param2}
+  </select>
+
+  <select id="getTransaction" resultMap="baseMap">
+    SELECT
+        <include refid="baseSql" />
+    FROM REFUND_ORDER
+    WHERE TRANSACTION_ID = #{param1}
+    AND TRADE_NO = #{param2}
+    AND OUT_REFUND_NO = #{param3}
+    AND OUT_NO = #{param4}
+  </select>
+
+</mapper>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="org.igetwell.system.order.mapper.GoodsMapper">
+<mapper namespace="org.igetwell.system.goods.mapper.GoodsMapper">
   <resultMap id="baseMap" type="org.igetwell.system.goods.entity.Goods">
     <id column="ID" jdbcType="BIGINT" property="id" />
     <result column="GOODS_NAME" jdbcType="VARCHAR" property="goodsName" />

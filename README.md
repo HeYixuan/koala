@@ -143,3 +143,4 @@ Secret Key:YdddvFSI2mdCgiG4c6Wy+HEXYIQmK2cF9yA4zAG+
 内网穿透：
 https://www.echosite.cn
 
+注意：如果发现client注入不进去,请在启动类加@EnableKoalaFeign注解.

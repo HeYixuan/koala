@@ -2,9 +2,10 @@ package org.igetwell.wechat.component.web;
 
 import org.igetwell.common.enums.TradeType;
 import org.igetwell.common.uitls.IOUtils;
+import org.igetwell.common.uitls.ResponseEntity;
 import org.igetwell.wechat.BaseController;
-import org.igetwell.wechat.component.service.impl.LocalPayService;
-import org.igetwell.wechat.component.service.impl.LocalReturnPayService;
+import org.igetwell.wechat.component.service.ILocalPayService;
+import org.igetwell.wechat.component.service.ILocalReturnPayService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,9 +18,9 @@ import java.util.Map;
 public class WxPayController extends BaseController {
 
     @Autowired
-    private LocalPayService localPayService;
+    private ILocalPayService localPayService;
     @Autowired
-    private LocalReturnPayService localReturnPayService;
+    private ILocalReturnPayService localReturnPayService;
 
     /**
      * 扫码支付
@@ -42,9 +43,13 @@ public class WxPayController extends BaseController {
         return localPayService.preOrder(request.get(), "ojhc61KyGnCepGMIpcZI-YCPce30", TradeType.MWEB,"官网费用","GW201807162055","1");
     }
 
+    /**
+     * 微信退款
+     */
     @PostMapping("/returnPay")
-    public Map<String, String> returnPay(String transactionId, String tradeNo, String fee) throws Exception {
-        return localReturnPayService.returnPay(transactionId, tradeNo, fee);
+    public ResponseEntity returnPay(String transactionId, String tradeNo, String fee) throws Exception {
+        localReturnPayService.returnPay(transactionId, tradeNo,"1", "1", fee);
+        return ResponseEntity.ok();
     }
 
 

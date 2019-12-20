@@ -1,7 +1,6 @@
 package org.igetwell.system.member.service.impl;
 
 
-import lombok.AllArgsConstructor;
 import org.igetwell.system.member.service.IMemberOrderService;
 import org.igetwell.system.order.entity.Orders;
 import org.igetwell.system.order.feign.OrdersClient;

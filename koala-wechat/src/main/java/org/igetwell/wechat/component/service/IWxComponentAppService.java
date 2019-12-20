@@ -1,8 +1,6 @@
 package org.igetwell.wechat.component.service;
 
 import org.igetwell.wechat.sdk.bean.component.WechatUser;
-import org.springframework.util.StringUtils;
-
 /**
  * 第三方平台代公众号发起网页授权业务(目前无法测试成功)
  */

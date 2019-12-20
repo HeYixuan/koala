@@ -32,9 +32,9 @@
     SELECT
         <include refid="baseSql" />
     FROM ORDERS
-    WHERE MEMBER_ID = #{memberId, jdbcType=BIGINT}
-    AND MOBILE = #{mobile, jdbcType=BIGINT}
-    AND GOODS_ID = #{goodsId, jdbcType=BIGINT}
+    WHERE MEMBER_ID = #{param1, jdbcType=BIGINT}
+    AND MOBILE = #{param2, jdbcType=BIGINT}
+    AND GOODS_ID = #{param3, jdbcType=BIGINT}
     AND PAY_STATUS = 1
   </select>
 
