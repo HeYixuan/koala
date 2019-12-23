@@ -2,7 +2,7 @@ package org.igetwell.system.rocket.consumer;
 
 import org.apache.rocketmq.spring.annotation.RocketMQMessageListener;
 import org.apache.rocketmq.spring.core.RocketMQListener;
-import org.igetwell.common.constans.cache.RedisKey;
+import org.igetwell.common.constans.cache.OrderKey;
 import org.igetwell.common.uitls.RedisUtils;
 import org.igetwell.system.goods.entity.Goods;
 import org.igetwell.system.order.entity.Orders;
@@ -42,7 +42,7 @@ public class OrderTimeoutConsumer implements RocketMQListener<OrderProtocol> {
         Long goodsId= protocol.getGoodsId();
         Long mobile= protocol.getMobile();
         try {
-            redisUtils.lock(String.format(RedisKey.STOCK_LOCK, goodsId), goodsId, 500, 3);
+            redisUtils.lock(String.format(OrderKey.STOCK_LOCK, goodsId), goodsId, 500, 3);
             LOGGER.info("[订单超时消费者]-订单号={}, 商品ID={}, 手机号={}, 金额={}.", orderNo, goodsId, mobile, protocol.getMoney().doubleValue());
             Orders order = iOrderService.getOrderNo(orderNo);
             if (order != null){
@@ -66,7 +66,7 @@ public class OrderTimeoutConsumer implements RocketMQListener<OrderProtocol> {
                     throw new RuntimeException(message);
                 }
                 // 加库存成功,回写库存
-                long surplus  = redisUtils.incr(String.format(RedisKey.COMPONENT_STOCK, goodsId));
+                long surplus  = redisUtils.incr(String.format(OrderKey.COMPONENT_STOCK, goodsId));
                 goods.setStock((int) surplus);
                 redisUtils.set(String.valueOf(goodsId), goods, 86400);
                 redisUtils.set(orderNo, order);
@@ -79,7 +79,7 @@ public class OrderTimeoutConsumer implements RocketMQListener<OrderProtocol> {
             String message = String.format("[订单超时消费者]-秒杀订单入库失败，正在重试, 订单号：%s.", orderNo);
             throw new RuntimeException(message, e);
         } finally {
-            redisUtils.unlock(String.format(RedisKey.STOCK_LOCK, goodsId), goodsId);
+            redisUtils.unlock(String.format(OrderKey.STOCK_LOCK, goodsId), goodsId);
         }
     }
 }

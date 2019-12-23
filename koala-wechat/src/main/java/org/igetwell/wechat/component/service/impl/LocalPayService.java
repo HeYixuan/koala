@@ -5,6 +5,8 @@ import org.igetwell.common.enums.SignType;
 import org.igetwell.common.enums.TradeType;
 import org.igetwell.common.sequence.sequence.Sequence;
 import org.igetwell.common.uitls.*;
+import org.igetwell.system.order.entity.TradeOrder;
+import org.igetwell.system.order.feign.TradeOrderClient;
 import org.igetwell.wechat.component.service.ILocalPayService;
 import org.igetwell.wechat.sdk.api.MchPayAPI;
 import org.slf4j.Logger;
@@ -14,6 +16,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import javax.servlet.http.HttpServletRequest;
+import java.math.BigDecimal;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,6 +43,12 @@ public class LocalPayService implements ILocalPayService {
 
     @Autowired
     private Sequence sequence;
+
+    @Autowired
+    private RedisUtils redisUtils;
+
+    @Autowired
+    private TradeOrderClient tradeOrderClient;
 
 
     /**
@@ -72,12 +82,23 @@ public class LocalPayService implements ILocalPayService {
             String codeUrl = resultXml.get("code_url");
             boolean isSuccess = WXPayConstants.SUCCESS.equals(returnCode) && WXPayConstants.SUCCESS.equals(resultCode);
             if (!isSuccess) {
-                throw new RuntimeException("统一支付失败！" +
+                throw new RuntimeException("统一下单失败！" +
                         "return_code:" + resultXml.get("return_code") + " " +
                         "return_msg:" + resultXml.get("return_msg"));
             }
             logger.info("统一下单调用结束！预支付交易标识：{}. {}", resultXml.get("prepay_id"), resultXml.get("return_msg"));
 
+            TradeOrder order = new TradeOrder();
+            order.setMchId(12970L);
+            order.setMchNo("No:1001");
+            order.setTradeNo(tradeNo);
+            order.setBody(productName);
+            order.setFee(new BigDecimal(fee));
+            order.setChannelId(1L);
+            order.setClientIp(clientIp);
+            order.setStatus(1); //订单状态：0-订单生成 1-支付中
+            order.setCreateTime(new Date());
+            redisUtils.set(tradeNo, order);
             return codeUrl;
         } catch (Exception e) {
             logger.error("商户交易号：{} 预支付失败！", tradeNo, e);
@@ -301,7 +322,7 @@ public class LocalPayService implements ILocalPayService {
         String totalFee = resultXml.get("total_fee"); //获取支付金额
         String tradeNo = resultXml.get("out_trade_no");//获取商户交易号
         String transactionId = resultXml.get("transaction_id");//获取微信支付订单号
-        String timeEnd = resultXml.get("time_end");//获取微信支付完成时间
+        String timestamp = resultXml.get("time_end");//获取微信支付完成时间
         try {
             boolean bool = SignUtils.checkSign(resultXml, paterKey, SignType.MD5);
             if (!bool){
@@ -314,6 +335,16 @@ public class LocalPayService implements ILocalPayService {
             if (isSuccess){
                 logger.info("用户公众ID：{} , 订单号：{} , 交易号：{} 微信支付成功！", openId, tradeNo, transactionId);
                 //TODO:需要做数据库记录交易订单号
+                TradeOrder orders = redisUtils.get(tradeNo);
+                //如果支付订单状态不是支付中
+                if (orders == null || orders.getStatus() != 1) {
+                    throw new RuntimeException("微信支付回调结果未获取到待付款订单!无法修改订单数据,请联系人工处理.");
+                }
+                orders.setId(sequence.nextValue());
+                orders.setStatus(2); //订单状态：0-订单生成 1-支付中 2-支付成功
+                orders.setTransactionId(transactionId);
+                orders.setSuccessTime(timestamp);
+                tradeOrderClient.saveOrder(orders);
                 return successXml;
             }
             return failXml;

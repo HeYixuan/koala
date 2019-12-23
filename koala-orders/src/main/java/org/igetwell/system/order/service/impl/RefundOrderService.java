@@ -124,8 +124,8 @@ public class RefundOrderService implements IRefundOrderService {
         LOGGER.info("[退款订单服务]-退款订单入库开始.");
         int i = refundOrderMapper.insert(refundOrder);
         if (i <= 0) {
-            LOGGER.error("[订单服务]-退款订单入库失败,微信支付单号：{}, 商户订单号：{} 事务执行回滚.", refundOrder.getTransactionId(), refundOrder.getTradeNo());
-            String message = String.format("[订单服务]-退款订单入库失败，微信支付单号：%s, 商户订单号：%s 事务执行回滚.", refundOrder.getTransactionId(), refundOrder.getTradeNo());
+            LOGGER.error("[退款订单服务]-退款订单入库失败,微信支付单号：{}, 商户订单号：{} 事务执行回滚.", refundOrder.getTransactionId(), refundOrder.getTradeNo());
+            String message = String.format("[退款订单服务]-退款订单入库失败，微信支付单号：%s, 商户订单号：%s 事务执行回滚.", refundOrder.getTransactionId(), refundOrder.getTradeNo());
             throw new RuntimeException(message);
         }
     }
@@ -136,7 +136,7 @@ public class RefundOrderService implements IRefundOrderService {
         int i = refundOrderMapper.update(refundOrder);
         if (i <= 0) {
             LOGGER.info("[退款订单服务]-修改订单{}数据失败，事务执行回滚.", refundOrder.getId());
-            String message = String.format("[订单服务]-修改订单%s数据失败，事务执行回滚.", refundOrder.getId());
+            String message = String.format("[退款订单服务]-修改订单%s数据失败，事务执行回滚.", refundOrder.getId());
             throw new RuntimeException(message);
         }
         LOGGER.info("[退款订单服务]-修改退款订单结束.");
@@ -200,6 +200,7 @@ public class RefundOrderService implements IRefundOrderService {
             rocketMQTemplate.asyncSend("refund-pay-order:refund-pay-order", MessageBuilder.withPayload(protocol).build(), new SendCallback() {
                 @Override
                 public void onSuccess(SendResult var) {
+                    refundOrderMapper.updateRefunding(transactionId, tradeNo, 1); //退款状态：退款中
                     LOGGER.info("[退款订单服务]-退款订单异步消息投递成功,投递结果：{}.", var);
                 }
 

@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.igetwell.system.order.mapper.TradeOrderMapper">
+  <resultMap id="baseMap" type="org.igetwell.system.order.entity.TradeOrder">
+    <id column="ID" jdbcType="BIGINT" property="id" />
+    <result column="TRADE_NO" jdbcType="VARCHAR" property="tradeNo" />
+    <result column="TRANSACTION_ID" jdbcType="VARCHAR" property="transactionId" />
+    <result column="MCH_ID" jdbcType="BIGINT" property="mchId" />
+    <result column="MCH_NO" jdbcType="VARCHAR" property="mchNo" />
+    <result column="CHANNEL_ID" jdbcType="BIGINT" property="channelId" />
+    <result column="FEE" jdbcType="DECIMAL" property="fee" />
+    <result column="CLIENT_IP" jdbcType="VARCHAR" property="clientIp" />
+    <result column="STATUS" jdbcType="INTEGER" property="status" />
+    <result column="SUCCESS_TIME" jdbcType="VARCHAR" property="successTime" />
+    <result column="BODY" jdbcType="VARCHAR" property="body" />
+    <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  <sql id="baseSql">
+    ID, TRADE_NO, TRANSACTION_ID, MCH_ID, MCH_NO, CHANNEL_ID, FEE, CLIENT_IP, `STATUS`, 
+    SUCCESS_TIME, BODY, CREATE_TIME
+  </sql>
+  <select id="get" parameterType="java.lang.Long" resultMap="baseMap">
+    SELECT
+        <include refid="baseSql" />
+    FROM TRADE_ORDER
+    WHERE ID = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteById" parameterType="java.lang.Long">
+    DELETE FROM TRADE_ORDER
+    WHERE ID = #{id,jdbcType=BIGINT}
+  </delete>
+
+  <insert id="insert" parameterType="org.igetwell.system.order.entity.TradeOrder">
+    INSERT INTO TRADE_ORDER
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="tradeNo != null and tradeNo !=''">
+        TRADE_NO,
+      </if>
+      <if test="transactionId != null and transactionId !=''">
+        TRANSACTION_ID,
+      </if>
+      <if test="mchId != null">
+        MCH_ID,
+      </if>
+      <if test="mchNo != null and mchNo != ''">
+        MCH_NO,
+      </if>
+      <if test="channelId != null">
+        CHANNEL_ID,
+      </if>
+      <if test="fee != null">
+        FEE,
+      </if>
+      <if test="clientIp != null and clientIp !=''">
+        CLIENT_IP,
+      </if>
+      <if test="status != null">
+        `STATUS`,
+      </if>
+      <if test="successTime != null and successTime !=''">
+        SUCCESS_TIME,
+      </if>
+      <if test="body != null and body !=''">
+        BODY,
+      </if>
+      <if test="createTime != null">
+        CREATE_TIME,
+      </if>
+    </trim>
+    <trim prefix="VALUES (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="tradeNo != null and tradeNo !=''">
+        #{tradeNo,jdbcType=VARCHAR},
+      </if>
+      <if test="transactionId != null and transactionId !=''">
+        #{transactionId,jdbcType=VARCHAR},
+      </if>
+      <if test="mchId != null">
+        #{mchId,jdbcType=BIGINT},
+      </if>
+      <if test="mchNo != null and mchNo !=''">
+        #{mchNo,jdbcType=VARCHAR},
+      </if>
+      <if test="channelId != null">
+        #{channelId,jdbcType=BIGINT},
+      </if>
+      <if test="fee != null">
+        #{fee,jdbcType=DECIMAL},
+      </if>
+      <if test="clientIp != null and clientIp !=''">
+        #{clientIp,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="successTime != null and successTime !=''">
+        #{successTime,jdbcType=VARCHAR},
+      </if>
+      <if test="body != null and body !=''">
+        #{body,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="update" parameterType="org.igetwell.system.order.entity.TradeOrder">
+    UPDATE TRADE_ORDER
+    <set>
+      <if test="tradeNo != null and tradeNo !=''">
+        TRADE_NO = #{tradeNo,jdbcType=VARCHAR},
+      </if>
+      <if test="transactionId != null and transactionId !=''">
+        TRANSACTION_ID = #{transactionId,jdbcType=VARCHAR},
+      </if>
+      <if test="mchId != null">
+        MCH_ID = #{mchId,jdbcType=BIGINT},
+      </if>
+      <if test="mchNo != null and mchNo !=''">
+        MCH_NO = #{mchNo,jdbcType=VARCHAR},
+      </if>
+      <if test="channelId != null">
+        CHANNEL_ID = #{channelId,jdbcType=BIGINT},
+      </if>
+      <if test="fee != null">
+        FEE = #{fee,jdbcType=DECIMAL},
+      </if>
+      <if test="clientIp != null and clientIp !=''">
+        CLIENT_IP = #{clientIp,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        `STATUS` = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="successTime != null and successTime !=''">
+        SUCCESS_TIME = #{successTime,jdbcType=VARCHAR},
+      </if>
+      <if test="body != null and body !=''">
+        BODY = #{body,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    WHERE ID = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

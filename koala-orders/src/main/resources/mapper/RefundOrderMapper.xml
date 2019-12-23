@@ -218,4 +218,9 @@
     AND OUT_NO = #{param4}
   </select>
 
+  <update id="updateRefunding">
+    UPDATE REFUND_ORDER SET `STATUS` = #{param3}
+    WHERE TRANSACTION_ID = #{param1} AND TRADE_NO = #{param2}
+  </update>
+
 </mapper>
