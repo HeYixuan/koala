@@ -35,7 +35,7 @@ public class LocalPayService implements ILocalPayService {
     @Value("${wechat.mchId}")
     private String mchId;
 
-    @Value("${wechat.attach}")
+    @Value("${attach}")
     private String attach;
 
     @Value("${wechat.payNotify}")

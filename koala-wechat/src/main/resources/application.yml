@@ -15,6 +15,8 @@ spring:
     default-property-inclusion: NON_EMPTY
 
 
+attach: stg
+
 #微信开放平台
 componentAppId: wx9a6700dcfc8867aa
 componentAppSecret: b6fb9b952f581df671b7dcc42231dc83
@@ -36,6 +38,14 @@ wechat:
   payNotify: https://open.easy.echosite.cn/wx/pay/payNotify
   refundNotify: https://open.easy.echosite.cn/wx/pay/refundNotify
 
+alipay:
+  appId: wx2681cc8716638f35
+  secret: 1c986340bbf0056ae319555b63f494b4
+  gateway: https://openapi.alipay.com/gateway.do
+  payNotify: https://open.easy.echosite.cn/wx/pay/payNotify
+  returnNotify: https://open.easy.echosite.cn/wx/pay/payNotify
+  refundNotify: https://open.easy.echosite.cn/wx/pay/refundNotify
+
 #wechat:
 #  appId: wx097eb9f69920db49
 #  secret: 123fdsaJHYUTREWQOKLJGCCBNM654389
@@ -48,7 +58,6 @@ wechat:
 defaultAppId: wx097eb9f69920db49
 paterKey: 123fdsaJHYUTREWQOKLJGCCBNM654389
 mchId: 1503679961
-attach: stg
 domain: https://open.easy.echosite.cn
 
 

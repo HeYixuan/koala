@@ -40,12 +40,12 @@ public interface RedisKey {
     /**
      * 第三方平台代公众号授权ACCESS_TOKEN
      */
-    public static final String COMPONENT_APP_ACCESS_TOKEN = "COMPONENT_APP_ACCESS_TOKEN:%s";
+    public static final String COMPONENT_APP_ACCESS_TOKEN = "COMPONENT_APP_ACCESS_TOKEN:%s:%s";
 
     /**
      * 第三方平台代公众号授权ACCESS_TOKEN
      */
-    public static final String COMPONENT_APP_REFRESH_TOKEN = "COMPONENT_APP_REFRESH_TOKEN:%s";
+    public static final String COMPONENT_APP_REFRESH_TOKEN = "COMPONENT_APP_REFRESH_TOKEN:%s:%s";
 
     /**
      * 第三方平台代公众号授权令牌STATE标志

@@ -35,7 +35,7 @@ public class LocalReturnPayService implements ILocalReturnPayService {
     @Value("${wechat.mchId}")
     private String mchId;
 
-    @Value("${wechat.attach}")
+    @Value("${attach}")
     private String attach;
 
     @Value("${wechat.refundNotify}")
@@ -79,8 +79,9 @@ public class LocalReturnPayService implements ILocalReturnPayService {
         Map<String, String> resultXml = BeanUtils.xml2Map(result);
         String returnCode = resultXml.get("return_code");
         String resultCode = resultXml.get("result_code");
+        String resultMsg = resultXml.get("err_code_des");
         boolean isSuccess = WXPayConstants.SUCCESS.equals(returnCode) && WXPayConstants.SUCCESS.equals(resultCode);
-        if (!isSuccess) {
+        if (!isSuccess || !resultMsg.equals("订单已全额退款")) {
             logger.error("[微信支付]-微信退款失败!  商户订单号：{}, 微信支付订单号：{}.", transactionId, tradeNo);
             throw new RuntimeException("[微信支付]-微信退款失败." + resultXml.get("err_code_des"));
         }

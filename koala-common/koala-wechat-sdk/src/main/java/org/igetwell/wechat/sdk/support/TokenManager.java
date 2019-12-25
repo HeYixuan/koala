@@ -64,7 +64,7 @@ public class TokenManager {
      * @param secret secret
      */
     public static void init(final String appid,final String secret){
-        init(appid, secret, 0, 60*118);
+        init(appid, secret, 0, 60 * 118);
     }
 
     /**

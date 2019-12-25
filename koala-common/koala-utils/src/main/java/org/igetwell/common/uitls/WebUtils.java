@@ -181,6 +181,34 @@ public class WebUtils extends org.springframework.web.util.WebUtils {
 	}
 
 	/**
+	 * 获取发起请求的浏览器名称
+	 */
+	public static String getBrowserName(HttpServletRequest request) {
+		String header = request.getHeader("User-Agent");
+		return header;
+	}
+
+	/**
+	 * 判断是否是微信浏览器
+	 */
+	public static boolean isWechat(HttpServletRequest request) {
+		if (getBrowserName(request).contains("MicroMessenger")) {
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * 判断是否是支付宝浏览器
+	 */
+	public static boolean isAliPay(HttpServletRequest request) {
+		if (getBrowserName(request).contains("AlipayClient")) {
+			return true;
+		}
+		return false;
+	}
+
+	/**
 	 * 从request 获取CLIENT_ID
 	 *
 	 * @return

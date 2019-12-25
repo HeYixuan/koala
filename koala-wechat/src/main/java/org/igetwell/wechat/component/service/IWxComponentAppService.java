@@ -1,5 +1,6 @@
 package org.igetwell.wechat.component.service;
 
+import org.igetwell.wechat.sdk.bean.component.ComponentAppAccessToken;
 import org.igetwell.wechat.sdk.bean.component.WechatUser;
 /**
  * 第三方平台代公众号发起网页授权业务(目前无法测试成功)
@@ -22,14 +23,14 @@ public interface IWxComponentAppService {
      * @return
      * @throws Exception
      */
-    void getAccessToken(String appId, String authorizedCode, Long state) throws Exception;
+    ComponentAppAccessToken getAccessToken(String appId, String authorizedCode, Long state) throws Exception;
 
     /**
      * 从缓存中获取令牌
      * @param appId
      * @return
      */
-    String getAccessToken(String appId) throws Exception;
+    ComponentAppAccessToken getAccessToken(String appId, String openId) throws Exception;
 
     /**
      * 第三方开放平台代公众号发起网页授权刷新令牌

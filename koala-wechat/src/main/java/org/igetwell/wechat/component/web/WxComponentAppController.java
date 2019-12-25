@@ -4,6 +4,7 @@ import org.igetwell.common.uitls.GsonUtils;
 import org.igetwell.common.uitls.ResponseEntity;
 import org.igetwell.wechat.BaseController;
 import org.igetwell.wechat.component.service.IWxComponentAppService;
+import org.igetwell.wechat.sdk.bean.component.ComponentAppAccessToken;
 import org.igetwell.wechat.sdk.bean.component.WechatUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,8 +48,8 @@ public class WxComponentAppController extends BaseController {
 //    }
     @GetMapping("/main")
     public ResponseEntity getAccessToken(@RequestParam("appid") String appId, @RequestParam("code") String code, @RequestParam("state") Long state) throws Exception {
-        iWxComponentAppService.getAccessToken(appId, code, state);
-        WechatUser wechatUser = iWxComponentAppService.getWxUser(appId, "oNDnvs_jSr-Ugb5mhO_J-3cbyCOo");
+        ComponentAppAccessToken accessToken = iWxComponentAppService.getAccessToken(appId, code, state);
+        WechatUser wechatUser = iWxComponentAppService.getWxUser(appId, accessToken.getOpenid());
         System.err.println(GsonUtils.toJson(wechatUser));
         return ResponseEntity.ok();
     }

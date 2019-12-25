@@ -3,12 +3,8 @@ package org.igetwell.wechat.app.service.impl;
 import org.apache.commons.io.FileUtils;
 import org.igetwell.common.constans.cache.RedisKey;
 import org.igetwell.common.enums.HttpStatus;
-import org.igetwell.common.uitls.GsonUtils;
-import org.igetwell.common.uitls.HttpClientUtils;
-import org.igetwell.common.uitls.RedisUtils;
-import org.igetwell.common.uitls.ResponseEntity;
+import org.igetwell.common.uitls.*;
 import org.igetwell.wechat.app.service.IWxAppService;
-import org.igetwell.wechat.sdk.WxAppAccessToken;
 import org.igetwell.wechat.sdk.api.MediaApi;
 import org.igetwell.wechat.sdk.api.TokenAPI;
 import org.igetwell.wechat.sdk.bean.media.UploadImgResponse;
@@ -48,7 +44,7 @@ public class WxAppService implements IWxAppService {
      */
     public String getAccessToken() throws Exception {
         Token token = redisUtils.get(String.format(RedisKey.WX_APP_ACCESS_TOKEN, appId));
-        if (StringUtils.isEmpty(token) || StringUtils.isEmpty(token.getAccessToken())) {
+        if (StringUtils.isEmpty(token) || CharacterUtils.isBlank(token.getAccessToken())) {
             logger.error("[微信公众号]-从缓存中获取微信公众号令牌失败.");
             throw new Exception("[微信开放平台]-从缓存中获取微信公众号令牌失败.");
         }
@@ -79,7 +75,7 @@ public class WxAppService implements IWxAppService {
      */
     private void oauthToken() throws Exception {
         logger.info("[微信公众号]-获取微信公众号令牌开始.appId={}", appId);
-        if (StringUtils.isEmpty(appId.trim()) || StringUtils.isEmpty(secret.trim())) {
+        if (CharacterUtils.isBlank(appId) || CharacterUtils.isBlank(secret)) {
             logger.error("[微信公众号]-获取微信公众号令牌失败.未获取到appId.");
             throw new Exception("[微信公众号]-获取微信公众号令牌失败.未获取到appId.");
         }
