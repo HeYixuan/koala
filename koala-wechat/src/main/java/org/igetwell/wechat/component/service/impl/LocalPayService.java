@@ -310,6 +310,7 @@ public class LocalPayService implements ILocalPayService {
      * @return
      */
     public String notifyMethod(String xmlStr){
+        logger.info("[微信支付]-进入微信支付回调开始.");
         String successXml = "<xml><return_code><![CDATA[SUCCESS]]></return_code><return_msg><![CDATA[OK]]></return_msg></xml>";
         String failXml = "<xml><return_code><![CDATA[FAIL]]></return_code><return_msg><![CDATA[${return_msg}]]></return_msg></xml>";
         // 获取参数
@@ -326,14 +327,14 @@ public class LocalPayService implements ILocalPayService {
         try {
             boolean bool = SignUtils.checkSign(resultXml, paterKey, SignType.MD5);
             if (!bool){
-                logger.error("微信支付回调验证签名错误！");
+                logger.error("[微信支付]-微信支付回调验证签名错误！");
                 return failXml.replace("${return_msg}", "微信支付回调验证签名错误！");
             }
             String returnCode = resultXml.get("return_code");
             String resultCode = resultXml.get("result_code");
             boolean isSuccess = WXPayConstants.SUCCESS.equalsIgnoreCase(returnCode) && WXPayConstants.SUCCESS.equalsIgnoreCase(resultCode);
             if (isSuccess){
-                logger.info("用户公众ID：{} , 订单号：{} , 交易号：{} 微信支付成功！", openId, tradeNo, transactionId);
+                logger.info("[微信支付]-用户公众ID：{} , 订单号：{} , 交易号：{} 微信支付成功！", openId, tradeNo, transactionId);
                 //TODO:需要做数据库记录交易订单号
                 TradeOrder orders = redisUtils.get(tradeNo);
                 //如果支付订单状态不是支付中
@@ -349,7 +350,7 @@ public class LocalPayService implements ILocalPayService {
             }
             return failXml;
         } catch (Exception e) {
-            logger.error("调用微信支付回调方法异常,商户订单号：{}. 微信支付订单号：{}. ", tradeNo, transactionId, e);
+            logger.error("[微信支付]-调用微信支付回调方法异常,商户订单号：{}. 微信订单号：{}. ", tradeNo, transactionId, e);
             throw new RuntimeException("调用微信支付回调方法异常！", e);
         }
     }

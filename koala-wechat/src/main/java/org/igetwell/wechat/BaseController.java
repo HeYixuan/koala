@@ -27,6 +27,20 @@ public class BaseController {
             response.get().setCharacterEncoding("UTF-8");
             response.get().setContentType("text/xml; charset=UTF8");
             response.get().getWriter().write(renderText);
+            response.get().getWriter().flush();
+            response.get().getWriter().close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void renderHtml(String renderText){
+        try {
+            response.get().setCharacterEncoding("UTF-8");
+            response.get().setContentType("text/html;charset=UTF-8");
+            response.get().getWriter().write(renderText);
+            response.get().getWriter().flush();
+            response.get().getWriter().close();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -37,6 +51,8 @@ public class BaseController {
             response.get().setCharacterEncoding("UTF-8");
             response.get().setContentType("application/json;charset=UTF-8");
             response.get().getWriter().write(renderText);
+            response.get().getWriter().flush();
+            response.get().getWriter().close();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -46,7 +62,10 @@ public class BaseController {
 
     public void render(String renderText){
         try {
+            response.get().setCharacterEncoding("UTF-8");
             response.get().getWriter().write(renderText);
+            response.get().getWriter().flush();
+            response.get().getWriter().close();
         } catch (IOException e) {
             e.printStackTrace();
         }
