@@ -28,12 +28,12 @@ public class RefundOrderRequest implements Serializable {
     /**
      * 商户ID
      */
-    private Long merchantId;
+    private Long mchId;
 
     /**
      * 商户号
      */
-    private String merchantNo;
+    private String mchNo;
 
     /**
      * 会员ID
@@ -77,21 +77,20 @@ public class RefundOrderRequest implements Serializable {
         this.refundFee = refundFee;
     }
 
-
-    public Long getMerchantId() {
-        return merchantId;
+    public Long getMchId() {
+        return mchId;
     }
 
-    public void setMerchantId(Long merchantId) {
-        this.merchantId = merchantId;
+    public void setMchId(Long mchId) {
+        this.mchId = mchId;
     }
 
-    public String getMerchantNo() {
-        return merchantNo;
+    public String getMchNo() {
+        return mchNo;
     }
 
-    public void setMerchantNo(String merchantNo) {
-        this.merchantNo = merchantNo;
+    public void setMchNo(String mchNo) {
+        this.mchNo = mchNo;
     }
 
     public Long getMemberId() {

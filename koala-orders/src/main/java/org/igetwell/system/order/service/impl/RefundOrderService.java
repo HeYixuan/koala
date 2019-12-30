@@ -149,9 +149,9 @@ public class RefundOrderService implements IRefundOrderService {
     public void insert(RefundOrderRequest request) {
         RefundOrder order = new RefundOrder();
         order.setId(sequence.nextValue());
-        order.setOutNo("OUT" + sequence.nextNo());
-        order.setMerchantId(request.getMerchantId());
-        order.setMerchantNo(request.getMerchantNo());
+        order.setOutNo(sequence.nextNo());
+        order.setMchId(request.getMchId());
+        order.setMchNo(request.getMchNo());
         order.setMemberId(request.getMemberId());
         order.setMemberNo(request.getMemberNo());
         order.setTransactionId(request.getTransactionId());
@@ -227,8 +227,8 @@ public class RefundOrderService implements IRefundOrderService {
         if (StringUtils.isEmpty(request)) {
             return false;
         }
-        Long merchantId = request.getMerchantId();
-        String merchantNo = request.getMerchantNo();
+        Long mchId = request.getMchId();
+        String mchNo = request.getMchNo();
         Long memberId = request.getMemberId();
         String memberNo = request.getMemberNo();
         String transactionId = request.getTransactionId();
@@ -236,7 +236,7 @@ public class RefundOrderService implements IRefundOrderService {
         BigDecimal totalFee = request.getTotalFee();
         BigDecimal refundFee = request.getRefundFee();
 
-        if (StringUtils.isEmpty(merchantId) || StringUtils.isEmpty(memberId) || CharacterUtils.isBlank(merchantNo) || CharacterUtils.isBlank(memberNo)) {
+        if (StringUtils.isEmpty(mchId) || StringUtils.isEmpty(memberId) || CharacterUtils.isBlank(mchNo) || CharacterUtils.isBlank(memberNo)) {
             LOGGER.info("[退款订单服务]-退款必要参数不可为空.");
             return false;
         }

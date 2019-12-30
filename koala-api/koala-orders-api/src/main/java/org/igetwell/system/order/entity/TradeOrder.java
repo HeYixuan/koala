@@ -31,6 +31,11 @@ public class TradeOrder implements Serializable {
     private String mchNo;
 
     /**
+     * 订单类型：1-充值 2-消费 3-开卡
+     */
+    private Integer orderType;
+
+    /**
      * 渠道ID
      */
     private Long channelId;
@@ -39,6 +44,11 @@ public class TradeOrder implements Serializable {
      * 支付金额
      */
     private BigDecimal fee;
+
+    /**
+     * 货币代码：CNY-人民币 UDS-美元 默认CNY
+     */
+    private String currency;
 
     /**
      * 客户端IP
@@ -104,6 +114,14 @@ public class TradeOrder implements Serializable {
         this.mchNo = mchNo;
     }
 
+    public Integer getOrderType() {
+        return orderType;
+    }
+
+    public void setOrderType(Integer orderType) {
+        this.orderType = orderType;
+    }
+
     public Long getChannelId() {
         return channelId;
     }
@@ -118,6 +136,14 @@ public class TradeOrder implements Serializable {
 
     public void setFee(BigDecimal fee) {
         this.fee = fee;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
     }
 
     public String getClientIp() {
@@ -160,71 +186,4 @@ public class TradeOrder implements Serializable {
         this.createTime = createTime;
     }
 
-    @Override
-    public boolean equals(Object that) {
-        if (this == that) {
-            return true;
-        }
-        if (that == null) {
-            return false;
-        }
-        if (getClass() != that.getClass()) {
-            return false;
-        }
-        TradeOrder other = (TradeOrder) that;
-        return (this.getId() == null ? other.getId() == null : this.getId().equals(other.getId()))
-            && (this.getTradeNo() == null ? other.getTradeNo() == null : this.getTradeNo().equals(other.getTradeNo()))
-            && (this.getTransactionId() == null ? other.getTransactionId() == null : this.getTransactionId().equals(other.getTransactionId()))
-            && (this.getMchId() == null ? other.getMchId() == null : this.getMchId().equals(other.getMchId()))
-            && (this.getMchNo() == null ? other.getMchNo() == null : this.getMchNo().equals(other.getMchNo()))
-            && (this.getChannelId() == null ? other.getChannelId() == null : this.getChannelId().equals(other.getChannelId()))
-            && (this.getFee() == null ? other.getFee() == null : this.getFee().equals(other.getFee()))
-            && (this.getClientIp() == null ? other.getClientIp() == null : this.getClientIp().equals(other.getClientIp()))
-            && (this.getStatus() == null ? other.getStatus() == null : this.getStatus().equals(other.getStatus()))
-            && (this.getSuccessTime() == null ? other.getSuccessTime() == null : this.getSuccessTime().equals(other.getSuccessTime()))
-            && (this.getBody() == null ? other.getBody() == null : this.getBody().equals(other.getBody()))
-            && (this.getCreateTime() == null ? other.getCreateTime() == null : this.getCreateTime().equals(other.getCreateTime()));
-    }
-
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((getId() == null) ? 0 : getId().hashCode());
-        result = prime * result + ((getTradeNo() == null) ? 0 : getTradeNo().hashCode());
-        result = prime * result + ((getTransactionId() == null) ? 0 : getTransactionId().hashCode());
-        result = prime * result + ((getMchId() == null) ? 0 : getMchId().hashCode());
-        result = prime * result + ((getMchNo() == null) ? 0 : getMchNo().hashCode());
-        result = prime * result + ((getChannelId() == null) ? 0 : getChannelId().hashCode());
-        result = prime * result + ((getFee() == null) ? 0 : getFee().hashCode());
-        result = prime * result + ((getClientIp() == null) ? 0 : getClientIp().hashCode());
-        result = prime * result + ((getStatus() == null) ? 0 : getStatus().hashCode());
-        result = prime * result + ((getSuccessTime() == null) ? 0 : getSuccessTime().hashCode());
-        result = prime * result + ((getBody() == null) ? 0 : getBody().hashCode());
-        result = prime * result + ((getCreateTime() == null) ? 0 : getCreateTime().hashCode());
-        return result;
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(getClass().getSimpleName());
-        sb.append(" [");
-        sb.append("Hash = ").append(hashCode());
-        sb.append(", id=").append(id);
-        sb.append(", tradeNo=").append(tradeNo);
-        sb.append(", transactionId=").append(transactionId);
-        sb.append(", mchId=").append(mchId);
-        sb.append(", mchNo=").append(mchNo);
-        sb.append(", channelId=").append(channelId);
-        sb.append(", fee=").append(fee);
-        sb.append(", clientIp=").append(clientIp);
-        sb.append(", status=").append(status);
-        sb.append(", successTime=").append(successTime);
-        sb.append(", body=").append(body);
-        sb.append(", createTime=").append(createTime);
-        sb.append(", serialVersionUID=").append(serialVersionUID);
-        sb.append("]");
-        return sb.toString();
-    }
 }

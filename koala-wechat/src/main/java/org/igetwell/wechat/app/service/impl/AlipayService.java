@@ -4,14 +4,18 @@ import com.alipay.api.AlipayClient;
 import com.alipay.api.DefaultAlipayClient;
 import com.alipay.api.domain.AlipayTradePagePayModel;
 import com.alipay.api.domain.AlipayTradePrecreateModel;
+import com.alipay.api.domain.AlipayTradeRefundModel;
 import com.alipay.api.domain.AlipayTradeWapPayModel;
 import com.alipay.api.internal.util.AlipaySignature;
 import com.alipay.api.request.AlipayTradePagePayRequest;
 import com.alipay.api.request.AlipayTradePrecreateRequest;
+import com.alipay.api.request.AlipayTradeRefundRequest;
 import com.alipay.api.request.AlipayTradeWapPayRequest;
+import com.alipay.api.response.AlipayTradeRefundResponse;
 import org.igetwell.common.constans.AliPayConstants;
 import org.igetwell.common.enums.SignType;
 import org.igetwell.common.sequence.sequence.Sequence;
+import org.igetwell.common.uitls.CharacterUtils;
 import org.igetwell.common.uitls.ParamMap;
 import org.igetwell.wechat.app.service.IAlipayService;
 import org.slf4j.Logger;
@@ -167,6 +171,38 @@ public class AlipayService implements IAlipayService {
     }
 
     /**
+     * 支付宝退款
+     * @param transactionId 支付宝订单号
+     * @param tradeNo 商户订单号
+     * @param fee
+     * @throws Exception
+     */
+    @Override
+    public void returnPay(String transactionId, String tradeNo, String outNo, String fee) throws Exception {
+        logger.info("[支付宝退款]-正在发起支付宝退款请求.");
+        AlipayTradeRefundModel model = new AlipayTradeRefundModel();
+        //支付宝订单号
+        model.setTradeNo(transactionId);
+        //商户订单号
+        model.setOutTradeNo(tradeNo);
+        model.setOutRequestNo(outNo);
+        model.setRefundAmount(fee);
+        AlipayTradeRefundRequest tradeRefundRequest = new AlipayTradeRefundRequest();
+        tradeRefundRequest.setBizModel(model);
+        //tradeRefundRequest.setNotifyUrl(refundNotify);
+        //tradeRefundRequest.setReturnUrl(returnNotify);
+        AlipayClient alipayClient = new DefaultAlipayClient(gateway, appId, privateKey,"json","UTF-8", alipayPublicKey, SignType.RSA2.name());
+        AlipayTradeRefundResponse response = alipayClient.execute(tradeRefundRequest);
+        if(response.isSuccess() && response.getFundChange().equalsIgnoreCase("Y")){
+            logger.info("退款成功");
+            response.getFundChange();
+            response.getGmtRefundPay();
+            response.getTradeNo(); //支付宝交易号
+            response.getOutTradeNo();//商户订单号
+        }
+    }
+
+    /**
      * 处理支付宝支付回调
      *
      * @return
@@ -180,12 +216,6 @@ public class AlipayService implements IAlipayService {
         String transactionId = params.get("trade_no");
         try {
             boolean bool = AlipaySignature.rsaCheckV1(params, alipayPublicKey, "UTF-8", SignType.RSA2.name()); //调用SDK验证签名
-            /* 实际验证过程建议商户务必添加以下校验：
-                1、需要验证该通知数据中的out_trade_no是否为商户系统中创建的订单号，
-                2、判断total_amount是否确实为该订单的实际金额（即商户订单创建时的金额），
-                3、校验通知中的seller_id（或者seller_email) 是否为out_trade_no这笔单据的对应的操作方（有的时候，一个商户可能有多个seller_id/seller_email）
-                4、验证app_id是否为该商户本身。
-            */
             if (!bool) {
                 logger.error("[支付宝支付]-支付宝回调验证签名错误!");
                 return AliPayConstants.FAIL;
@@ -193,13 +223,15 @@ public class AlipayService implements IAlipayService {
             //交易状态
             String tradeStatus = params.get("trade_status");
 
+            //退款金额,退款专属字段
+            String refundFee = params.get("refund_fee");
+
             if (tradeStatus.equals(AliPayConstants.TRADE_FINISHED ) || tradeStatus.equals(AliPayConstants.TRADE_SUCCESS)) {
-                //判断该笔订单是否在商户网站中已经做过处理
-                //如果没有做过处理，根据订单号（out_trade_no）在商户网站的订单系统中查到该笔订单的详细，并执行商户的业务程序
-                //如果有做过处理，不执行商户的业务程序
-                //注意：
-                //退款日期超过可退款期限后（如三个月可退款），支付宝系统发送该交易状态通知
-                logger.info("[支付宝支付]-用户公众ID：{} , 订单号：{} , 交易号：{} 支付宝支付成功！", 11, tradeNo, transactionId);
+                if (CharacterUtils.isBlank(refundFee)) {
+                    logger.info("[支付宝支付]-用户公众ID：{} , 订单号：{} , 交易号：{} 支付宝支付成功！", 11, tradeNo, transactionId);
+                } else {
+                    logger.info("[支付宝支付]-用户公众ID：{} , 订单号：{} , 交易号：{} 支付宝退款成功！", 22, tradeNo, transactionId);
+                }
             }
             logger.info("[支付宝支付]-进入支付宝支付回调结束.");
             return AliPayConstants.SUCCESS;

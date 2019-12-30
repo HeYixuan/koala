@@ -53,14 +53,19 @@ public class RefundOrder implements Serializable {
     private BigDecimal settleFee;
 
     /**
+     * 货币代码：CNY-人民币 UDS-美元 默认CNY
+     */
+    private String currency;
+
+    /**
      * 商户ID
      */
-    private Long merchantId;
+    private Long mchId;
 
     /**
      * 商户号
      */
-    private String merchantNo;
+    private String mchNo;
 
     /**
      * 会员ID
@@ -166,20 +171,28 @@ public class RefundOrder implements Serializable {
         this.settleFee = settleFee;
     }
 
-    public Long getMerchantId() {
-        return merchantId;
+    public String getCurrency() {
+        return currency;
     }
 
-    public void setMerchantId(Long merchantId) {
-        this.merchantId = merchantId;
+    public void setCurrency(String currency) {
+        this.currency = currency;
     }
 
-    public String getMerchantNo() {
-        return merchantNo;
+    public Long getMchId() {
+        return mchId;
     }
 
-    public void setMerchantNo(String merchantNo) {
-        this.merchantNo = merchantNo;
+    public void setMchId(Long mchId) {
+        this.mchId = mchId;
+    }
+
+    public String getMchNo() {
+        return mchNo;
+    }
+
+    public void setMchNo(String mchNo) {
+        this.mchNo = mchNo;
     }
 
     public Long getMemberId() {
@@ -220,88 +233,5 @@ public class RefundOrder implements Serializable {
 
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
-    }
-
-    @Override
-    public boolean equals(Object that) {
-        if (this == that) {
-            return true;
-        }
-        if (that == null) {
-            return false;
-        }
-        if (getClass() != that.getClass()) {
-            return false;
-        }
-        RefundOrder other = (RefundOrder) that;
-        return (this.getId() == null ? other.getId() == null : this.getId().equals(other.getId()))
-            && (this.getOutNo() == null ? other.getOutNo() == null : this.getOutNo().equals(other.getOutNo()))
-            && (this.getTradeNo() == null ? other.getTradeNo() == null : this.getTradeNo().equals(other.getTradeNo()))
-            && (this.getTransactionId() == null ? other.getTransactionId() == null : this.getTransactionId().equals(other.getTransactionId()))
-            && (this.getOutRefundNo() == null ? other.getOutRefundNo() == null : this.getOutRefundNo().equals(other.getOutRefundNo()))
-            && (this.getRefundAccount() == null ? other.getRefundAccount() == null : this.getRefundAccount().equals(other.getRefundAccount()))
-            && (this.getTotalFee() == null ? other.getTotalFee() == null : this.getTotalFee().equals(other.getTotalFee()))
-            && (this.getSettleTotalFee() == null ? other.getSettleTotalFee() == null : this.getSettleTotalFee().equals(other.getSettleTotalFee()))
-            && (this.getRefundFee() == null ? other.getRefundFee() == null : this.getRefundFee().equals(other.getRefundFee()))
-            && (this.getSettleFee() == null ? other.getSettleFee() == null : this.getSettleFee().equals(other.getSettleFee()))
-            && (this.getMerchantId() == null ? other.getMerchantId() == null : this.getMerchantId().equals(other.getMerchantId()))
-            && (this.getMerchantNo() == null ? other.getMerchantNo() == null : this.getMerchantNo().equals(other.getMerchantNo()))
-            && (this.getMemberId() == null ? other.getMemberId() == null : this.getMemberId().equals(other.getMemberId()))
-            && (this.getMemberNo() == null ? other.getMemberNo() == null : this.getMemberNo().equals(other.getMemberNo()))
-            && (this.getRefundTime() == null ? other.getRefundTime() == null : this.getRefundTime().equals(other.getRefundTime()))
-            && (this.getStatus() == null ? other.getStatus() == null : this.getStatus().equals(other.getStatus()))
-            && (this.getCreateTime() == null ? other.getCreateTime() == null : this.getCreateTime().equals(other.getCreateTime()));
-    }
-
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((getId() == null) ? 0 : getId().hashCode());
-        result = prime * result + ((getOutNo() == null) ? 0 : getOutNo().hashCode());
-        result = prime * result + ((getTradeNo() == null) ? 0 : getTradeNo().hashCode());
-        result = prime * result + ((getTransactionId() == null) ? 0 : getTransactionId().hashCode());
-        result = prime * result + ((getOutRefundNo() == null) ? 0 : getOutRefundNo().hashCode());
-        result = prime * result + ((getRefundAccount() == null) ? 0 : getRefundAccount().hashCode());
-        result = prime * result + ((getTotalFee() == null) ? 0 : getTotalFee().hashCode());
-        result = prime * result + ((getSettleTotalFee() == null) ? 0 : getSettleTotalFee().hashCode());
-        result = prime * result + ((getRefundFee() == null) ? 0 : getRefundFee().hashCode());
-        result = prime * result + ((getSettleFee() == null) ? 0 : getSettleFee().hashCode());
-        result = prime * result + ((getMerchantId() == null) ? 0 : getMerchantId().hashCode());
-        result = prime * result + ((getMerchantNo() == null) ? 0 : getMerchantNo().hashCode());
-        result = prime * result + ((getMemberId() == null) ? 0 : getMemberId().hashCode());
-        result = prime * result + ((getMemberNo() == null) ? 0 : getMemberNo().hashCode());
-        result = prime * result + ((getRefundTime() == null) ? 0 : getRefundTime().hashCode());
-        result = prime * result + ((getStatus() == null) ? 0 : getStatus().hashCode());
-        result = prime * result + ((getCreateTime() == null) ? 0 : getCreateTime().hashCode());
-        return result;
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(getClass().getSimpleName());
-        sb.append(" [");
-        sb.append("Hash = ").append(hashCode());
-        sb.append(", id=").append(id);
-        sb.append(", outNo=").append(outNo);
-        sb.append(", tradeNo=").append(tradeNo);
-        sb.append(", transactionId=").append(transactionId);
-        sb.append(", outRefundNo=").append(outRefundNo);
-        sb.append(", refundAccount=").append(refundAccount);
-        sb.append(", totalFee=").append(totalFee);
-        sb.append(", settleTotalFee=").append(settleTotalFee);
-        sb.append(", refundFee=").append(refundFee);
-        sb.append(", settleFee=").append(settleFee);
-        sb.append(", merchantId=").append(merchantId);
-        sb.append(", merchantNo=").append(merchantNo);
-        sb.append(", memberId=").append(memberId);
-        sb.append(", memberNo=").append(memberNo);
-        sb.append(", refundTime=").append(refundTime);
-        sb.append(", status=").append(status);
-        sb.append(", createTime=").append(createTime);
-        sb.append(", serialVersionUID=").append(serialVersionUID);
-        sb.append("]");
-        return sb.toString();
     }
 }

@@ -1,4 +1,4 @@
-package org.igetwell.wechat.component.service;
+package org.igetwell.wechat.app.service;
 
 import org.igetwell.common.enums.TradeType;
 import javax.servlet.http.HttpServletRequest;
@@ -7,7 +7,7 @@ import java.util.Map;
 /**
  * 微信支付
  */
-public interface ILocalPayService {
+public interface IWxPayService {
 
     /**
      * 扫码预付款下单

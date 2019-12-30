@@ -1,4 +1,4 @@
-package org.igetwell.wechat.component.service.impl;
+package org.igetwell.wechat.app.service.impl;
 
 import org.igetwell.common.constans.WXPayConstants;
 import org.igetwell.common.enums.SignType;
@@ -7,7 +7,7 @@ import org.igetwell.common.sequence.sequence.Sequence;
 import org.igetwell.common.uitls.*;
 import org.igetwell.system.order.entity.TradeOrder;
 import org.igetwell.system.order.feign.TradeOrderClient;
-import org.igetwell.wechat.component.service.ILocalPayService;
+import org.igetwell.wechat.app.service.IWxPayService;
 import org.igetwell.wechat.sdk.api.MchPayAPI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,9 +22,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Component
-public class LocalPayService implements ILocalPayService {
+public class WxPayService implements IWxPayService {
 
-    private static final Logger logger = LoggerFactory.getLogger(LocalPayService.class);
+    private static final Logger logger = LoggerFactory.getLogger(WxPayService.class);
 
     @Value("${wechat.appId}")
     private String defaultAppId;

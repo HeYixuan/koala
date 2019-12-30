@@ -12,8 +12,9 @@
     <result column="SETTLE_TOTAL_FEE" jdbcType="DECIMAL" property="settleTotalFee" />
     <result column="REFUND_FEE" jdbcType="DECIMAL" property="refundFee" />
     <result column="SETTLE_FEE" jdbcType="DECIMAL" property="settleFee" />
-    <result column="MERCHANT_ID" jdbcType="BIGINT" property="merchantId" />
-    <result column="MERCHANT_NO" jdbcType="VARCHAR" property="merchantNo" />
+    <result column="CURRENCY" jdbcType="VARCHAR" property="currency" />
+    <result column="MCH_ID" jdbcType="BIGINT" property="mchId" />
+    <result column="MCH_NO" jdbcType="VARCHAR" property="mchNo" />
     <result column="MEMBER_ID" jdbcType="BIGINT" property="memberId" />
     <result column="MEMBER_NO" jdbcType="VARCHAR" property="memberNo" />
     <result column="REFUND_TIME" jdbcType="VARCHAR" property="refundTime" />
@@ -23,7 +24,7 @@
 
   <sql id="baseSql">
     ID, OUT_NO, TRADE_NO, TRANSACTION_ID, OUT_REFUND_NO, REFUND_ACCOUNT, TOTAL_FEE, SETTLE_TOTAL_FEE, 
-    REFUND_FEE, SETTLE_FEE, MERCHANT_ID, MERCHANT_NO, MEMBER_ID, MEMBER_NO, REFUND_TIME, 
+    REFUND_FEE, SETTLE_FEE, MCH_ID, MCH_NO, MEMBER_ID, MEMBER_NO, REFUND_TIME,
     `STATUS`, CREATE_TIME
   </sql>
   <select id="get" parameterType="java.lang.Long" resultMap="baseMap">
@@ -69,11 +70,14 @@
       <if test="settleFee != null">
         SETTLE_FEE,
       </if>
-      <if test="merchantId != null">
-        MERCHANT_ID,
+      <if test="currency != null and currency != ''">
+        CURRENCY,
       </if>
-      <if test="merchantNo != null and merchantNo != ''">
-        MERCHANT_NO,
+      <if test="mchId != null">
+        MCH_ID,
+      </if>
+      <if test="mchNo != null and mchNo != ''">
+        MCH_NO,
       </if>
       <if test="memberId != null">
         MEMBER_ID,
@@ -122,11 +126,14 @@
       <if test="settleFee != null">
         #{settleFee,jdbcType=DECIMAL},
       </if>
-      <if test="merchantId != null">
-        #{merchantId,jdbcType=BIGINT},
+      <if test="currency != null and currency != ''">
+        #{currency,jdbcType=VARCHAR},
       </if>
-      <if test="merchantNo != null and merchantNo != ''">
-        #{merchantNo,jdbcType=VARCHAR},
+      <if test="mchId != null">
+        #{mchId,jdbcType=BIGINT},
+      </if>
+      <if test="mchNo != null and mchNo != ''">
+        #{mchNo,jdbcType=VARCHAR},
       </if>
       <if test="memberId != null">
         #{memberId,jdbcType=BIGINT},
@@ -176,11 +183,14 @@
       <if test="settleFee != null">
         SETTLE_FEE = #{settleFee,jdbcType=DECIMAL},
       </if>
-      <if test="merchantId != null">
-        MERCHANT_ID = #{merchantId,jdbcType=BIGINT},
+      <if test="currency != null and currency != ''">
+        CURRENCY = #{currency,jdbcType=VARCHAR},
       </if>
-      <if test="merchantNo != null and merchantNo != ''">
-        MERCHANT_NO = #{merchantNo,jdbcType=VARCHAR},
+      <if test="mchId != null">
+        MCH_ID = #{mchId,jdbcType=BIGINT},
+      </if>
+      <if test="mchNo != null and mchNo != ''">
+        MCH_NO = #{mchNo,jdbcType=VARCHAR},
       </if>
       <if test="memberId != null">
         MEMBER_ID = #{memberId,jdbcType=BIGINT},

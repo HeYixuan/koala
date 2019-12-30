@@ -6,9 +6,9 @@ import org.igetwell.common.uitls.ResponseEntity;
 import org.igetwell.common.uitls.WebUtils;
 import org.igetwell.wechat.BaseController;
 import org.igetwell.wechat.app.service.IAlipayService;
-import org.igetwell.wechat.component.service.ILocalPayService;
-import org.igetwell.wechat.component.service.ILocalReturnPayService;
+import org.igetwell.wechat.app.service.IWxReturnPayService;
 import org.igetwell.wechat.component.service.IWxComponentAppService;
+import org.igetwell.wechat.app.service.IWxPayService;
 import org.igetwell.wechat.sdk.bean.component.ComponentAppAccessToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -22,9 +22,9 @@ import java.util.Map;
 public class WxPayController extends BaseController {
 
     @Autowired
-    private ILocalPayService localPayService;
+    private IWxPayService iWxPayService;
     @Autowired
-    private ILocalReturnPayService localReturnPayService;
+    private IWxReturnPayService iWxReturnPayService;
 
     @Autowired
     private IWxComponentAppService iWxComponentAppService;
@@ -38,7 +38,7 @@ public class WxPayController extends BaseController {
      */
     @PostMapping("/scanPay")
     public String scanPay() {
-        String codeUrl = localPayService.scanOrder(request.get(), "官网费用","GW201807162055","1");
+        String codeUrl = iWxPayService.scanOrder(request.get(), "官网费用","GW201807162055","1");
         return codeUrl;
     }
 
@@ -50,7 +50,7 @@ public class WxPayController extends BaseController {
      */
     @PostMapping("/preOrder")
     public Map<String, String> preOrder() {
-        return localPayService.preOrder(request.get(), "ojhc61KyGnCepGMIpcZI-YCPce30", TradeType.MWEB,"官网费用","GW201807162055","1");
+        return iWxPayService.preOrder(request.get(), "ojhc61KyGnCepGMIpcZI-YCPce30", TradeType.MWEB,"官网费用","GW201807162055","1");
     }
 
     /**
@@ -58,7 +58,7 @@ public class WxPayController extends BaseController {
      */
     @PostMapping("/returnPay")
     public ResponseEntity returnPay(String transactionId, String tradeNo, String fee) throws Exception {
-        localReturnPayService.returnPay(transactionId, tradeNo,"1", "1", fee);
+        iWxReturnPayService.returnPay(transactionId, tradeNo,"1", "1", fee);
         return ResponseEntity.ok();
     }
 
@@ -69,7 +69,7 @@ public class WxPayController extends BaseController {
     @PostMapping(value = "/payNotify", produces = {"application/xml"})
     public void payNotify(){
         String xmlStr = IOUtils.readData(request.get());
-        String resultXml = localPayService.notifyMethod(xmlStr);
+        String resultXml = iWxPayService.notifyMethod(xmlStr);
         renderXml(resultXml);
     }
 
@@ -79,7 +79,7 @@ public class WxPayController extends BaseController {
     @PostMapping(value = "/refundNotify", produces = {"application/xml"})
     public void refundNotify(){
         String xmlStr = IOUtils.readData(request.get());
-        String resultXml = localReturnPayService.notifyMethod(xmlStr);
+        String resultXml = iWxReturnPayService.notifyMethod(xmlStr);
         renderXml(resultXml);
     }
 
@@ -87,7 +87,7 @@ public class WxPayController extends BaseController {
     public ResponseEntity commonPay(@RequestParam("amount") BigDecimal amount) throws Exception {
         if(WebUtils.isWechat(request.get())){ //微信
             ComponentAppAccessToken accessToken = iWxComponentAppService.getAccessToken("wx2681cc8716638f35", "oNDnvs8I7ewNZrB6iFZC4s7Fxn88");
-            Map<String, String> resultMap = localPayService.preOrder(request.get(), accessToken.getOpenid(), TradeType.JSAPI,"官网费用","GW201807162055", String.valueOf(amount));
+            Map<String, String> resultMap = iWxPayService.preOrder(request.get(), accessToken.getOpenid(), TradeType.JSAPI,"官网费用","GW201807162055", String.valueOf(amount));
             return ResponseEntity.ok(resultMap);
         } else if (WebUtils.isAliPay(request.get())) {  //支付宝
             //String page = iAlipayService.wapPay("cp21", "cp001", "Gw100001", "0.01");

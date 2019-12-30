@@ -7,8 +7,10 @@
     <result column="TRANSACTION_ID" jdbcType="VARCHAR" property="transactionId" />
     <result column="MCH_ID" jdbcType="BIGINT" property="mchId" />
     <result column="MCH_NO" jdbcType="VARCHAR" property="mchNo" />
+    <result column="ORDER_TYPE" jdbcType="INTEGER" property="orderType" />
     <result column="CHANNEL_ID" jdbcType="BIGINT" property="channelId" />
     <result column="FEE" jdbcType="DECIMAL" property="fee" />
+    <result column="CURRENCY" jdbcType="VARCHAR" property="currency" />
     <result column="CLIENT_IP" jdbcType="VARCHAR" property="clientIp" />
     <result column="STATUS" jdbcType="INTEGER" property="status" />
     <result column="SUCCESS_TIME" jdbcType="VARCHAR" property="successTime" />
@@ -16,7 +18,7 @@
     <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
   </resultMap>
   <sql id="baseSql">
-    ID, TRADE_NO, TRANSACTION_ID, MCH_ID, MCH_NO, CHANNEL_ID, FEE, CLIENT_IP, `STATUS`, 
+    ID, TRADE_NO, TRANSACTION_ID, MCH_ID, MCH_NO, ORDER_TYPE, CHANNEL_ID, FEE, CURRENCY, CLIENT_IP, `STATUS`,
     SUCCESS_TIME, BODY, CREATE_TIME
   </sql>
   <select id="get" parameterType="java.lang.Long" resultMap="baseMap">
@@ -48,11 +50,17 @@
       <if test="mchNo != null and mchNo != ''">
         MCH_NO,
       </if>
+      <if test="orderType != null">
+        ORDER_TYPE,
+      </if>
       <if test="channelId != null">
         CHANNEL_ID,
       </if>
       <if test="fee != null">
         FEE,
+      </if>
+      <if test="currency != null and currency != ''">
+        CURRENCY,
       </if>
       <if test="clientIp != null and clientIp !=''">
         CLIENT_IP,
@@ -86,11 +94,17 @@
       <if test="mchNo != null and mchNo !=''">
         #{mchNo,jdbcType=VARCHAR},
       </if>
+      <if test="orderType != null">
+        #{orderType,jdbcType=INTEGER},
+      </if>
       <if test="channelId != null">
         #{channelId,jdbcType=BIGINT},
       </if>
       <if test="fee != null">
         #{fee,jdbcType=DECIMAL},
+      </if>
+      <if test="currency != null and currency != ''">
+        #{currency,jdbcType=VARCHAR},
       </if>
       <if test="clientIp != null and clientIp !=''">
         #{clientIp,jdbcType=VARCHAR},
@@ -124,11 +138,17 @@
       <if test="mchNo != null and mchNo !=''">
         MCH_NO = #{mchNo,jdbcType=VARCHAR},
       </if>
+      <if test="orderType != null">
+        ORDER_TYPE = #{orderType,jdbcType=INTEGER},
+      </if>
       <if test="channelId != null">
         CHANNEL_ID = #{channelId,jdbcType=BIGINT},
       </if>
       <if test="fee != null">
         FEE = #{fee,jdbcType=DECIMAL},
+      </if>
+      <if test="currency != null and currency != ''">
+        CURRENCY = #{currency,jdbcType=VARCHAR},
       </if>
       <if test="clientIp != null and clientIp !=''">
         CLIENT_IP = #{clientIp,jdbcType=VARCHAR},
