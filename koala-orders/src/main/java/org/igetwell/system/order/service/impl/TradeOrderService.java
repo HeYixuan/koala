@@ -1,7 +1,15 @@
 package org.igetwell.system.order.service.impl;
 
+import org.igetwell.common.enums.OrderStatus;
+import org.igetwell.common.enums.OrderType;
+import org.igetwell.common.sequence.sequence.Sequence;
 import org.igetwell.common.uitls.GsonUtils;
 import org.igetwell.common.uitls.RedisUtils;
+import org.igetwell.common.uitls.ResponseEntity;
+import org.igetwell.common.uitls.WebUtils;
+import org.igetwell.paypal.dto.request.PayPalRequest;
+import org.igetwell.paypal.feign.PayPalClient;
+import org.igetwell.system.order.dto.request.OrderPay;
 import org.igetwell.system.order.entity.TradeOrder;
 import org.igetwell.system.order.mapper.TradeOrderMapper;
 import org.igetwell.system.order.service.ITradeOrderService;
@@ -11,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
+import java.util.Map;
 
 @Service
 @Transactional(rollbackFor = Exception.class)
@@ -22,7 +31,13 @@ public class TradeOrderService implements ITradeOrderService {
     private TradeOrderMapper tradeOrderMapper;
 
     @Autowired
+    private PayPalClient payPalClient;
+
+    @Autowired
     private RedisUtils redisUtils;
+
+    @Autowired
+    private Sequence sequence;
 
     @Override
     public TradeOrder get(Long id) {
@@ -59,7 +74,7 @@ public class TradeOrderService implements ITradeOrderService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void insert(TradeOrder order) {
-        LOGGER.info("[支付订单服务]-退款订单入库开始.");
+        LOGGER.info("[支付订单服务]-支付订单入库开始.");
         int i = tradeOrderMapper.insert(order);
         if (i <= 0) {
             LOGGER.error("[支付订单服务]-支付订单入库失败,微信支付单号：{}, 商户订单号：{} 事务执行回滚.", order.getTransactionId(), order.getTradeNo());
@@ -79,5 +94,17 @@ public class TradeOrderService implements ITradeOrderService {
             throw new RuntimeException(message);
         }
         LOGGER.info("[支付订单服务]-修改支付订单结束.");
+    }
+
+    public ResponseEntity trade(OrderPay orderPay) {
+        TradeOrder orders = new TradeOrder(sequence.nextValue(), sequence.nextNo(), orderPay.getMchId(), orderPay.getMchNo(), orderPay.getOrderType().getValue(),
+                orderPay.getChannelId(), orderPay.getFee(), WebUtils.getIP(), OrderStatus.CREATE.getValue(), orderPay.getGoodsId(), orderPay.getBody());
+        this.insert(orders);
+        PayPalRequest payPalRequest = new PayPalRequest();
+        payPalRequest.setGoodsId(orders.getGoodsId());
+        payPalRequest.setFee(orders.getFee());
+        payPalRequest.setBody(orders.getBody());
+        Map<String, String> resultMap = payPalClient.aliPay(payPalRequest);
+        return ResponseEntity.ok(resultMap);
     }
 }

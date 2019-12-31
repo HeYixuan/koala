@@ -1,0 +1,29 @@
+server:
+  port: 8010
+spring:
+  application:
+    name: koala-paypal
+
+  cloud:
+    nacos:
+      discovery:
+        server-addr: ${NACOS-HOST:koala-register}:${NACOS-PORT:8848}
+      config:
+        server-addr: ${spring.cloud.nacos.discovery.server-addr}
+        file-extension: yml
+        shared-dataids: ${spring.application.name}-${spring.profiles.active}.${spring.cloud.nacos.config.file-extension}
+  profiles:
+    active: dev
+  main:
+    allow-bean-definition-overriding: true
+  jackson:
+    time-zone: GMT+8
+    default-property-inclusion: NON_EMPTY
+    date-format: yyyy-MM-dd HH:mm:ss
+
+sequence:
+  snowflake:
+    datacenterId: 16
+    workerId: 21
+
+

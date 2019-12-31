@@ -66,6 +66,11 @@ public class TradeOrder implements Serializable {
     private String successTime;
 
     /**
+     * 商品ID
+     */
+    private Long goodsId;
+
+    /**
      * 商品描述信息
      */
     private String body;
@@ -170,6 +175,14 @@ public class TradeOrder implements Serializable {
         this.successTime = successTime;
     }
 
+    public Long getGoodsId() {
+        return goodsId;
+    }
+
+    public void setGoodsId(Long goodsId) {
+        this.goodsId = goodsId;
+    }
+
     public String getBody() {
         return body;
     }
@@ -186,4 +199,21 @@ public class TradeOrder implements Serializable {
         this.createTime = createTime;
     }
 
+
+    public TradeOrder() {
+    }
+
+    public TradeOrder(Long id, String tradeNo, Long mchId, String mchNo, Integer orderType, Long channelId, BigDecimal fee, String clientIp, Integer status, Long goodsId, String body) {
+        this.id = id;
+        this.tradeNo = tradeNo;
+        this.mchId = mchId;
+        this.mchNo = mchNo;
+        this.orderType = orderType;
+        this.channelId = channelId;
+        this.fee = fee;
+        this.clientIp = clientIp;
+        this.status = status;
+        this.goodsId = goodsId;
+        this.body = body;
+    }
 }

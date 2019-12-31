@@ -5,16 +5,26 @@ package org.igetwell.system.order.protocol;
  */
 public enum MessageProtocol {
 
-    /**SECKILL_CHARGE_ORDER_TOPIC 秒杀下单消息协议*/
+    /**
+     * SECKILL_CHARGE_ORDER_TOPIC 秒杀下单消息协议
+     */
     SECKILL_ORDER_TOPIC("SECKILL_CHARGE_ORDER_TOPIC", "GID_SNOWALKE_TEST", "GID_SNOWALKE_TEST", "秒杀下单消息协议"),
     ;
-    /**消息主题*/
+    /**
+     * 消息主题
+     */
     private String topic;
-    /**生产者组*/
+    /**
+     * 生产者组
+     */
     private String producerGroup;
-    /**消费者组*/
+    /**
+     * 消费者组
+     */
     private String consumerGroup;
-    /**消息描述*/
+    /**
+     * 消息描述
+     */
     private String desc;
 
     MessageProtocol(String topic, String producerGroup, String consumerGroup, String desc) {
@@ -38,4 +48,5 @@ public enum MessageProtocol {
 
     public String getConsumerGroup() {
         return consumerGroup;
-    }}
+    }
+}

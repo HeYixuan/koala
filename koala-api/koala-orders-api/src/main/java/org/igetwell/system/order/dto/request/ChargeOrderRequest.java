@@ -13,11 +13,17 @@ public class ChargeOrderRequest implements Serializable {
      * 会员ID
      */
     private Long memberId;
-    /**手机号*/
+    /**
+     * 手机号
+     */
     private Long mobile;
-    /**金额*/
+    /**
+     * 金额
+     */
     private BigDecimal money;
-    /**商品ID*/
+    /**
+     * 商品ID
+     */
     private Long goodsId;
 
     public ChargeOrderRequest() {

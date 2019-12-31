@@ -6,7 +6,7 @@ import org.igetwell.system.order.dto.request.RefundTradeRequest;
 import org.igetwell.system.order.entity.RefundOrder;
 import org.igetwell.system.order.feign.RefundOrderClient;
 import org.igetwell.system.order.protocol.RefundPayProtocol;
-import org.igetwell.wechat.app.service.IWxReturnPayService;
+import org.igetwell.wechat.app.service.IWxPayService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +26,7 @@ public class RefundOrderConsumer implements RocketMQListener<RefundPayProtocol> 
     private RefundOrderClient refundOrderClient;
 
     @Autowired
-    private IWxReturnPayService iWxReturnPayService;
+    private IWxPayService iWxPayService;
 
     @Override
     public void onMessage(RefundPayProtocol protocol) {
@@ -42,7 +42,7 @@ public class RefundOrderConsumer implements RocketMQListener<RefundPayProtocol> 
                 return;
             }
             LOGGER.info("[微信支付]-退款订单消费者调用微信退款开始 微信支付单号：{}, 商户订单号：{}.", transactionId, tradeNo);
-            iWxReturnPayService.returnPay(transactionId, tradeNo, order.getOutNo(), String.valueOf(order.getTotalFee()), String.valueOf(order.getRefundFee()));
+            iWxPayService.refundPay(transactionId, tradeNo, order.getOutNo(), String.valueOf(order.getTotalFee()), String.valueOf(order.getRefundFee()));
         } catch (Exception e) {
             LOGGER.error("[微信支付]-退款订单消费者调用微信退款异常.正在重试. 微信支付单号：{}, 商户订单号：{}.", transactionId, tradeNo, e);
             String message = String.format("[订单超时消费者]-退款订单消费者调用微信退款异常.正在重试. 微信支付单号：%s, 商户订单号：%s.", transactionId, tradeNo);

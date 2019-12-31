@@ -1,0 +1,98 @@
+spring:
+  main:
+    allow-bean-definition-overriding: true
+
+  thymeleaf:
+    mode: LEGACYHTML5
+    prefix: classpath:/templates/
+    suffix: .html
+    encoding: UTF-8
+    cache: false
+
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+    default-property-inclusion: NON_EMPTY
+
+
+attach: stg
+
+#微信开放平台
+componentAppId: wx9a6700dcfc8867aa
+componentAppSecret: b6fb9b952f581df671b7dcc42231dc83
+#componentAppId: wx81aa03f442e8d692
+#componentAppSecret: dd8063fc89b412d9f88d1f3cb2c8a1d3
+componentToken: fsrtyuiopfghjksadfe3232a
+encodingAesKey: sdfaererit3423828343jeriooweqwqqwq22wwwfdgs
+
+wechat:
+  appId: wx2681cc8716638f35
+  secret: 1c986340bbf0056ae319555b63f494b4
+  mchId: 1569458631
+  paterKey: 7bkxZxx2ULEvLG0hjEwAjVi5OD0E4AU1
+  cert: C://Users//Admin//Downloads//WXCertUtil//cert//1569458631_20191218_cert//apiclient_cert.p12
+  attach: stg
+  payNotify: https://open.easy.echosite.cn/wx/pay/payNotify
+  refundNotify: https://open.easy.echosite.cn/wx/pay/refundNotify
+
+alipay:
+  appId: 2018090761265721
+  private-key: MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDGsTgt9V4ACAGj+5NRKH7Cs1/ydk/1ga4jG/4/aHgWzuO/Mf1fLT75v0adiXzbXhKi0HVxqMrGY1neF99qmVDLrENmxWVcqt8dUvViQEw/PB2e8AN/hl8VuNiOHFLzZlhy420ULqCF4VpEFdYBYWfEhUG0jwbzByRnMhhfvz8PkFFyxoWSxNivwBxJcNcbCymIXX3iucTQzfzuTLXznMMWNmyIEeafhVlr950axE7/LddAXvuyfsHibVd6k49n4CARTM93hFFc2vual651EF6gJFxfhJuiFX1oR3o/zYQsM5xpIwYyQG6euD9y+IyEQLfVMBxFgVGkaHoao45uQbtHAgMBAAECggEAT95dHtxK9OhDAI/YH/+PNOS15Nj6O03tmd9ezE5KN6Dim7CUkPW3It1onVru/Z9LDneNPisDl8vIDCa8gDUw7S5Jyb3/iMiG91qpmN0PyTt5DLKeNVzmS+0J39Yy4fR6CXSyHDLCBA8aIdRFOjjVZYHLb7EusfJlB7ZzZcmSp8Y+DREFqaGtra4tIHJpdIaqIE+xiaIm0qd5OziqIE9Af0rrhAisytCTXkCL1Z1ZhOrenVMVNRrWcofWUTqDqMqurE4XofsM7wPI4n7QjZrJ+iqrYcGGHvvIJmaOYqbBIZ0f3oeTf22ikpZkbArwzzvdh81ZsBAKF8FGekRX4P66wQKBgQDpAmlDsX46vNNXklRqtY6JaXjFvszRy0TDlX+5M3snOBZClPY2YOk31uhr3tOcE6VD0a4krQMETQ79Dr5PomJeEHTPn0wzOojubsbu7//p0oMtYnLG9r1hUHpJ3BAfc7xHJBqSMfo1OVfTIsUe8m3CR3w/JB6IgNRF25bUepYK0wKBgQDaS/2cHHFhjPgrRMJNsv47dNtfWPySHCzUkZxY8QRK9Cu4TY68kkjPk8cHWYxEMgBq7XgkcwT+/StE9FZoFjPBAKRXYT/65cDpHb9N+bh1OLYKt+kYiC/ZNvzz+S9m+LJmzbTcujgOU1TZcADFjQlU0/PAjAd/SY+2WYgoXpPdPQKBgQC/fVbK5fxKA1JgPoaXp5t7PC2fvV0P8NATODJeHnvQUFyi3U62g9BGLpyVwer/8nk4EgLeazz2dOmjeFFYmqfii/2jf1OdKjbMVEeyp5QWMgXR731KHA6pAf1t46dwYanSgU5A5UeuI/EUOBfthehD6IGoVmOtZMqOmpcLCa9zNwKBgDcKKeuOkFfUP05Ji+QjWU6MbDNiMGx2hicif5U9T6PGZK+XfoG1MH6F+Ay2W1NmeAx9y2kFRyEznBFKue6MiogDLWyKrKMKAtXEFlQGvqdvoRaawD7bN5VA9A5fqcAAvJqHCy8MFM4n3KDmSIuGv++PcUn/BHTni0Ci2l2zWvzRAoGBAK8+sstj+JZgk480fp1jG14WPzjmKYRmJitKRTJBQYG01FYOUZOHQJku5eA8IT6W85OKHvk30i8Seauc+GhiqXFI5ki5paEc4YBnw8ImiWwfinp0Nx971iA9CTy5rlyEHSKtBxLWd7Ub+ERDzj/MpdEtN+XM43drfuRGM181L1gP
+  public-key: MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAxrE4LfVeAAgBo/uTUSh+wrNf8nZP9YGuIxv+P2h4Fs7jvzH9Xy0++b9GnYl8214SotB1cajKxmNZ3hffaplQy6xDZsVlXKrfHVL1YkBMPzwdnvADf4ZfFbjYjhxS82ZYcuNtFC6gheFaRBXWAWFnxIVBtI8G8wckZzIYX78/D5BRcsaFksTYr8AcSXDXGwspiF194rnE0M387ky185zDFjZsiBHmn4VZa/edGsRO/y3XQF77sn7B4m1XepOPZ+AgEUzPd4RRXNr7mpeudRBeoCRcX4SbohV9aEd6P82ELDOcaSMGMkBunrg/cviMhEC31TAcRYFRpGh6GqOObkG7RwIDAQAB
+  alipay-public-key: MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAnnuQBJsOA86f0v0YBo3doKIHuKslWS6987HsbQbE27cQcMiR3l6BL4/elQ/teFL+D4YMkfx2zWdxP/ynatUFVhfXjRI5McGaqXTgoPhm+aCk6I8SxReYVaR4/jJsqBECkZDwt8a0iobyeroXgSBl2sFTgJ9W1nmvIRs0wGqF3RfZeuMShZdoinu5wxx36pOC0ixw23YT0JMkuORMMfakOV+yMLCHW+OFAhP6KJGW4tS7ijvOmSarKacBNm1WhRmMHHCgcW0N7lMw/lbzgbhlifdKLCfXo8jyPjqVQoaJO/hUivqozKb0fW5NzfVR7pLzwC/u1GhYG7RWf+kXZVqrYwIDAQAB
+  gateway: https://openapi.alipay.com/gateway.do
+  payNotify: https://open.easy.echosite.cn/alipay/pay/payNotify
+  returnNotify: https://open.easy.echosite.cn/alipay/pay/returnNotify
+  refundNotify: https://open.easy.echosite.cn/alipay/pay/refundNotify
+
+
+sequence:
+  snowflake:
+    datacenterId: 16
+    workerId: 21
+
+
+rocketmq:
+  producer:
+    group: pay-test
+    send-message-timeout: 300000
+    compress-message-body-threshold: 4096
+    max-message-size: 4194304
+    retry-times-when-send-async-failed: 0
+    retry-next-server: true
+    retry-times-when-send-failed: 2
+  name-server: 127.0.0.1:9876
+
+feign:
+  hystrix:
+    enabled: true
+  okhttp:
+    enabled: true
+  httpclient:
+    enabled: false
+  client:
+    config:
+      default:
+        connectTimeout: 10000
+        readTimeout: 10000
+  compression:
+    request:
+      enabled: true
+    response:
+      enabled: true
+# hystrix If you need to use ThreadLocal bound variables in your RequestInterceptor`s
+# you will need to either set the thread isolation strategy for Hystrix to `SEMAPHORE or disable Hystrix in Feign.
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          strategy: SEMAPHORE
+          thread:
+            timeoutInMilliseconds: 60000
+  shareSecurityContext: true
+
+
+ribbon:
+  ReadTimeout: 120000
+  ConnectTimeout: 30000

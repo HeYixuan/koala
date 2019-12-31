@@ -1,5 +1,7 @@
 package org.igetwell.system.order.service;
 
+import org.igetwell.common.uitls.ResponseEntity;
+import org.igetwell.system.order.dto.request.OrderPay;
 import org.igetwell.system.order.entity.TradeOrder;
 
 public interface ITradeOrderService {
@@ -18,4 +20,6 @@ public interface ITradeOrderService {
     void insert(TradeOrder order);
 
     void update(TradeOrder order);
+
+    ResponseEntity trade(OrderPay orderPay);
 }

@@ -4,9 +4,9 @@ import org.igetwell.common.enums.TradeType;
 import org.igetwell.common.uitls.IOUtils;
 import org.igetwell.common.uitls.ResponseEntity;
 import org.igetwell.common.uitls.WebUtils;
+import org.igetwell.system.bean.dto.request.WxPayRequest;
 import org.igetwell.wechat.BaseController;
 import org.igetwell.wechat.app.service.IAlipayService;
-import org.igetwell.wechat.app.service.IWxReturnPayService;
 import org.igetwell.wechat.component.service.IWxComponentAppService;
 import org.igetwell.wechat.app.service.IWxPayService;
 import org.igetwell.wechat.sdk.bean.component.ComponentAppAccessToken;
@@ -23,9 +23,6 @@ public class WxPayController extends BaseController {
 
     @Autowired
     private IWxPayService iWxPayService;
-    @Autowired
-    private IWxReturnPayService iWxReturnPayService;
-
     @Autowired
     private IWxComponentAppService iWxComponentAppService;
 
@@ -53,12 +50,13 @@ public class WxPayController extends BaseController {
         return iWxPayService.preOrder(request.get(), "ojhc61KyGnCepGMIpcZI-YCPce30", TradeType.MWEB,"官网费用","GW201807162055","1");
     }
 
+
     /**
      * 微信退款
      */
-    @PostMapping("/returnPay")
-    public ResponseEntity returnPay(String transactionId, String tradeNo, String fee) throws Exception {
-        iWxReturnPayService.returnPay(transactionId, tradeNo,"1", "1", fee);
+    @PostMapping("/refundPay")
+    public ResponseEntity refundPay(String transactionId, String tradeNo, String fee) throws Exception {
+        iWxPayService.refundPay(transactionId, tradeNo,"1", "1", fee);
         return ResponseEntity.ok();
     }
 
@@ -69,7 +67,7 @@ public class WxPayController extends BaseController {
     @PostMapping(value = "/payNotify", produces = {"application/xml"})
     public void payNotify(){
         String xmlStr = IOUtils.readData(request.get());
-        String resultXml = iWxPayService.notifyMethod(xmlStr);
+        String resultXml = iWxPayService.payNotify(xmlStr);
         renderXml(resultXml);
     }
 
@@ -79,20 +77,20 @@ public class WxPayController extends BaseController {
     @PostMapping(value = "/refundNotify", produces = {"application/xml"})
     public void refundNotify(){
         String xmlStr = IOUtils.readData(request.get());
-        String resultXml = iWxReturnPayService.notifyMethod(xmlStr);
+        String resultXml = iWxPayService.refundNotify(xmlStr);
         renderXml(resultXml);
     }
 
     @GetMapping("/common/pay")
     public ResponseEntity commonPay(@RequestParam("amount") BigDecimal amount) throws Exception {
-        if(WebUtils.isWechat(request.get())){ //微信
+        if(WebUtils.isWechat()){ //微信
             ComponentAppAccessToken accessToken = iWxComponentAppService.getAccessToken("wx2681cc8716638f35", "oNDnvs8I7ewNZrB6iFZC4s7Fxn88");
             Map<String, String> resultMap = iWxPayService.preOrder(request.get(), accessToken.getOpenid(), TradeType.JSAPI,"官网费用","GW201807162055", String.valueOf(amount));
             return ResponseEntity.ok(resultMap);
-        } else if (WebUtils.isAliPay(request.get())) {  //支付宝
+        } else if (WebUtils.isAliPay()) {  //支付宝
             //String page = iAlipayService.wapPay("cp21", "cp001", "Gw100001", "0.01");
-            String page = iAlipayService.scanPay("cp21", "cp001", "Gw100001", "0.01");
-            return ResponseEntity.ok(page);
+            Map<String, String> resultMap = iAlipayService.scanPay("cp21", "cp001","0.01");
+            return ResponseEntity.ok(resultMap);
         }
         return ResponseEntity.ok("其它支付");
     }
@@ -104,8 +102,8 @@ public class WxPayController extends BaseController {
         //PC网站支付
         //String page = iAlipayService.webPc("cp21", "cp001", "Gw100001", "0.01");
         //面对面扫码支付
-        String page = iAlipayService.scanPay("cp23", "cp002", "Gw100002", "0.03");
-        return ResponseEntity.ok(page);
+        Map<String, String> resultMap = iAlipayService.scanPay("cp23", "cp002", "0.03");
+        return ResponseEntity.ok(resultMap);
     }
 
     /**
@@ -117,7 +115,7 @@ public class WxPayController extends BaseController {
     @GetMapping("/alipay/pay/pay")
     public ModelAndView pay(@RequestParam("amount") BigDecimal amount) throws Exception {
         //手机网站支付
-        String page = iAlipayService.wapPay("cp21", "cp001", "Gw100001", "0.01");
+        String page = iAlipayService.wapPay("cp21", "cp001", "0.01");
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.addObject("page", page);
         modelAndView.setViewName("/success");

@@ -8,15 +8,25 @@ import java.math.BigDecimal;
  */
 public class OrderProtocol implements Serializable {
 
-    /**订单号*/
+    /**
+     * 订单号
+     */
     private String orderNo;
-    /**会员ID*/
+    /**
+     * 会员ID
+     */
     private Long memberId;
-    /**用户下单手机号*/
+    /**
+     * 用户下单手机号
+     */
     private Long mobile;
-    /**商品ID*/
+    /**
+     * 商品ID
+     */
     private Long goodsId;
-    /**用户交易金额*/
+    /**
+     * 用户交易金额
+     */
     private BigDecimal money;
 
     public OrderProtocol() {

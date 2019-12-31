@@ -1,39 +1,37 @@
 package org.igetwell.wechat.app.service;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
 
 public interface IAlipayService {
 
     /**
      * 手机网站支付预付款下单
-     * @param productName
-     * @param productId
+     * @param body
      * @param fee
      * @return
      */
-    String wapPay(String subject, String productName, String productId, String fee) throws Exception;
+    String wapPay(String subject, String body, String fee) throws Exception;
 
     /**
      * PC网站支付
      * @param subject
-     * @param productName
-     * @param productId
+     * @param body
      * @param fee
      * @return
      * @throws Exception
      */
-    String webPc(String subject, String productName, String productId, String fee) throws Exception;
+    String webPc(String subject, String body, String fee) throws Exception;
 
     /**
      * 扫码预付款下单
      * @param subject
-     * @param productName
-     * @param productId
+     * @param body
      * @param fee
      * @return
      * @throws Exception
      */
-    String scanPay(String subject, String productName, String productId, String fee) throws Exception;
+    Map<String, String> scanPay(String subject, String body, String fee);
 
 
     /**

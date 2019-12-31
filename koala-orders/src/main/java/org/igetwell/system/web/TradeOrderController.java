@@ -1,6 +1,7 @@
 package org.igetwell.system.web;
 
 import org.igetwell.common.uitls.ResponseEntity;
+import org.igetwell.system.order.dto.request.OrderPay;
 import org.igetwell.system.order.entity.TradeOrder;
 import org.igetwell.system.order.service.ITradeOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,17 @@ public class TradeOrderController {
 
     @Autowired
     private ITradeOrderService iTradeOrderService;
+
+    /**
+     * 订单创建
+     * @param orderPay
+     * @return
+     */
+    @PostMapping("/orders/trade")
+    public ResponseEntity trade(@RequestBody OrderPay orderPay){
+        return iTradeOrderService.trade(orderPay);
+    }
+
 
     /**
      * 保存支付订单

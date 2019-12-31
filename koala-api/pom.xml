@@ -24,6 +24,8 @@
         <module>koala-member-api</module>
         <module>koala-merchant-api</module>
         <module>koala-orders-api</module>
+        <module>koala-wechat-api</module>
+        <module>koala-paypal-api</module>
     </modules>
 
     <dependencies>

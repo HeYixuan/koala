@@ -25,6 +25,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
 import java.util.Map;
 
 @Service
@@ -58,13 +59,12 @@ public class AlipayService implements IAlipayService {
     /**
      * 扫码预付款下单
      *
-     * @param productName
-     * @param productId
+     * @param body
      * @param fee
      * @return
      */
     @Override
-    public String wapPay(String subject, String productName, String productId, String fee) throws Exception {
+    public String wapPay(String subject, String body, String fee) throws Exception {
         //创建交易信息模型对象
         AlipayTradeWapPayModel precreateModel = new AlipayTradeWapPayModel();
         //商户订单号，需要保证不重复
@@ -74,7 +74,7 @@ public class AlipayService implements IAlipayService {
         //交易主题
         precreateModel.setSubject(subject);
         //商品名称
-        precreateModel.setBody(productName);
+        precreateModel.setBody(body);
         //销售产品码，商家和支付宝签约的产品码，该产品请填写固定值：QUICK_WAP_WAY
         precreateModel.setProductCode("QUICK_WAP_PAY");
         //设置支付宝交易超时 取值范围：1m～15d。m-分钟，h-小时，d-天，1c-当天（1c-当天的情况下，无论交易何时创建，都在0点关闭）
@@ -98,14 +98,13 @@ public class AlipayService implements IAlipayService {
      * PC网站支付
      *
      * @param subject
-     * @param productName
-     * @param productId
+     * @param body
      * @param fee
      * @return
      * @throws Exception
      */
     @Override
-    public String webPc(String subject, String productName, String productId, String fee) throws Exception {
+    public String webPc(String subject, String body, String fee) throws Exception {
         //创建交易信息模型对象
         AlipayTradePagePayModel precreateModel = new AlipayTradePagePayModel();
         //商户订单号，需要保证不重复
@@ -115,7 +114,7 @@ public class AlipayService implements IAlipayService {
         //交易主题
         precreateModel.setSubject(subject);
         //商品名称
-        precreateModel.setBody(productName);
+        precreateModel.setBody(body);
         //销售产品码，商家和支付宝签约的产品码，该产品请填写固定值：QUICK_WAP_WAY
         precreateModel.setProductCode("FAST_INSTANT_TRADE_PAY");
         //设置支付宝交易超时 取值范围：1m～15d。m-分钟，h-小时，d-天，1c-当天（1c-当天的情况下，无论交易何时创建，都在0点关闭）
@@ -138,36 +137,42 @@ public class AlipayService implements IAlipayService {
      * 扫码预付款下单
      *
      * @param subject
-     * @param productName
-     * @param productId
+     * @param body
      * @param fee
      * @return
      * @throws Exception
      */
     @Override
-    public String scanPay(String subject, String productName, String productId, String fee) throws Exception {
-        AlipayTradePrecreateModel model = new AlipayTradePrecreateModel();//创建API对应的request类
-        //商户订单号，需要保证不重复
-        model.setOutTradeNo(attach + sequence.nextNo());
-        //订单金额
-        model.setTotalAmount(fee);
-        //交易主题
-        model.setSubject(subject);
-        //商品名称
-        model.setBody(productName);
-        //销售产品码，不传默认使用FACE_TO_FACE_PAYMENT
-        model.setProductCode("FACE_TO_FACE_PAYMENT");
-        //设置支付宝交易超时 取值范围：1m～15d。m-分钟，h-小时，d-天，1c-当天（1c-当天的情况下，无论交易何时创建，都在0点关闭）
-        model.setTimeoutExpress("5m");
-        AlipayTradePrecreateRequest request = new AlipayTradePrecreateRequest();//创建API对应的request类
-        request.setBizModel(model);
-        //设置后台异步通知的地址，在手机端支付后支付宝会通知后台(成功或者失败)，手机端的真实支付结果依赖于此地址
-        request.setNotifyUrl(payNotify);
-        //支付成功后的跳转页面,由于前台回跳的不可靠性，前台回跳只能作为商户支付结果页的入口，最终支付结果必须以异步通知或查询接口返回为准，不能依赖前台回跳
-        request.setReturnUrl(returnNotify);
-        AlipayClient alipayClient = new DefaultAlipayClient(gateway, appId, privateKey, "json", "UTF-8", alipayPublicKey, SignType.RSA2.name());
-        String qrUrl = alipayClient.execute(request).getQrCode();
-        return qrUrl;
+    public Map<String, String> scanPay(String subject, String body, String fee) {
+        try {
+            AlipayTradePrecreateModel model = new AlipayTradePrecreateModel();//创建API对应的request类
+            //商户订单号，需要保证不重复
+            model.setOutTradeNo(attach + sequence.nextNo());
+            //订单金额
+            model.setTotalAmount(fee);
+            //交易主题
+            model.setSubject(subject);
+            //商品名称
+            model.setBody(body);
+            //销售产品码，不传默认使用FACE_TO_FACE_PAYMENT
+            model.setProductCode("FACE_TO_FACE_PAYMENT");
+            //设置支付宝交易超时 取值范围：1m～15d。m-分钟，h-小时，d-天，1c-当天（1c-当天的情况下，无论交易何时创建，都在0点关闭）
+            model.setTimeoutExpress("5m");
+            AlipayTradePrecreateRequest request = new AlipayTradePrecreateRequest();//创建API对应的request类
+            request.setBizModel(model);
+            //设置后台异步通知的地址，在手机端支付后支付宝会通知后台(成功或者失败)，手机端的真实支付结果依赖于此地址
+            request.setNotifyUrl(payNotify);
+            //支付成功后的跳转页面,由于前台回跳的不可靠性，前台回跳只能作为商户支付结果页的入口，最终支付结果必须以异步通知或查询接口返回为准，不能依赖前台回跳
+            request.setReturnUrl(returnNotify);
+            AlipayClient alipayClient = new DefaultAlipayClient(gateway, appId, privateKey, "json", "UTF-8", alipayPublicKey, SignType.RSA2.name());
+            String codeUrl = alipayClient.execute(request).getQrCode();
+            Map<String, String> packageMap = new HashMap<>();
+            packageMap.put("codeUrl", codeUrl);
+            return packageMap;
+        } catch (Exception e) {
+            throw new RuntimeException("[支付宝支付]-调用支付宝支付异常.", e);
+        }
+
     }
 
     /**

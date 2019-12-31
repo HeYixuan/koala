@@ -49,6 +49,7 @@
 		<module>koala-merchant</module>
 		<module>koala-orders</module>
 		<module>koala-wechat</module>
+		<module>koala-paypal</module>
 		<module>koala-api</module>
 		<module>koala-common</module>
 	</modules>
