@@ -5,9 +5,9 @@ import org.igetwell.system.order.dto.request.OrderPay;
 import org.igetwell.system.order.entity.TradeOrder;
 import org.igetwell.system.order.service.ITradeOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.math.BigDecimal;
 
 @RestController
 public class TradeOrderController {
@@ -23,6 +23,14 @@ public class TradeOrderController {
     @PostMapping("/orders/trade")
     public ResponseEntity trade(@RequestBody OrderPay orderPay){
         return iTradeOrderService.trade(orderPay);
+    }
+
+    /**
+     * 订单创建
+     */
+    @GetMapping("/orders/trade/scan/{fee}")
+    public ResponseEntity trade(@PathVariable("fee") BigDecimal fee){
+        return iTradeOrderService.scan(fee);
     }
 
 

@@ -2,73 +2,28 @@ package org.igetwell.system.bean.dto.request;
 
 import org.igetwell.common.enums.TradeType;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 
-public class WxPayRequest implements Serializable {
+public class WxPayRequest extends PayRequest {
 
     /**
-     * 商品ID
+     * 请求端IP
      */
-    private Long goodsId;
+    private String clientIp;
 
-    /**
-     * 商品信息
-     */
-    private String body;
-    /**
-     * 支付金额,单位为分
-     */
-    private BigDecimal fee;
-
-    /**
-     * 用户标识
-     */
-    private String openId;
-    /**
-     * 支付类型
-     */
-    private TradeType tradeType;
-
-    public String getOpenId() {
-        return openId;
+    public String getClientIp() {
+        return clientIp;
     }
 
-    public void setOpenId(String openId) {
-        this.openId = openId;
+    public void setClientIp(String clientIp) {
+        this.clientIp = clientIp;
     }
 
-    public Long getGoodsId() {
-        return goodsId;
+    public WxPayRequest() {
     }
 
-    public void setGoodsId(Long goodsId) {
-        this.goodsId = goodsId;
+    public WxPayRequest(TradeType tradeType, String tradeNo, String productId, String body, BigDecimal fee, String clientIp) {
+        super(tradeNo, productId, body, fee, tradeType);
+        this.clientIp = clientIp;
     }
-
-
-    public TradeType getTradeType() {
-        return tradeType;
-    }
-
-    public void setTradeType(TradeType tradeType) {
-        this.tradeType = tradeType;
-    }
-
-    public String getBody() {
-        return body;
-    }
-
-    public void setBody(String body) {
-        this.body = body;
-    }
-
-    public BigDecimal getFee() {
-        return fee;
-    }
-
-    public void setFee(BigDecimal fee) {
-        this.fee = fee;
-    }
-
 }

@@ -1,46 +1,16 @@
 package org.igetwell.system.bean.dto.request;
 
-import java.io.Serializable;
+import org.igetwell.common.enums.TradeType;
+
 import java.math.BigDecimal;
 
-public class AliPayRequest implements Serializable {
+public class AliPayRequest extends PayRequest {
 
-    /**
-     * 商品ID
-     */
-    private Long goodsId;
-
-    /**
-     * 商品信息
-     */
-    private String body;
-    /**
-     * 支付金额,单位为分
-     */
-    private BigDecimal fee;
-
-    public Long getGoodsId() {
-        return goodsId;
+    public AliPayRequest() {
+        super();
     }
 
-    public void setGoodsId(Long goodsId) {
-        this.goodsId = goodsId;
+    public AliPayRequest(TradeType tradeType, String tradeNo, String productId, String body, BigDecimal fee) {
+        super(tradeNo, productId, body, fee, tradeType);
     }
-
-    public String getBody() {
-        return body;
-    }
-
-    public void setBody(String body) {
-        this.body = body;
-    }
-
-    public BigDecimal getFee() {
-        return fee;
-    }
-
-    public void setFee(BigDecimal fee) {
-        this.fee = fee;
-    }
-
 }

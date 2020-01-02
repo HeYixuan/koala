@@ -1,12 +1,11 @@
-package org.igetwell.paypal.dto.request;
+package org.igetwell.system.bean.dto.request;
 
 import org.igetwell.common.enums.TradeType;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 
-public class PayPalRequest implements Serializable {
-
+public class PayRequest implements Serializable {
 
     /**
      * 商户订单交易号
@@ -26,11 +25,6 @@ public class PayPalRequest implements Serializable {
      * 支付金额,单位为分
      */
     private BigDecimal fee;
-
-    /**
-     * 请求端IP
-     */
-    private String clientIp;
 
     /**
      * 支付类型
@@ -69,14 +63,6 @@ public class PayPalRequest implements Serializable {
         this.fee = fee;
     }
 
-    public String getClientIp() {
-        return clientIp;
-    }
-
-    public void setClientIp(String clientIp) {
-        this.clientIp = clientIp;
-    }
-
     public TradeType getTradeType() {
         return tradeType;
     }
@@ -85,23 +71,14 @@ public class PayPalRequest implements Serializable {
         this.tradeType = tradeType;
     }
 
-    public PayPalRequest() {
+    public PayRequest() {
     }
 
-    public PayPalRequest(TradeType tradeType, String tradeNo, String productId, String body, BigDecimal fee, String clientIp) {
-        this.tradeType = tradeType;
+    public PayRequest(String tradeNo, String productId, String body, BigDecimal fee, TradeType tradeType) {
         this.tradeNo = tradeNo;
         this.productId = productId;
         this.body = body;
         this.fee = fee;
-        this.clientIp = clientIp;
-    }
-
-    public PayPalRequest(TradeType tradeType, String tradeNo, String productId, String body, BigDecimal fee) {
         this.tradeType = tradeType;
-        this.tradeNo = tradeNo;
-        this.productId = productId;
-        this.body = body;
-        this.fee = fee;
     }
 }

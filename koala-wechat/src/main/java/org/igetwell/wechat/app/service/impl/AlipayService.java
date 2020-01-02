@@ -14,9 +14,12 @@ import com.alipay.api.request.AlipayTradeWapPayRequest;
 import com.alipay.api.response.AlipayTradeRefundResponse;
 import org.igetwell.common.constans.AliPayConstants;
 import org.igetwell.common.enums.SignType;
+import org.igetwell.common.enums.TradeType;
 import org.igetwell.common.sequence.sequence.Sequence;
+import org.igetwell.common.uitls.BigDecimalUtils;
 import org.igetwell.common.uitls.CharacterUtils;
 import org.igetwell.common.uitls.ParamMap;
+import org.igetwell.system.bean.dto.request.AliPayRequest;
 import org.igetwell.wechat.app.service.IAlipayService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +28,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -58,17 +62,13 @@ public class AlipayService implements IAlipayService {
 
     /**
      * 扫码预付款下单
-     *
-     * @param body
-     * @param fee
-     * @return
      */
     @Override
-    public String wapPay(String subject, String body, String fee) throws Exception {
+    public Map<String, String> wap(String tradeNo, String subject, String body, String fee) {
         //创建交易信息模型对象
         AlipayTradeWapPayModel precreateModel = new AlipayTradeWapPayModel();
         //商户订单号，需要保证不重复
-        precreateModel.setOutTradeNo(attach + sequence.nextNo());
+        precreateModel.setOutTradeNo(tradeNo);
         //订单金额
         precreateModel.setTotalAmount(fee);
         //交易主题
@@ -79,36 +79,38 @@ public class AlipayService implements IAlipayService {
         precreateModel.setProductCode("QUICK_WAP_PAY");
         //设置支付宝交易超时 取值范围：1m～15d。m-分钟，h-小时，d-天，1c-当天（1c-当天的情况下，无论交易何时创建，都在0点关闭）
         precreateModel.setTimeoutExpress("5m");
-        //创建阿里请求对象
-        AlipayTradeWapPayRequest alipayTradeWapPayRequest = new AlipayTradeWapPayRequest();
-        //业务请求参数的集合
-        alipayTradeWapPayRequest.setBizModel(precreateModel);
-        //设置后台异步通知的地址，在手机端支付后支付宝会通知后台(成功或者失败)，手机端的真实支付结果依赖于此地址
-        alipayTradeWapPayRequest.setNotifyUrl(payNotify);
-        //支付成功后的跳转页面,由于前台回跳的不可靠性，前台回跳只能作为商户支付结果页的入口，最终支付结果必须以异步通知或查询接口返回为准，不能依赖前台回跳
-        alipayTradeWapPayRequest.setReturnUrl(returnNotify);
-        //创建阿里客户端对象
-        AlipayClient alipayClient = new DefaultAlipayClient(gateway, appId, privateKey, "json", "UTF-8", alipayPublicKey, SignType.RSA2.name());
-        String page = alipayClient.pageExecute(alipayTradeWapPayRequest).getBody();
-        return page;
+        try {
+            //创建阿里请求对象
+            AlipayTradeWapPayRequest alipayTradeWapPayRequest = new AlipayTradeWapPayRequest();
+            //业务请求参数的集合
+            alipayTradeWapPayRequest.setBizModel(precreateModel);
+            //设置后台异步通知的地址，在手机端支付后支付宝会通知后台(成功或者失败)，手机端的真实支付结果依赖于此地址
+            alipayTradeWapPayRequest.setNotifyUrl(payNotify);
+            //支付成功后的跳转页面,由于前台回跳的不可靠性，前台回跳只能作为商户支付结果页的入口，最终支付结果必须以异步通知或查询接口返回为准，不能依赖前台回跳
+            alipayTradeWapPayRequest.setReturnUrl(returnNotify);
+            //创建阿里客户端对象
+            AlipayClient alipayClient = new DefaultAlipayClient(gateway, appId, privateKey, "json", "UTF-8", alipayPublicKey, SignType.RSA2.name());
+            String pageForm = alipayClient.pageExecute(alipayTradeWapPayRequest).getBody();
+            Map<String, String> packageMap = new HashMap<>();
+            packageMap.put("pageForm", pageForm);
+            return packageMap;
+        } catch (Exception e) {
+            logger.error("商户交易号：{} 创建预支付订单失败！", precreateModel.getOutTradeNo(), e);
+            throw new RuntimeException("创建预支付订单失败！", e);
+        }
+
     }
 
 
     /**
      * PC网站支付
-     *
-     * @param subject
-     * @param body
-     * @param fee
-     * @return
-     * @throws Exception
      */
     @Override
-    public String webPc(String subject, String body, String fee) throws Exception {
+    public Map<String, String> web(String tradeNo, String subject, String body, String fee) {
         //创建交易信息模型对象
         AlipayTradePagePayModel precreateModel = new AlipayTradePagePayModel();
         //商户订单号，需要保证不重复
-        precreateModel.setOutTradeNo(attach + sequence.nextNo());
+        precreateModel.setOutTradeNo(tradeNo);
         //订单金额
         precreateModel.setTotalAmount(fee);
         //交易主题
@@ -119,32 +121,33 @@ public class AlipayService implements IAlipayService {
         precreateModel.setProductCode("FAST_INSTANT_TRADE_PAY");
         //设置支付宝交易超时 取值范围：1m～15d。m-分钟，h-小时，d-天，1c-当天（1c-当天的情况下，无论交易何时创建，都在0点关闭）
         precreateModel.setTimeoutExpress("5m");
-        //创建阿里请求对象
-        AlipayTradePagePayRequest alipayTradePagePayRequest = new AlipayTradePagePayRequest();
-        //业务请求参数的集合
-        alipayTradePagePayRequest.setBizModel(precreateModel);
-        //设置后台异步通知的地址，在手机端支付后支付宝会通知后台(成功或者失败)，手机端的真实支付结果依赖于此地址
-        alipayTradePagePayRequest.setNotifyUrl(payNotify);
-        //支付成功后的跳转页面,由于前台回跳的不可靠性，前台回跳只能作为商户支付结果页的入口，最终支付结果必须以异步通知或查询接口返回为准，不能依赖前台回跳
-        alipayTradePagePayRequest.setReturnUrl(returnNotify);
-        //创建阿里客户端对象
-        AlipayClient alipayClient = new DefaultAlipayClient(gateway, appId, privateKey, "json", "UTF-8", alipayPublicKey, SignType.RSA2.name());
-        String page = alipayClient.pageExecute(alipayTradePagePayRequest).getBody();
-        return page;
+        try {
+            //创建阿里请求对象
+            AlipayTradePagePayRequest alipayTradePagePayRequest = new AlipayTradePagePayRequest();
+            //业务请求参数的集合
+            alipayTradePagePayRequest.setBizModel(precreateModel);
+            //设置后台异步通知的地址，在手机端支付后支付宝会通知后台(成功或者失败)，手机端的真实支付结果依赖于此地址
+            alipayTradePagePayRequest.setNotifyUrl(payNotify);
+            //支付成功后的跳转页面,由于前台回跳的不可靠性，前台回跳只能作为商户支付结果页的入口，最终支付结果必须以异步通知或查询接口返回为准，不能依赖前台回跳
+            alipayTradePagePayRequest.setReturnUrl(returnNotify);
+            //创建阿里客户端对象
+            AlipayClient alipayClient = new DefaultAlipayClient(gateway, appId, privateKey, "json", "UTF-8", alipayPublicKey, SignType.RSA2.name());
+            String pageForm = alipayClient.pageExecute(alipayTradePagePayRequest).getBody();
+            Map<String, String> packageMap = new HashMap<>();
+            packageMap.put("pageForm", pageForm);
+            return packageMap;
+        } catch (Exception e) {
+            logger.error("商户交易号：{} 创建预支付订单失败！", precreateModel.getOutTradeNo(), e);
+            throw new RuntimeException("创建预支付订单失败！", e);
+        }
+
     }
 
     /**
      * 扫码预付款下单
-     *
-     * @param subject
-     * @param body
-     * @param fee
-     * @return
-     * @throws Exception
      */
     @Override
-    public Map<String, String> scanPay(String subject, String body, String fee) {
-        try {
+    public Map<String, String> scan(String tradeNo, String subject, String body, String fee) {
             AlipayTradePrecreateModel model = new AlipayTradePrecreateModel();//创建API对应的request类
             //商户订单号，需要保证不重复
             model.setOutTradeNo(attach + sequence.nextNo());
@@ -158,6 +161,7 @@ public class AlipayService implements IAlipayService {
             model.setProductCode("FACE_TO_FACE_PAYMENT");
             //设置支付宝交易超时 取值范围：1m～15d。m-分钟，h-小时，d-天，1c-当天（1c-当天的情况下，无论交易何时创建，都在0点关闭）
             model.setTimeoutExpress("5m");
+        try {
             AlipayTradePrecreateRequest request = new AlipayTradePrecreateRequest();//创建API对应的request类
             request.setBizModel(model);
             //设置后台异步通知的地址，在手机端支付后支付宝会通知后台(成功或者失败)，手机端的真实支付结果依赖于此地址
@@ -170,9 +174,52 @@ public class AlipayService implements IAlipayService {
             packageMap.put("codeUrl", codeUrl);
             return packageMap;
         } catch (Exception e) {
-            throw new RuntimeException("[支付宝支付]-调用支付宝支付异常.", e);
+            logger.error("商户交易号：{} 创建预支付订单失败！", model.getOutTradeNo(), e);
+            throw new RuntimeException("创建预支付订单失败！", e);
         }
 
+    }
+
+    /**
+     * 预下单
+     * @return
+     */
+    public Map<String, String> preOrder(TradeType tradeType, String tradeNo, String subject, String body, String fee) {
+        if (TradeType.WAP.equals(tradeType)) {
+            return this.wap(tradeNo, subject, body, fee);
+        }
+        if (TradeType.PC.equals(tradeType)) {
+            return this.web(tradeNo, subject, body, fee);
+        } else {
+            //FACE 当面扫
+            return this.scan(tradeNo, subject, body, fee);
+        }
+    }
+
+    /**
+     * 预下单
+     * @param payRequest
+     * @return
+     */
+    public Map<String, String> preOrder(AliPayRequest payRequest) {
+        String tradeNo = payRequest.getTradeNo();
+        String productId = payRequest.getProductId();
+        String body = payRequest.getBody();
+        BigDecimal fee = payRequest.getFee();
+        TradeType tradeType = payRequest.getTradeType();
+        if (CharacterUtils.isBlank(tradeType.name())) {
+            throw new IllegalArgumentException("交易支付类型不可为空.");
+        }
+        if (CharacterUtils.isBlank(productId)) {
+            throw new IllegalArgumentException("交易支付产品ID不可为空.");
+        }
+        if (CharacterUtils.isBlank(payRequest.getBody())) {
+            throw new IllegalArgumentException("交易支付商品描述不可为空.");
+        }
+        if (BigDecimalUtils.lessThan(fee, new BigDecimal(0))) {
+            throw new IllegalArgumentException("交易金额必须大于0.");
+        }
+        return this.preOrder(tradeType, tradeNo, productId, body, String.valueOf(fee));
     }
 
     /**

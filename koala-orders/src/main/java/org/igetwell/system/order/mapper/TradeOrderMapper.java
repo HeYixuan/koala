@@ -12,4 +12,6 @@ public interface TradeOrderMapper {
     int insert(TradeOrder order);
 
     int update(TradeOrder order);
+
+    int updateOrderStatus(Long id, Integer status);
 }

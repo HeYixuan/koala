@@ -1,7 +1,7 @@
 package org.igetwell.wechat.app.service;
 
 import org.igetwell.common.enums.TradeType;
-import javax.servlet.http.HttpServletRequest;
+import org.igetwell.system.bean.dto.request.WxPayRequest;
 import java.util.Map;
 
 /**
@@ -11,34 +11,33 @@ public interface IWxPayService {
 
     /**
      * 扫码预付款下单
-     * @param request
-     * @param productName
-     * @param productId
-     * @param fee
-     * @return
      */
-    String scanOrder(HttpServletRequest request, String productName, String productId, String fee);
+    Map<String, String> scan(String tradeNo, String productId, String body, String fee, String clientIp);
+
+    /**
+     * JSAPI预付款下单
+     */
+    Map<String, String> jsapi(String openId, String tradeNo, String body, String fee, String clientIp);
 
     /**
      * APP预付款下单
-     * @param request
-     * @param productName
-     * @param productId
-     * @param fee
-     * @return
      */
-    Map<String, String> jsAppOrder(HttpServletRequest request, String productName, String productId, String fee);
+    Map<String, String> app(String tradeNo, String body, String fee, String clientIp);
+
+    /**
+     * PC网站预付款下单
+     */
+    Map<String, String> web(String tradeNo, String body, String fee, String clientIp);
 
     /**
      * 微信JSAPI、H5、APP、NATIVE调起支付
-     * @param request
-     * @param tradeType
-     * @param body
-     * @param productId
-     * @param fee
-     * @return
      */
-    Map<String, String> preOrder(HttpServletRequest request, String openId, TradeType tradeType, String body, String productId, String fee);
+    Map<String, String> preOrder(TradeType tradeType, String openId, String productId, String body, String fee, String clientIp);
+
+    /**
+     * 预支付
+     */
+    Map<String, String> preOrder(WxPayRequest payRequest);
 
     /**
      * 处理微信支付回调

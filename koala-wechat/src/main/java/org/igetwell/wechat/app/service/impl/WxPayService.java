@@ -1,6 +1,5 @@
 package org.igetwell.wechat.app.service.impl;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.rocketmq.client.producer.SendCallback;
 import org.apache.rocketmq.client.producer.SendResult;
 import org.apache.rocketmq.spring.core.RocketMQTemplate;
@@ -9,6 +8,7 @@ import org.igetwell.common.enums.SignType;
 import org.igetwell.common.enums.TradeType;
 import org.igetwell.common.sequence.sequence.Sequence;
 import org.igetwell.common.uitls.*;
+import org.igetwell.system.bean.dto.request.WxPayRequest;
 import org.igetwell.system.order.entity.TradeOrder;
 import org.igetwell.system.order.feign.TradeOrderClient;
 import org.igetwell.system.order.protocol.RefundPayCallProtocol;
@@ -20,10 +20,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
-import javax.servlet.http.HttpServletRequest;
+import org.springframework.util.StringUtils;
 import java.math.BigDecimal;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -68,21 +66,13 @@ public class WxPayService implements IWxPayService {
 
     /**
      * 扫码预付款下单
-     * @param request
-     * @param productName
-     * @param productId
-     * @param fee
-     * @return
      */
-    public String scanOrder(HttpServletRequest request, String productName, String productId, String fee) {
-        String nonceStr = sequence.nextNo();
-        String timestamp = String.valueOf(System.currentTimeMillis()/1000);
-        String tradeNo = attach + sequence.nextValue();
-
+    public Map<String, String> scan(String tradeNo, String productId, String body, String fee, String clientIp) {
         try {
-            String clientIp = WebUtils.getIP(request);
+            String nonceStr = sequence.nextNo();
+            String timestamp = String.valueOf(System.currentTimeMillis()/1000);
             Map<String,String> paraMap= ParamMap.create("productId", productId)
-                    .put("body", productName)
+                    .put("body", body)
                     .put("tradeNo", tradeNo)
                     .put("fee", fee)
                     .put("nonceStr", nonceStr)
@@ -91,70 +81,65 @@ public class WxPayService implements IWxPayService {
                     .put("tradeType", "NATIVE")
                     .getData();
 
-            Map<String, String> resultXml = this.prePay(paraMap, SignType.MD5);
-            String returnCode = resultXml.get("return_code");
-            String resultCode = resultXml.get("result_code");
+            Map<String, String> resultXml = prePay(paraMap, SignType.MD5);
             String codeUrl = resultXml.get("code_url");
-            boolean isSuccess = WXPayConstants.SUCCESS.equals(returnCode) && WXPayConstants.SUCCESS.equals(resultCode);
-            if (!isSuccess) {
-                throw new RuntimeException("统一下单失败！" +
-                        "return_code:" + resultXml.get("return_code") + " " +
-                        "return_msg:" + resultXml.get("return_msg"));
-            }
-            logger.info("统一下单调用结束！预支付交易标识：{}. {}", resultXml.get("prepay_id"), resultXml.get("return_msg"));
-
-            TradeOrder order = new TradeOrder();
-            order.setMchId(12970L);
-            order.setMchNo("No:1001");
-            order.setTradeNo(tradeNo);
-            order.setBody(productName);
-            order.setFee(new BigDecimal(fee));
-            order.setChannelId(1L);
-            order.setClientIp(clientIp);
-            order.setStatus(1); //订单状态：0-订单生成 1-支付中
-            order.setCreateTime(new Date());
-            redisUtils.set(tradeNo, order);
-            return codeUrl;
+            Map<String, String> packageMap = new HashMap<>();
+            packageMap.put("codeUrl", codeUrl);
+            return packageMap;
         } catch (Exception e) {
-            logger.error("商户交易号：{} 预支付失败！", tradeNo, e);
+            logger.error("商户交易号：{} 创建预支付订单失败！", tradeNo, e);
+            throw new RuntimeException("创建预支付订单失败！", e);
         }
-        return null;
+    }
+
+    /**
+     * JSAPI预付款下单
+     */
+    public Map<String, String> jsapi(String openId, String tradeNo, String body, String fee, String clientIp) {
+        try {
+            String nonceStr = sequence.nextNo();
+            String timestamp = String.valueOf(System.currentTimeMillis()/1000);
+            Map<String,String> paraMap = ParamMap.create("openId", openId)
+                    .put("body", body)
+                    .put("tradeNo", tradeNo)
+                    .put("fee", fee)
+                    .put("nonceStr", nonceStr)
+                    .put("timestamp",timestamp)
+                    .put("tradeType", "JSAPI")
+                    .getData();
+            Map<String, String> resultXml = prePay(paraMap, SignType.MD5);
+            String prepayId = resultXml.get("prepay_id");
+            Map<String, String> packageMap = new HashMap<>();
+            packageMap.put("appid", defaultAppId);
+            packageMap.put("timeStamp", timestamp);
+            packageMap.put("nonceStr", nonceStr);
+            packageMap.put("package", "prepay_id=" + prepayId);
+            packageMap.put("signType", "MD5");
+            String sign = SignUtils.createSign(packageMap, paterKey, SignType.MD5);
+            packageMap.put("paySign", sign);
+            return packageMap;
+        } catch (Exception e) {
+            logger.error("商户交易号：{} 创建预支付订单失败！", tradeNo, e);
+            throw new RuntimeException("创建预支付订单失败！", e);
+        }
     }
 
     /**
      * APP预付款下单
-     * @param request
-     * @param productName
-     * @param productId
-     * @param fee
-     * @return
      */
-    public Map<String, String> jsAppOrder(HttpServletRequest request, String productName, String productId, String fee) {
-        String nonceStr = sequence.nextNo();
-        String timestamp = String.valueOf(System.currentTimeMillis()/1000);
-        String tradeNo = attach + sequence.nextValue();
-        Map<String,String> paraMap= ParamMap.create("productId", productId)
-                .put("body", productName)
-                .put("tradeNo", tradeNo)
-                .put("fee", fee)
-                .put("nonceStr", nonceStr)
-                .put("timestamp",timestamp)
-                .put("tradeType", "APP")
-                .getData();
+    public Map<String, String> app(String tradeNo, String body, String fee, String clientIp) {
         try {
-
-            Map<String, String> resultXml = this.prePay(paraMap, SignType.MD5);
-            String returnCode = resultXml.get("return_code");
-            String resultCode = resultXml.get("result_code");
-            boolean isSuccess = WXPayConstants.SUCCESS.equals(returnCode) && WXPayConstants.SUCCESS.equals(resultCode);
-            if (!isSuccess) {
-                throw new RuntimeException("统一支付失败！" +
-                        "return_code:" + resultXml.get("return_code") + " " +
-                        "return_msg:" + resultXml.get("return_msg"));
-            }
+            String nonceStr = sequence.nextNo();
+            String timestamp = String.valueOf(System.currentTimeMillis()/1000);
+            Map<String,String> paraMap = ParamMap.create("tradeNo", tradeNo)
+                    .put("body", body)
+                    .put("fee", fee)
+                    .put("nonceStr", nonceStr)
+                    .put("timestamp",timestamp)
+                    .put("tradeType", "APP")
+                    .getData();
+            Map<String, String> resultXml = prePay(paraMap, SignType.MD5);
             String prepayId = resultXml.get("prepay_id");
-            logger.info("统一下单调用结束！预支付交易标识：{}. {}", prepayId, resultXml.get("return_msg"));
-
             Map<String, String> packageMap = new HashMap<>();
             packageMap.put("appid", defaultAppId);
             packageMap.put("partnerid", mchId);
@@ -164,77 +149,109 @@ public class WxPayService implements IWxPayService {
             packageMap.put("timestamp", timestamp);
             String sign = SignUtils.createSign(packageMap, paterKey, SignType.MD5);
             packageMap.put("sign", sign);
-
+            return packageMap;
         } catch (Exception e) {
-            logger.error("商户交易号：{} 预支付失败！", tradeNo, e);
+            logger.error("商户交易号：{} 创建预支付订单失败！", tradeNo, e);
+            throw new RuntimeException("创建预支付订单失败！", e);
         }
-        return null;
     }
+
+    /**
+     * PC网站预付款下单
+     */
+    public Map<String, String> web(String tradeNo, String body, String fee, String clientIp) {
+        try {
+            String nonceStr = sequence.nextNo();
+            String timestamp = String.valueOf(System.currentTimeMillis()/1000);
+            Map<String,String> paraMap = ParamMap.create("tradeNo", tradeNo)
+                    .put("body", body)
+                    .put("fee", fee)
+                    .put("nonceStr", nonceStr)
+                    .put("timestamp",timestamp)
+                    .put("tradeType", "MWEB")
+                    .getData();
+            Map<String, String> resultXml = prePay(paraMap, SignType.MD5);
+            String webUrl = resultXml.get("mweb_url");
+            Map<String, String> packageMap = new HashMap<>();
+            packageMap.put("webUrl", webUrl);
+            return packageMap;
+        } catch (Exception e) {
+            logger.error("商户交易号：{} 创建预支付订单失败！", tradeNo, e);
+            throw new RuntimeException("创建预支付订单失败！", e);
+        }
+    }
+
+//    private Map<String, String> getExtractMap(Map<String, String> paraMap) throws Exception {
+//        Map<String, String> resultXml = this.prePay(paraMap, SignType.MD5);
+//        String returnCode = resultXml.get("return_code");
+//        String resultCode = resultXml.get("result_code");
+//        boolean isSuccess = WXPayConstants.SUCCESS.equals(returnCode) && WXPayConstants.SUCCESS.equals(resultCode);
+//        if (!isSuccess) {
+//            throw new RuntimeException("统一下单失败！" +
+//                    "return_code:" + resultXml.get("return_code") + " " +
+//                    "return_msg:" + resultXml.get("return_msg"));
+//        }
+//        logger.info("统一下单调用结束！预支付交易标识：{}. {}", resultXml.get("prepay_id"), resultXml.get("return_msg"));
+//
+//        return resultXml;
+//    }
+
 
 
     /**
      * 微信JSAPI、H5、APP、NATIVE调起支付
-     * @param request
-     * @param tradeType
-     * @param body
-     * @param productId
-     * @param fee
+     * 注：productId在JSAPI的时候传入openId
+     */
+    public Map<String, String> preOrder(TradeType tradeType, String tradeNo, String productId, String body, String fee, String clientIp){
+        if (TradeType.APP.equals(tradeType)){
+            return this.app(tradeNo, body, fee, clientIp);
+        }
+
+        if (TradeType.JSAPI.equals(tradeType)){
+            return this.jsapi(productId, tradeNo, body, fee, clientIp);
+        }
+
+        if (TradeType.MWEB.equals(tradeType)){
+            return this.web(tradeNo, body, fee, clientIp);
+        } else  {
+            //NATIVE扫码支付
+            return this.scan(tradeNo, productId, body, fee, clientIp);
+        }
+    }
+
+
+    /**
+     * 预支付
      * @return
      */
-    @Transactional(rollbackFor = RuntimeException.class)
-    public Map<String, String> preOrder(HttpServletRequest request, String openId, TradeType tradeType, String body, String productId, String fee){
-        String nonceStr = sequence.nextNo();
-        String timestamp = String.valueOf(System.currentTimeMillis()/1000);
-        String tradeNo = attach + sequence.nextValue();
-        Map<String,String> paraMap= ParamMap.create("openId", openId)
-                .put("productId", productId)
-                .put("body", body)
-                .put("tradeNo", tradeNo)
-                .put("fee", fee)
-                .put("nonceStr", nonceStr)
-                .put("timestamp",timestamp)
-                .put("tradeType", tradeType.toString())
-                .getData();
-        try {
-
-            Map<String, String> resultXml = this.prePay(paraMap, SignType.MD5);
-            //调用统一下单支付结束方法
-            String prepayId = parseXml(resultXml);
-
-            Map<String, String> packageMap = new HashMap<>();
-            if (TradeType.APP.equals(tradeType)){
-                packageMap.put("appid", defaultAppId);
-                packageMap.put("partnerid", mchId);
-                packageMap.put("prepayid", prepayId);
-                packageMap.put("package", "Sign=WXPay");
-                packageMap.put("noncestr", nonceStr);
-                packageMap.put("timestamp", timestamp);
-                String sign = SignUtils.createSign(packageMap, paterKey, SignType.MD5);
-                packageMap.put("sign", sign);
-            }
-
-            if (TradeType.JSAPI.equals(tradeType)){
-                packageMap.put("appid", defaultAppId);
-                packageMap.put("timeStamp", timestamp);
-                packageMap.put("nonceStr", nonceStr);
-                packageMap.put("package", "prepay_id=" + prepayId);
-                packageMap.put("signType", "MD5");
-                String sign = SignUtils.createSign(packageMap, paterKey, SignType.MD5);
-                packageMap.put("paySign", sign);
-            }
-
-            if (TradeType.MWEB.equals(tradeType)){
-                packageMap.put("webUrl", resultXml.get("mweb_url"));
-            }
-
-            if (TradeType.NATIVE.equals(tradeType)){
-                packageMap.put("codeUrl", resultXml.get("code_url"));
-            }
-            return packageMap;
-        } catch (Exception e) {
-            logger.error("商户交易号：{} 预支付失败！", tradeNo, e);
-            throw new RuntimeException("创建预支付订单失败！", e);
+    public Map<String, String> preOrder(WxPayRequest payRequest) {
+        if (StringUtils.isEmpty(payRequest)) {
+            throw new IllegalArgumentException("交易请求参数不可为空.");
         }
+        String tradeNo = payRequest.getTradeNo();
+        String productId = payRequest.getProductId();
+        String body = payRequest.getBody();
+        BigDecimal fee = payRequest.getFee();
+        TradeType tradeType = payRequest.getTradeType();
+        String clientIp = payRequest.getClientIp();
+
+        if (CharacterUtils.isBlank(tradeType.name())) {
+            throw new IllegalArgumentException("交易支付类型不可为空.");
+        }
+        if (CharacterUtils.isBlank(productId)) {
+            throw new IllegalArgumentException("交易支付产品ID不可为空.");
+        }
+        if (CharacterUtils.isBlank(payRequest.getBody())) {
+            throw new IllegalArgumentException("交易支付商品描述不可为空.");
+        }
+        if (CharacterUtils.isBlank(payRequest.getClientIp())) {
+            throw new IllegalArgumentException("客户端IP不可为空.");
+        }
+        if (BigDecimalUtils.lessThan(fee, new BigDecimal(0))) {
+            throw new IllegalArgumentException("交易金额必须大于0.");
+        }
+        int amount = BigDecimalUtils.multiply(fee, new BigDecimal(100)).intValue();
+        return this.preOrder(tradeType, tradeNo, productId, body, String.valueOf(amount), clientIp);
     }
 
     /**
@@ -253,9 +270,40 @@ public class WxPayService implements IWxPayService {
         // 微信统一下单
         String result = pushOrder(params);
         Map<String, String> resultXml = BeanUtils.xml2Map(result);
+        this.parseXml(resultXml);
+        return resultXml;
+    }
+
+    /**
+     * 解析微信返回xml
+     * @param resultXml
+     * @return
+     */
+    private static void parseXml(Map<String, String> resultXml){
+        String returnCode = resultXml.get("return_code");
+        String resultCode = resultXml.get("result_code");
+        boolean isSuccess = WXPayConstants.SUCCESS.equalsIgnoreCase(returnCode) && WXPayConstants.SUCCESS.equalsIgnoreCase(resultCode);
+        if (!isSuccess) {
+            StringBuilder builder = new StringBuilder();
+            builder.append("统一下单请求失败！return_code:").append(resultXml.get("return_code"));
+            builder.append("return_msg:").append(resultXml.get("return_msg"));
+            throw new RuntimeException(builder.toString());
+        }
+        logger.info("统一下单请求结束！预支付交易标识：{}. {}", resultXml.get("prepay_id"), resultXml.get("return_msg"));
+    }
+
+    /*private Map<String, String> prePay(Map<String, String> hashMap, SignType signType) throws Exception{
+        hashMap.put("appId", defaultAppId);
+        hashMap.put("mchId", mchId);
+        // 创建请求参数
+        Map<String, String> params = createParams(hashMap, signType);
+        logger.info("=================统一下单调用开始====================");
+        // 微信统一下单
+        String result = pushOrder(params);
+        Map<String, String> resultXml = BeanUtils.xml2Map(result);
         return resultXml;
 
-    }
+    }*/
 
 
     /**
@@ -266,11 +314,11 @@ public class WxPayService implements IWxPayService {
      * @throws Exception
      */
     private Map<String, String> createParams(Map<String, String> hashMap, SignType signType) throws Exception {
-
         Map<String, String> params = new HashMap<>();
         params.put("appid", hashMap.get("appId")); //  appId
         params.put("mch_id", hashMap.get("mchId")); //  商户号
         params.put("openid", hashMap.get("openId")); // trade_type=JSAPI，此参数必传，用户在商户appid下的唯一标识
+        params.put("product_id", hashMap.get("productId")); // trade_type=NATIVE，此参数必传，此参数为二维码中包含的商品ID，商户自行定义
         params.put("device_info", "WEB"); // 终端设备号(门店号或收银设备ID)，注意：PC网页或公众号内支付请传"WEB"
         params.put("nonce_str", hashMap.get("nonceStr")); // 随机字符串，不长于32位。
         params.put("body", hashMap.get("body")); // 商品或支付单简要描述
@@ -278,10 +326,9 @@ public class WxPayService implements IWxPayService {
         params.put("out_trade_no", hashMap.get("tradeNo")); // 商户系统内部的订单号,32个字符内、可包含字母
         params.put("fee_type", "CNY"); // 货币类型，默认人民币：CNY
         params.put("total_fee", hashMap.get("fee")); // 订单总金额，单位为分
-        params.put("spbill_create_ip", WebUtils.getIP()); // APP和网页支付提交用户端ip，Native支付填调用微信支付API的机器IP
+        params.put("spbill_create_ip", hashMap.get("clientIp")); // APP和网页支付提交用户端ip，Native支付填调用微信支付API的机器IP
         params.put("trade_type", hashMap.get("tradeType")); // JSAPI--公众号支付、NATIVE--原生扫码支付、APP--app支付、MWEB--H5支付
         params.put("notify_url", payNotify); // 通知地址，接收微信支付异步通知回调地址，通知url必须为直接可访问的url，不能携带参数。
-        params.put("product_id", hashMap.get("productId"));
 
         String sign = SignUtils.createSign(params, paterKey, signType);
         params.put("sign", sign);
@@ -297,26 +344,6 @@ public class WxPayService implements IWxPayService {
     private static String pushOrder(Map<String, String> params) throws Exception {
         return MchPayAPI.pushOrder(BeanUtils.mapBean2Xml(params));
     }
-
-    /**
-     * 解析微信返回xml
-     * @param resultXml
-     * @return
-     */
-    private static String parseXml(Map<String, String> resultXml){
-        String returnCode = resultXml.get("return_code");
-        String resultCode = resultXml.get("result_code");
-        boolean isSuccess = WXPayConstants.SUCCESS.equalsIgnoreCase(returnCode) && WXPayConstants.SUCCESS.equalsIgnoreCase(resultCode);
-        if (!isSuccess) {
-            throw new RuntimeException("统一支付失败！" +
-                    "return_code:" + resultXml.get("return_code") + " " +
-                    "return_msg:" + resultXml.get("return_msg"));
-        }
-        String prepayId = resultXml.get("prepay_id");
-        logger.info("统一下单调用结束！预支付交易标识：{}. {}", prepayId, resultXml.get("return_msg"));
-        return prepayId;
-    }
-
 
 
     /**
@@ -378,7 +405,7 @@ public class WxPayService implements IWxPayService {
      */
     public void refundPay(String transactionId, String tradeNo, String outNo, String totalFee, String fee) throws Exception {
         logger.info("[微信支付]-发起微信退款请求开始. 微信支付单号:{}, 商户单号, 退款金额：{}.", transactionId, tradeNo, fee);
-        if (StringUtils.isBlank(transactionId) || StringUtils.isBlank(tradeNo) || StringUtils.isBlank(fee)) {
+        if (CharacterUtils.isBlank(transactionId) || CharacterUtils.isBlank(tradeNo) || CharacterUtils.isBlank(fee)) {
             logger.error("[微信支付]-发起微信退款失败. 请求参数为空. 微信支付单号:{}, 商户单号, 退款金额：{}.", transactionId, tradeNo, fee);
             throw new IllegalArgumentException("[微信支付]-发起微信退款失败. 请求参数为空.");
         }

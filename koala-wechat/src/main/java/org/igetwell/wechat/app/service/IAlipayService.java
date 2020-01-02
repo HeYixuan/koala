@@ -1,5 +1,8 @@
 package org.igetwell.wechat.app.service;
 
+import org.igetwell.common.enums.TradeType;
+import org.igetwell.system.bean.dto.request.AliPayRequest;
+
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
@@ -7,31 +10,29 @@ public interface IAlipayService {
 
     /**
      * 手机网站支付预付款下单
-     * @param body
-     * @param fee
-     * @return
      */
-    String wapPay(String subject, String body, String fee) throws Exception;
+    Map<String, String> wap(String tradeNo, String subject, String body, String fee);
 
     /**
      * PC网站支付
-     * @param subject
-     * @param body
-     * @param fee
-     * @return
-     * @throws Exception
      */
-    String webPc(String subject, String body, String fee) throws Exception;
+    Map<String, String> web(String tradeNo, String subject, String body, String fee);
 
     /**
      * 扫码预付款下单
-     * @param subject
-     * @param body
-     * @param fee
-     * @return
-     * @throws Exception
      */
-    Map<String, String> scanPay(String subject, String body, String fee);
+    Map<String, String> scan(String tradeNo, String subject, String body, String fee);
+
+
+    /**
+     * 预下单
+     */
+    Map<String, String> preOrder(TradeType tradeType, String tradeNo, String subject, String body, String fee);
+
+    /**
+     * 预下单
+     */
+    Map<String, String> preOrder(AliPayRequest payRequest);
 
 
     /**

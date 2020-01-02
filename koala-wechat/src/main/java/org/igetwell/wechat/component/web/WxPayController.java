@@ -3,18 +3,13 @@ package org.igetwell.wechat.component.web;
 import org.igetwell.common.enums.TradeType;
 import org.igetwell.common.uitls.IOUtils;
 import org.igetwell.common.uitls.ResponseEntity;
-import org.igetwell.common.uitls.WebUtils;
 import org.igetwell.system.bean.dto.request.WxPayRequest;
 import org.igetwell.wechat.BaseController;
-import org.igetwell.wechat.app.service.IAlipayService;
 import org.igetwell.wechat.component.service.IWxComponentAppService;
 import org.igetwell.wechat.app.service.IWxPayService;
-import org.igetwell.wechat.sdk.bean.component.ComponentAppAccessToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 
-import java.math.BigDecimal;
 import java.util.Map;
 
 @RestController
@@ -26,17 +21,14 @@ public class WxPayController extends BaseController {
     @Autowired
     private IWxComponentAppService iWxComponentAppService;
 
-    @Autowired
-    private IAlipayService iAlipayService;
-
     /**
      * 扫码支付
      * @return
      */
     @PostMapping("/scanPay")
-    public String scanPay() {
-        String codeUrl = iWxPayService.scanOrder(request.get(), "官网费用","GW201807162055","1");
-        return codeUrl;
+    public Map<String,String> scanPay() {
+        Map<String,String> packgeMap = iWxPayService.scan("1234567789","GW201807162055","官网费用", "1", "127.0.0.1");
+        return packgeMap;
     }
 
 
@@ -47,7 +39,14 @@ public class WxPayController extends BaseController {
      */
     @PostMapping("/preOrder")
     public Map<String, String> preOrder() {
-        return iWxPayService.preOrder(request.get(), "ojhc61KyGnCepGMIpcZI-YCPce30", TradeType.MWEB,"官网费用","GW201807162055","1");
+        return iWxPayService.preOrder(TradeType.MWEB, "ojhc61KyGnCepGMIpcZI-YCPce30", "GW201807162055", "官网费用", "1" , "127.0.0.1");
+    }
+
+
+    @PostMapping("/wxPay")
+    public ResponseEntity<Map<String, String>> wxPay(@RequestBody WxPayRequest payRequest) {
+        Map<String, String> packageMap = iWxPayService.preOrder(payRequest);
+        return ResponseEntity.ok(packageMap);
     }
 
 
@@ -80,46 +79,4 @@ public class WxPayController extends BaseController {
         String resultXml = iWxPayService.refundNotify(xmlStr);
         renderXml(resultXml);
     }
-
-    @GetMapping("/common/pay")
-    public ResponseEntity commonPay(@RequestParam("amount") BigDecimal amount) throws Exception {
-        if(WebUtils.isWechat()){ //微信
-            ComponentAppAccessToken accessToken = iWxComponentAppService.getAccessToken("wx2681cc8716638f35", "oNDnvs8I7ewNZrB6iFZC4s7Fxn88");
-            Map<String, String> resultMap = iWxPayService.preOrder(request.get(), accessToken.getOpenid(), TradeType.JSAPI,"官网费用","GW201807162055", String.valueOf(amount));
-            return ResponseEntity.ok(resultMap);
-        } else if (WebUtils.isAliPay()) {  //支付宝
-            //String page = iAlipayService.wapPay("cp21", "cp001", "Gw100001", "0.01");
-            Map<String, String> resultMap = iAlipayService.scanPay("cp21", "cp001","0.01");
-            return ResponseEntity.ok(resultMap);
-        }
-        return ResponseEntity.ok("其它支付");
-    }
-
-    @GetMapping("/alipay/pay")
-    public ResponseEntity alipay(@RequestParam("amount") BigDecimal amount) throws Exception {
-        //手机网站支付
-        //String page = iAlipayService.wapPay("cp21", "cp001", "Gw100001", "0.01");
-        //PC网站支付
-        //String page = iAlipayService.webPc("cp21", "cp001", "Gw100001", "0.01");
-        //面对面扫码支付
-        Map<String, String> resultMap = iAlipayService.scanPay("cp23", "cp002", "0.03");
-        return ResponseEntity.ok(resultMap);
-    }
-
-    /**
-     * 测试扫码支付
-     * @param amount
-     * @return
-     * @throws Exception
-     */
-    @GetMapping("/alipay/pay/pay")
-    public ModelAndView pay(@RequestParam("amount") BigDecimal amount) throws Exception {
-        //手机网站支付
-        String page = iAlipayService.wapPay("cp21", "cp001", "0.01");
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.addObject("page", page);
-        modelAndView.setViewName("/success");
-        return modelAndView;
-    }
-
 }

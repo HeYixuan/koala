@@ -143,4 +143,8 @@ Secret Key:YdddvFSI2mdCgiG4c6Wy+HEXYIQmK2cF9yA4zAG+
 内网穿透：
 https://www.echosite.cn
 
-注意：如果发现client注入不进去,请在启动类加@EnableKoalaFeign注解.
+注意：
+1.如果发现client注入不进去,请在启动类加@EnableKoalaFeign注解.
+2.如果发现"TTL 中的 租户ID为空，feign拦截器 >> 增强失败" 此日志报错信息,不要惊慌,请将你的返回体改为ResponseEntity,
+详细原因请见：KoalaFeignTenantInterceptor和KoalaFeignFallback类.
+

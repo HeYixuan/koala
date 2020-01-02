@@ -28,6 +28,7 @@
     FROM TRADE_ORDER
     WHERE ID = #{id,jdbcType=BIGINT}
   </select>
+
   <delete id="deleteById" parameterType="java.lang.Long">
     DELETE FROM TRADE_ORDER
     WHERE ID = #{id,jdbcType=BIGINT}
@@ -130,6 +131,7 @@
       </if>
     </trim>
   </insert>
+
   <update id="update" parameterType="org.igetwell.system.order.entity.TradeOrder">
     UPDATE TRADE_ORDER
     <set>
@@ -177,5 +179,9 @@
       </if>
     </set>
     WHERE ID = #{id,jdbcType=BIGINT}
+  </update>
+
+  <update id="updateOrderStatus">
+    UPDATE TRADE_ORDER SET `STATUS` = #{param2,jdbcType=INTEGER} WHERE ID = #{param1,jdbcType=BIGINT}
   </update>
 </mapper>
