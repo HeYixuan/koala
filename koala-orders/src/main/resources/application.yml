@@ -42,7 +42,7 @@ rocketmq:
     send-message-timeout: 300000
     compress-message-body-threshold: 4096
     max-message-size: 4194304
-    retry-times-when-send-async-failed: 0
+    retry-times-when-send-async-failed: 2
     retry-next-server: true
     retry-times-when-send-failed: 2
   name-server: 127.0.0.1:9876

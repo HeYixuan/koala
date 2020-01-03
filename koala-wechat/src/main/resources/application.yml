@@ -35,8 +35,8 @@ wechat:
   paterKey: 7bkxZxx2ULEvLG0hjEwAjVi5OD0E4AU1
   cert: C://Users//Admin//Downloads//WXCertUtil//cert//1569458631_20191218_cert//apiclient_cert.p12
   attach: stg
-  payNotify: https://open.easy.echosite.cn/wx/pay/payNotify
-  refundNotify: https://open.easy.echosite.cn/wx/pay/refundNotify
+  payNotify: https://api.easy.echosite.cn/wx/pay/payNotify
+  refundNotify: https://api.easy.echosite.cn/wx/pay/refundNotify
 
 alipay:
   appId: 2018090761265721

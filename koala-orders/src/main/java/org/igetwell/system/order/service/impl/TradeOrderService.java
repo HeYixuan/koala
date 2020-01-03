@@ -52,6 +52,14 @@ public class TradeOrderService implements ITradeOrderService {
         return orders;
     }
 
+    @Override
+    public TradeOrder getOrder(String orderNo) {
+        LOGGER.info("[支付订单服务]-根据商户订单号：{} 查询支付订单开始.", orderNo);
+        TradeOrder orders = tradeOrderMapper.getOrder(orderNo);
+        LOGGER.info("[支付订单服务]-根据商户订单号：{} 查询支付订单结束.", orderNo);
+        return orders;
+    }
+
     /**
      * 根据商户订单号获取缓存订单数据
      * @param orderNo
@@ -101,17 +109,36 @@ public class TradeOrderService implements ITradeOrderService {
         LOGGER.info("[支付订单服务]-修改支付订单结束.");
     }
 
+    /**
+     * 根据订单ID修改支付订单状态
+     */
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void updateOrderStatus(Long id, Integer status) {
-        LOGGER.info("[支付订单服务]-修改支付订单状态开始.", id);
+        LOGGER.info("[支付订单服务]-根据支付订单ID：{} 修改支付订单状态开始.", id);
         int i = tradeOrderMapper.updateOrderStatus(id, status);
         if (i <= 0) {
-            LOGGER.info("[支付订单服务]-修改支付订单{}状态失败，事务执行回滚.", id);
-            String message = String.format("[支付订单服务]-修改支付订单%s数据失败，事务执行回滚.", id);
+            LOGGER.info("[支付订单服务]-根据支付订单ID：{} 修改支付订单状态失败，事务执行回滚.", id);
+            String message = String.format("[支付订单服务]-根据支付订单ID：%s 修改支付订单状态失败，事务执行回滚.", id);
             throw new RuntimeException(message);
         }
-        LOGGER.info("[支付订单服务]-修改支付订单状态结束.");
+        LOGGER.info("[支付订单服务]-根据支付订单ID修改支付订单状态结束.");
+    }
+
+    /**
+     * 根据商户交易号修改支付订单状态
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void updateStatus(String tradeNo, Integer status) {
+        LOGGER.info("[支付订单服务]-根据支付订单商户交易号：{} 修改支付订单状态开始.", tradeNo);
+        int i = tradeOrderMapper.updateStatus(tradeNo, status);
+        if (i <= 0) {
+            LOGGER.info("[支付订单服务]-根据支付订单商户交易号：{} 修改支付订单状态失败，事务执行回滚.", tradeNo);
+            String message = String.format("[支付订单服务]-根据支付订单商户交易号：%s 修改支付订单状态失败，事务执行回滚.", tradeNo);
+            throw new RuntimeException(message);
+        }
+        LOGGER.info("[支付订单服务]-根据支付订单商户交易号修改支付订单状态结束.");
     }
 
 
@@ -122,7 +149,7 @@ public class TradeOrderService implements ITradeOrderService {
     @Transactional(rollbackFor = Exception.class)
     public ResponseEntity scan(BigDecimal fee) {
 
-        if (WebUtils.isWechat()) {
+        if (!WebUtils.isWechat()) {
             TradeOrder orders = new TradeOrder(sequence.nextValue(), sequence.nextNo(), 10001L, "000000", OrderType.CONSUME.getValue(),
                     1L, fee, WebUtils.getIP(), OrderStatus.CREATE.getValue(), 10001L, "测试支付");
             this.insert(orders);
@@ -135,7 +162,7 @@ public class TradeOrderService implements ITradeOrderService {
             return packageMap;
         }
 
-        if (WebUtils.isAliPay()) {
+        /*if (WebUtils.isAliPay()) {
             TradeOrder orders = new TradeOrder(sequence.nextValue(), sequence.nextNo(), 10001L, "000000", OrderType.CONSUME.getValue(),
                     2L, fee, WebUtils.getIP(), OrderStatus.CREATE.getValue(), 10001L, "测试支付");
             this.insert(orders);
@@ -145,7 +172,8 @@ public class TradeOrderService implements ITradeOrderService {
             return packageMap;
         } else {
             return ResponseEntity.ok("其他支付暂时未开放.");
-        }
+        }*/
+        return ResponseEntity.ok("其他支付暂时未开放.");
     }
 
 

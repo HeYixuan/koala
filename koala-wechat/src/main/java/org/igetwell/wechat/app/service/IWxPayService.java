@@ -53,7 +53,7 @@ public interface IWxPayService {
      * @param fee
      * @throws Exception
      */
-    void refundPay(String transactionId, String tradeNo, String outNo, String totalFee, String fee) throws Exception;
+    void refund(String transactionId, String tradeNo, String outNo, String totalFee, String fee);
 
     /**
      * 处理微信退款回调

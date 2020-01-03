@@ -42,7 +42,7 @@ public class RefundOrderConsumer implements RocketMQListener<RefundPayProtocol> 
                 return;
             }
             LOGGER.info("[微信支付]-退款订单消费者调用微信退款开始 微信支付单号：{}, 商户订单号：{}.", transactionId, tradeNo);
-            iWxPayService.refundPay(transactionId, tradeNo, order.getOutNo(), String.valueOf(order.getTotalFee()), String.valueOf(order.getRefundFee()));
+            iWxPayService.refund(transactionId, tradeNo, order.getOutNo(), String.valueOf(order.getTotalFee()), String.valueOf(order.getRefundFee()));
         } catch (Exception e) {
             LOGGER.error("[微信支付]-退款订单消费者调用微信退款异常.正在重试. 微信支付单号：{}, 商户订单号：{}.", transactionId, tradeNo, e);
             String message = String.format("[订单超时消费者]-退款订单消费者调用微信退款异常.正在重试. 微信支付单号：%s, 商户订单号：%s.", transactionId, tradeNo);

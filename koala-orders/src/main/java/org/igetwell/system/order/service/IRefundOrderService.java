@@ -1,6 +1,7 @@
 package org.igetwell.system.order.service;
 
 import org.igetwell.common.uitls.ResponseEntity;
+import org.igetwell.system.order.dto.request.OrderRefundPay;
 import org.igetwell.system.order.dto.request.RefundTradeRequest;
 import org.igetwell.system.order.dto.request.RefundTransactionRequest;
 import org.igetwell.system.order.entity.RefundOrder;
@@ -70,5 +71,10 @@ public interface IRefundOrderService {
      * @return
      */
     RefundOrder getOrder(RefundTransactionRequest request);
+
+    /**
+     * 用户发起退款
+     */
+    ResponseEntity refund(OrderRefundPay refundPay);
 
 }

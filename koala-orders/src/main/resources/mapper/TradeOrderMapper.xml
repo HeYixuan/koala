@@ -29,6 +29,13 @@
     WHERE ID = #{id,jdbcType=BIGINT}
   </select>
 
+  <select id="getOrder" parameterType="java.lang.String" resultMap="baseMap">
+    SELECT
+    <include refid="baseSql" />
+    FROM TRADE_ORDER
+    WHERE TRADE_NO = #{tradeNo,jdbcType=VARCHAR}
+  </select>
+
   <delete id="deleteById" parameterType="java.lang.Long">
     DELETE FROM TRADE_ORDER
     WHERE ID = #{id,jdbcType=BIGINT}
@@ -183,5 +190,9 @@
 
   <update id="updateOrderStatus">
     UPDATE TRADE_ORDER SET `STATUS` = #{param2,jdbcType=INTEGER} WHERE ID = #{param1,jdbcType=BIGINT}
+  </update>
+
+  <update id="updateStatus">
+    UPDATE TRADE_ORDER SET `STATUS` = #{param2,jdbcType=INTEGER} WHERE TRADE_NO = #{param1,jdbcType=VARCHAR}
   </update>
 </mapper>

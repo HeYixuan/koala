@@ -4,18 +4,22 @@ import org.apache.rocketmq.client.producer.SendCallback;
 import org.apache.rocketmq.client.producer.SendResult;
 import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.igetwell.common.enums.HttpStatus;
+import org.igetwell.common.enums.OrderStatus;
 import org.igetwell.common.sequence.sequence.Sequence;
 import org.igetwell.common.uitls.BigDecimalUtils;
 import org.igetwell.common.uitls.CharacterUtils;
 import org.igetwell.common.uitls.GsonUtils;
 import org.igetwell.common.uitls.ResponseEntity;
+import org.igetwell.system.order.dto.request.OrderRefundPay;
 import org.igetwell.system.order.dto.request.RefundTradeRequest;
 import org.igetwell.system.order.dto.request.RefundTransactionRequest;
 import org.igetwell.system.order.entity.RefundOrder;
+import org.igetwell.system.order.entity.TradeOrder;
 import org.igetwell.system.order.mapper.RefundOrderMapper;
 import org.igetwell.system.order.protocol.RefundPayProtocol;
 import org.igetwell.system.order.dto.request.RefundOrderRequest;
 import org.igetwell.system.order.service.IRefundOrderService;
+import org.igetwell.system.order.service.ITradeOrderService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +45,9 @@ public class RefundOrderService implements IRefundOrderService {
 
     @Resource
     private RefundOrderMapper refundOrderMapper;
+
+    @Autowired
+    private ITradeOrderService iTradeOrderService;
 
 
 
@@ -245,5 +252,49 @@ public class RefundOrderService implements IRefundOrderService {
             return false;
         }
         return true;
+    }
+    /**
+     * 用户发起退款
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public ResponseEntity refund(OrderRefundPay refundPay) {
+        LOGGER.info("[退款订单服务]-创建退款订单请求开始.请求入参={}.", GsonUtils.toJson(refundPay));
+        String tradeNo = refundPay.getTradeNo();
+        BigDecimal refundFee = refundPay.getRefundFee();
+        if (StringUtils.isEmpty(refundPay)) {
+            throw new IllegalArgumentException("退款请求参数不可为空.");
+        }
+        if (CharacterUtils.isBlank(tradeNo)) {
+            throw new IllegalArgumentException("商户交易单号不可为空.");
+        }
+        if (StringUtils.isEmpty(refundFee) || BigDecimalUtils.lessThan(refundFee, BigDecimal.ZERO)) {
+            throw new IllegalArgumentException("退款总额必须大于0.");
+        }
+        TradeOrder orders = iTradeOrderService.getOrder(tradeNo);
+        if (StringUtils.isEmpty(orders) || orders.getStatus() != OrderStatus.PAID.getValue()){
+            throw new IllegalArgumentException("此商户交易单号未查询已支付订单.");
+        }
+        String transactionId = orders.getTransactionId();
+        if (CharacterUtils.isBlank(transactionId)) {
+            throw new IllegalArgumentException("此商户交易单号未查询已支付交易流水.");
+        }
+        BigDecimal totalFee = orders.getFee();
+        if (BigDecimalUtils.lessThan(totalFee,  BigDecimal.ZERO)) {
+            throw new IllegalArgumentException("此商户交易单总金额必须大于0.");
+        }
+        if (BigDecimalUtils.lessThan(totalFee, refundFee)) {
+            throw new IllegalArgumentException("退款金额必须小于订单总额.");
+        }
+        RefundOrder order = new RefundOrder(sequence.nextValue(), sequence.nextNo(), tradeNo, transactionId, totalFee, refundFee,
+                orders.getMchId(), orders.getMchNo(), 20001L, "M:00001", OrderStatus.CREATE.getValue());
+        this.insert(order);
+        if (orders.getChannelId() == 1) {
+            //微信退款
+        }
+        if (orders.getChannelId() == 2) {
+            //支付宝退款
+        }
+        return ResponseEntity.ok("其他支付平台退款请联系客服.");
     }
 }

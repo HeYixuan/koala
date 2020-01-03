@@ -234,4 +234,21 @@ public class RefundOrder implements Serializable {
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
     }
+
+    public RefundOrder() {
+    }
+
+    public RefundOrder(Long id, String outNo, String tradeNo, String transactionId, BigDecimal totalFee, BigDecimal refundFee, Long mchId, String mchNo, Long memberId, String memberNo, Integer status) {
+        this.id = id;
+        this.outNo = outNo;
+        this.tradeNo = tradeNo;
+        this.transactionId = transactionId;
+        this.totalFee = totalFee;
+        this.refundFee = refundFee;
+        this.mchId = mchId;
+        this.mchNo = mchNo;
+        this.memberId = memberId;
+        this.memberNo = memberNo;
+        this.status = status;
+    }
 }

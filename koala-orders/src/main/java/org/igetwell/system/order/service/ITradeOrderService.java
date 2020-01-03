@@ -9,6 +9,8 @@ public interface ITradeOrderService {
 
     TradeOrder get(Long id);
 
+    TradeOrder getOrder(String orderNo);
+
     /**
      * 根据商户订单号获取缓存订单数据
      * @param orderNo
@@ -23,11 +25,14 @@ public interface ITradeOrderService {
     void update(TradeOrder order);
 
     /**
-     * 修改订单状态
-     * @param id
-     * @param status
+     * 根据订单ID修改支付订单状态
      */
     void updateOrderStatus(Long id, Integer status);
+
+    /**
+     * 根据商户交易号修改支付订单状态
+     */
+    void updateStatus(String tradeNo, Integer status);
 
     /**
      * 一码付款

@@ -11,6 +11,7 @@ import org.igetwell.common.uitls.*;
 import org.igetwell.system.bean.dto.request.WxPayRequest;
 import org.igetwell.system.order.entity.TradeOrder;
 import org.igetwell.system.order.feign.TradeOrderClient;
+import org.igetwell.system.order.protocol.OrderPayProtocol;
 import org.igetwell.system.order.protocol.RefundPayCallProtocol;
 import org.igetwell.wechat.app.service.IWxPayService;
 import org.igetwell.wechat.sdk.api.MchPayAPI;
@@ -361,8 +362,7 @@ public class WxPayService implements IWxPayService {
         String appId = resultXml.get("appid");//获取商户appId
         String mchId = resultXml.get("mch_id");//获取商户号
         String openId = resultXml.get("openid");//获取openId
-        String tradeType = resultXml.get("trade_type");//获取交易类型
-        String totalFee = resultXml.get("total_fee"); //获取支付金额
+        String fee = resultXml.get("total_fee"); //获取支付金额
         String tradeNo = resultXml.get("out_trade_no");//获取商户交易号
         String transactionId = resultXml.get("transaction_id");//获取微信支付订单号
         String timestamp = resultXml.get("time_end");//获取微信支付完成时间
@@ -370,27 +370,32 @@ public class WxPayService implements IWxPayService {
             boolean bool = SignUtils.checkSign(resultXml, paterKey, SignType.MD5);
             if (!bool){
                 logger.error("[微信支付]-微信支付回调验证签名错误！");
-                return failXml.replace("${return_msg}", "微信支付回调验证签名错误！");
+                return failXml.replace("${return_msg}", "微信支付回调验证签名错误!");
             }
             String returnCode = resultXml.get("return_code");
             String resultCode = resultXml.get("result_code");
             boolean isSuccess = WXPayConstants.SUCCESS.equalsIgnoreCase(returnCode) && WXPayConstants.SUCCESS.equalsIgnoreCase(resultCode);
-            if (isSuccess){
-                logger.info("[微信支付]-用户公众ID：{} , 订单号：{} , 交易号：{} 微信支付成功！", openId, tradeNo, transactionId);
-                //TODO:需要做数据库记录交易订单号
-                TradeOrder orders = redisUtils.get(tradeNo);
-                //如果支付订单状态不是支付中
-                if (orders == null || orders.getStatus() != 1) {
-                    throw new RuntimeException("微信支付回调结果未获取到待付款订单!无法修改订单数据,请联系人工处理.");
-                }
-                orders.setId(sequence.nextValue());
-                orders.setStatus(2); //订单状态：0-订单生成 1-支付中 2-支付成功
-                orders.setTransactionId(transactionId);
-                orders.setSuccessTime(timestamp);
-                tradeOrderClient.saveOrder(orders);
-                return successXml;
+            if (!isSuccess){
+                logger.info("[微信支付]-用户公众ID：{} , 订单号：{} , 交易号：{} 微信支付失败!", openId, tradeNo, transactionId);
+                return failXml;
             }
-            return failXml;
+            BigDecimal totalFee = BigDecimalUtils.divide(new BigDecimal(fee), new BigDecimal(100));
+            OrderPayProtocol protocol = new OrderPayProtocol(tradeNo, transactionId, totalFee, timestamp);
+            rocketMQTemplate.getProducer().setProducerGroup("trade-order-success");
+            rocketMQTemplate.asyncSend("trade-order-success:trade-order-success", MessageBuilder.withPayload(protocol).build(), new SendCallback() {
+                @Override
+                public void onSuccess(SendResult var) {
+                    logger.info("[微信支付]-异步投递支付成功订单消息成功,订单信息：{}. ", GsonUtils.toJson(protocol));
+                    logger.info("[微信支付]-异步投递支付成功订单消息成功,投递结果：{}. ", var);
+                }
+                @Override
+                public void onException(Throwable var) {
+                    logger.error("[微信支付]-异步投递支付成功订单消息失败: 异常信息：{}.", var);
+                }
+            });
+
+            logger.info("[微信支付]-用户公众ID：{} , 订单号：{} , 交易号：{} 微信支付成功!", openId, tradeNo, transactionId);
+            return successXml;
         } catch (Exception e) {
             logger.error("[微信支付]-调用微信支付回调方法异常,商户订单号：{}. 微信订单号：{}. ", tradeNo, transactionId, e);
             throw new RuntimeException("调用微信支付回调方法异常！", e);
@@ -403,36 +408,40 @@ public class WxPayService implements IWxPayService {
      * @param tradeNo 商户订单号
      * @throws Exception
      */
-    public void refundPay(String transactionId, String tradeNo, String outNo, String totalFee, String fee) throws Exception {
-        logger.info("[微信支付]-发起微信退款请求开始. 微信支付单号:{}, 商户单号, 退款金额：{}.", transactionId, tradeNo, fee);
-        if (CharacterUtils.isBlank(transactionId) || CharacterUtils.isBlank(tradeNo) || CharacterUtils.isBlank(fee)) {
-            logger.error("[微信支付]-发起微信退款失败. 请求参数为空. 微信支付单号:{}, 商户单号, 退款金额：{}.", transactionId, tradeNo, fee);
-            throw new IllegalArgumentException("[微信支付]-发起微信退款失败. 请求参数为空.");
+    public void refund(String transactionId, String tradeNo, String outNo, String totalFee, String fee) {
+        try{
+            logger.info("[微信支付]-发起微信退款请求开始. 微信支付单号:{}, 商户单号, 退款金额：{}.", transactionId, tradeNo, fee);
+            if (CharacterUtils.isBlank(transactionId) || CharacterUtils.isBlank(tradeNo) || CharacterUtils.isBlank(fee)) {
+                logger.error("[微信支付]-发起微信退款失败. 请求参数为空. 微信支付单号:{}, 商户单号, 退款金额：{}.", transactionId, tradeNo, fee);
+                throw new IllegalArgumentException("[微信支付]-发起微信退款失败. 请求参数为空.");
+            }
+            String nonceStr = sequence.nextNo();
+            Map<String,String> paraMap= ParamMap.create("transactionId", transactionId)//微信订单号
+                    .put("tradeNo", tradeNo)//订单号
+                    .put("outNo", outNo) //退款单号
+                    .put("totalFee", totalFee)
+                    .put("fee", fee)
+                    .put("nonceStr", nonceStr)
+                    .getData();
+            // 创建请求参数
+            Map<String, String> params = createRefundParams(paraMap, SignType.MD5);
+            logger.info("[微信支付]-微信退款调用开始. 请求微信退款参数：{}.", GsonUtils.toJson(params));
+            //微信退款
+            String result = this.refundOrder(params);
+            Map<String, String> resultXml = BeanUtils.xml2Map(result);
+            String returnCode = resultXml.get("return_code");
+            String resultCode = resultXml.get("result_code");
+            String resultMsg = resultXml.get("err_code_des");
+            boolean isSuccess = WXPayConstants.SUCCESS.equals(returnCode) && WXPayConstants.SUCCESS.equals(resultCode);
+            if (!isSuccess || !resultMsg.equals("订单已全额退款")) {
+                logger.error("[微信支付]-微信退款失败!  商户订单号：{}, 微信支付订单号：{}.", transactionId, tradeNo);
+                throw new RuntimeException("[微信支付]-微信退款失败." + resultXml.get("err_code_des"));
+            }
+            logger.info("[微信支付]-微信退款成功! 退款单号：{}, 商户订单号：{}, 微信支付订单号：{}.", outNo, tradeNo, transactionId);
+        } catch (Exception e) {
+
         }
-        String nonceStr = sequence.nextNo();
-        //String outNo = attach + sequence.nextValue();
-        Map<String,String> paraMap= ParamMap.create("transactionId", transactionId)//微信订单号
-                .put("tradeNo", tradeNo)//订单号
-                .put("outNo", outNo) //退款单号
-                .put("totalFee", totalFee)
-                .put("fee", fee)
-                .put("nonceStr", nonceStr)
-                .getData();
-        // 创建请求参数
-        Map<String, String> params = createRefundParams(paraMap, SignType.MD5);
-        logger.info("[微信支付]-微信退款调用开始. 请求微信退款参数：{}.", GsonUtils.toJson(params));
-        //微信退款
-        String result = this.refund(params);
-        Map<String, String> resultXml = BeanUtils.xml2Map(result);
-        String returnCode = resultXml.get("return_code");
-        String resultCode = resultXml.get("result_code");
-        String resultMsg = resultXml.get("err_code_des");
-        boolean isSuccess = WXPayConstants.SUCCESS.equals(returnCode) && WXPayConstants.SUCCESS.equals(resultCode);
-        if (!isSuccess || !resultMsg.equals("订单已全额退款")) {
-            logger.error("[微信支付]-微信退款失败!  商户订单号：{}, 微信支付订单号：{}.", transactionId, tradeNo);
-            throw new RuntimeException("[微信支付]-微信退款失败." + resultXml.get("err_code_des"));
-        }
-        logger.info("[微信支付]-微信退款成功! 退款单号：{}, 商户订单号：{}, 微信支付订单号：{}.", outNo, tradeNo, transactionId);
+
     }
 
     /**
@@ -466,7 +475,7 @@ public class WxPayService implements IWxPayService {
     /**
      * 申请退款
      */
-    private String refund(Map<String, String> params) throws Exception {
+    private String refundOrder(Map<String, String> params) throws Exception {
         return MchPayAPI.refund(mchId, keyStoreFilePath, BeanUtils.mapBean2Xml(params));
     }
 

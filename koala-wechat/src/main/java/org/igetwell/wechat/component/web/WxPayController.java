@@ -53,9 +53,9 @@ public class WxPayController extends BaseController {
     /**
      * 微信退款
      */
-    @PostMapping("/refundPay")
-    public ResponseEntity refundPay(String transactionId, String tradeNo, String fee) throws Exception {
-        iWxPayService.refundPay(transactionId, tradeNo,"1", "1", fee);
+    @PostMapping("/refund")
+    public ResponseEntity refund(String transactionId, String tradeNo, String outNo, String totalFee, String fee) {
+        iWxPayService.refund(transactionId, tradeNo, outNo, totalFee, fee);
         return ResponseEntity.ok();
     }
 
