@@ -5,11 +5,14 @@ import org.apache.rocketmq.client.producer.SendResult;
 import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.igetwell.common.enums.HttpStatus;
 import org.igetwell.common.enums.OrderStatus;
+import org.igetwell.common.enums.PayType;
 import org.igetwell.common.sequence.sequence.Sequence;
 import org.igetwell.common.uitls.BigDecimalUtils;
 import org.igetwell.common.uitls.CharacterUtils;
 import org.igetwell.common.uitls.GsonUtils;
 import org.igetwell.common.uitls.ResponseEntity;
+import org.igetwell.paypal.dto.request.PayPalRefundRequest;
+import org.igetwell.paypal.feign.PayPalClient;
 import org.igetwell.system.order.dto.request.OrderRefundPay;
 import org.igetwell.system.order.dto.request.RefundTradeRequest;
 import org.igetwell.system.order.dto.request.RefundTransactionRequest;
@@ -49,6 +52,9 @@ public class RefundOrderService implements IRefundOrderService {
     @Autowired
     private ITradeOrderService iTradeOrderService;
 
+    @Autowired
+    private PayPalClient payPalClient;
+
 
 
     /**
@@ -70,9 +76,23 @@ public class RefundOrderService implements IRefundOrderService {
      * @return
      */
     public RefundOrder get(String transactionId, String tradeNo) {
-        LOGGER.info("[退款订单服务]-根据微信支付单号:{} 商户订单号:{} 查询退款订单开始.", transactionId, tradeNo);
+        LOGGER.info("[退款订单服务]-根据微信支付单号:{}, 商户订单号:{} 查询退款订单开始.", transactionId, tradeNo);
         RefundOrder orders = refundOrderMapper.getTrade(transactionId, tradeNo);
-        LOGGER.info("[退款订单服务]-根据微信支付单号:{} 商户订单号:{} 查询退款订单结束.", transactionId, tradeNo);
+        LOGGER.info("[退款订单服务]-根据微信支付单号:{}, 商户订单号:{} 查询退款订单结束.", transactionId, tradeNo);
+        return orders;
+    }
+
+    /**
+     * 根据微信支付单号、商户订单号、商户退款单号查询
+     * @param transactionId 微信支付单号
+     * @param tradeNo 商户订单号
+     * @param outNo 商户退款单号
+     * @return
+     */
+    public RefundOrder get(String transactionId, String tradeNo, String outNo) {
+        LOGGER.info("[退款订单服务]-根据微信支付单号:{}, 商户订单号:{}, 商户退款单号：{} 查询退款订单开始.", transactionId, tradeNo, outNo);
+        RefundOrder orders = refundOrderMapper.getOrder(transactionId, tradeNo, outNo);
+        LOGGER.info("[退款订单服务]-根据微信支付单号:{}, 商户订单号:{}, 商户退款单号：{} 查询退款订单结束.", transactionId, tradeNo);
         return orders;
     }
 
@@ -181,7 +201,7 @@ public class RefundOrderService implements IRefundOrderService {
         String tradeNo = request.getTradeNo();
         BigDecimal totalFee = request.getTotalFee();
         BigDecimal refundFee = request.getRefundFee();
-        if (totalFee.intValue() <= 0 || refundFee.intValue() <= 0) {
+        if (BigDecimalUtils.lessOrEquals(totalFee, BigDecimal.ZERO) || BigDecimalUtils.lessOrEquals(refundFee, BigDecimal.ZERO)) {
             return ResponseEntity.error(HttpStatus.BAD_REQUEST, "订单金额或退款金额必须大于0");
         }
         //如果实际退款金额大于订单总金额,退款失败
@@ -268,33 +288,41 @@ public class RefundOrderService implements IRefundOrderService {
         if (CharacterUtils.isBlank(tradeNo)) {
             throw new IllegalArgumentException("商户交易单号不可为空.");
         }
-        if (StringUtils.isEmpty(refundFee) || BigDecimalUtils.lessThan(refundFee, BigDecimal.ZERO)) {
-            throw new IllegalArgumentException("退款总额必须大于0.");
+        if (StringUtils.isEmpty(refundFee) || BigDecimalUtils.lessOrEquals(refundFee, BigDecimal.ZERO)) {
+            throw new IllegalArgumentException("退款金额必须大于0.");
         }
         TradeOrder orders = iTradeOrderService.getOrder(tradeNo);
         if (StringUtils.isEmpty(orders) || orders.getStatus() != OrderStatus.PAID.getValue()){
-            throw new IllegalArgumentException("此商户交易单号未查询已支付订单.");
+            throw new IllegalArgumentException("此商户交易单号未查询到已支付订单.");
         }
         String transactionId = orders.getTransactionId();
         if (CharacterUtils.isBlank(transactionId)) {
             throw new IllegalArgumentException("此商户交易单号未查询已支付交易流水.");
         }
         BigDecimal totalFee = orders.getFee();
-        if (BigDecimalUtils.lessThan(totalFee,  BigDecimal.ZERO)) {
+        if (BigDecimalUtils.lessOrEquals(totalFee, BigDecimal.ZERO)) {
             throw new IllegalArgumentException("此商户交易单总金额必须大于0.");
         }
         if (BigDecimalUtils.lessThan(totalFee, refundFee)) {
-            throw new IllegalArgumentException("退款金额必须小于订单总额.");
+            throw new IllegalArgumentException("退款金额不能大于订单总额.");
         }
         RefundOrder order = new RefundOrder(sequence.nextValue(), sequence.nextNo(), tradeNo, transactionId, totalFee, refundFee,
                 orders.getMchId(), orders.getMchNo(), 20001L, "M:00001", OrderStatus.CREATE.getValue());
         this.insert(order);
+        PayPalRefundRequest refundRequest = null;
         if (orders.getChannelId() == 1) {
             //微信退款
-        }
-        if (orders.getChannelId() == 2) {
+            refundRequest = new PayPalRefundRequest(PayType.WECHAT, order.getOutNo(), tradeNo, transactionId, totalFee, refundFee);
+        } else if (orders.getChannelId() == 2) {
             //支付宝退款
+            refundRequest = new PayPalRefundRequest(PayType.ANT, order.getOutNo(), tradeNo, transactionId, totalFee, refundFee);
+        } else {
+            ResponseEntity.ok("其他支付平台退款请联系客服.");
         }
-        return ResponseEntity.ok("其他支付平台退款请联系客服.");
+        ResponseEntity responseEntity =  payPalClient.refund(refundRequest);
+        if (StringUtils.isEmpty(responseEntity) && responseEntity.getStatus() != HttpStatus.OK.value()) {
+            throw new RuntimeException("生成退款订单失败.");
+        }
+        return responseEntity;
     }
 }

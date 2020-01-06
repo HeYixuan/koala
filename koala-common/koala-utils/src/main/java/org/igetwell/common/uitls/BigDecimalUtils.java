@@ -19,10 +19,10 @@ public class BigDecimalUtils {
      */
     public static BigDecimal add(BigDecimal b1, BigDecimal b2) {
         if (b1 == null) {
-            b1 = new BigDecimal(0);
+            b1 = BigDecimal.ZERO;
         }
         if (b2 == null) {
-            b2 = new BigDecimal(0);
+            b2 = BigDecimal.ZERO;
         }
         return b1.add(b2);
     }
@@ -35,10 +35,10 @@ public class BigDecimalUtils {
      */
     public static BigDecimal subtract(BigDecimal b1, BigDecimal b2) {
         if (b1 == null) {
-            b1 = new BigDecimal(0);
+            b1 = BigDecimal.ZERO;
         }
         if (b2 == null) {
-            b2 = new BigDecimal(0);
+            b2 = BigDecimal.ZERO;
         }
         return b1.subtract(b2);
     }
@@ -51,10 +51,10 @@ public class BigDecimalUtils {
      */
     public static BigDecimal multiply(BigDecimal b1, BigDecimal b2) {
         if (b1 == null) {
-            b1 = new BigDecimal(0);
+            b1 = BigDecimal.ZERO;
         }
         if (b2 == null) {
-            b2 = new BigDecimal(0);
+            b2 = BigDecimal.ZERO;
         }
         return b1.multiply(b2).setScale(scale, RoundingMode.HALF_UP);
     }
@@ -67,9 +67,9 @@ public class BigDecimalUtils {
      */
     public static BigDecimal divide(BigDecimal b1, BigDecimal b2) {
         if(b1 == null) {
-            return new BigDecimal(0);
+            return BigDecimal.ZERO;
         }
-        if(b2  == null || equals(b2,new BigDecimal(0))){
+        if(b2  == null || equals(b2, BigDecimal.ZERO)){
             throw new ArithmeticException("b2 is zero ! ");
         }
         return b1.divide(b2, scale, RoundingMode.HALF_UP);
@@ -83,9 +83,9 @@ public class BigDecimalUtils {
      */
     public static BigDecimal divide(BigDecimal b1, BigDecimal b2, int scale) {
         if(b1 == null) {
-            return new BigDecimal(0);
+            return BigDecimal.ZERO;
         }
-        if(b2  == null || equals(b2,new BigDecimal(0))){
+        if(b2  == null || equals(b2, BigDecimal.ZERO)){
             throw new ArithmeticException("b2 is zero ! ");
         }
         return b1.divide(b2, scale, RoundingMode.HALF_UP);
@@ -99,10 +99,10 @@ public class BigDecimalUtils {
      */
     public static BigDecimal multiply(BigDecimal b1, BigDecimal b2, int scale) {
         if (b1 == null) {
-            b1 = new BigDecimal(0);
+            b1 = BigDecimal.ZERO;
         }
         if (b2 == null) {
-            b2 = new BigDecimal(0);
+            b2 = BigDecimal.ZERO;
         }
         return b1.multiply(b2).setScale(scale, RoundingMode.HALF_UP);
     }
@@ -115,10 +115,10 @@ public class BigDecimalUtils {
      */
     public static boolean greaterThan(BigDecimal b1, BigDecimal b2) {
         if (b1 == null) {
-            b1 = new BigDecimal(0);
+            b1 = BigDecimal.ZERO;
         }
         if (b2 == null) {
-            b2 = new BigDecimal(0);
+            b2 = BigDecimal.ZERO;
         }
         return b1.compareTo(b2)>0;
     }
@@ -131,10 +131,10 @@ public class BigDecimalUtils {
      */
     public static boolean greaterOrEquals(BigDecimal b1, BigDecimal b2) {
         if (b1 == null) {
-            b1 = new BigDecimal(0);
+            b1 = BigDecimal.ZERO;
         }
         if (b2 == null) {
-            b2 = new BigDecimal(0);
+            b2 = BigDecimal.ZERO;
         }
         return b1.compareTo(b2)>=0;
     }
@@ -147,10 +147,10 @@ public class BigDecimalUtils {
      */
     public static boolean lessThan(BigDecimal b1, BigDecimal b2) {
         if (b1 == null) {
-            b1 = new BigDecimal(0);
+            b1 = BigDecimal.ZERO;
         }
         if (b2 == null) {
-            b2 = new BigDecimal(0);
+            b2 = BigDecimal.ZERO;
         }
         return b1.compareTo(b2) < 0;
     }
@@ -163,10 +163,10 @@ public class BigDecimalUtils {
      */
     public static boolean lessOrEquals(BigDecimal b1, BigDecimal b2) {
         if (b1 == null) {
-            b1 = new BigDecimal(0);
+            b1 = BigDecimal.ZERO;
         }
         if (b2 == null) {
-            b2 = new BigDecimal(0);
+            b2 = BigDecimal.ZERO;
         }
         return b1.compareTo(b2) <= 0;
     }
@@ -179,10 +179,10 @@ public class BigDecimalUtils {
      */
     public static boolean equals(BigDecimal b1, BigDecimal b2) {
         if (b1 == null) {
-            b1 = new BigDecimal(0);
+            b1 = BigDecimal.ZERO;
         }
         if (b2 == null) {
-            b2 = new BigDecimal(0);
+            b2 = BigDecimal.ZERO;
         }
         return b1.compareTo(b2) == 0;
     }

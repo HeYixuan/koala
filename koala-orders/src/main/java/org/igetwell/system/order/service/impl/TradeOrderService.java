@@ -1,9 +1,6 @@
 package org.igetwell.system.order.service.impl;
 
-import org.igetwell.common.enums.HttpStatus;
-import org.igetwell.common.enums.OrderStatus;
-import org.igetwell.common.enums.OrderType;
-import org.igetwell.common.enums.TradeType;
+import org.igetwell.common.enums.*;
 import org.igetwell.common.sequence.sequence.Sequence;
 import org.igetwell.common.uitls.GsonUtils;
 import org.igetwell.common.uitls.RedisUtils;
@@ -149,31 +146,30 @@ public class TradeOrderService implements ITradeOrderService {
     @Transactional(rollbackFor = Exception.class)
     public ResponseEntity scan(BigDecimal fee) {
 
-        if (!WebUtils.isWechat()) {
-            TradeOrder orders = new TradeOrder(sequence.nextValue(), sequence.nextNo(), 10001L, "000000", OrderType.CONSUME.getValue(),
-                    1L, fee, WebUtils.getIP(), OrderStatus.CREATE.getValue(), 10001L, "测试支付");
-            this.insert(orders);
-            PayPalRequest payPalRequest = new PayPalRequest(TradeType.NATIVE, orders.getTradeNo(), String.valueOf(orders.getGoodsId()), orders.getBody(), orders.getFee(), WebUtils.getIP());
-            ResponseEntity<Map<String, String>> packageMap = payPalClient.wxPay(payPalRequest);
-            if (StringUtils.isEmpty(packageMap) && packageMap.getStatus() != HttpStatus.OK.value()) {
-                throw new RuntimeException("生成预支付订单失败.");
-            }
-            this.updateOrderStatus(orders.getId(), OrderStatus.PENDING.getValue());
-            return packageMap;
-        }
+//        if (WebUtils.isWechat()) {
+//            TradeOrder orders = new TradeOrder(sequence.nextValue(), sequence.nextNo(), 10001L, "000000", OrderType.CONSUME.getValue(),
+//                    1L, fee, WebUtils.getIP(), OrderStatus.CREATE.getValue(), 10001L, "测试支付");
+//            this.insert(orders);
+//            PayPalRequest payPalRequest = new PayPalRequest(PayType.WECHAT, TradeType.NATIVE, orders.getTradeNo(), String.valueOf(orders.getGoodsId()), orders.getBody(), orders.getFee(), WebUtils.getIP());
+//            ResponseEntity<Map<String, String>> packageMap = payPalClient.wxPay(payPalRequest);
+//            if (StringUtils.isEmpty(packageMap) && packageMap.getStatus() != HttpStatus.OK.value()) {
+//                throw new RuntimeException("生成预支付订单失败.");
+//            }
+//            this.updateOrderStatus(orders.getId(), OrderStatus.PENDING.getValue());
+//            return packageMap;
+//        }
 
-        /*if (WebUtils.isAliPay()) {
+        if (!WebUtils.isAliPay()) {
             TradeOrder orders = new TradeOrder(sequence.nextValue(), sequence.nextNo(), 10001L, "000000", OrderType.CONSUME.getValue(),
                     2L, fee, WebUtils.getIP(), OrderStatus.CREATE.getValue(), 10001L, "测试支付");
             this.insert(orders);
-            PayPalRequest payPalRequest = new PayPalRequest(TradeType.FACE_TO_FACE, orders.getTradeNo(), String.valueOf(orders.getGoodsId()), orders.getBody(), orders.getFee());
-            ResponseEntity<Map<String, String>> packageMap = payPalClient.aliPay(payPalRequest);
+            PayPalRequest payPalRequest = new PayPalRequest(PayType.ANT, TradeType.FACE_TO_FACE, orders.getTradeNo(), String.valueOf(orders.getGoodsId()), orders.getBody(), orders.getFee());
+            ResponseEntity<Map<String, String>> packageMap = payPalClient.wxPay(payPalRequest);
             this.updateOrderStatus(orders.getId(), OrderStatus.PENDING.getValue());
             return packageMap;
         } else {
             return ResponseEntity.ok("其他支付暂时未开放.");
-        }*/
-        return ResponseEntity.ok("其他支付暂时未开放.");
+        }
     }
 
 
@@ -183,7 +179,7 @@ public class TradeOrderService implements ITradeOrderService {
         TradeOrder orders = new TradeOrder(sequence.nextValue(), sequence.nextNo(), orderPay.getMchId(), orderPay.getMchNo(), orderPay.getOrderType().getValue(),
                 orderPay.getChannelId(), orderPay.getFee(), WebUtils.getIP(), OrderStatus.CREATE.getValue(), orderPay.getGoodsId(), orderPay.getBody());
         this.insert(orders);
-        PayPalRequest payPalRequest = new PayPalRequest(TradeType.NATIVE, orders.getTradeNo(), String.valueOf(orders.getGoodsId()), orders.getBody(), orders.getFee(), WebUtils.getIP());
+        PayPalRequest payPalRequest = new PayPalRequest(PayType.ANT, TradeType.NATIVE, orders.getTradeNo(), String.valueOf(orders.getGoodsId()), orders.getBody(), orders.getFee(), WebUtils.getIP());
         ResponseEntity<Map<String, String>> packageMap = payPalClient.wxPay(payPalRequest);
         if (StringUtils.isEmpty(packageMap) && packageMap.getStatus() != HttpStatus.OK.value()) {
             throw new RuntimeException("生成预支付订单失败.");

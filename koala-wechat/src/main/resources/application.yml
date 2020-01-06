@@ -44,9 +44,9 @@ alipay:
   public-key: MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAxrE4LfVeAAgBo/uTUSh+wrNf8nZP9YGuIxv+P2h4Fs7jvzH9Xy0++b9GnYl8214SotB1cajKxmNZ3hffaplQy6xDZsVlXKrfHVL1YkBMPzwdnvADf4ZfFbjYjhxS82ZYcuNtFC6gheFaRBXWAWFnxIVBtI8G8wckZzIYX78/D5BRcsaFksTYr8AcSXDXGwspiF194rnE0M387ky185zDFjZsiBHmn4VZa/edGsRO/y3XQF77sn7B4m1XepOPZ+AgEUzPd4RRXNr7mpeudRBeoCRcX4SbohV9aEd6P82ELDOcaSMGMkBunrg/cviMhEC31TAcRYFRpGh6GqOObkG7RwIDAQAB
   alipay-public-key: MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAnnuQBJsOA86f0v0YBo3doKIHuKslWS6987HsbQbE27cQcMiR3l6BL4/elQ/teFL+D4YMkfx2zWdxP/ynatUFVhfXjRI5McGaqXTgoPhm+aCk6I8SxReYVaR4/jJsqBECkZDwt8a0iobyeroXgSBl2sFTgJ9W1nmvIRs0wGqF3RfZeuMShZdoinu5wxx36pOC0ixw23YT0JMkuORMMfakOV+yMLCHW+OFAhP6KJGW4tS7ijvOmSarKacBNm1WhRmMHHCgcW0N7lMw/lbzgbhlifdKLCfXo8jyPjqVQoaJO/hUivqozKb0fW5NzfVR7pLzwC/u1GhYG7RWf+kXZVqrYwIDAQAB
   gateway: https://openapi.alipay.com/gateway.do
-  payNotify: https://open.easy.echosite.cn/alipay/pay/payNotify
-  returnNotify: https://open.easy.echosite.cn/alipay/pay/returnNotify
-  refundNotify: https://open.easy.echosite.cn/alipay/pay/refundNotify
+  payNotify: https://api.easy.echosite.cn/ant/pay/payNotify
+  returnNotify: https://api.easy.echosite.cn/ant/pay/returnNotify
+  refundNotify: https://api.easy.echosite.cn/ant/pay/refundNotify
 
 #wechat:
 #  appId: wx097eb9f69920db49

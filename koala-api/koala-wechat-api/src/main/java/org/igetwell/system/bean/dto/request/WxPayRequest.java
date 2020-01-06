@@ -4,6 +4,9 @@ import org.igetwell.common.enums.TradeType;
 
 import java.math.BigDecimal;
 
+/**
+ * 微信支付请求参数
+ */
 public class WxPayRequest extends PayRequest {
 
     /**

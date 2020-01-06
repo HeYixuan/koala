@@ -3,6 +3,7 @@ package org.igetwell.wechat.component.web;
 import org.igetwell.common.uitls.ResponseEntity;
 import org.igetwell.common.uitls.WebUtils;
 import org.igetwell.system.bean.dto.request.AliPayRequest;
+import org.igetwell.system.bean.dto.request.AliRefundRequest;
 import org.igetwell.wechat.BaseController;
 import org.igetwell.wechat.app.service.IAlipayService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,14 +14,14 @@ import java.math.BigDecimal;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/ali/pay")
+@RequestMapping("/ant/pay")
 public class AliPayController extends BaseController {
 
     @Autowired
     private IAlipayService iAlipayService;
 
-    @PostMapping("/aliPay")
-    public ResponseEntity<Map<String, String>> wxPay(@RequestBody AliPayRequest payRequest) {
+    @PostMapping("/antPay")
+    public ResponseEntity<Map<String, String>> antPay(@RequestBody AliPayRequest payRequest) {
         Map<String, String> packageMap = iAlipayService.preOrder(payRequest);
         return ResponseEntity.ok(packageMap);
     }
@@ -30,13 +31,19 @@ public class AliPayController extends BaseController {
      */
     @PostMapping(value = "/payNotify")
     public void payNotify() {
-        String text = iAlipayService.notifyMethod(request.get());
+        String text = iAlipayService.payNotify(request.get());
         render(text);
     }
 
-    @PostMapping("/refundPay")
-    public void returnPay(String transactionId, String tradeNo, String outNo) throws Exception {
-        iAlipayService.returnPay(transactionId, tradeNo, outNo, "0.01");
+    @PostMapping("/refund")
+    public void refund(String transactionId, String tradeNo, String outNo, String fee) {
+        iAlipayService.refund(transactionId, tradeNo, outNo, fee);
+    }
+
+    @PostMapping("/antRefund")
+    public ResponseEntity refund(@RequestBody AliRefundRequest refundRequest) {
+        iAlipayService.refund(refundRequest);
+        return ResponseEntity.ok();
     }
 
     @GetMapping("/common/pay")

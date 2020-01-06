@@ -4,6 +4,9 @@ import org.igetwell.common.enums.TradeType;
 
 import java.math.BigDecimal;
 
+/**
+ * 支付宝支付请求参数
+ */
 public class AliPayRequest extends PayRequest {
 
     public AliPayRequest() {

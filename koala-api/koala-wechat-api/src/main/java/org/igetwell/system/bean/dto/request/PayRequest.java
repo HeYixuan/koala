@@ -5,6 +5,9 @@ import org.igetwell.common.enums.TradeType;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
+/**
+ * 支付请求参数
+ */
 public class PayRequest implements Serializable {
 
     /**

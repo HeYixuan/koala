@@ -9,10 +9,10 @@ import org.igetwell.common.enums.TradeType;
 import org.igetwell.common.sequence.sequence.Sequence;
 import org.igetwell.common.uitls.*;
 import org.igetwell.system.bean.dto.request.WxPayRequest;
-import org.igetwell.system.order.entity.TradeOrder;
+import org.igetwell.system.bean.dto.request.WxRefundRequest;
 import org.igetwell.system.order.feign.TradeOrderClient;
 import org.igetwell.system.order.protocol.OrderPayProtocol;
-import org.igetwell.system.order.protocol.RefundPayCallProtocol;
+import org.igetwell.system.order.protocol.OrderRefundProtocol;
 import org.igetwell.wechat.app.service.IWxPayService;
 import org.igetwell.wechat.sdk.api.MchPayAPI;
 import org.slf4j.Logger;
@@ -248,7 +248,7 @@ public class WxPayService implements IWxPayService {
         if (CharacterUtils.isBlank(payRequest.getClientIp())) {
             throw new IllegalArgumentException("客户端IP不可为空.");
         }
-        if (BigDecimalUtils.lessThan(fee, new BigDecimal(0))) {
+        if (BigDecimalUtils.lessThan(fee, BigDecimal.ZERO)) {
             throw new IllegalArgumentException("交易金额必须大于0.");
         }
         int amount = BigDecimalUtils.multiply(fee, new BigDecimal(100)).intValue();
@@ -431,16 +431,59 @@ public class WxPayService implements IWxPayService {
             Map<String, String> resultXml = BeanUtils.xml2Map(result);
             String returnCode = resultXml.get("return_code");
             String resultCode = resultXml.get("result_code");
-            String resultMsg = resultXml.get("err_code_des");
+
             boolean isSuccess = WXPayConstants.SUCCESS.equals(returnCode) && WXPayConstants.SUCCESS.equals(resultCode);
-            if (!isSuccess || !resultMsg.equals("订单已全额退款")) {
-                logger.error("[微信支付]-微信退款失败!  商户订单号：{}, 微信支付订单号：{}.", transactionId, tradeNo);
-                throw new RuntimeException("[微信支付]-微信退款失败." + resultXml.get("err_code_des"));
+            if (!isSuccess) {
+                String returnMsg = resultXml.get("err_code_des");
+                if (!("订单已全额退款").equals(returnMsg)) {
+                    logger.error("[微信支付]-微信退款失败!  商户订单号：{}, 微信支付订单号：{}.", tradeNo, transactionId);
+                    throw new RuntimeException("[微信支付]-微信退款失败." + resultXml.get("return_msg"));
+                }
             }
             logger.info("[微信支付]-微信退款成功! 退款单号：{}, 商户订单号：{}, 微信支付订单号：{}.", outNo, tradeNo, transactionId);
         } catch (Exception e) {
-
+            throw new RuntimeException(e);
         }
+
+    }
+
+    /**
+     * 微信退款
+     */
+    public void refund(WxRefundRequest refundRequest){
+        if (StringUtils.isEmpty(refundRequest)) {
+            throw new IllegalArgumentException("退款请求参数不可为空.");
+        }
+        String tradeNo = refundRequest.getTradeNo();
+        String transactionId = refundRequest.getTransactionId();
+        String outNo = refundRequest.getOutNo();
+        BigDecimal totalFee = refundRequest.getTotalFee();
+        BigDecimal fee = refundRequest.getFee();
+        if (StringUtils.isEmpty(refundRequest)) {
+            throw new IllegalArgumentException("退款请求参数不可为空.");
+        }
+        if (StringUtils.isEmpty(outNo)) {
+            throw new IllegalArgumentException("商户退款单号不可为空.");
+        }
+        if (CharacterUtils.isBlank(tradeNo)) {
+            throw new IllegalArgumentException("商户交易单号不可为空.");
+        }
+        if (CharacterUtils.isBlank(transactionId)) {
+            throw new IllegalArgumentException("商户交易流水单号不能为空.");
+        }
+        if (StringUtils.isEmpty(totalFee) || BigDecimalUtils.lessThan(totalFee, BigDecimal.ZERO)) {
+            throw new IllegalArgumentException("退款订单总额必须大于0.");
+        }
+        if (StringUtils.isEmpty(fee) || BigDecimalUtils.lessThan(fee, BigDecimal.ZERO)) {
+            throw new IllegalArgumentException("退款金额额必须大于0.");
+        }
+        if (BigDecimalUtils.lessThan(totalFee, fee)) {
+            throw new IllegalArgumentException("退款金额不能大于订单总额.");
+        }
+
+        int totalMoney = BigDecimalUtils.multiply(totalFee, new BigDecimal(100)).intValue();
+        int money = BigDecimalUtils.multiply(fee, new BigDecimal(100)).intValue();
+        this.refund(transactionId, tradeNo, outNo, String.valueOf(totalMoney), String.valueOf(money));
 
     }
 
@@ -497,7 +540,7 @@ public class WxPayService implements IWxPayService {
         String tradeNo = subXml.get("out_trade_no");//商户订单号
         String refundId = subXml.get("refund_id");//微信退款单号
         String outNo = subXml.get("out_refund_no");//商户退款单号
-        String refundAccount = subXml.get("refund_recv_accout");//商户退款单号
+        String refundAccount = subXml.get("refund_recv_accout");//退款单号
         String status = subXml.get("refund_status");//退款状态：SUCCESS-退款成功CHANGE-退款异常REFUNDCLOSE—退款关闭
         String timestamp = subXml.get("success_time");//退款成功时间
 
@@ -505,24 +548,21 @@ public class WxPayService implements IWxPayService {
             String returnCode = resultXml.get("return_code");
             boolean isSuccess = WXPayConstants.SUCCESS.equalsIgnoreCase(returnCode) && WXPayConstants.SUCCESS.equalsIgnoreCase(status);
             if (!isSuccess){
-                //TODO:需要做数据库记录交易订单号
-                logger.error("[微信支付]-微信退款失败! 商户订单号：{}, 微信支付订单号：{}, 商户退款号：{}, 微信退款号：{}, 退款成功时间: {}." , tradeNo, transactionId, outNo, refundId, timestamp);
+                logger.error("[微信支付]-微信退款失败! 商户订单号：{}, 微信支付订单号：{}, 商户退款号：{}." , tradeNo, transactionId, outNo, refundId, timestamp);
                 throw new RuntimeException("微信退款失败!");
             }
-            RefundPayCallProtocol protocol = new RefundPayCallProtocol(transactionId, tradeNo, refundId, outNo, refundAccount, timestamp, status);
-            //异步投递消息
-            rocketMQTemplate.getProducer().setProducerGroup("refund-pay-order-call");
-            rocketMQTemplate.asyncSend("refund-pay-order-call:refund-pay-order-call", MessageBuilder.withPayload(protocol).build(), new SendCallback() {
+            OrderRefundProtocol protocol = new OrderRefundProtocol(outNo, transactionId, tradeNo, refundId, refundAccount, timestamp);
+            rocketMQTemplate.getProducer().setProducerGroup("refund-order-success");
+            rocketMQTemplate.asyncSend("refund-order-success:refund-order-success", MessageBuilder.withPayload(protocol).build(), new SendCallback() {
                 @Override
                 public void onSuccess(SendResult var) {
-                    logger.info("[微信支付]-退款订单修改订单状态异步消息投递成功,投递结果：{}.", var);
+                    logger.info("[微信支付]-异步投递退款成功订单消息成功,订单信息：{}. ", GsonUtils.toJson(protocol));
+                    logger.info("[微信支付]-异步投递退款成功订单消息成功,投递结果：{}. ", var);
                 }
-
                 @Override
                 public void onException(Throwable var) {
-                    logger.error("[退款订单服务]-退款订单修改订单状态异步消息投递失败,异常信息：{}.", var);
+                    logger.error("[微信支付]-异步投递支付成功订单消息失败: 异常信息：{}.", var);
                 }
-
             });
             logger.info("[微信支付]-微信退款成功! 商户订单号：{}, 微信支付订单号：{}, 商户退款单号：{}, 微信退款单号：{}, 退款成功时间: {}." , tradeNo, transactionId, outNo, refundId, timestamp);
             return successXml;
@@ -532,5 +572,4 @@ public class WxPayService implements IWxPayService {
         }
 
     }
-
 }

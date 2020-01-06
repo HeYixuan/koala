@@ -1,6 +1,7 @@
 package org.igetwell.system.web;
 
 import org.igetwell.common.uitls.ResponseEntity;
+import org.igetwell.system.order.dto.request.OrderRefundPay;
 import org.igetwell.system.order.dto.request.RefundOrderRequest;
 import org.igetwell.system.order.dto.request.RefundTradeRequest;
 import org.igetwell.system.order.dto.request.RefundTransactionRequest;
@@ -48,5 +49,14 @@ public class RefundOrderController {
     public ResponseEntity update(@RequestBody RefundOrder refundOrder){
         iRefundOrderService.update(refundOrder);
         return ResponseEntity.ok();
+    }
+
+
+    /**
+     * 用户申请退款
+     */
+    @PostMapping("/orders/refundOrder/refund")
+    public ResponseEntity refund(@RequestBody OrderRefundPay refundPay) {
+        return iRefundOrderService.refund(refundPay);
     }
 }

@@ -12,20 +12,28 @@ import com.alipay.api.request.AlipayTradePrecreateRequest;
 import com.alipay.api.request.AlipayTradeRefundRequest;
 import com.alipay.api.request.AlipayTradeWapPayRequest;
 import com.alipay.api.response.AlipayTradeRefundResponse;
+import org.apache.rocketmq.client.producer.SendCallback;
+import org.apache.rocketmq.client.producer.SendResult;
+import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.igetwell.common.constans.AliPayConstants;
 import org.igetwell.common.enums.SignType;
 import org.igetwell.common.enums.TradeType;
 import org.igetwell.common.sequence.sequence.Sequence;
 import org.igetwell.common.uitls.BigDecimalUtils;
 import org.igetwell.common.uitls.CharacterUtils;
+import org.igetwell.common.uitls.GsonUtils;
 import org.igetwell.common.uitls.ParamMap;
 import org.igetwell.system.bean.dto.request.AliPayRequest;
+import org.igetwell.system.bean.dto.request.AliRefundRequest;
+import org.igetwell.system.order.protocol.OrderPayProtocol;
 import org.igetwell.wechat.app.service.IAlipayService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
@@ -59,6 +67,9 @@ public class AlipayService implements IAlipayService {
 
     @Autowired
     private Sequence sequence;
+
+    @Autowired
+    private RocketMQTemplate rocketMQTemplate;
 
     /**
      * 扫码预付款下单
@@ -150,7 +161,7 @@ public class AlipayService implements IAlipayService {
     public Map<String, String> scan(String tradeNo, String subject, String body, String fee) {
             AlipayTradePrecreateModel model = new AlipayTradePrecreateModel();//创建API对应的request类
             //商户订单号，需要保证不重复
-            model.setOutTradeNo(attach + sequence.nextNo());
+            model.setOutTradeNo(tradeNo);
             //订单金额
             model.setTotalAmount(fee);
             //交易主题
@@ -216,7 +227,7 @@ public class AlipayService implements IAlipayService {
         if (CharacterUtils.isBlank(payRequest.getBody())) {
             throw new IllegalArgumentException("交易支付商品描述不可为空.");
         }
-        if (BigDecimalUtils.lessThan(fee, new BigDecimal(0))) {
+        if (BigDecimalUtils.lessThan(fee, BigDecimal.ZERO)) {
             throw new IllegalArgumentException("交易金额必须大于0.");
         }
         return this.preOrder(tradeType, tradeNo, productId, body, String.valueOf(fee));
@@ -230,28 +241,66 @@ public class AlipayService implements IAlipayService {
      * @throws Exception
      */
     @Override
-    public void returnPay(String transactionId, String tradeNo, String outNo, String fee) throws Exception {
-        logger.info("[支付宝退款]-正在发起支付宝退款请求.");
-        AlipayTradeRefundModel model = new AlipayTradeRefundModel();
-        //支付宝订单号
-        model.setTradeNo(transactionId);
-        //商户订单号
-        model.setOutTradeNo(tradeNo);
-        model.setOutRequestNo(outNo);
-        model.setRefundAmount(fee);
-        AlipayTradeRefundRequest tradeRefundRequest = new AlipayTradeRefundRequest();
-        tradeRefundRequest.setBizModel(model);
-        //tradeRefundRequest.setNotifyUrl(refundNotify);
-        //tradeRefundRequest.setReturnUrl(returnNotify);
-        AlipayClient alipayClient = new DefaultAlipayClient(gateway, appId, privateKey,"json","UTF-8", alipayPublicKey, SignType.RSA2.name());
-        AlipayTradeRefundResponse response = alipayClient.execute(tradeRefundRequest);
-        if(response.isSuccess() && response.getFundChange().equalsIgnoreCase("Y")){
-            logger.info("退款成功");
-            response.getFundChange();
-            response.getGmtRefundPay();
-            response.getTradeNo(); //支付宝交易号
-            response.getOutTradeNo();//商户订单号
+    public void refund(String transactionId, String tradeNo, String outNo, String fee) {
+        try {
+            logger.info("[支付宝退款]-正在发起支付宝退款请求.");
+            AlipayTradeRefundModel model = new AlipayTradeRefundModel();
+            //支付宝订单号
+            model.setTradeNo(transactionId);
+            //商户订单号
+            model.setOutTradeNo(tradeNo);
+            model.setOutRequestNo(outNo);
+            model.setRefundAmount(fee);
+            AlipayTradeRefundRequest tradeRefundRequest = new AlipayTradeRefundRequest();
+            tradeRefundRequest.setBizModel(model);
+            AlipayClient alipayClient = new DefaultAlipayClient(gateway, appId, privateKey,"json","UTF-8", alipayPublicKey, SignType.RSA2.name());
+            AlipayTradeRefundResponse response = alipayClient.execute(tradeRefundRequest);
+            if(!response.isSuccess() || !response.getFundChange().equalsIgnoreCase("Y")){
+                logger.error("[支付宝支付]-支付宝退款失败!  商户订单号：{}, 支付宝交易单号：{}.", tradeNo, transactionId);
+                throw new RuntimeException("[支付宝支付]-支付宝退款失败.");
+            }
+            logger.info("[微信支付]-支付宝退款成功! 商户退款单号：{}, 商户订单号：{}, 支付宝交易单号：{}, 退款成功时间: {}." , outNo, tradeNo, transactionId, response.getGmtRefundPay());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
+
+    }
+
+    /**
+     * 支付宝退款
+     */
+    @Override
+    public void refund(AliRefundRequest refundRequest) {
+        if (StringUtils.isEmpty(refundRequest)) {
+            throw new IllegalArgumentException("退款请求参数不可为空.");
+        }
+        String tradeNo = refundRequest.getTradeNo();
+        String transactionId = refundRequest.getTransactionId();
+        String outNo = refundRequest.getOutNo();
+        BigDecimal totalFee = refundRequest.getTotalFee();
+        BigDecimal fee = refundRequest.getFee();
+        if (StringUtils.isEmpty(refundRequest)) {
+            throw new IllegalArgumentException("退款请求参数不可为空.");
+        }
+        if (StringUtils.isEmpty(outNo)) {
+            throw new IllegalArgumentException("商户退款单号不可为空.");
+        }
+        if (CharacterUtils.isBlank(tradeNo)) {
+            throw new IllegalArgumentException("商户交易单号不可为空.");
+        }
+        if (CharacterUtils.isBlank(transactionId)) {
+            throw new IllegalArgumentException("商户交易流水单号不能为空.");
+        }
+        if (StringUtils.isEmpty(totalFee) || BigDecimalUtils.lessThan(totalFee, BigDecimal.ZERO)) {
+            throw new IllegalArgumentException("退款订单总额必须大于0.");
+        }
+        if (StringUtils.isEmpty(fee) || BigDecimalUtils.lessThan(fee, BigDecimal.ZERO)) {
+            throw new IllegalArgumentException("退款金额额必须大于0.");
+        }
+        if (BigDecimalUtils.lessThan(totalFee, fee)) {
+            throw new IllegalArgumentException("退款金额不能大于订单总额.");
+        }
+        this.refund(transactionId, tradeNo, outNo, String.valueOf(fee));
     }
 
     /**
@@ -259,13 +308,15 @@ public class AlipayService implements IAlipayService {
      *
      * @return
      */
-    public String notifyMethod(HttpServletRequest request) {
-        logger.info("[支付宝支付]-支付宝支付回调请求开始.");
+    public String payNotify(HttpServletRequest request) {
+        logger.info("[微信支付]-支付宝发起退款回调请求开始.");
         Map<String, String> params = ParamMap.getParameterMap(request);
-        //商户订单号
-        String tradeNo = params.get("out_trade_no");
-        //支付宝交易号
-        String transactionId = params.get("trade_no");
+
+        String tradeNo = params.get("out_trade_no"); //商户订单号
+        String transactionId = params.get("trade_no"); //支付宝交易号
+        String openId = params.get("buyer_id");//买家支付宝用户号
+        String fee = params.get("total_amount");//支付金额
+        String timestamp =  params.get("gmt_payment"); //支付成功时间
         try {
             boolean bool = AlipaySignature.rsaCheckV1(params, alipayPublicKey, "UTF-8", SignType.RSA2.name()); //调用SDK验证签名
             if (!bool) {
@@ -280,16 +331,29 @@ public class AlipayService implements IAlipayService {
 
             if (tradeStatus.equals(AliPayConstants.TRADE_FINISHED ) || tradeStatus.equals(AliPayConstants.TRADE_SUCCESS)) {
                 if (CharacterUtils.isBlank(refundFee)) {
-                    logger.info("[支付宝支付]-用户公众ID：{} , 订单号：{} , 交易号：{} 支付宝支付成功！", 11, tradeNo, transactionId);
+                    BigDecimal totalFee = BigDecimalUtils.divide(new BigDecimal(fee), new BigDecimal(100));
+                    OrderPayProtocol protocol = new OrderPayProtocol(tradeNo, transactionId, totalFee, timestamp);
+                    rocketMQTemplate.getProducer().setProducerGroup("trade-order-success");
+                    rocketMQTemplate.asyncSend("trade-order-success:trade-order-success", MessageBuilder.withPayload(protocol).build(), new SendCallback() {
+                        @Override
+                        public void onSuccess(SendResult var) {
+                            logger.info("[支付宝支付]-异步投递支付成功订单消息成功,订单信息：{}. ", GsonUtils.toJson(protocol));
+                            logger.info("[支付宝支付]-异步投递支付成功订单消息成功,投递结果：{}. ", var);
+                        }
+                        @Override
+                        public void onException(Throwable var) {
+                            logger.error("[支付宝支付]-异步投递支付成功订单消息失败: 异常信息：{}.", var);
+                        }
+                    });
+                    logger.info("[支付宝支付]-用户公众ID：{} , 商户订单号：{} , 支付宝交易单号：{} 支付宝支付成功！", openId, tradeNo, transactionId);
                 } else {
-                    logger.info("[支付宝支付]-用户公众ID：{} , 订单号：{} , 交易号：{} 支付宝退款成功！", 22, tradeNo, transactionId);
+                    logger.info("[支付宝支付]-用户公众ID：{} , 商户订单号：{} , 支付宝交易单号：{} 支付宝退款成功！", 22, tradeNo, transactionId);
                 }
             }
-            logger.info("[支付宝支付]-进入支付宝支付回调结束.");
             return AliPayConstants.SUCCESS;
         } catch (Exception e) {
-            logger.error("[支付宝支付]-调用支付宝支付回调方法异常,商户订单号：{}. 支付宝订单号：{}. ", tradeNo, transactionId, e);
-            throw new RuntimeException("[支付宝支付]-调用支付宝支付回调方法异常！", e);
+            logger.error("[支付宝支付]-支付宝发起退款回调方法异常! 商户订单号：{}, 支付宝订单号：{}. ", tradeNo, transactionId, e);
+            throw new RuntimeException("[支付宝支付]-支付宝发起退款回调方法异常！", e);
         }
     }
 
@@ -298,7 +362,7 @@ public class AlipayService implements IAlipayService {
      * 处理支付宝服务器同步通知
      * @return
      */
-    public String returnMethod(HttpServletRequest request) {
+    public String syncNotify(HttpServletRequest request) {
         logger.info("[支付宝支付]-处理支付宝服务器同步通知开始.");
         Map<String, String> params = ParamMap.getParameterMap(request);
         //商户订单号

@@ -4,6 +4,7 @@ import org.igetwell.common.enums.TradeType;
 import org.igetwell.common.uitls.IOUtils;
 import org.igetwell.common.uitls.ResponseEntity;
 import org.igetwell.system.bean.dto.request.WxPayRequest;
+import org.igetwell.system.bean.dto.request.WxRefundRequest;
 import org.igetwell.wechat.BaseController;
 import org.igetwell.wechat.component.service.IWxComponentAppService;
 import org.igetwell.wechat.app.service.IWxPayService;
@@ -56,6 +57,15 @@ public class WxPayController extends BaseController {
     @PostMapping("/refund")
     public ResponseEntity refund(String transactionId, String tradeNo, String outNo, String totalFee, String fee) {
         iWxPayService.refund(transactionId, tradeNo, outNo, totalFee, fee);
+        return ResponseEntity.ok();
+    }
+
+    /**
+     * 微信退款
+     */
+    @PostMapping("/wxRefund")
+    public ResponseEntity refund(@RequestBody WxRefundRequest refundRequest) {
+        iWxPayService.refund(refundRequest);
         return ResponseEntity.ok();
     }
 

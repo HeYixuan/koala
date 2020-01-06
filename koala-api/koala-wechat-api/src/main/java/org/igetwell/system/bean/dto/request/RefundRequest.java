@@ -1,26 +1,27 @@
-package org.igetwell.paypal.dto.request;
-
-import org.igetwell.common.enums.PayType;
+package org.igetwell.system.bean.dto.request;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 
-public class PayPalRefundRequest implements Serializable {
+public class RefundRequest implements Serializable {
 
     /**
-     * 商户退款单号
-     */
-    private String outNo;
-    /**
-     * 商户交易单号
+     * 商户交易订单号
      */
     private String tradeNo;
+
     /**
-     * 微信交易单号
+     * 微信支付单号
      */
     private String transactionId;
+
     /**
-     * 退款订单总额,单位为分
+     * 退款单号
+     */
+    private String outNo;
+
+    /**
+     * 退款订单总金额,单位为分
      */
     private BigDecimal totalFee;
 
@@ -31,11 +32,6 @@ public class PayPalRefundRequest implements Serializable {
 
 
 
-    /**
-     * 支付平台 微信 支付宝
-     */
-    private PayType payType;
-
     public String getTradeNo() {
         return tradeNo;
     }
@@ -44,20 +40,20 @@ public class PayPalRefundRequest implements Serializable {
         this.tradeNo = tradeNo;
     }
 
-    public String getOutNo() {
-        return outNo;
-    }
-
-    public void setOutNo(String outNo) {
-        this.outNo = outNo;
-    }
-
     public String getTransactionId() {
         return transactionId;
     }
 
     public void setTransactionId(String transactionId) {
         this.transactionId = transactionId;
+    }
+
+    public String getOutNo() {
+        return outNo;
+    }
+
+    public void setOutNo(String outNo) {
+        this.outNo = outNo;
     }
 
     public BigDecimal getTotalFee() {
@@ -76,22 +72,13 @@ public class PayPalRefundRequest implements Serializable {
         this.fee = fee;
     }
 
-    public PayType getPayType() {
-        return payType;
+    public RefundRequest() {
     }
 
-    public void setPayType(PayType payType) {
-        this.payType = payType;
-    }
-
-    public PayPalRefundRequest() {
-    }
-
-    public PayPalRefundRequest(PayType payType, String outNo, String tradeNo, String transactionId, BigDecimal totalFee, BigDecimal fee) {
-        this.payType = payType;
-        this.outNo = outNo;
+    public RefundRequest(String tradeNo, String transactionId, String outNo, BigDecimal totalFee, BigDecimal fee) {
         this.tradeNo = tradeNo;
         this.transactionId = transactionId;
+        this.outNo = outNo;
         this.totalFee = totalFee;
         this.fee = fee;
     }

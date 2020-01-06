@@ -2,6 +2,7 @@ package org.igetwell.wechat.app.service;
 
 import org.igetwell.common.enums.TradeType;
 import org.igetwell.system.bean.dto.request.AliPayRequest;
+import org.igetwell.system.bean.dto.request.AliRefundRequest;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
@@ -42,17 +43,22 @@ public interface IAlipayService {
      * @param fee
      * @throws Exception
      */
-    void returnPay(String transactionId, String tradeNo, String outNo, String fee) throws Exception;
+    void refund(String transactionId, String tradeNo, String outNo, String fee);
+
+    /**
+     * 支付宝退款
+     */
+    void refund(AliRefundRequest refundRequest);
 
     /**
      * 处理支付宝支付回调
      * @return
      */
-    String notifyMethod(HttpServletRequest request);
+    String payNotify(HttpServletRequest request);
 
     /**
      * 处理支付宝服务器同步通知
      * @return
      */
-    String returnMethod(HttpServletRequest request);
+    String syncNotify(HttpServletRequest request);
 }

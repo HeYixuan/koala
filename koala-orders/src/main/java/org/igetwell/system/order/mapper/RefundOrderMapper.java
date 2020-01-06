@@ -26,6 +26,15 @@ public interface RefundOrderMapper {
     RefundOrder getTrade(String transactionId, String tradeNo);
 
     /**
+     * 根据商户退款单号、微信支付单号和商户订单号查询
+     * @param transactionId 微信支付单号
+     * @param tradeNo 商户订单号
+     * @param outNo 商户退款单号
+     * @return
+     */
+    RefundOrder getOrder(String transactionId, String tradeNo, String outNo);
+
+    /**
      * 根据微信支付单号、商户订单号、微信退款单号、商户退款单号查询
      * @param transactionId 微信支付单号
      * @param tradeNo 商户订单号

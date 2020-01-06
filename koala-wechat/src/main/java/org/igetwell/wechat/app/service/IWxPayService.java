@@ -2,6 +2,8 @@ package org.igetwell.wechat.app.service;
 
 import org.igetwell.common.enums.TradeType;
 import org.igetwell.system.bean.dto.request.WxPayRequest;
+import org.igetwell.system.bean.dto.request.WxRefundRequest;
+
 import java.util.Map;
 
 /**
@@ -54,6 +56,11 @@ public interface IWxPayService {
      * @throws Exception
      */
     void refund(String transactionId, String tradeNo, String outNo, String totalFee, String fee);
+
+    /**
+     * 微信退款
+     */
+    void refund(WxRefundRequest refundRequest);
 
     /**
      * 处理微信退款回调

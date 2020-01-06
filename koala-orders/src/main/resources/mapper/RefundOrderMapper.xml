@@ -218,6 +218,13 @@
     WHERE TRANSACTION_ID = #{param1} AND TRADE_NO = #{param2}
   </select>
 
+  <select id="getOrder" resultMap="baseMap">
+    SELECT
+    <include refid="baseSql" />
+    FROM REFUND_ORDER
+    WHERE TRANSACTION_ID = #{param1} AND TRADE_NO = #{param2} AND OUT_NO = #{param3}
+  </select>
+
   <select id="getTransaction" resultMap="baseMap">
     SELECT
         <include refid="baseSql" />
