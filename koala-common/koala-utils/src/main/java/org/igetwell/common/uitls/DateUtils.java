@@ -1,11 +1,9 @@
 package org.igetwell.common.uitls;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.ZoneId;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.Temporal;
+import java.util.Date;
 
 public class DateUtils {
 
@@ -99,6 +97,27 @@ public class DateUtils {
         return dateTime;
     }
 
+    /** LocalDate / LocalDateTime ---> Date*/
+    public static Date localDate2Date(LocalDateTime localDate){
+//        ZonedDateTime zonedDateTime = localDate.atZone(ZoneId.systemDefault());
+//        Instant instant1 = zonedDateTime.toInstant();
+//        Date from = Date.from(instant1);
+//        return  from;
+        LocalDateTime localDateTime = LocalDateTime.now();
+        ZoneId zone = ZoneId.systemDefault();
+        Instant instant = localDateTime.atZone(zone).toInstant();
+        Date date = Date.from(instant);
+        return date;
+    }
+
+    /** Date ---> LocalDate / LocalDateTime*/
+    public static LocalDateTime date2LocalDate(Date date){
+        Instant instant = date.toInstant();
+        ZoneId zone = ZoneId.systemDefault();
+        LocalDateTime localDateTime = LocalDateTime.ofInstant(instant, zone);
+        return localDateTime;
+    }
+
     public static void main(String[] args) {
         System.err.println("时间1："+ LocalDate.now());
         System.err.println("时间2："+ LocalTime.now());
@@ -116,5 +135,9 @@ public class DateUtils {
         System.err.println(LocalDateTime.now().plusMonths(1));
         System.err.println(LocalDate.now().plusDays(1));
         System.err.println(LocalDateTime.now().minusHours(1));
+
+        LocalDateTime localDate = date2LocalDate(new Date());
+
+        System.err.println(localDate.toString());
     }
 }

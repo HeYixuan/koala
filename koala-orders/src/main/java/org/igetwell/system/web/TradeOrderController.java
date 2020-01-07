@@ -15,6 +15,12 @@ public class TradeOrderController {
     @Autowired
     private ITradeOrderService iTradeOrderService;
 
+    @PostMapping("/orders/get/{id}")
+    public ResponseEntity get(@PathVariable("id") Long id){
+        TradeOrder order = iTradeOrderService.get(id);
+        return ResponseEntity.ok(order);
+    }
+
     /**
      * 订单创建
      * @param orderPay
@@ -28,9 +34,9 @@ public class TradeOrderController {
     /**
      * 订单创建
      */
-    @GetMapping("/orders/trade/scan/{fee}")
-    public ResponseEntity trade(@PathVariable("fee") BigDecimal fee){
-        return iTradeOrderService.scan(fee);
+    @GetMapping("/orders/trade/scan")
+    public ResponseEntity trade(@RequestParam(value="money", defaultValue="0.01") BigDecimal money){
+        return iTradeOrderService.scan(money);
     }
 
 

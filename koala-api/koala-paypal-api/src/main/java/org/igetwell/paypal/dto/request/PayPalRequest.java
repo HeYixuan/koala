@@ -1,6 +1,6 @@
 package org.igetwell.paypal.dto.request;
 
-import org.igetwell.common.enums.PayType;
+import org.igetwell.common.enums.PayChannel;
 import org.igetwell.common.enums.TradeType;
 
 import java.io.Serializable;
@@ -41,7 +41,7 @@ public class PayPalRequest implements Serializable {
     /**
      * 支付平台 微信 支付宝
      */
-    private PayType payType;
+    private PayChannel channel;
 
     public String getTradeNo() {
         return tradeNo;
@@ -91,19 +91,19 @@ public class PayPalRequest implements Serializable {
         this.tradeType = tradeType;
     }
 
-    public PayType getPayType() {
-        return payType;
+    public PayChannel getChannel() {
+        return channel;
     }
 
-    public void setPayType(PayType payType) {
-        this.payType = payType;
+    public void setChannel(PayChannel channel) {
+        this.channel = channel;
     }
 
     public PayPalRequest() {
     }
 
-    public PayPalRequest(PayType payType, TradeType tradeType, String tradeNo, String productId, String body, BigDecimal fee, String clientIp) {
-        this.payType = payType;
+    public PayPalRequest(PayChannel channel, TradeType tradeType, String tradeNo, String productId, String body, BigDecimal fee, String clientIp) {
+        this.channel = channel;
         this.tradeType = tradeType;
         this.tradeNo = tradeNo;
         this.productId = productId;
@@ -112,8 +112,8 @@ public class PayPalRequest implements Serializable {
         this.clientIp = clientIp;
     }
 
-    public PayPalRequest(PayType payType, TradeType tradeType, String tradeNo, String productId, String body, BigDecimal fee) {
-        this.payType = payType;
+    public PayPalRequest(PayChannel channel, TradeType tradeType, String tradeNo, String productId, String body, BigDecimal fee) {
+        this.channel = channel;
         this.tradeType = tradeType;
         this.tradeNo = tradeNo;
         this.productId = productId;

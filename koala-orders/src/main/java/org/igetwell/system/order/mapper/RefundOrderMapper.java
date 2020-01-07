@@ -2,6 +2,8 @@ package org.igetwell.system.order.mapper;
 
 import org.igetwell.system.order.entity.RefundOrder;
 
+import java.util.List;
+
 public interface RefundOrderMapper {
 
     /**
@@ -23,7 +25,7 @@ public interface RefundOrderMapper {
      * @param tradeNo 商户订单号
      * @return
      */
-    RefundOrder getTrade(String transactionId, String tradeNo);
+    List<RefundOrder> getTrade(String transactionId, String tradeNo);
 
     /**
      * 根据商户退款单号、微信支付单号和商户订单号查询

@@ -19,13 +19,11 @@ import org.igetwell.common.constans.AliPayConstants;
 import org.igetwell.common.enums.SignType;
 import org.igetwell.common.enums.TradeType;
 import org.igetwell.common.sequence.sequence.Sequence;
-import org.igetwell.common.uitls.BigDecimalUtils;
-import org.igetwell.common.uitls.CharacterUtils;
-import org.igetwell.common.uitls.GsonUtils;
-import org.igetwell.common.uitls.ParamMap;
+import org.igetwell.common.uitls.*;
 import org.igetwell.system.bean.dto.request.AliPayRequest;
 import org.igetwell.system.bean.dto.request.AliRefundRequest;
 import org.igetwell.system.order.protocol.OrderPayProtocol;
+import org.igetwell.system.order.protocol.OrderRefundProtocol;
 import org.igetwell.wechat.app.service.IAlipayService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -254,12 +252,31 @@ public class AlipayService implements IAlipayService {
             AlipayTradeRefundRequest tradeRefundRequest = new AlipayTradeRefundRequest();
             tradeRefundRequest.setBizModel(model);
             AlipayClient alipayClient = new DefaultAlipayClient(gateway, appId, privateKey,"json","UTF-8", alipayPublicKey, SignType.RSA2.name());
-            AlipayTradeRefundResponse response = alipayClient.execute(tradeRefundRequest);
-            if(!response.isSuccess() || !response.getFundChange().equalsIgnoreCase("Y")){
-                logger.error("[支付宝支付]-支付宝退款失败!  商户订单号：{}, 支付宝交易单号：{}.", tradeNo, transactionId);
-                throw new RuntimeException("[支付宝支付]-支付宝退款失败.");
+            AlipayTradeRefundResponse params = alipayClient.execute(tradeRefundRequest);
+            if(!params.isSuccess()){
+                String subMsg = params.getSubMsg();
+                if (!("交易已经关闭").equals(subMsg)) {
+                    logger.error("[支付宝支付]-支付宝退款失败! 商户订单号：{}, 支付宝交易单号：{}.", tradeNo, transactionId);
+                    throw new RuntimeException("[微信支付]-微信退款失败." + subMsg);
+                }
+                return;
             }
-            logger.info("[微信支付]-支付宝退款成功! 商户退款单号：{}, 商户订单号：{}, 支付宝交易单号：{}, 退款成功时间: {}." , outNo, tradeNo, transactionId, response.getGmtRefundPay());
+            String timestamp = DateUtils.formatLocalDateTime(DateUtils.date2LocalDate(params.getGmtRefundPay()));//退款成功时间
+            String refundAccount = params.getRefundDetailItemList().get(0).getFundChannel();//退回账户
+            OrderRefundProtocol protocol = new OrderRefundProtocol(outNo, transactionId, tradeNo, refundAccount, timestamp);
+            rocketMQTemplate.getProducer().setProducerGroup("refund-order-success");
+            rocketMQTemplate.asyncSend("refund-order-success:refund-order-success", MessageBuilder.withPayload(protocol).build(), new SendCallback() {
+                @Override
+                public void onSuccess(SendResult var) {
+                    logger.info("[支付宝支付]-异步投递退款成功订单消息成功,订单信息：{}. ", GsonUtils.toJson(protocol));
+                    logger.info("[支付宝支付]-异步投递退款成功订单消息成功,投递结果：{}. ", var);
+                }
+                @Override
+                public void onException(Throwable var) {
+                    logger.error("[支付宝支付]-异步投递支付成功订单消息失败: 异常信息：{}.", var);
+                }
+            });
+            logger.info("[支付宝支付]-支付宝退款成功! 商户退款单号：{}, 商户订单号：{}, 支付宝交易单号：{}, 退款成功时间: {}." , outNo, tradeNo, transactionId, timestamp);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -384,5 +401,12 @@ public class AlipayService implements IAlipayService {
             logger.error("[支付宝支付]-处理支付宝服务器同步通知方法异常,商户订单号：{}. 支付宝订单号：{}. ", tradeNo, transactionId, e);
             throw new RuntimeException("[支付宝支付]-处理支付宝服务器同步通知方法异常！", e);
         }
+    }
+
+    public static void main(String[] args) {
+        String json = "{\"alipay_trade_refund_response\": { 		\"code\": \"10000\", 		\"msg\": \"Success\", 		\"buyer_logon_id\": \"152******17\", 		\"buyer_user_id\": \"2088512434499773\", 		\"fund_change\": \"Y\", 		\"gmt_refund_pay\": \"2020-01-07 08:45:15\", 		\"out_trade_no\": \"134575161962745857\", 		\"refund_detail_item_list\": [{ 			\"amount\": \"0.01\", 			\"fund_channel\": \"ALIPAYACCOUNT\" 		}], 		\"refund_fee\": \"0.01\", 		\"send_back_fee\": \"0.01\", 		\"trade_no\": \"2020010722001499770526920524\" 	}, 	\"sign\": \"DqD2Rja+0qLcfJUrNgpq0J6p1B6hwleRndHXc68qIAZimx3zNXygAWFeE7EVFmfpm1zZ11E/EY9Q6GlyVBnorAUYlXDniT4KlAOipBuE5NY/k4XKaSks4E1sh/utgwoPYfIFXJqLrrvsOUSNBKKc6d3XbuNgxiMeN/oULTJApOa3o74NMY6uAdYdwRug0mfaNiP4ldS79Bjy63FZ5rWtM8EuFPMPw0OoMze1aACHyFPKLiWD+CTLDubIRi3CRoqVmI9vv2DS8Ubi1qn6N96O75WRVjcc2rzaPmYHFNSVOR5ygFCVpZIWqhhYnVW2Tu+WR0c44Vh8AoGmn/Giji+qcw==\" }";
+        AlipayTradeRefundResponse params = GsonUtils.fromJson(json, AlipayTradeRefundResponse.class);
+        System.err.println(params);
+
     }
 }

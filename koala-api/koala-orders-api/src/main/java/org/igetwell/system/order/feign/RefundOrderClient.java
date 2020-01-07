@@ -8,14 +8,16 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.util.List;
+
 @FeignClient(value = "koala-orders")
 public interface RefundOrderClient {
 
     /**
-     * 根据微信支付单号和商户订单号查询退款订单
+     * 根据微信支付单号和商户订单号查询已退款订单
      */
     @PostMapping("/orders/refundOrder/tradeOrder")
-    RefundOrder getOrder(@RequestBody RefundTradeRequest request);
+    List<RefundOrder> getOrder(@RequestBody RefundTradeRequest request);
 
     /**
      * 综合查询退款订单

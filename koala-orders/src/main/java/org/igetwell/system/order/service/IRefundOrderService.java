@@ -7,6 +7,8 @@ import org.igetwell.system.order.dto.request.RefundTransactionRequest;
 import org.igetwell.system.order.entity.RefundOrder;
 import org.igetwell.system.order.dto.request.RefundOrderRequest;
 
+import java.util.List;
+
 public interface IRefundOrderService {
 
     /**
@@ -22,7 +24,7 @@ public interface IRefundOrderService {
      * @param tradeNo 商户订单号
      * @return
      */
-    RefundOrder get(String transactionId, String tradeNo);
+    List<RefundOrder> get(String transactionId, String tradeNo);
 
     /**
      * 根据微信支付单号、商户订单号、商户退款单号查询
@@ -73,7 +75,7 @@ public interface IRefundOrderService {
      * 根据微信支付单号和商户订单号查询
      * @return
      */
-    RefundOrder getOrder(RefundTradeRequest request);
+    List<RefundOrder> getOrder(RefundTradeRequest request);
 
     /**
      * 根据微信支付单号、商户订单号、微信退款单号、商户退款单号查询

@@ -5,7 +5,7 @@ import org.apache.rocketmq.client.producer.SendResult;
 import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.igetwell.common.enums.HttpStatus;
 import org.igetwell.common.enums.OrderStatus;
-import org.igetwell.common.enums.PayType;
+import org.igetwell.common.enums.PayChannel;
 import org.igetwell.common.sequence.sequence.Sequence;
 import org.igetwell.common.uitls.BigDecimalUtils;
 import org.igetwell.common.uitls.CharacterUtils;
@@ -33,6 +33,7 @@ import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
+import java.util.List;
 
 @Service
 @Transactional(rollbackFor = Exception.class)
@@ -75,9 +76,9 @@ public class RefundOrderService implements IRefundOrderService {
      * @param tradeNo 商户订单号
      * @return
      */
-    public RefundOrder get(String transactionId, String tradeNo) {
+    public List<RefundOrder> get(String transactionId, String tradeNo) {
         LOGGER.info("[退款订单服务]-根据微信支付单号:{}, 商户订单号:{} 查询退款订单开始.", transactionId, tradeNo);
-        RefundOrder orders = refundOrderMapper.getTrade(transactionId, tradeNo);
+        List<RefundOrder> orders = refundOrderMapper.getTrade(transactionId, tradeNo);
         LOGGER.info("[退款订单服务]-根据微信支付单号:{}, 商户订单号:{} 查询退款订单结束.", transactionId, tradeNo);
         return orders;
     }
@@ -115,13 +116,13 @@ public class RefundOrderService implements IRefundOrderService {
      * 根据微信支付单号和商户订单号查询
      * @return
      */
-    public RefundOrder getOrder(RefundTradeRequest request) {
+    public List<RefundOrder> getOrder(RefundTradeRequest request) {
         LOGGER.info("[退款订单服务]-根据微信支付单号:{} 商户订单号:{} 查询退款订单开始.", GsonUtils.toJson(request));
         if (StringUtils.isEmpty(request) || CharacterUtils.isBlank(request.getTransactionId()) || CharacterUtils.isBlank(request.getTradeNo())) {
             LOGGER.error("[退款订单服务]-根据微信支付单号和商户订单号查询退款订单失败, 请求参数为空.");
             throw new IllegalArgumentException("[退款订单服务]-根据微信支付单号和商户订单号查询退款订单失败, 请求参数为空.");
         }
-        RefundOrder orders = refundOrderMapper.getTrade(request.getTransactionId(), request.getTradeNo());
+        List<RefundOrder> orders = refundOrderMapper.getTrade(request.getTransactionId(), request.getTradeNo());
         LOGGER.info("[退款订单服务]-根据微信支付单号:{} 商户订单号:{} 查询退款订单结束.", request.getTransactionId(), request.getTransactionId());
         return orders;
     }
@@ -310,12 +311,12 @@ public class RefundOrderService implements IRefundOrderService {
                 orders.getMchId(), orders.getMchNo(), 20001L, "M:00001", OrderStatus.CREATE.getValue());
         this.insert(order);
         PayPalRefundRequest refundRequest = null;
-        if (orders.getChannelId() == 1) {
+        if (PayChannel.WECHAT.name().equalsIgnoreCase(orders.getChannelName())) {
             //微信退款
-            refundRequest = new PayPalRefundRequest(PayType.WECHAT, order.getOutNo(), tradeNo, transactionId, totalFee, refundFee);
-        } else if (orders.getChannelId() == 2) {
+            refundRequest = new PayPalRefundRequest(PayChannel.WECHAT, order.getOutNo(), tradeNo, transactionId, totalFee, refundFee);
+        } else if (PayChannel.ALIPAY.name().equalsIgnoreCase(orders.getChannelName())) {
             //支付宝退款
-            refundRequest = new PayPalRefundRequest(PayType.ANT, order.getOutNo(), tradeNo, transactionId, totalFee, refundFee);
+            refundRequest = new PayPalRefundRequest(PayChannel.ALIPAY, order.getOutNo(), tradeNo, transactionId, totalFee, refundFee);
         } else {
             ResponseEntity.ok("其他支付平台退款请联系客服.");
         }

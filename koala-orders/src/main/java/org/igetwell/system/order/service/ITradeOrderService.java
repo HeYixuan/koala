@@ -36,10 +36,10 @@ public interface ITradeOrderService {
 
     /**
      * 一码付款
-     * @param fee
+     * @param money
      * @return
      */
-    ResponseEntity scan(BigDecimal fee);
+    ResponseEntity scan(BigDecimal money);
 
     ResponseEntity trade(OrderPay orderPay);
 }

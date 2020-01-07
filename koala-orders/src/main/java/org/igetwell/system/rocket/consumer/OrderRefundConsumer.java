@@ -4,6 +4,7 @@ import org.apache.rocketmq.spring.annotation.RocketMQMessageListener;
 import org.apache.rocketmq.spring.core.RocketMQListener;
 import org.igetwell.common.enums.OrderStatus;
 import org.igetwell.common.enums.OrderType;
+import org.igetwell.common.uitls.BigDecimalUtils;
 import org.igetwell.common.uitls.CharacterUtils;
 import org.igetwell.system.order.entity.RefundOrder;
 import org.igetwell.system.order.entity.TradeOrder;
@@ -15,6 +16,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+
+import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * 支付订单退款成功消费者
@@ -77,6 +81,15 @@ public class OrderRefundConsumer implements RocketMQListener<OrderRefundProtocol
             }
         }
         iRefundOrderService.update(order);
-        iTradeOrderService.updateStatus(tradeNo, OrderStatus.REFUND.getValue());
+
+        //如果退款金额等于支付金额,直接改支付单为已退款订单,否则根据商户交易单和微信交易流水号查询记录金额汇总
+        List<RefundOrder> orderList = iRefundOrderService.get(transactionId, tradeNo);
+        BigDecimal totalFee = BigDecimal.ZERO;
+        for (int i = 0; i < orderList.size(); i++) {
+            totalFee = BigDecimalUtils.add(totalFee, orderList.get(i).getRefundFee());
+        }
+        if (BigDecimalUtils.equals(totalFee, tradeOrder.getFee())) {
+            iTradeOrderService.updateStatus(tradeNo, OrderStatus.REFUND.getValue());
+        }
     }
 }

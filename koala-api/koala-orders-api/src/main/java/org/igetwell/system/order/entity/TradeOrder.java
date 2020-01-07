@@ -41,6 +41,11 @@ public class TradeOrder implements Serializable {
     private Long channelId;
 
     /**
+     * 渠道名称 非库字段(级联查询得到的结果)
+     */
+    private String channelName;
+
+    /**
      * 支付金额
      */
     private BigDecimal fee;
@@ -133,6 +138,10 @@ public class TradeOrder implements Serializable {
 
     public void setChannelId(Long channelId) {
         this.channelId = channelId;
+    }
+
+    public String getChannelName() {
+        return channelName;
     }
 
     public BigDecimal getFee() {

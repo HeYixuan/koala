@@ -1,6 +1,9 @@
 package org.igetwell.common.enums;
 
-public enum PayType {
+/**
+ * 支付渠道
+ */
+public enum PayChannel {
 
     /**
      * 微信
@@ -10,5 +13,6 @@ public enum PayType {
     /**
      * 支付宝
      */
-    ANT;
+    ALIPAY;
+
 }

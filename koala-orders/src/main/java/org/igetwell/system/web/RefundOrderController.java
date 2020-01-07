@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 public class RefundOrderController {
 
@@ -27,10 +29,10 @@ public class RefundOrderController {
     }
 
     /**
-     * 根据微信支付单号和商户订单号查询退款订单
+     * 根据微信支付单号和商户订单号查询已退款订单
      */
     @PostMapping("/orders/refundOrder/tradeOrder")
-    public RefundOrder getOrder(@RequestBody RefundTradeRequest request){
+    public List<RefundOrder> getOrder(@RequestBody RefundTradeRequest request){
         return iRefundOrderService.getOrder(request);
     }
 

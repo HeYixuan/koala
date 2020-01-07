@@ -1,6 +1,6 @@
 package org.igetwell.paypal.dto.request;
 
-import org.igetwell.common.enums.PayType;
+import org.igetwell.common.enums.PayChannel;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -29,12 +29,10 @@ public class PayPalRefundRequest implements Serializable {
      */
     private BigDecimal fee;
 
-
-
     /**
      * 支付平台 微信 支付宝
      */
-    private PayType payType;
+    private PayChannel channel;
 
     public String getTradeNo() {
         return tradeNo;
@@ -76,19 +74,19 @@ public class PayPalRefundRequest implements Serializable {
         this.fee = fee;
     }
 
-    public PayType getPayType() {
-        return payType;
+    public PayChannel getChannel() {
+        return channel;
     }
 
-    public void setPayType(PayType payType) {
-        this.payType = payType;
+    public void setChannel(PayChannel channel) {
+        this.channel = channel;
     }
 
     public PayPalRefundRequest() {
     }
 
-    public PayPalRefundRequest(PayType payType, String outNo, String tradeNo, String transactionId, BigDecimal totalFee, BigDecimal fee) {
-        this.payType = payType;
+    public PayPalRefundRequest(PayChannel channel, String outNo, String tradeNo, String transactionId, BigDecimal totalFee, BigDecimal fee) {
+        this.channel = channel;
         this.outNo = outNo;
         this.tradeNo = tradeNo;
         this.transactionId = transactionId;

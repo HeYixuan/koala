@@ -540,7 +540,7 @@ public class WxPayService implements IWxPayService {
         String tradeNo = subXml.get("out_trade_no");//商户订单号
         String refundId = subXml.get("refund_id");//微信退款单号
         String outNo = subXml.get("out_refund_no");//商户退款单号
-        String refundAccount = subXml.get("refund_recv_accout");//退款单号
+        String refundAccount = subXml.get("refund_recv_accout");//退回账户
         String status = subXml.get("refund_status");//退款状态：SUCCESS-退款成功CHANGE-退款异常REFUNDCLOSE—退款关闭
         String timestamp = subXml.get("success_time");//退款成功时间
 

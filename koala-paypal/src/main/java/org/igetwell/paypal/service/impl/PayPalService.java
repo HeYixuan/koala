@@ -1,6 +1,6 @@
 package org.igetwell.paypal.service.impl;
 
-import org.igetwell.common.enums.PayType;
+import org.igetwell.common.enums.PayChannel;
 import org.igetwell.common.uitls.ResponseEntity;
 import org.igetwell.paypal.dto.request.PayPalRefundRequest;
 import org.igetwell.paypal.dto.request.PayPalRequest;
@@ -14,7 +14,6 @@ import org.igetwell.system.feign.WxPayClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.util.Map;
 
 @Service
@@ -27,7 +26,7 @@ public class PayPalService implements IPayPalService {
 
 
     public ResponseEntity<Map<String, String>> wxPay(PayPalRequest payPalRequest) {
-        if (payPalRequest.getPayType().equals(PayType.WECHAT)){
+        if (payPalRequest.getChannel().equals(PayChannel.WECHAT)){
             WxPayRequest payRequest = new WxPayRequest(payPalRequest.getTradeType(), payPalRequest.getTradeNo(), payPalRequest.getProductId(),
                     payPalRequest.getBody(), payPalRequest.getFee(), payPalRequest.getClientIp());
             return wxPayClient.wxPay(payRequest);
@@ -39,7 +38,7 @@ public class PayPalService implements IPayPalService {
     }
 
     public ResponseEntity refund(PayPalRefundRequest refundRequest) {
-        if (refundRequest.getPayType().equals(PayType.WECHAT)){
+        if (refundRequest.getChannel().equals(PayChannel.WECHAT)){
             WxRefundRequest payRequest = new WxRefundRequest(refundRequest.getTradeNo(), refundRequest.getTransactionId(), refundRequest.getOutNo(), refundRequest.getTotalFee(), refundRequest.getFee());
             return wxPayClient.refund(payRequest);
         } else {

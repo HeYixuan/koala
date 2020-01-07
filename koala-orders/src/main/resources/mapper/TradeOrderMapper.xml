@@ -9,6 +9,7 @@
     <result column="MCH_NO" jdbcType="VARCHAR" property="mchNo" />
     <result column="ORDER_TYPE" jdbcType="INTEGER" property="orderType" />
     <result column="CHANNEL_ID" jdbcType="BIGINT" property="channelId" />
+    <result column="CHANNEL_NAME" jdbcType="VARCHAR" property="channelName" />
     <result column="FEE" jdbcType="DECIMAL" property="fee" />
     <result column="CURRENCY" jdbcType="VARCHAR" property="currency" />
     <result column="CLIENT_IP" jdbcType="VARCHAR" property="clientIp" />
@@ -19,7 +20,8 @@
     <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
   </resultMap>
   <sql id="baseSql">
-    ID, TRADE_NO, TRANSACTION_ID, MCH_ID, MCH_NO, ORDER_TYPE, CHANNEL_ID, FEE, CURRENCY, CLIENT_IP, `STATUS`,
+    ID, TRADE_NO, TRANSACTION_ID, MCH_ID, MCH_NO, ORDER_TYPE, CHANNEL_ID, (SELECT CHANNEL_NAME FROM CHANNEL WHERE ID = CHANNEL_ID) CHANNEL_NAME,
+     FEE, CURRENCY, CLIENT_IP, `STATUS`,
     SUCCESS_TIME, GOODS_ID, BODY, CREATE_TIME
   </sql>
   <select id="get" parameterType="java.lang.Long" resultMap="baseMap">
