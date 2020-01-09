@@ -35,6 +35,14 @@ public class DateUtils {
         return LocalTime.now();
     }
 
+    /**
+     * 获得当前时间戳
+     * @return
+     */
+    public static long getTimestamp() {
+        return Instant.now().toEpochMilli();
+    }
+
 
     /** String ---> LocalDate */
     public static LocalDate parseToLocalDate(String date) {

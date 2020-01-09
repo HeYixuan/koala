@@ -1,9 +1,14 @@
 package org.igetwell.common.uitls;
 
+import org.springframework.http.HttpMethod;
+
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 public class ParamMap {
     private Map<String, String> data = new ConcurrentHashMap<String, String>();
@@ -44,5 +49,44 @@ public class ParamMap {
             params.put(name, value);
         }
         return params;
+    }
+
+    /**
+     * 将URL的参数和body参数合并
+     */
+    public static Map<String, String> getParams(final HttpServletRequest request) throws IOException {
+        Map<String, String> params = new HashMap<>();
+        //获取URL上的参数
+        Map<String, String> urlParams = getParameterMap(request);
+        for (Map.Entry entry : urlParams.entrySet()) {
+            params.put((String) entry.getKey(), (String) entry.getValue());
+        }
+        Map<String, Object> bodyParams = new HashMap<>(16);
+        // get请求不需要拿body参数
+        if (!HttpMethod.GET.name().equals(request.getMethod())) {
+            bodyParams = getBodyParams(request);
+        }
+        //将URL的参数和body参数进行合并
+        if (bodyParams != null) {
+            for (Map.Entry entry : bodyParams.entrySet()) {
+                params.put((String) entry.getKey(), String.valueOf(entry.getValue()));
+            }
+        }
+        return params;
+    }
+
+    /**
+     * 获取 Body 参数
+     */
+    public static Map<String, Object> getBodyParams(final HttpServletRequest request) throws IOException {
+        String body = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
+        return GsonUtils.fromJson(body, Map.class);
+    }
+
+    /**
+     * 将URL请求参数转换成Map
+     */
+    public static Map<String, String> getUrlParams(final HttpServletRequest request) {
+        return null;
     }
 }

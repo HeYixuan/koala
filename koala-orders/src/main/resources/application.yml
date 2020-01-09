@@ -25,12 +25,12 @@ sequence:
 mybatis:
   mapper-locations: classpath:/mapper/*Mapper.xml
 
-  thymeleaf:
-    mode: LEGACYHTML5
-    prefix: classpath:/templates/
-    suffix: .html
-    encoding: UTF-8
-    cache: false
+#  thymeleaf:
+#    mode: LEGACYHTML5
+#    prefix: classpath:/templates/
+#    suffix: .html
+#    encoding: UTF-8
+#    cache: false
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8

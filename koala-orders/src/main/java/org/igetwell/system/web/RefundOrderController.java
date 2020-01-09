@@ -10,8 +10,10 @@ import org.igetwell.system.order.service.IRefundOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -19,6 +21,22 @@ public class RefundOrderController {
 
     @Autowired
     private IRefundOrderService iRefundOrderService;
+
+    /**
+     * 用户申请退款
+     */
+    @PostMapping("/orders/validateSign")
+    public ResponseEntity validateSign(@RequestParam(value = "appId") String appId, @RequestParam(value = "timestamp") String timestamp, @RequestParam(value = "mchId") String mchId, @RequestParam(value="money", defaultValue="0.01") BigDecimal money) {
+        return ResponseEntity.ok();
+    }
+
+    /**
+     * 用户申请退款
+     */
+    @PostMapping("/orders/validateSign2")
+    public ResponseEntity validateSign2(@RequestBody(required=false) OrderRefundPay refundPay) {
+        return ResponseEntity.ok();
+    }
 
     /**
      * 用户申请退款

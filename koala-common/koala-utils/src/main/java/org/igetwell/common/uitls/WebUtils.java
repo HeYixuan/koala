@@ -19,7 +19,6 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 
 
@@ -118,10 +117,10 @@ public class WebUtils extends org.springframework.web.util.WebUtils {
 	 * 返回json
 	 *
 	 * @param response HttpServletResponse
-	 * @param result   结果对象
+	 * @param object   结果对象
 	 */
-	public void renderJson(HttpServletResponse response, Object result) {
-		renderJson(response, result, MediaType.APPLICATION_JSON_UTF8_VALUE);
+	public void renderJson(HttpServletResponse response, Object object) {
+		renderJson(response, object, MediaType.APPLICATION_JSON_UTF8_VALUE);
 	}
 
 	/**
@@ -132,13 +131,17 @@ public class WebUtils extends org.springframework.web.util.WebUtils {
 	 * @param contentType contentType
 	 */
 	public void renderJson(HttpServletResponse response, Object object, String contentType) {
-		response.setCharacterEncoding("UTF-8");
-		response.setContentType(contentType);
-		try (PrintWriter out = response.getWriter()) {
-			out.append(GsonUtils.toJson(object));
+		try {
+			response.setCharacterEncoding("UTF-8");
+			response.setContentType(contentType);
+			response.getWriter().write(GsonUtils.toJson(object));
+			response.getWriter().flush();
+			response.getWriter().close();
 		} catch (IOException e) {
 			log.error(e.getMessage(), e);
+
 		}
+
 	}
 
 	/**

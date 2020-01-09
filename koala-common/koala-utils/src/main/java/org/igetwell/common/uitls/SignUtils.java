@@ -1,10 +1,9 @@
 package org.igetwell.common.uitls;
 
 import java.util.*;
-
 import org.apache.commons.codec.digest.DigestUtils;
 import org.igetwell.common.enums.SignType;
-import org.springframework.util.StringUtils;
+
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -23,7 +22,7 @@ public class SignUtils {
         StringBuilder toSign = new StringBuilder();
         for (String key : sortedMap.keySet()) {
             String value = params.get(key);
-            if (!StringUtils.isEmpty(value) && !"sign".equals(key) && !"key".equals(key)) {
+            if (!CharacterUtils.isBlank(value) && !"sign".equals(key) && !"key".equals(key)) {
                 toSign.append(key).append("=").append(params.get(key).trim()).append("&");
             }
         }
@@ -56,7 +55,7 @@ public class SignUtils {
         StringBuilder toSign = new StringBuilder();
         for (String key : sortedMap.keySet()) {
             String value = params.get(key);
-            if (!StringUtils.isEmpty(value) && !"sign".equals(key) && !"key".equals(key)) {
+            if (!CharacterUtils.isBlank(value) && !"sign".equals(key) && !"key".equals(key)) {
                 toSign.append(key).append("=").append(params.get(key).trim()).append("&");
             }
         }
@@ -80,7 +79,7 @@ public class SignUtils {
         Arrays.sort(keyArray);
         StringBuilder sb = new StringBuilder();
         for (String k : keyArray) {
-            if (!StringUtils.isEmpty(params.get(k)) && params.get(k).trim().length() > 0) // 参数值为空，则不参与签名
+            if (!CharacterUtils.isBlank(params.get(k)) && params.get(k).trim().length() > 0) // 参数值为空，则不参与签名
                 sb.append(k).append("=").append(params.get(k).trim()).append("&");
         }
         sb.append("key=").append(key);
@@ -129,7 +128,7 @@ public class SignUtils {
      * @return true - 签名校验成功，false - 签名校验失败
      */
     public static boolean checkSign(Map<String, String> params, String signKey, SignType signType) throws Exception {
-        String sign = (String) params.get("sign");
+        String sign = params.get("sign");
         String localSign = createSign(params, signKey, signType);
         return sign.equals(localSign);
     }
