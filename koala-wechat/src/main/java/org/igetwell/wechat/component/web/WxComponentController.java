@@ -1,7 +1,7 @@
 package org.igetwell.wechat.component.web;
 
 import org.igetwell.common.uitls.ResponseEntity;
-import org.igetwell.wechat.BaseController;
+import org.igetwell.BaseController;
 import org.igetwell.wechat.component.service.IWxComponentService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

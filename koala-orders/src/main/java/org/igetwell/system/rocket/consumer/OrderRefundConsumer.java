@@ -43,17 +43,17 @@ public class OrderRefundConsumer implements RocketMQListener<OrderRefundProtocol
         String timestamp = protocol.getTimestamp();
         String refundNo = protocol.getRefundId();
         String refundAccount = protocol.getRefundAccount();
-        logger.info("[订单退款成功消费者]-商户退款单号={}, 商户订单号={}, 微信支付交易号={}, 支付金额={}, 支付时间={}.", outNo, tradeNo, transactionId, timestamp);
+        logger.info("[订单退款成功消费者]-商户退款单号={}, 商户订单号={}, 第三方支付交易单号={}, 支付金额={}, 支付时间={}.", outNo, tradeNo, transactionId, timestamp);
 
         RefundOrder orders = iRefundOrderService.get(transactionId, tradeNo, outNo);
         //如果订单不存在,或订单状态不是支付中,直接消费,不能直接修改状态为支付成功.
-        if (orders == null && (orders.getStatus() != OrderStatus.CREATE.getValue() || orders.getStatus() != OrderStatus.REFUNDING.getValue())) {
+        if (orders == null || (orders.getStatus() != OrderStatus.CREATE.getValue() || orders.getStatus() != OrderStatus.REFUNDING.getValue())) {
             logger.info("[订单退款成功消费者]-根据商户退款单号：{}, 商户订单号：{}, 微信支付交易单号：{}. 未查询到待退款订单记录,消费成功", outNo, tradeNo, transactionId);
             return;
         }
 
         TradeOrder tradeOrder = iTradeOrderService.getOrder(tradeNo);
-        if (orders == null && orders.getStatus() != OrderStatus.PAID.getValue()) {
+        if (orders == null || orders.getStatus() != OrderStatus.PAID.getValue()) {
             logger.info("[订单退款成功消费者]-根据商户订单号：{} 未查询到已支付订单记录, 无法进行处理回滚事物. 消费成功", outNo, tradeNo, transactionId);
             return;
         }

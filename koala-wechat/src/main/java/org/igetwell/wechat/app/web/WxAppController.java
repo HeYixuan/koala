@@ -2,7 +2,7 @@ package org.igetwell.wechat.app.web;
 
 import org.igetwell.common.uitls.ResponseEntity;
 import org.igetwell.wechat.app.service.IWxAppService;
-import org.igetwell.wechat.BaseController;
+import org.igetwell.BaseController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;

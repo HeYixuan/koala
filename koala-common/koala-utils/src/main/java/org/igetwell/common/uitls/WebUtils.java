@@ -201,11 +201,22 @@ public class WebUtils extends org.springframework.web.util.WebUtils {
 		return false;
 	}
 
+
+
 	/**
 	 * 判断是否是支付宝浏览器
 	 */
 	public static boolean isAliPay() {
 		if (getBrowserName().contains("AlipayClient")) {
+			return true;
+		}
+		return false;
+	}
+	/**
+	 * 判断是否是微信浏览器
+	 */
+	public static boolean isSafari() {
+		if (getBrowserName().contains("Safari")) {
 			return true;
 		}
 		return false;

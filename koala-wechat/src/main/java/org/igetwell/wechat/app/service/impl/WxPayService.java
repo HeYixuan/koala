@@ -394,10 +394,10 @@ public class WxPayService implements IWxPayService {
                 }
             });
 
-            logger.info("[微信支付]-用户公众ID：{} , 订单号：{} , 交易号：{} 微信支付成功!", openId, tradeNo, transactionId);
+            logger.info("[微信支付]-用户公众ID：{} , 商户订单号：{} , 微信交易号：{} 微信支付成功!", openId, tradeNo, transactionId);
             return successXml;
         } catch (Exception e) {
-            logger.error("[微信支付]-调用微信支付回调方法异常,商户订单号：{}. 微信订单号：{}. ", tradeNo, transactionId, e);
+            logger.error("[微信支付]-调用微信支付回调方法异常,商户订单号：{}, 微信交易号：{}. ", tradeNo, transactionId, e);
             throw new RuntimeException("调用微信支付回调方法异常！", e);
         }
     }
@@ -440,7 +440,7 @@ public class WxPayService implements IWxPayService {
                     throw new RuntimeException("[微信支付]-微信退款失败." + resultXml.get("return_msg"));
                 }
             }
-            logger.info("[微信支付]-微信退款成功! 退款单号：{}, 商户订单号：{}, 微信支付订单号：{}.", outNo, tradeNo, transactionId);
+            logger.info("[微信支付]-微信退款成功! 商户退款单号：{}, 商户订单号：{}, 微信支付订单号：{}.", outNo, tradeNo, transactionId);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

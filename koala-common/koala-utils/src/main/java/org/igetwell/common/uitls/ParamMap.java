@@ -4,9 +4,7 @@ import org.springframework.http.HttpMethod;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
@@ -86,7 +84,40 @@ public class ParamMap {
     /**
      * 将URL请求参数转换成Map
      */
-    public static Map<String, String> getUrlParams(final HttpServletRequest request) {
-        return null;
+    /**
+     * 将url中参数封装成map
+     * @param url
+     * @return
+     */
+    public static Map<String, String> getUrlMap(String url) {
+        Map<String, String> map = new HashMap<String, String>();
+        if (CharacterUtils.isNotBlank(url)) {
+            String[] arr = url.split("&");
+            for (String s : arr) {
+                String key = s.split("=")[0];
+                String value = s.split("=")[1];
+                map.put(key, value);
+            }
+        }
+        return map;
+    }
+
+    /**
+     * 将Map中的数据转换成key1=value1&key2=value2的形式 不包含签名域signature
+     *
+     * @param params
+     *            待拼接的Map数据
+     * @return 拼接好后的字符串
+     */
+    public static String coverMap2String(Map<String, String> params) {
+        Set<String> keySet = params.keySet();
+        String[] keyArray = keySet.toArray(new String[keySet.size()]);
+        Arrays.sort(keyArray);
+        StringBuilder sb = new StringBuilder();
+        for (String k : keyArray) {
+            if (!CharacterUtils.isBlank(params.get(k)) && params.get(k).trim().length() > 0) // 参数值为空，则不参与签名
+                sb.append(k).append("=").append(params.get(k).trim()).append("&");
+        }
+        return sb.substring(0, sb.length() - 1);
     }
 }

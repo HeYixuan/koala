@@ -1,4 +1,4 @@
-package org.igetwell.wechat.app.service.impl;
+package org.igetwell.alipay.service.impl;
 
 import com.alipay.api.AlipayClient;
 import com.alipay.api.DefaultAlipayClient;
@@ -15,7 +15,8 @@ import com.alipay.api.response.AlipayTradeRefundResponse;
 import org.apache.rocketmq.client.producer.SendCallback;
 import org.apache.rocketmq.client.producer.SendResult;
 import org.apache.rocketmq.spring.core.RocketMQTemplate;
-import org.igetwell.common.constans.AliPayConstants;
+import org.igetwell.alipay.service.IAlipayService;
+import org.igetwell.common.constans.PayConstants;
 import org.igetwell.common.enums.SignType;
 import org.igetwell.common.enums.TradeType;
 import org.igetwell.common.sequence.sequence.Sequence;
@@ -24,7 +25,6 @@ import org.igetwell.system.bean.dto.request.AliPayRequest;
 import org.igetwell.system.bean.dto.request.AliRefundRequest;
 import org.igetwell.system.order.protocol.OrderPayProtocol;
 import org.igetwell.system.order.protocol.OrderRefundProtocol;
-import org.igetwell.wechat.app.service.IAlipayService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -326,7 +326,7 @@ public class AlipayService implements IAlipayService {
      * @return
      */
     public String payNotify(HttpServletRequest request) {
-        logger.info("[微信支付]-支付宝发起退款回调请求开始.");
+        logger.info("[支付宝]-支付宝发起退款回调请求开始.");
         Map<String, String> params = ParamMap.getParameterMap(request);
 
         String tradeNo = params.get("out_trade_no"); //商户订单号
@@ -338,7 +338,7 @@ public class AlipayService implements IAlipayService {
             boolean bool = AlipaySignature.rsaCheckV1(params, alipayPublicKey, "UTF-8", SignType.RSA2.name()); //调用SDK验证签名
             if (!bool) {
                 logger.error("[支付宝支付]-支付宝回调验证签名错误!");
-                return AliPayConstants.FAIL;
+                return PayConstants.FAIL;
             }
             //交易状态
             String tradeStatus = params.get("trade_status");
@@ -346,7 +346,7 @@ public class AlipayService implements IAlipayService {
             //退款金额,退款专属字段
             String refundFee = params.get("refund_fee");
 
-            if (tradeStatus.equals(AliPayConstants.TRADE_FINISHED ) || tradeStatus.equals(AliPayConstants.TRADE_SUCCESS)) {
+            if (tradeStatus.equals(PayConstants.TRADE_FINISHED ) || tradeStatus.equals(PayConstants.TRADE_SUCCESS)) {
                 if (CharacterUtils.isBlank(refundFee)) {
                     BigDecimal totalFee = BigDecimalUtils.divide(new BigDecimal(fee), new BigDecimal(100));
                     OrderPayProtocol protocol = new OrderPayProtocol(tradeNo, transactionId, totalFee, timestamp);
@@ -367,7 +367,7 @@ public class AlipayService implements IAlipayService {
                     logger.info("[支付宝支付]-用户公众ID：{} , 商户订单号：{} , 支付宝交易单号：{} 支付宝退款成功！", 22, tradeNo, transactionId);
                 }
             }
-            return AliPayConstants.SUCCESS;
+            return PayConstants.SUCCESS;
         } catch (Exception e) {
             logger.error("[支付宝支付]-支付宝发起退款回调方法异常! 商户订单号：{}, 支付宝订单号：{}. ", tradeNo, transactionId, e);
             throw new RuntimeException("[支付宝支付]-支付宝发起退款回调方法异常！", e);
@@ -391,11 +391,11 @@ public class AlipayService implements IAlipayService {
             if (!bool) {
                 logger.error("[支付宝支付]-支付宝服务器同步通知验证签名错误!");
                 //out.println("验签失败");
-                return AliPayConstants.FAIL;
+                return PayConstants.FAIL;
             }
             //付款金额
             String totalAmount = params.get("total_amount");
-            return AliPayConstants.SUCCESS;
+            return PayConstants.SUCCESS;
             //out.println("trade_no:"+trade_no+"<br/>out_trade_no:"+out_trade_no+"<br/>total_amount:"+total_amount);
         } catch (Exception e) {
             logger.error("[支付宝支付]-处理支付宝服务器同步通知方法异常,商户订单号：{}. 支付宝订单号：{}. ", tradeNo, transactionId, e);

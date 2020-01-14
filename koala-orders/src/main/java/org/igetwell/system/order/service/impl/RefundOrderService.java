@@ -317,11 +317,11 @@ public class RefundOrderService implements IRefundOrderService {
         } else if (PayChannel.ALIPAY.name().equalsIgnoreCase(orders.getChannelName())) {
             //支付宝退款
             refundRequest = new PayPalRefundRequest(PayChannel.ALIPAY, order.getOutNo(), tradeNo, transactionId, totalFee, refundFee);
-        } else {
+        } else if (PayChannel.UNIONPAY.name().equalsIgnoreCase(orders.getChannelName())){
             ResponseEntity.ok("其他支付平台退款请联系客服.");
         }
         ResponseEntity responseEntity =  payPalClient.refund(refundRequest);
-        if (StringUtils.isEmpty(responseEntity) && responseEntity.getStatus() != HttpStatus.OK.value()) {
+        if (StringUtils.isEmpty(responseEntity) || responseEntity.getStatus() != HttpStatus.OK.value()) {
             throw new RuntimeException("生成退款订单失败.");
         }
         return responseEntity;

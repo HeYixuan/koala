@@ -13,6 +13,11 @@ public enum PayChannel {
     /**
      * 支付宝
      */
-    ALIPAY;
+    ALIPAY,
+
+    /**
+     * 银联
+     */
+    UNIONPAY;
 
 }

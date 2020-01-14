@@ -1,4 +1,4 @@
-package org.igetwell.wechat.app.service;
+package org.igetwell.alipay.service;
 
 import org.igetwell.common.enums.TradeType;
 import org.igetwell.system.bean.dto.request.AliPayRequest;

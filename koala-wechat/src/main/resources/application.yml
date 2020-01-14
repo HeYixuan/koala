@@ -48,6 +48,16 @@ alipay:
   returnNotify: https://api.easy.echosite.cn/ant/pay/returnNotify
   refundNotify: https://api.easy.echosite.cn/ant/pay/refundNotify
 
+union:
+  appId: 777290058177815
+  keyPwd: "000000"
+  signCert: D:/DevelopTools/acp_test_sign.pfx
+  rootCert: D:/DevelopTools/acp_test_root.cer
+  middleCert: D:/DevelopTools/acp_test_middle.cer
+  encryptCert: D:/DevelopTools/acp_test_enc.cer
+  payNotify: https://api.easy.echosite.cn/union/pay/payNotify
+  refundNotify: https://api.easy.echosite.cn/union/pay/refundNotify
+  isValidateCNName: false
 #wechat:
 #  appId: wx097eb9f69920db49
 #  secret: 123fdsaJHYUTREWQOKLJGCCBNM654389

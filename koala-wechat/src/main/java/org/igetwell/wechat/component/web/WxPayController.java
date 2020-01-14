@@ -5,7 +5,7 @@ import org.igetwell.common.uitls.IOUtils;
 import org.igetwell.common.uitls.ResponseEntity;
 import org.igetwell.system.bean.dto.request.WxPayRequest;
 import org.igetwell.system.bean.dto.request.WxRefundRequest;
-import org.igetwell.wechat.BaseController;
+import org.igetwell.BaseController;
 import org.igetwell.wechat.component.service.IWxComponentAppService;
 import org.igetwell.wechat.app.service.IWxPayService;
 import org.springframework.beans.factory.annotation.Autowired;

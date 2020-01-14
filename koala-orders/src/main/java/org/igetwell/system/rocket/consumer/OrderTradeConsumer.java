@@ -32,10 +32,10 @@ public class OrderTradeConsumer implements RocketMQListener<OrderPayProtocol> {
         String transactionId = protocol.getTransactionId();
         BigDecimal totalFee = protocol.getTotalFee();
         String timestamp = protocol.getTimestamp();
-        logger.info("[订单支付成功消费者]-商户订单号={}, 交易号={}, 支付金额={}, 支付时间={}.", tradeNo, transactionId, totalFee, timestamp);
+        logger.info("[订单支付成功消费者]-商户订单号={}, 第三方交易单号={}, 支付金额={}, 支付时间={}.", tradeNo, transactionId, totalFee, timestamp);
         TradeOrder orders = iTradeOrderService.getOrder(tradeNo);
         //如果订单不存在,或订单状态不是支付中,直接消费,不能直接修改状态为支付成功.
-        if (orders == null && orders.getStatus() != OrderStatus.PENDING.getValue()) {
+        if (orders == null || orders.getStatus() != OrderStatus.PENDING.getValue()) {
             logger.info("[订单支付成功消费者]-根据商户订单号：{} 未查询到待支付订单记录,消费成功", tradeNo);
             return;
         }

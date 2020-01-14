@@ -1,5 +1,10 @@
 package org.igetwell.common.uitls;
 
+import cn.hutool.crypto.SecureUtil;
+import org.apache.commons.codec.binary.Base64;
+
+import java.io.UnsupportedEncodingException;
+
 /**
  * Base64 工具类
  */
@@ -63,5 +68,50 @@ public class Base64Utils {
 
         return to.toString();
     }
+
+
+    /**
+     * BASE64解码
+     *
+     * @param data 待解码数据
+     * @return 解码后的数据
+     */
+    public static byte[] decodeBase64(byte[] data) {
+        return Base64.decodeBase64(data);
+    }
+
+    /**
+     * BASE64加码
+     * @param data 待加码数据
+     * @return 加码后的数据
+     */
+    public static byte[] encodeBase64(byte[] data) {
+        return Base64.encodeBase64(data);
+    }
+
+    /**
+     * BASE64加码
+     * @param data 待解码数据
+     * @return 解码后的数据
+     */
+    public static String base64Encode(byte[] data) {
+        try {
+            return new String(encodeBase64(data), "UTF-8");
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    /**
+     * 对给定的字符串进行base64解码操作
+     */
+    public static String base64Decode(String data) {
+        try {
+            return new String(Base64.decodeBase64(data.getBytes("UTF-8")));
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
 
 }

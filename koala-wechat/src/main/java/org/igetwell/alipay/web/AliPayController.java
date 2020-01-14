@@ -1,11 +1,11 @@
-package org.igetwell.wechat.component.web;
+package org.igetwell.alipay.web;
 
 import org.igetwell.common.uitls.ResponseEntity;
 import org.igetwell.common.uitls.WebUtils;
 import org.igetwell.system.bean.dto.request.AliPayRequest;
 import org.igetwell.system.bean.dto.request.AliRefundRequest;
-import org.igetwell.wechat.BaseController;
-import org.igetwell.wechat.app.service.IAlipayService;
+import org.igetwell.BaseController;
+import org.igetwell.alipay.service.IAlipayService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;

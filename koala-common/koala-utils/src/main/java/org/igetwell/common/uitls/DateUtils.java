@@ -10,6 +10,7 @@ public class DateUtils {
     private static final String DEFAULT_DATE_PATTERN="yyyy-MM-dd";
     private static final String DEFAULT_TIME_PATTERN="HH:mm:ss";
     private static final String DEFAULT_DATETIME_PATTERN="yyyy-MM-dd HH:mm:ss";
+    private static final String DEFAULT_DATETIME_LINE_PATTERN="yyyyMMddHHmmss";
 
     /**
      * 获得当前时间
@@ -105,12 +106,15 @@ public class DateUtils {
         return dateTime;
     }
 
+    /** LocalDate / LocalDateTime ---> String ("yyyyMMddHHmmss")*/
+    public static String formaDateTime(Temporal temporal){
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(DEFAULT_DATETIME_LINE_PATTERN);
+        String dateTime = dateFormatter.format(temporal);
+        return dateTime;
+    }
+
     /** LocalDate / LocalDateTime ---> Date*/
     public static Date localDate2Date(LocalDateTime localDate){
-//        ZonedDateTime zonedDateTime = localDate.atZone(ZoneId.systemDefault());
-//        Instant instant1 = zonedDateTime.toInstant();
-//        Date from = Date.from(instant1);
-//        return  from;
         LocalDateTime localDateTime = LocalDateTime.now();
         ZoneId zone = ZoneId.systemDefault();
         Instant instant = localDateTime.atZone(zone).toInstant();
@@ -147,5 +151,8 @@ public class DateUtils {
         LocalDateTime localDate = date2LocalDate(new Date());
 
         System.err.println(localDate.toString());
+
+        String date = format(LocalDateTime.now(), "yyyyMMddHHmmss");
+        System.err.println(date);
     }
 }

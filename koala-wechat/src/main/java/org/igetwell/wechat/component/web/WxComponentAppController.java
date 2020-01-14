@@ -2,7 +2,7 @@ package org.igetwell.wechat.component.web;
 
 import org.igetwell.common.uitls.GsonUtils;
 import org.igetwell.common.uitls.ResponseEntity;
-import org.igetwell.wechat.BaseController;
+import org.igetwell.BaseController;
 import org.igetwell.wechat.component.service.IWxComponentAppService;
 import org.igetwell.wechat.sdk.bean.component.ComponentAppAccessToken;
 import org.igetwell.wechat.sdk.bean.component.WechatUser;
