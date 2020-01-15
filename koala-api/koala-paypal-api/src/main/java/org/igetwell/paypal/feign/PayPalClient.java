@@ -12,8 +12,8 @@ import java.util.Map;
 @FeignClient(value = "koala-paypal")
 public interface PayPalClient {
 
-    @PostMapping("/component/pay/wxPay")
-    ResponseEntity<Map<String, String>> wxPay(@RequestBody PayPalRequest payPalRequest);
+    @PostMapping("/component/pay/scan")
+    ResponseEntity<Map<String, String>> scan(@RequestBody PayPalRequest payPalRequest);
 
     @PostMapping("/component/pay/refund")
     ResponseEntity refund(@RequestBody PayPalRefundRequest request);

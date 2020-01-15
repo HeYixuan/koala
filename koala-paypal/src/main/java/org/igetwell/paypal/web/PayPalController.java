@@ -20,9 +20,9 @@ public class PayPalController {
     @Autowired
     private PayPalService payPalService;
 
-    @PostMapping("/wxPay")
-    public ResponseEntity<Map<String, String>> wxPay(@RequestBody PayPalRequest payPalRequest) {
-        return payPalService.wxPay(payPalRequest);
+    @PostMapping("/scan")
+    public ResponseEntity<Map<String, String>> scan(@RequestBody PayPalRequest payPalRequest) {
+        return payPalService.scan(payPalRequest);
     }
 
 

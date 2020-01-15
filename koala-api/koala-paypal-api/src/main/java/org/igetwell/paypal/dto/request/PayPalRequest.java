@@ -39,7 +39,7 @@ public class PayPalRequest implements Serializable {
     private TradeType tradeType;
 
     /**
-     * 支付平台 微信 支付宝
+     * 支付平台 微信 支付宝 银联
      */
     private PayChannel channel;
 

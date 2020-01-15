@@ -21,12 +21,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
-
-/**
- * Miscellaneous utilities for web applications.
- *
- * @author L.cm
- */
 @Slf4j
 @UtilityClass
 public class WebUtils extends org.springframework.web.util.WebUtils {

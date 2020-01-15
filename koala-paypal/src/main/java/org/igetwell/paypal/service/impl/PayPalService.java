@@ -25,11 +25,16 @@ public class PayPalService implements IPayPalService {
     private AliPayClient aliPayClient;
 
 
-    public ResponseEntity<Map<String, String>> wxPay(PayPalRequest payPalRequest) {
+    public ResponseEntity<Map<String, String>> scan(PayPalRequest payPalRequest) {
         if (payPalRequest.getChannel().equals(PayChannel.WECHAT)){
             WxPayRequest payRequest = new WxPayRequest(payPalRequest.getTradeType(), payPalRequest.getTradeNo(), payPalRequest.getProductId(),
                     payPalRequest.getBody(), payPalRequest.getFee(), payPalRequest.getClientIp());
             return wxPayClient.wxPay(payRequest);
+        }
+        if (payPalRequest.getChannel().equals(PayChannel.ALIPAY)) {
+            AliPayRequest payRequest = new AliPayRequest(payPalRequest.getTradeType(), payPalRequest.getTradeNo(), payPalRequest.getProductId(),
+                    payPalRequest.getBody(), payPalRequest.getFee());
+            return aliPayClient.antPay(payRequest);
         } else {
             AliPayRequest payRequest = new AliPayRequest(payPalRequest.getTradeType(), payPalRequest.getTradeNo(), payPalRequest.getProductId(),
                     payPalRequest.getBody(), payPalRequest.getFee());

@@ -24,6 +24,10 @@ public interface IAlipayService {
      */
     Map<String, String> scan(String tradeNo, String subject, String body, String fee);
 
+    /**
+     * 创建订单 JSAPI 通过支付宝交易号唤起收银台支付
+     */
+    Map<String, String> jsapi(String tradeNo, String subject, String body, String fee);
 
     /**
      * 预下单

@@ -158,14 +158,14 @@ public class TradeOrderService implements ITradeOrderService {
             payPalRequest = new PayPalRequest(PayChannel.ALIPAY, TradeType.FACE_TO_FACE, orders.getTradeNo(), String.valueOf(orders.getGoodsId()), orders.getBody(), orders.getFee());
         } else if (WebUtils.isSafari()) {
             orders = new TradeOrder(sequence.nextValue(), sequence.nextNo(), 10001L, "000000", OrderType.CONSUME.getValue(),
-                    11L, money, WebUtils.getIP(), OrderStatus.CREATE.getValue(), 10001L, "测试支付");
-            payPalRequest = new PayPalRequest(PayChannel.ALIPAY, TradeType.FACE_TO_FACE, orders.getTradeNo(), String.valueOf(orders.getGoodsId()), orders.getBody(), orders.getFee());
+                    13L, money, WebUtils.getIP(), OrderStatus.CREATE.getValue(), 10001L, "测试支付");
+            payPalRequest = new PayPalRequest(PayChannel.UNIONPAY, TradeType.NATIVE, orders.getTradeNo(), String.valueOf(orders.getGoodsId()), orders.getBody(), orders.getFee());
         } else {
             return ResponseEntity.ok("其他支付暂时未开放.");
         }
 
         this.insert(orders);
-        ResponseEntity<Map<String, String>> packageMap = payPalClient.wxPay(payPalRequest);
+        ResponseEntity<Map<String, String>> packageMap = payPalClient.scan(payPalRequest);
         if (StringUtils.isEmpty(packageMap) || packageMap.getStatus() != HttpStatus.OK.value()) {
             throw new RuntimeException("生成预支付订单失败.");
         }
@@ -181,7 +181,7 @@ public class TradeOrderService implements ITradeOrderService {
                 orderPay.getChannelId(), orderPay.getFee(), WebUtils.getIP(), OrderStatus.CREATE.getValue(), orderPay.getGoodsId(), orderPay.getBody());
         this.insert(orders);
         PayPalRequest payPalRequest = new PayPalRequest(PayChannel.ALIPAY, TradeType.NATIVE, orders.getTradeNo(), String.valueOf(orders.getGoodsId()), orders.getBody(), orders.getFee(), WebUtils.getIP());
-        ResponseEntity<Map<String, String>> packageMap = payPalClient.wxPay(payPalRequest);
+        ResponseEntity<Map<String, String>> packageMap = payPalClient.scan(payPalRequest);
         if (StringUtils.isEmpty(packageMap) && packageMap.getStatus() != HttpStatus.OK.value()) {
             throw new RuntimeException("生成预支付订单失败.");
         }

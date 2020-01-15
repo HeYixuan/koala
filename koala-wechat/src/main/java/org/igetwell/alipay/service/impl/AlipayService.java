@@ -2,15 +2,10 @@ package org.igetwell.alipay.service.impl;
 
 import com.alipay.api.AlipayClient;
 import com.alipay.api.DefaultAlipayClient;
-import com.alipay.api.domain.AlipayTradePagePayModel;
-import com.alipay.api.domain.AlipayTradePrecreateModel;
-import com.alipay.api.domain.AlipayTradeRefundModel;
-import com.alipay.api.domain.AlipayTradeWapPayModel;
+import com.alipay.api.domain.*;
 import com.alipay.api.internal.util.AlipaySignature;
-import com.alipay.api.request.AlipayTradePagePayRequest;
-import com.alipay.api.request.AlipayTradePrecreateRequest;
-import com.alipay.api.request.AlipayTradeRefundRequest;
-import com.alipay.api.request.AlipayTradeWapPayRequest;
+import com.alipay.api.request.*;
+import com.alipay.api.response.AlipayTradeCreateResponse;
 import com.alipay.api.response.AlipayTradeRefundResponse;
 import org.apache.rocketmq.client.producer.SendCallback;
 import org.apache.rocketmq.client.producer.SendResult;
@@ -74,21 +69,21 @@ public class AlipayService implements IAlipayService {
      */
     @Override
     public Map<String, String> wap(String tradeNo, String subject, String body, String fee) {
-        //创建交易信息模型对象
-        AlipayTradeWapPayModel precreateModel = new AlipayTradeWapPayModel();
-        //商户订单号，需要保证不重复
-        precreateModel.setOutTradeNo(tradeNo);
-        //订单金额
-        precreateModel.setTotalAmount(fee);
-        //交易主题
-        precreateModel.setSubject(subject);
-        //商品名称
-        precreateModel.setBody(body);
-        //销售产品码，商家和支付宝签约的产品码，该产品请填写固定值：QUICK_WAP_WAY
-        precreateModel.setProductCode("QUICK_WAP_PAY");
-        //设置支付宝交易超时 取值范围：1m～15d。m-分钟，h-小时，d-天，1c-当天（1c-当天的情况下，无论交易何时创建，都在0点关闭）
-        precreateModel.setTimeoutExpress("5m");
         try {
+            //创建交易信息模型对象
+            AlipayTradeWapPayModel precreateModel = new AlipayTradeWapPayModel();
+            //商户订单号，需要保证不重复
+            precreateModel.setOutTradeNo(tradeNo);
+            //订单金额
+            precreateModel.setTotalAmount(fee);
+            //交易主题
+            precreateModel.setSubject(subject);
+            //商品名称
+            precreateModel.setBody(body);
+            //销售产品码，商家和支付宝签约的产品码，该产品请填写固定值：QUICK_WAP_WAY
+            precreateModel.setProductCode("QUICK_WAP_PAY");
+            //设置支付宝交易超时 取值范围：1m～15d。m-分钟，h-小时，d-天，1c-当天（1c-当天的情况下，无论交易何时创建，都在0点关闭）
+            precreateModel.setTimeoutExpress("30m");
             //创建阿里请求对象
             AlipayTradeWapPayRequest alipayTradeWapPayRequest = new AlipayTradeWapPayRequest();
             //业务请求参数的集合
@@ -104,7 +99,7 @@ public class AlipayService implements IAlipayService {
             packageMap.put("pageForm", pageForm);
             return packageMap;
         } catch (Exception e) {
-            logger.error("商户交易号：{} 创建预支付订单失败！", precreateModel.getOutTradeNo(), e);
+            logger.error("商户订单号：{} 创建预支付订单失败！", tradeNo, e);
             throw new RuntimeException("创建预支付订单失败！", e);
         }
 
@@ -116,21 +111,21 @@ public class AlipayService implements IAlipayService {
      */
     @Override
     public Map<String, String> web(String tradeNo, String subject, String body, String fee) {
-        //创建交易信息模型对象
-        AlipayTradePagePayModel precreateModel = new AlipayTradePagePayModel();
-        //商户订单号，需要保证不重复
-        precreateModel.setOutTradeNo(tradeNo);
-        //订单金额
-        precreateModel.setTotalAmount(fee);
-        //交易主题
-        precreateModel.setSubject(subject);
-        //商品名称
-        precreateModel.setBody(body);
-        //销售产品码，商家和支付宝签约的产品码，该产品请填写固定值：QUICK_WAP_WAY
-        precreateModel.setProductCode("FAST_INSTANT_TRADE_PAY");
-        //设置支付宝交易超时 取值范围：1m～15d。m-分钟，h-小时，d-天，1c-当天（1c-当天的情况下，无论交易何时创建，都在0点关闭）
-        precreateModel.setTimeoutExpress("5m");
         try {
+            //创建交易信息模型对象
+            AlipayTradePagePayModel precreateModel = new AlipayTradePagePayModel();
+            //商户订单号，需要保证不重复
+            precreateModel.setOutTradeNo(tradeNo);
+            //订单金额
+            precreateModel.setTotalAmount(fee);
+            //交易主题
+            precreateModel.setSubject(subject);
+            //商品名称
+            precreateModel.setBody(body);
+            //销售产品码，商家和支付宝签约的产品码，该产品请填写固定值：QUICK_WAP_WAY
+            precreateModel.setProductCode("FAST_INSTANT_TRADE_PAY");
+            //设置支付宝交易超时 取值范围：1m～15d。m-分钟，h-小时，d-天，1c-当天（1c-当天的情况下，无论交易何时创建，都在0点关闭）
+            precreateModel.setTimeoutExpress("30m");
             //创建阿里请求对象
             AlipayTradePagePayRequest alipayTradePagePayRequest = new AlipayTradePagePayRequest();
             //业务请求参数的集合
@@ -146,7 +141,7 @@ public class AlipayService implements IAlipayService {
             packageMap.put("pageForm", pageForm);
             return packageMap;
         } catch (Exception e) {
-            logger.error("商户交易号：{} 创建预支付订单失败！", precreateModel.getOutTradeNo(), e);
+            logger.error("商户订单号：{} 创建预支付订单失败！", tradeNo, e);
             throw new RuntimeException("创建预支付订单失败！", e);
         }
 
@@ -157,6 +152,7 @@ public class AlipayService implements IAlipayService {
      */
     @Override
     public Map<String, String> scan(String tradeNo, String subject, String body, String fee) {
+        try {
             AlipayTradePrecreateModel model = new AlipayTradePrecreateModel();//创建API对应的request类
             //商户订单号，需要保证不重复
             model.setOutTradeNo(tradeNo);
@@ -169,8 +165,7 @@ public class AlipayService implements IAlipayService {
             //销售产品码，不传默认使用FACE_TO_FACE_PAYMENT
             model.setProductCode("FACE_TO_FACE_PAYMENT");
             //设置支付宝交易超时 取值范围：1m～15d。m-分钟，h-小时，d-天，1c-当天（1c-当天的情况下，无论交易何时创建，都在0点关闭）
-            model.setTimeoutExpress("5m");
-        try {
+            model.setTimeoutExpress("30m");
             AlipayTradePrecreateRequest request = new AlipayTradePrecreateRequest();//创建API对应的request类
             request.setBizModel(model);
             //设置后台异步通知的地址，在手机端支付后支付宝会通知后台(成功或者失败)，手机端的真实支付结果依赖于此地址
@@ -183,7 +178,47 @@ public class AlipayService implements IAlipayService {
             packageMap.put("codeUrl", codeUrl);
             return packageMap;
         } catch (Exception e) {
-            logger.error("商户交易号：{} 创建预支付订单失败！", model.getOutTradeNo(), e);
+            logger.error("商户订单号：{} 创建预支付订单失败！", tradeNo, e);
+            throw new RuntimeException("创建预支付订单失败！", e);
+        }
+
+    }
+
+
+    /**
+     * 创建订单 JSAPI 通过支付宝交易号唤起收银台支付
+     * https://docs.open.alipay.com/common/105591
+     */
+    @Override
+    public Map<String, String> jsapi(String tradeNo, String subject, String body, String fee) {
+        try {
+            AlipayTradeCreateModel model = new AlipayTradeCreateModel();//创建API对应的request类
+            //商户订单号，需要保证不重复
+            model.setOutTradeNo(tradeNo);
+            //订单金额
+            model.setTotalAmount(fee);
+            //交易主题
+            model.setSubject(subject);
+            //商品名称
+            model.setBody(body);
+            //销售产品码，不传默认使用FACE_TO_FACE_PAYMENT
+            model.setProductCode("FACE_TO_FACE_PAYMENT");
+            //设置支付宝交易超时 取值范围：1m～15d。m-分钟，h-小时，d-天，1c-当天（1c-当天的情况下，无论交易何时创建，都在0点关闭）
+            model.setTimeoutExpress("30m");
+            AlipayTradeCreateRequest request = new AlipayTradeCreateRequest();//创建API对应的request类
+            request.setBizModel(model);
+            //设置后台异步通知的地址，在手机端支付后支付宝会通知后台(成功或者失败)，手机端的真实支付结果依赖于此地址
+            request.setNotifyUrl(payNotify);
+            //支付成功后的跳转页面,由于前台回跳的不可靠性，前台回跳只能作为商户支付结果页的入口，最终支付结果必须以异步通知或查询接口返回为准，不能依赖前台回跳
+            request.setReturnUrl(returnNotify);
+            AlipayClient alipayClient = new DefaultAlipayClient(gateway, appId, privateKey, "json", "UTF-8", alipayPublicKey, SignType.RSA2.name());
+            String transactionId = alipayClient.execute(request).getTradeNo();
+
+            Map<String, String> packageMap = new HashMap<>();
+            packageMap.put("transactionId", transactionId);
+            return packageMap;
+        } catch (Exception e) {
+            logger.error("商户订单号：{} 创建预支付订单失败！", tradeNo, e);
             throw new RuntimeException("创建预支付订单失败！", e);
         }
 
@@ -191,6 +226,7 @@ public class AlipayService implements IAlipayService {
 
     /**
      * 预下单
+     *
      * @return
      */
     public Map<String, String> preOrder(TradeType tradeType, String tradeNo, String subject, String body, String fee) {
@@ -199,6 +235,9 @@ public class AlipayService implements IAlipayService {
         }
         if (TradeType.PC.equals(tradeType)) {
             return this.web(tradeNo, subject, body, fee);
+        }
+        if (TradeType.JSAPI.equals(tradeType)){
+            return this.jsapi(tradeNo, subject, body, fee);
         } else {
             //FACE 当面扫
             return this.scan(tradeNo, subject, body, fee);
@@ -207,6 +246,7 @@ public class AlipayService implements IAlipayService {
 
     /**
      * 预下单
+     *
      * @param payRequest
      * @return
      */
@@ -233,8 +273,9 @@ public class AlipayService implements IAlipayService {
 
     /**
      * 支付宝退款
+     *
      * @param transactionId 支付宝订单号
-     * @param tradeNo 商户订单号
+     * @param tradeNo       商户订单号
      * @param fee
      * @throws Exception
      */
@@ -251,9 +292,9 @@ public class AlipayService implements IAlipayService {
             model.setRefundAmount(fee);
             AlipayTradeRefundRequest tradeRefundRequest = new AlipayTradeRefundRequest();
             tradeRefundRequest.setBizModel(model);
-            AlipayClient alipayClient = new DefaultAlipayClient(gateway, appId, privateKey,"json","UTF-8", alipayPublicKey, SignType.RSA2.name());
+            AlipayClient alipayClient = new DefaultAlipayClient(gateway, appId, privateKey, "json", "UTF-8", alipayPublicKey, SignType.RSA2.name());
             AlipayTradeRefundResponse params = alipayClient.execute(tradeRefundRequest);
-            if(!params.isSuccess()){
+            if (!params.isSuccess()) {
                 String subMsg = params.getSubMsg();
                 if (!("交易已经关闭").equals(subMsg)) {
                     logger.error("[支付宝支付]-支付宝退款失败! 商户订单号：{}, 支付宝交易单号：{}.", tradeNo, transactionId);
@@ -271,12 +312,13 @@ public class AlipayService implements IAlipayService {
                     logger.info("[支付宝支付]-异步投递退款成功订单消息成功,订单信息：{}. ", GsonUtils.toJson(protocol));
                     logger.info("[支付宝支付]-异步投递退款成功订单消息成功,投递结果：{}. ", var);
                 }
+
                 @Override
                 public void onException(Throwable var) {
                     logger.error("[支付宝支付]-异步投递支付成功订单消息失败: 异常信息：{}.", var);
                 }
             });
-            logger.info("[支付宝支付]-支付宝退款成功! 商户退款单号：{}, 商户订单号：{}, 支付宝交易单号：{}, 退款成功时间: {}." , outNo, tradeNo, transactionId, timestamp);
+            logger.info("[支付宝支付]-支付宝退款成功! 商户退款单号：{}, 商户订单号：{}, 支付宝交易单号：{}, 退款成功时间: {}.", outNo, tradeNo, transactionId, timestamp);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -333,7 +375,7 @@ public class AlipayService implements IAlipayService {
         String transactionId = params.get("trade_no"); //支付宝交易号
         String openId = params.get("buyer_id");//买家支付宝用户号
         String fee = params.get("total_amount");//支付金额
-        String timestamp =  params.get("gmt_payment"); //支付成功时间
+        String timestamp = params.get("gmt_payment"); //支付成功时间
         try {
             boolean bool = AlipaySignature.rsaCheckV1(params, alipayPublicKey, "UTF-8", SignType.RSA2.name()); //调用SDK验证签名
             if (!bool) {
@@ -346,7 +388,7 @@ public class AlipayService implements IAlipayService {
             //退款金额,退款专属字段
             String refundFee = params.get("refund_fee");
 
-            if (tradeStatus.equals(PayConstants.TRADE_FINISHED ) || tradeStatus.equals(PayConstants.TRADE_SUCCESS)) {
+            if (tradeStatus.equals(PayConstants.TRADE_FINISHED) || tradeStatus.equals(PayConstants.TRADE_SUCCESS)) {
                 if (CharacterUtils.isBlank(refundFee)) {
                     BigDecimal totalFee = BigDecimalUtils.divide(new BigDecimal(fee), new BigDecimal(100));
                     OrderPayProtocol protocol = new OrderPayProtocol(tradeNo, transactionId, totalFee, timestamp);
@@ -357,6 +399,7 @@ public class AlipayService implements IAlipayService {
                             logger.info("[支付宝支付]-异步投递支付成功订单消息成功,订单信息：{}. ", GsonUtils.toJson(protocol));
                             logger.info("[支付宝支付]-异步投递支付成功订单消息成功,投递结果：{}. ", var);
                         }
+
                         @Override
                         public void onException(Throwable var) {
                             logger.error("[支付宝支付]-异步投递支付成功订单消息失败: 异常信息：{}.", var);
@@ -377,6 +420,7 @@ public class AlipayService implements IAlipayService {
 
     /**
      * 处理支付宝服务器同步通知
+     *
      * @return
      */
     public String syncNotify(HttpServletRequest request) {
