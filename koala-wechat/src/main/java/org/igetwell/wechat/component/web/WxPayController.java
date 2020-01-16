@@ -50,6 +50,10 @@ public class WxPayController extends BaseController {
         return ResponseEntity.ok(packageMap);
     }
 
+    @PostMapping("/getOrder")
+    public ResponseEntity getOrder(String transactionId, String tradeNo) {
+         return iWxPayService.getOrder(transactionId, tradeNo);
+    }
 
     /**
      * 微信退款

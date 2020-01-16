@@ -1,6 +1,7 @@
 package org.igetwell.wechat.app.service;
 
 import org.igetwell.common.enums.TradeType;
+import org.igetwell.common.uitls.ResponseEntity;
 import org.igetwell.system.bean.dto.request.WxPayRequest;
 import org.igetwell.system.bean.dto.request.WxRefundRequest;
 
@@ -68,4 +69,12 @@ public interface IWxPayService {
      * @return
      */
     String refundNotify(String xmlStr);
+
+    /**
+     * 查询支付订单
+     * @param transactionId 微信支付单号
+     * @param tradeNo 商户订单号
+     * @return
+     */
+    ResponseEntity getOrder(String transactionId, String tradeNo);
 }

@@ -4,6 +4,7 @@ import org.apache.rocketmq.client.producer.SendCallback;
 import org.apache.rocketmq.client.producer.SendResult;
 import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.igetwell.common.constans.WXPayConstants;
+import org.igetwell.common.enums.HttpStatus;
 import org.igetwell.common.enums.SignType;
 import org.igetwell.common.enums.TradeType;
 import org.igetwell.common.sequence.sequence.Sequence;
@@ -269,7 +270,7 @@ public class WxPayService implements IWxPayService {
         Map<String, String> params = createParams(hashMap, signType);
         logger.info("=================统一下单调用开始====================");
         // 微信统一下单
-        String result = pushOrder(params);
+        String result = this.pushOrder(params);
         Map<String, String> resultXml = BeanUtils.xml2Map(result);
         this.parseXml(resultXml);
         return resultXml;
@@ -410,9 +411,9 @@ public class WxPayService implements IWxPayService {
      */
     public void refund(String transactionId, String tradeNo, String outNo, String totalFee, String fee) {
         try{
-            logger.info("[微信支付]-发起微信退款请求开始. 微信支付单号:{}, 商户单号, 退款金额：{}.", transactionId, tradeNo, fee);
+            logger.info("[微信支付]-发起微信退款请求开始. 微信支付单号:{}, 商户单号：{}, 退款金额：{}.", transactionId, tradeNo, fee);
             if (CharacterUtils.isBlank(transactionId) || CharacterUtils.isBlank(tradeNo) || CharacterUtils.isBlank(fee)) {
-                logger.error("[微信支付]-发起微信退款失败. 请求参数为空. 微信支付单号:{}, 商户单号, 退款金额：{}.", transactionId, tradeNo, fee);
+                logger.error("[微信支付]-发起微信退款失败. 请求参数为空. 微信支付单号:{}, 商户单号：{}, 退款金额：{}.", transactionId, tradeNo, fee);
                 throw new IllegalArgumentException("[微信支付]-发起微信退款失败. 请求参数为空.");
             }
             String nonceStr = sequence.nextNo();
@@ -571,5 +572,72 @@ public class WxPayService implements IWxPayService {
             return failXml.replace("${return_msg}", "微信退款回调处理失败!");
         }
 
+    }
+
+    /**
+     * 查询支付订单
+     * @param transactionId 微信支付单号
+     * @param tradeNo 商户订单号
+     * @return
+     */
+    public ResponseEntity getOrder(String transactionId, String tradeNo) {
+        try{
+            logger.info("[微信支付]-发起微信查询支付订单请求开始. 微信支付单号:{}, 商户单号：{}.", transactionId, tradeNo);
+            if (CharacterUtils.isBlank(transactionId) || CharacterUtils.isBlank(tradeNo)) {
+                logger.error("[微信支付]-发起微信查询支付订单请求失败. 请求参数为空. 微信支付单号:{}, 商户单号：{}.", transactionId, tradeNo);
+                throw new IllegalArgumentException("[微信支付]-发起微信查询支付订单请求失败. 请求参数为空.");
+            }
+            String nonceStr = sequence.nextNo();
+            Map<String,String> paraMap= ParamMap.create("transactionId", transactionId)//微信订单号
+                    .put("tradeNo", tradeNo)//商户订单号
+                    .put("nonceStr", nonceStr)
+                    .getData();
+            // 创建请求参数
+            Map<String, String> params = this.createQueryParams(paraMap, SignType.MD5);
+            logger.info("[微信支付]-微信查询支付订单调用开始. 请求微信查询支付订单参数：{}.", GsonUtils.toJson(params));
+            //微信查询支付订单
+            String result = this.queryOrder(params);
+            Map<String, String> resultXml = BeanUtils.xml2Map(result);
+            String returnCode = resultXml.get("return_code");
+            String resultCode = resultXml.get("result_code");
+            String tradeState = resultXml.get("trade_state");
+
+            boolean isSuccess = WXPayConstants.SUCCESS.equals(returnCode) && WXPayConstants.SUCCESS.equals(resultCode) && WXPayConstants.SUCCESS.equals(tradeState);
+            if (!isSuccess) {
+                logger.error("[微信支付]-查询支付订单成功,此交易订单未支付! 商户订单号：{}, 微信支付订单号：{}.", tradeNo, transactionId);
+                return ResponseEntity.error(HttpStatus.BAD_REQUEST, "此交易订单未支付!");
+            }
+            logger.info("[微信支付]-查询支付订单成功,此交易已支付! 商户订单号：{}, 微信支付订单号：{}.", tradeNo, transactionId);
+            return ResponseEntity.ok();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+    /**
+     * 签名入参
+     * @param hashMap
+     * @param signType
+     * @return
+     * @throws Exception
+     */
+    private Map<String, String> createQueryParams(Map<String, String> hashMap, SignType signType) throws Exception {
+        Map<String, String> params = new HashMap<>();
+        params.put("appid", defaultAppId);//appId
+        params.put("mch_id", mchId);//商户号
+        params.put("transaction_id", hashMap.get("transactionId"));//微信交易号
+        params.put("out_trade_no", hashMap.get("tradeNo"));//商户订单号
+        params.put("nonce_str", hashMap.get("nonceStr"));//随机字符串，不长于32位。
+        String sign = SignUtils.createSign(params, paterKey, signType);
+        params.put("sign", sign);
+        return params;
+    }
+
+    /**
+     * 查询支付订单
+     */
+    private String queryOrder(Map<String, String> params) throws Exception {
+        return MchPayAPI.queryOrder(BeanUtils.mapBean2Xml(params));
     }
 }
