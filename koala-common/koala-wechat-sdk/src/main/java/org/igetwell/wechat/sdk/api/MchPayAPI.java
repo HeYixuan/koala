@@ -71,4 +71,19 @@ public class MchPayAPI extends API {
         return str;
     }
 
+    /**
+     * 查询支付订单
+     */
+    public static String queryOrder(String xml) throws IOException {
+        HttpUriRequest httpUriRequest = RequestBuilder
+                .post()
+                .setHeader(APPLICATION_XML)
+                .setUri(MCH_URI+ "/pay/orderquery")
+                .setEntity(new StringEntity(xml, Charset.forName("UTF-8")))
+                .build();
+        CloseableHttpResponse response = HttpClients.execute(httpUriRequest);
+        String str = EntityUtils.toString(response.getEntity(),"UTF-8");
+        return str;
+    }
+
 }
