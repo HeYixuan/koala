@@ -9,7 +9,8 @@ import java.util.Map;
 public interface IPayPalService {
 
 
-    ResponseEntity<Map<String, String>> scan(PayPalRequest payPalRequest);
+    ResponseEntity<Map<String, String>> scan(PayPalRequest request);
 
     ResponseEntity refund(PayPalRefundRequest request);
+
 }

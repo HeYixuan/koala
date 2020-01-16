@@ -368,7 +368,7 @@ public class AlipayService implements IAlipayService {
      * @return
      */
     public String payNotify(HttpServletRequest request) {
-        logger.info("[支付宝]-支付宝发起退款回调请求开始.");
+        logger.info("[支付宝]-支付宝发起支付回调请求开始.");
         Map<String, String> params = ParamMap.getParameterMap(request);
 
         String tradeNo = params.get("out_trade_no"); //商户订单号
