@@ -583,10 +583,6 @@ public class WxPayService implements IWxPayService {
     public ResponseEntity getOrder(String transactionId, String tradeNo) {
         try{
             logger.info("[微信支付]-发起微信查询支付订单请求开始. 微信支付单号:{}, 商户单号：{}.", transactionId, tradeNo);
-            if (CharacterUtils.isBlank(transactionId) || CharacterUtils.isBlank(tradeNo)) {
-                logger.error("[微信支付]-发起微信查询支付订单请求失败. 请求参数为空. 微信支付单号:{}, 商户单号：{}.", transactionId, tradeNo);
-                throw new IllegalArgumentException("[微信支付]-发起微信查询支付订单请求失败. 请求参数为空.");
-            }
             String nonceStr = sequence.nextNo();
             Map<String,String> paraMap= ParamMap.create("transactionId", transactionId)//微信订单号
                     .put("tradeNo", tradeNo)//商户订单号
@@ -596,7 +592,7 @@ public class WxPayService implements IWxPayService {
             Map<String, String> params = this.createQueryParams(paraMap, SignType.MD5);
             logger.info("[微信支付]-微信查询支付订单调用开始. 请求微信查询支付订单参数：{}.", GsonUtils.toJson(params));
             //微信查询支付订单
-            String result = this.queryOrder(params);
+            String result = this.orderQuery(params);
             Map<String, String> resultXml = BeanUtils.xml2Map(result);
             String returnCode = resultXml.get("return_code");
             String resultCode = resultXml.get("result_code");
@@ -604,10 +600,64 @@ public class WxPayService implements IWxPayService {
 
             boolean isSuccess = WXPayConstants.SUCCESS.equals(returnCode) && WXPayConstants.SUCCESS.equals(resultCode) && WXPayConstants.SUCCESS.equals(tradeState);
             if (!isSuccess) {
-                logger.error("[微信支付]-查询支付订单成功,此交易订单未支付! 商户订单号：{}, 微信支付订单号：{}.", tradeNo, transactionId);
-                return ResponseEntity.error(HttpStatus.BAD_REQUEST, "此交易订单未支付!");
+                if (WXPayConstants.NOTPAY.equals(tradeState) || WXPayConstants.ERROR.equals(tradeState)){
+                    logger.error("[微信支付]-查询支付订单成功,此交易订单未支付! 商户订单号：{}, 微信支付订单号：{}.", tradeNo, transactionId);
+                    return ResponseEntity.error(HttpStatus.BAD_REQUEST, "此交易订单未支付!");
+                }
+                if (WXPayConstants.CLOSED.equals(tradeState)){
+                    logger.error("[微信支付]-查询支付订单成功,此交易订单已关闭! 商户订单号：{}, 微信支付订单号：{}.", tradeNo, transactionId);
+                    return ResponseEntity.error(HttpStatus.BAD_REQUEST, "此交易订单已关闭!");
+                }
+                if (WXPayConstants.REFUND.equals(tradeState)){
+                    logger.error("[微信支付]-查询支付订单成功,此交易订单已退款! 商户订单号：{}, 微信支付订单号：{}.", tradeNo, transactionId);
+                    return ResponseEntity.error(HttpStatus.BAD_REQUEST, "此交易订单已退款!");
+                }
+                logger.error("[微信支付]-查询支付订单失败! 商户订单号：{}, 微信支付订单号：{}.", tradeNo, transactionId);
+                throw new RuntimeException("查询支付订单失败.");
             }
             logger.info("[微信支付]-查询支付订单成功,此交易已支付! 商户订单号：{}, 微信支付订单号：{}.", tradeNo, transactionId);
+            return ResponseEntity.ok();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * 关闭订单
+     * @param tradeNo 商户订单号
+     * @return
+     */
+    public ResponseEntity closeOrder(String tradeNo){
+        try{
+            logger.info("[微信支付]-发起微信关闭订单请求开始. 商户单号：{}.", tradeNo);
+            String nonceStr = sequence.nextNo();
+            Map<String,String> paraMap= ParamMap.create("tradeNo", tradeNo)//商户订单号
+                    .put("nonceStr", nonceStr)
+                    .getData();
+            // 创建请求参数
+            Map<String, String> params = this.createCloseParams(paraMap, SignType.MD5);
+            logger.info("[微信支付]-微信关闭订单调用开始. 请求微信关闭订单参数：{}.", GsonUtils.toJson(params));
+            //微信查询支付订单
+            String result = this.closeOrder(params);
+            Map<String, String> resultXml = BeanUtils.xml2Map(result);
+            String returnCode = resultXml.get("return_code");
+            String resultCode = resultXml.get("result_code");
+
+            boolean isSuccess = WXPayConstants.SUCCESS.equals(returnCode) && WXPayConstants.SUCCESS.equals(resultCode);
+            if (!isSuccess) {
+                String errorCode = resultXml.get("err_code");
+                if (WXPayConstants.ORDER_PAID.equals(errorCode)){
+                    logger.error("[微信支付]-关闭订单失败,此交易订单已支付,不能关闭订单! 商户订单号：{}.", tradeNo);
+                    return ResponseEntity.error(HttpStatus.BAD_REQUEST, "此交易订单已支付,无法关闭订单!");
+                }
+                if (WXPayConstants.ORDER_CLOSED.equals(errorCode)){
+                    logger.error("[微信支付]-关闭订单失败,此交易订单已关闭,无需重复关闭! 商户订单号：{}.", tradeNo);
+                    return ResponseEntity.error(HttpStatus.BAD_REQUEST, "此交易订单已关闭,无需重复关闭订单!");
+                }
+                logger.error("[微信支付]-关闭订单失败! 商户订单号：{}.", tradeNo);
+                throw new RuntimeException("关闭订单失败.");
+            }
+            logger.info("[微信支付]-关闭订单成功! 商户订单号：{}.", tradeNo);
             return ResponseEntity.ok();
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -637,7 +687,32 @@ public class WxPayService implements IWxPayService {
     /**
      * 查询支付订单
      */
-    private String queryOrder(Map<String, String> params) throws Exception {
-        return MchPayAPI.queryOrder(BeanUtils.mapBean2Xml(params));
+    private String orderQuery(Map<String, String> params) throws Exception {
+        return MchPayAPI.orderQuery(BeanUtils.mapBean2Xml(params));
+    }
+
+    /**
+     * 签名入参
+     * @param hashMap
+     * @param signType
+     * @return
+     * @throws Exception
+     */
+    private Map<String, String> createCloseParams(Map<String, String> hashMap, SignType signType) throws Exception {
+        Map<String, String> params = new HashMap<>();
+        params.put("appid", defaultAppId);//appId
+        params.put("mch_id", mchId);//商户号
+        params.put("out_trade_no", hashMap.get("tradeNo"));//商户订单号
+        params.put("nonce_str", hashMap.get("nonceStr"));//随机字符串，不长于32位。
+        String sign = SignUtils.createSign(params, paterKey, signType);
+        params.put("sign", sign);
+        return params;
+    }
+
+    /**
+     * 关闭订单
+     */
+    private String closeOrder(Map<String, String> params) throws Exception {
+        return MchPayAPI.closeOrder(BeanUtils.mapBean2Xml(params));
     }
 }

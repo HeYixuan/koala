@@ -55,6 +55,11 @@ public class WxPayController extends BaseController {
          return iWxPayService.getOrder(transactionId, tradeNo);
     }
 
+    @PostMapping("/closeOrder")
+    public ResponseEntity closeOrder(String tradeNo){
+        return iWxPayService.closeOrder(tradeNo);
+    }
+
     /**
      * 微信退款
      */

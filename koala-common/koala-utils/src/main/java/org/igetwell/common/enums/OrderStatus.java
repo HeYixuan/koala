@@ -8,7 +8,9 @@ public enum OrderStatus {
     PAID(2, "支付成功"),
     PAID_FAIL(3, "支付失败"),
     CANCEL(4, "用户取消支付"),
-    REFUND(5, "已退款订单"),
+    CLOSE(5, "订单关闭"),
+    REFUND(6, "已退款订单"),
+
 
     /** 退款 **/
     REFUNDING(1, "退款中"),

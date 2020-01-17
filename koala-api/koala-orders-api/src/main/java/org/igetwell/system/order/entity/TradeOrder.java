@@ -61,7 +61,7 @@ public class TradeOrder implements Serializable {
     private String clientIp;
 
     /**
-     * 支付状态：0-订单生成 1-支付中 2-支付成功 3-支付失败 4-用户取消支付 5-已退款订单
+     * 支付状态：0-订单生成 1-支付中 2-支付成功 3-支付失败 4-用户取消支付(订单取消) 5-订单关闭 6-已退款订单
      */
     private Integer status;
 

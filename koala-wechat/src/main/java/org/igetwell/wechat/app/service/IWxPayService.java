@@ -77,4 +77,11 @@ public interface IWxPayService {
      * @return
      */
     ResponseEntity getOrder(String transactionId, String tradeNo);
+
+    /**
+     * 关闭订单
+     * @param tradeNo 商户订单号
+     * @return
+     */
+    ResponseEntity closeOrder(String tradeNo);
 }
