@@ -618,7 +618,7 @@ public class WxPayService implements IWxPayService {
             logger.info("[微信支付]-查询支付订单成功,此交易已支付! 商户订单号：{}, 微信支付订单号：{}.", tradeNo, transactionId);
             return ResponseEntity.ok();
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException(e.getMessage());
         }
     }
 
@@ -660,7 +660,7 @@ public class WxPayService implements IWxPayService {
             logger.info("[微信支付]-关闭订单成功! 商户订单号：{}.", tradeNo);
             return ResponseEntity.ok();
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException(e.getMessage());
         }
     }
 

@@ -1,17 +1,21 @@
 package org.igetwell.alipay.service.impl;
 
+import com.alipay.api.AlipayApiException;
 import com.alipay.api.AlipayClient;
 import com.alipay.api.DefaultAlipayClient;
 import com.alipay.api.domain.*;
 import com.alipay.api.internal.util.AlipaySignature;
 import com.alipay.api.request.*;
+import com.alipay.api.response.AlipayTradeCloseResponse;
 import com.alipay.api.response.AlipayTradeCreateResponse;
+import com.alipay.api.response.AlipayTradeQueryResponse;
 import com.alipay.api.response.AlipayTradeRefundResponse;
 import org.apache.rocketmq.client.producer.SendCallback;
 import org.apache.rocketmq.client.producer.SendResult;
 import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.igetwell.alipay.service.IAlipayService;
 import org.igetwell.common.constans.PayConstants;
+import org.igetwell.common.enums.HttpStatus;
 import org.igetwell.common.enums.SignType;
 import org.igetwell.common.enums.TradeType;
 import org.igetwell.common.sequence.sequence.Sequence;
@@ -297,7 +301,7 @@ public class AlipayService implements IAlipayService {
             if (!params.isSuccess()) {
                 String subMsg = params.getSubMsg();
                 if (!("交易已经关闭").equals(subMsg)) {
-                    logger.error("[支付宝支付]-支付宝退款失败! 商户订单号：{}, 支付宝交易单号：{}.", tradeNo, transactionId);
+                    logger.error("[支付宝]-支付宝退款失败! 商户订单号：{}, 支付宝交易单号：{}.", tradeNo, transactionId);
                     throw new RuntimeException("[微信支付]-微信退款失败." + subMsg);
                 }
                 return;
@@ -309,16 +313,16 @@ public class AlipayService implements IAlipayService {
             rocketMQTemplate.asyncSend("refund-order-success:refund-order-success", MessageBuilder.withPayload(protocol).build(), new SendCallback() {
                 @Override
                 public void onSuccess(SendResult var) {
-                    logger.info("[支付宝支付]-异步投递退款成功订单消息成功,订单信息：{}. ", GsonUtils.toJson(protocol));
-                    logger.info("[支付宝支付]-异步投递退款成功订单消息成功,投递结果：{}. ", var);
+                    logger.info("[支付宝]-异步投递退款成功订单消息成功,订单信息：{}. ", GsonUtils.toJson(protocol));
+                    logger.info("[支付宝]-异步投递退款成功订单消息成功,投递结果：{}. ", var);
                 }
 
                 @Override
                 public void onException(Throwable var) {
-                    logger.error("[支付宝支付]-异步投递支付成功订单消息失败: 异常信息：{}.", var);
+                    logger.error("[支付宝]-异步投递支付成功订单消息失败: 异常信息：{}.", var);
                 }
             });
-            logger.info("[支付宝支付]-支付宝退款成功! 商户退款单号：{}, 商户订单号：{}, 支付宝交易单号：{}, 退款成功时间: {}.", outNo, tradeNo, transactionId, timestamp);
+            logger.info("[支付宝]-支付宝退款成功! 商户退款单号：{}, 商户订单号：{}, 支付宝交易单号：{}, 退款成功时间: {}.", outNo, tradeNo, transactionId, timestamp);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -379,7 +383,7 @@ public class AlipayService implements IAlipayService {
         try {
             boolean bool = AlipaySignature.rsaCheckV1(params, alipayPublicKey, "UTF-8", SignType.RSA2.name()); //调用SDK验证签名
             if (!bool) {
-                logger.error("[支付宝支付]-支付宝回调验证签名错误!");
+                logger.error("[支付宝]-支付宝回调验证签名错误!");
                 return PayConstants.FAIL;
             }
             //交易状态
@@ -396,24 +400,85 @@ public class AlipayService implements IAlipayService {
                     rocketMQTemplate.asyncSend("trade-order-success:trade-order-success", MessageBuilder.withPayload(protocol).build(), new SendCallback() {
                         @Override
                         public void onSuccess(SendResult var) {
-                            logger.info("[支付宝支付]-异步投递支付成功订单消息成功,订单信息：{}. ", GsonUtils.toJson(protocol));
-                            logger.info("[支付宝支付]-异步投递支付成功订单消息成功,投递结果：{}. ", var);
+                            logger.info("[支付宝]-异步投递支付成功订单消息成功,订单信息：{}. ", GsonUtils.toJson(protocol));
+                            logger.info("[支付宝]-异步投递支付成功订单消息成功,投递结果：{}. ", var);
                         }
 
                         @Override
                         public void onException(Throwable var) {
-                            logger.error("[支付宝支付]-异步投递支付成功订单消息失败: 异常信息：{}.", var);
+                            logger.error("[支付宝]-异步投递支付成功订单消息失败: 异常信息：{}.", var);
                         }
                     });
-                    logger.info("[支付宝支付]-用户公众ID：{} , 商户订单号：{} , 支付宝交易单号：{} 支付宝支付成功！", openId, tradeNo, transactionId);
+                    logger.info("[支付宝]-用户公众ID：{} , 商户订单号：{} , 支付宝交易单号：{} 支付宝支付成功！", openId, tradeNo, transactionId);
                 } else {
-                    logger.info("[支付宝支付]-用户公众ID：{} , 商户订单号：{} , 支付宝交易单号：{} 支付宝退款成功！", 22, tradeNo, transactionId);
+                    logger.info("[支付宝]-用户公众ID：{} , 商户订单号：{} , 支付宝交易单号：{} 支付宝退款成功！", 22, tradeNo, transactionId);
                 }
             }
             return PayConstants.SUCCESS;
         } catch (Exception e) {
-            logger.error("[支付宝支付]-支付宝发起退款回调方法异常! 商户订单号：{}, 支付宝订单号：{}. ", tradeNo, transactionId, e);
-            throw new RuntimeException("[支付宝支付]-支付宝发起退款回调方法异常！", e);
+            logger.error("[支付宝]-支付宝发起退款回调方法异常! 商户订单号：{}, 支付宝订单号：{}. ", tradeNo, transactionId, e);
+            throw new RuntimeException("[支付宝]-支付宝发起退款回调方法异常！", e);
+        }
+    }
+
+
+    /**
+     * 查询支付订单
+     * @param transactionId 支付宝订单号
+     * @param tradeNo 商户订单号
+     * @return
+     */
+    public ResponseEntity getOrder(String transactionId, String tradeNo){
+        try {
+            AlipayTradeQueryModel model = new AlipayTradeQueryModel();
+            model.setTradeNo(transactionId);
+            model.setOutTradeNo(tradeNo);
+            AlipayTradeQueryRequest tradeQueryRequest = new AlipayTradeQueryRequest();
+            tradeQueryRequest.setBizModel(model);
+            AlipayClient alipayClient = new DefaultAlipayClient(gateway, appId, privateKey, "json", "UTF-8", alipayPublicKey, SignType.RSA2.name());
+            AlipayTradeQueryResponse response = alipayClient.execute(tradeQueryRequest);
+            if (!response.isSuccess()){
+                String message = response.getSubMsg();
+                logger.error("[支付宝]-查询支付订单成功! 商户订单号：{}, 支付宝订单号：{}. {}.", tradeNo, transactionId, message);
+                return ResponseEntity.error(HttpStatus.BAD_REQUEST, message);
+            }
+            if (PayConstants.TRADE_WAIT.equals(response.getTradeStatus())){
+                logger.error("[支付宝]-查询支付订单成功,此交易订单未支付! 商户订单号：{}, 微信支付订单号：{}.", tradeNo, transactionId);
+                return ResponseEntity.error(HttpStatus.BAD_REQUEST, "此交易订单未支付!");
+            }
+            if (PayConstants.TRADE_CLOSED.equals(response.getTradeStatus()) || PayConstants.TRADE_FINISHED.equals(response.getTradeStatus())){
+                logger.error("[支付宝]-查询支付订单成功,此交易订单已关闭! 商户订单号：{}, 微信支付订单号：{}.", tradeNo, transactionId);
+                return ResponseEntity.error(HttpStatus.BAD_REQUEST, "此交易订单已关闭!");
+            }
+            logger.info("[微信支付]-查询支付订单成功,此交易已支付! 商户订单号：{}, 微信支付订单号：{}.", tradeNo, transactionId);
+            return ResponseEntity.ok();
+        } catch (Exception e) {
+            throw new RuntimeException("查询支付订单失败!");
+        }
+    }
+
+    /**
+     * 关闭订单
+     * @param tradeNo 商户订单号
+     * @return
+     */
+    public ResponseEntity closeOrder(String tradeNo){
+        try {
+            AlipayTradeCloseModel model = new AlipayTradeCloseModel();
+            model.setOutTradeNo(tradeNo);
+            AlipayTradeCloseRequest tradeCloseRequest = new AlipayTradeCloseRequest();
+            tradeCloseRequest.setBizModel(model);
+            AlipayClient alipayClient = new DefaultAlipayClient(gateway, appId, privateKey, "json", "UTF-8", alipayPublicKey, SignType.RSA2.name());
+            AlipayTradeCloseResponse response = alipayClient.execute(tradeCloseRequest);
+            if(!response.isSuccess()){
+                String message = response.getSubMsg();
+                logger.error("[支付宝]-关闭订单失败! 商户订单号：{}. {}.", tradeNo, message);
+                return ResponseEntity.error(HttpStatus.BAD_REQUEST, message);
+            }
+            logger.error("[支付宝]-关闭订单成功! 商户订单号：{}.", tradeNo);
+            return ResponseEntity.ok();
+        } catch (Exception e) {
+            throw new RuntimeException("关闭订单失败!");
         }
     }
 
@@ -424,7 +489,7 @@ public class AlipayService implements IAlipayService {
      * @return
      */
     public String syncNotify(HttpServletRequest request) {
-        logger.info("[支付宝支付]-处理支付宝服务器同步通知开始.");
+        logger.info("[支付宝]-处理支付宝服务器同步通知开始.");
         Map<String, String> params = ParamMap.getParameterMap(request);
         //商户订单号
         String tradeNo = params.get("out_trade_no");
@@ -433,7 +498,7 @@ public class AlipayService implements IAlipayService {
         try {
             boolean bool = AlipaySignature.rsaCheckV1(params, alipayPublicKey, "UTF-8", SignType.RSA2.name()); //调用SDK验证签名
             if (!bool) {
-                logger.error("[支付宝支付]-支付宝服务器同步通知验证签名错误!");
+                logger.error("[支付宝]-支付宝服务器同步通知验证签名错误!");
                 //out.println("验签失败");
                 return PayConstants.FAIL;
             }
@@ -442,8 +507,8 @@ public class AlipayService implements IAlipayService {
             return PayConstants.SUCCESS;
             //out.println("trade_no:"+trade_no+"<br/>out_trade_no:"+out_trade_no+"<br/>total_amount:"+total_amount);
         } catch (Exception e) {
-            logger.error("[支付宝支付]-处理支付宝服务器同步通知方法异常,商户订单号：{}. 支付宝订单号：{}. ", tradeNo, transactionId, e);
-            throw new RuntimeException("[支付宝支付]-处理支付宝服务器同步通知方法异常！", e);
+            logger.error("[支付宝]-处理支付宝服务器同步通知方法异常,商户订单号：{}. 支付宝订单号：{}. ", tradeNo, transactionId, e);
+            throw new RuntimeException("[支付宝]-处理支付宝服务器同步通知方法异常！", e);
         }
     }
 

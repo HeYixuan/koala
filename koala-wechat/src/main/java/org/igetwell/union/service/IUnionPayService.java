@@ -1,5 +1,7 @@
 package org.igetwell.union.service;
 
+import org.igetwell.common.uitls.ResponseEntity;
+
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
@@ -44,4 +46,19 @@ public interface IUnionPayService {
      * @return
      */
     String refundNotify(HttpServletRequest request);
+
+    /**
+     * 查询支付订单
+     * @param transactionId 银联订单号
+     * @param tradeNo 商户订单号
+     * @return
+     */
+    ResponseEntity getOrder(String transactionId, String tradeNo);
+
+    /**
+     * 关闭订单
+     * @param tradeNo 商户订单号
+     * @return
+     */
+    ResponseEntity closeOrder(String tradeNo);
 }

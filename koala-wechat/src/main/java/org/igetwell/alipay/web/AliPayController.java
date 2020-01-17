@@ -46,6 +46,16 @@ public class AliPayController extends BaseController {
         return ResponseEntity.ok();
     }
 
+    @PostMapping("/getOrder")
+    public ResponseEntity getOrder(String transactionId, String tradeNo) {
+        return iAlipayService.getOrder(transactionId, tradeNo);
+    }
+
+    @PostMapping("/closeOrder")
+    public ResponseEntity closeOrder(String tradeNo){
+        return iAlipayService.closeOrder(tradeNo);
+    }
+
     @GetMapping("/common/pay")
     public ResponseEntity commonPay(@RequestParam("amount") BigDecimal amount) throws Exception {
         if(WebUtils.isWechat()){ //微信

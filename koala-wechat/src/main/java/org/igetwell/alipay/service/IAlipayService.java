@@ -1,6 +1,7 @@
 package org.igetwell.alipay.service;
 
 import org.igetwell.common.enums.TradeType;
+import org.igetwell.common.uitls.ResponseEntity;
 import org.igetwell.system.bean.dto.request.AliPayRequest;
 import org.igetwell.system.bean.dto.request.AliRefundRequest;
 
@@ -59,6 +60,21 @@ public interface IAlipayService {
      * @return
      */
     String payNotify(HttpServletRequest request);
+
+    /**
+     * 查询支付订单
+     * @param transactionId 支付宝订单号
+     * @param tradeNo 商户订单号
+     * @return
+     */
+    ResponseEntity getOrder(String transactionId, String tradeNo);
+
+    /**
+     * 关闭订单
+     * @param tradeNo 商户订单号
+     * @return
+     */
+    ResponseEntity closeOrder(String tradeNo);
 
     /**
      * 处理支付宝服务器同步通知
