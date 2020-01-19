@@ -26,7 +26,7 @@ public class UnionPayController extends BaseController {
 
     @GetMapping("/test")
     public ModelAndView test(){
-        Map<String, String> params = iUnionPayService.web("134671894768078849305", "测试", "测试2", "1");
+        Map<String, String> params = iUnionPayService.web(sequence.nextNo(), "测试", "测试2", "1");
         //手机网站支付
         ModelAndView modelAndView = new ModelAndView();
         String page = params.get("page") == null ? null : params.get("page");
@@ -60,6 +60,16 @@ public class UnionPayController extends BaseController {
     public void refundNotify(){
         String text = iUnionPayService.refundNotify(request.get());
         render(text);
+    }
+
+    @PostMapping("/getOrder")
+    public ResponseEntity getOrder(String transactionId, String tradeNo) {
+        return iUnionPayService.getOrder(transactionId, tradeNo);
+    }
+
+    @PostMapping("/closeOrder")
+    public ResponseEntity closeOrder(String transactionId, String tradeNo, String fee){
+        return iUnionPayService.closeOrder(sequence.nextNo(), transactionId, tradeNo, fee);
     }
 
 }

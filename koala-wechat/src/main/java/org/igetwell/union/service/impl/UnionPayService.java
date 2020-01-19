@@ -4,6 +4,7 @@ import org.apache.rocketmq.client.producer.SendCallback;
 import org.apache.rocketmq.client.producer.SendResult;
 import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.igetwell.common.constans.PayConstants;
+import org.igetwell.common.enums.HttpStatus;
 import org.igetwell.common.enums.SignType;
 import org.igetwell.common.uitls.*;
 import org.igetwell.system.order.protocol.OrderPayProtocol;
@@ -286,34 +287,63 @@ public class UnionPayService implements IUnionPayService {
                 .put("txnSubType", "00")  //交易子类型  默认00
                 .put("bizType", "000201") //业务类型 B2C网关支付，手机wap支付
                 .getData();
-        Map<String, String> params = createQueryParams(paraMap, null);
+        Map<String, String> params = this.createQueryParams(paraMap, null);
         logger.info("[银联支付]-银联查询支付订单调用开始. 请求银联查询支付订单参数：{}.", GsonUtils.toJson(params));
         String frontTransUrl = "https://gateway.test.95516.com/gateway/api/queryTrans.do";
         Map<String, String> resultMap = this.pushOrder(frontTransUrl, params);
-        if (resultMap.isEmpty() || !"00".equals(resultMap.get("respCode"))) {
+        if (resultMap.isEmpty()) {
             throw new RuntimeException("查询支付订单失败!!");
         }
-        logger.info("[银联支付]-查询支付订单成功,此交易已支付! 商户订单号：{}, 微信支付订单号：{}.", tradeNo, transactionId);
-        return ResponseEntity.ok();
+        if ("00".equals(resultMap.get("respCode"))) {
+            String origRespCode = resultMap.get("origRespCode");
+            if ("00".equals(origRespCode)){
+                logger.info("[银联支付]-查询支付订单成功,此交易已支付! 商户订单号：{}, 银联支付订单号：{}.", tradeNo, transactionId);
+                return ResponseEntity.ok();
+            }
+            if("05".equals(origRespCode) || "39".equals(origRespCode)){
+                logger.error("[银联支付]-查询支付订单成功,此交易订单未支付! 商户订单号：{}, 微信支付订单号：{}.", tradeNo, transactionId);
+                return ResponseEntity.error(HttpStatus.BAD_REQUEST, "此交易订单未支付!");
+
+            }
+             else{
+                throw new RuntimeException("查询支付订单失败!!");
+            }
+        } if("34".equals(resultMap.get("respCode"))){
+            logger.error("[银联支付]-查询支付订单成功,无此交易订单或已退款! 商户订单号：{}, 微信支付订单号：{}.", tradeNo, transactionId);
+            return ResponseEntity.error(HttpStatus.BAD_REQUEST, "无此交易订单或已退款!");
+        } else {
+            logger.error("[银联支付]-查询支付订单失败,此交易订单未支付! 商户订单号：{}, 微信支付订单号：{}.", tradeNo, transactionId);
+            return ResponseEntity.error(HttpStatus.BAD_REQUEST, "查询支付订单失败!");
+        }
     }
 
     /**
      * 关闭订单
+     * @param outTradeNo 关闭订单号
      * @param tradeNo 商户订单号
      * @return
      */
-    public ResponseEntity closeOrder(String tradeNo){
-        logger.info("[银联支付]-发起银联退款请求开始, 商户订单号, 退款金额：{}.", tradeNo);
-        /*Map<String, String> paraMap = ParamMap.create("transactionId", transactionId) //银联支付交易流水号
+    public ResponseEntity closeOrder(String outTradeNo, String transactionId, String tradeNo, String fee){
+        logger.info("[银联支付]-发起银联关闭订单请求开始. 商户单号：{}.", tradeNo);
+        Map<String, String> paraMap = ParamMap.create("tradeNo", tradeNo)
+                .put("transactionId", transactionId) //银联支付交易流水号
                 .put("tradeNo", tradeNo)//订单号
-                .put("outTradeNo", ) //退款单号
-                //.put("fee", fee)
+                .put("outTradeNo", outTradeNo) //关闭单号
+                .put("fee", fee)
                 .put("txnSubType", "00")  //交易子类型  默认00
                 .put("bizType", "000201") //业务类型 B2C网关支付，手机wap支付
                 .put("channelType", "07") //渠道类型，07-PC，08-手机
-                .getData();*/
+                .getData();
+        Map<String, String> params = this.createCloseParams(paraMap, null);
+        logger.info("[银联支付]-银联关闭订单调用开始. 请求银联关闭订单参数：{}.", GsonUtils.toJson(params));
         String frontTransUrl = "https://gateway.test.95516.com/gateway/api/backTransReq.do";
-        return null;
+        Map<String, String> resultMap = this.pushOrder(frontTransUrl, params);
+        if (resultMap.isEmpty() || !"00".equals(resultMap.get("respCode"))) {
+            logger.error("[银联支付]-关闭订单失败! 商户订单号：{}.", tradeNo);
+            throw new RuntimeException("关闭订单失败.");
+        }
+        logger.info("[微信支付]-关闭订单成功! 商户订单号：{}.", tradeNo);
+        return ResponseEntity.ok();
     }
 
     /**
@@ -420,7 +450,6 @@ public class UnionPayService implements IUnionPayService {
         params.put("orderId", hashMap.get("outTradeNo")); // 商户系统内部的订单号,32个字符内、可包含字母
         params.put("origQryId", hashMap.get("transactionId"));      //银联支付交易流水号
         params.put("origOrderId", hashMap.get("tradeNo"));      //原订单号
-        params.put("origTxnTime", hashMap.get("tradeNo"));      //原订单号交易时间
         params.put("version", "5.1.0"); //全渠道版本号
         params.put("encoding", "UTF-8"); //全渠道版本号
         params.put("channelType", hashMap.get("channelType")); //渠道类型，这个字段区分B2C网关支付和手机wap支付；07：PC,平板 08：手机
@@ -428,7 +457,6 @@ public class UnionPayService implements IUnionPayService {
         params.put("txnType", "31"); //交易类型 ，01：消费 04:退款 31:消费撤销
         params.put("txnSubType", hashMap.get("txnSubType")); //01：自助消费，通过地址的方式区分前台消费和后台消费（含无跳转支付） 03：分期付款 07：申请消费二维码
         params.put("txnAmt", hashMap.get("fee")); // 交易金额，单位为分
-        params.put("currencyCode", "156"); // 货币类型，默认人民币：CNY
         params.put("txnTime", DateUtils.formaDateTime(LocalDateTime.now())); //商户发送交易时间
         params.put("bizType", hashMap.get("bizType")); //业务类型，000201 B2C网关支付，手机wap支付, 000000用户主动扫码
         params.put("backUrl", refundNotify); // 通知地址

@@ -57,8 +57,9 @@ public interface IUnionPayService {
 
     /**
      * 关闭订单
+     * @param outTradeNo 关闭订单号
      * @param tradeNo 商户订单号
      * @return
      */
-    ResponseEntity closeOrder(String tradeNo);
+    ResponseEntity closeOrder(String outTradeNo, String transactionId, String tradeNo, String fee);
 }
