@@ -14,8 +14,6 @@ import org.springframework.security.web.authentication.AbstractAuthenticationPro
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.util.Assert;
-
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -32,7 +30,8 @@ public class MobileAuthenticationFilter extends AbstractAuthenticationProcessing
     @Getter
     @Setter
     private AuthenticationEventPublisher eventPublisher;
-    @Resource
+    @Getter
+    @Setter
     private AuthenticationEntryPoint authenticationEntryPoint;
 
     public MobileAuthenticationFilter() {

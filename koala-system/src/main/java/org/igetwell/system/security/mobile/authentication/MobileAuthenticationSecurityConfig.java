@@ -1,5 +1,7 @@
 package org.igetwell.system.security.mobile.authentication;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.igetwell.system.configure.ResourceOauth2ExceptionEntryPoint;
 import org.igetwell.system.security.SpringSecurityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationEventPublisher;
@@ -17,6 +19,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class MobileAuthenticationSecurityConfig extends SecurityConfigurerAdapter<DefaultSecurityFilterChain, HttpSecurity> {
     @Autowired
+    private ObjectMapper objectMapper;
+    @Autowired
     private AuthenticationSuccessHandler mobileLoginSuccessHandler;
     @Autowired
     private AuthenticationEventPublisher defaultAuthenticationEventPublisher;
@@ -29,6 +33,7 @@ public class MobileAuthenticationSecurityConfig extends SecurityConfigurerAdapte
         mobileAuthenticationFilter.setAuthenticationManager(http.getSharedObject(AuthenticationManager.class));
         mobileAuthenticationFilter.setAuthenticationSuccessHandler(mobileLoginSuccessHandler);
         mobileAuthenticationFilter.setEventPublisher(defaultAuthenticationEventPublisher);
+        mobileAuthenticationFilter.setAuthenticationEntryPoint(new ResourceOauth2ExceptionEntryPoint(objectMapper));
 
         MobileAuthenticationProvider mobileAuthenticationProvider = new MobileAuthenticationProvider();
         mobileAuthenticationProvider.setSpringSecurityService(springSecurityService);
