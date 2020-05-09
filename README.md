@@ -1,6 +1,16 @@
 # koala
 koala是基于spring cloud 开发的spring cloud数据权限框架
 
+<br/>
+密码授权前请先设置请求头：
+Authorization: Basic dGVzdDI6dGVzdDI=
+TENANT-ID: 000000 (默认000000)
+如果没携带Authorization请求头,会提示无权限访问接口.
+
+如果不知道Authorization请求内容是什么,请POSTMAN请求,附示例: 
+选择Authorization,Username: test2  Password: test2  再点击preview按钮生成的Base64加密字符串
+
+
 密码模式授权：
 <br/>
 http://localhost:9001/oauth/token?username=admin2&password=123456&grant_type=password&scope=all
@@ -147,4 +157,8 @@ https://www.echosite.cn
 1.如果发现client注入不进去,请在启动类加@EnableKoalaFeign注解.
 2.如果发现"TTL 中的 租户ID为空，feign拦截器 >> 增强失败" 此日志报错信息,不要惊慌,请将你的返回体改为ResponseEntity,
 详细原因请见：KoalaFeignTenantInterceptor和KoalaFeignFallback类.
+
+
+如有疑问可加群：314788966
+如果群满,可加我QQ939531410
 
